@@ -1,536 +1,299 @@
-#import needed modules
-import sys
 import time
-import random
+import sys
+import textwrap
 
-#import needed functions
-from civil_war_functions import*
+# =====================================================================
+# HISTORICAL DATA DICTIONARY
+# =====================================================================
 
-#introduction text
-print_slow("                       Welcome to the Civil War Simulation!\n")
-line = "______________________________________________________________________________"
-print(line)
-print()
+SIMULATION_DATA = {
+    "trent_affair": {
+        "title": "The Trent Affair (Late 1861)",
+        "intro": "The Union Navy has intercepted a British mail ship, the Trent, and arrested two Confederate diplomats (James Mason and John Slidell) who were on their way to Europe to seek help for the South. The Northern public is thrilled, but Great Britain is furious. They consider this an illegal act of war, and they are sending thousands of troops to Canada, ready to attack the Union.",
+        "options": {
+            "A": "Keep the diplomats imprisoned. The Union Navy acted bravely, and the South cannot be allowed to make alliances.",
+            "B": "Apologize to Great Britain and release the diplomats to keep the British out of the war.",
+            "C": "Release the diplomats but publicly refuse to issue a formal apology, hoping that satisfies both sides without looking weak."
+        },
+        "advisors": [
+            {"name": "Gideon Welles (Secretary of the Navy)", "opinion": "Captain Wilkes is a national hero! We cannot back down now. The public demands we keep them locked up!"},
+            {"name": "William Seward (Secretary of State)", "opinion": "Mr. President, Britain is readying for war. Our military is already stretched thin fighting the Confederacy. We cannot survive fighting the South and the British Empire at the same time."},
+            {"name": "Senator Charles Sumner", "opinion": "According to international law, Great Britain is actually in the right here. We must release them to avoid a disastrous war that would destroy the Union."}
+        ],
+        "lincoln_choice": "B",
+        "lincoln_action_phrase": "apologize to Great Britain and release the diplomats",
+        "reveal": "By swallowing his pride and angering the Northern public, Lincoln successfully kept Great Britain out of the Civil War, which was crucial for the Union's eventual victory. He reportedly remarked, 'One war at a time.'"
+    },
+    "hunters_proclamation": {
+        "title": "General Hunter's Unauthorized Proclamation (May 1862)",
+        "intro": "General David Hunter, a Union commander, has just issued a military order freeing all enslaved people in South Carolina, Georgia, and Florida. He did this without asking for your permission! The abolitionists are cheering, but politicians in the Border States (slave states that stayed in the Union) are threatening to leave and join the Confederacy if you let this stand.",
+        "options": {
+            "A": "Let the order stand. It weakens the rebellion and does the right thing by freeing enslaved people.",
+            "B": "Revoke the order immediately. Remind everyone that only the President, not generals, has the power to make such massive political decisions.",
+            "C": "Modify the order to only free enslaved people who are actively being forced to work for the Confederate military, ignoring everyone else."
+        },
+        "advisors": [
+            {"name": "Salmon P. Chase (Secretary of the Treasury)", "opinion": "Let the order stand! It weakens the Confederacy's economy and is morally just. It's time to strike a blow against slavery."},
+            {"name": "Border State Politicians", "opinion": "If you do not cancel this radical order, our states will secede! You will lose Maryland, Kentucky, and Missouri, and the Union will be lost!"},
+            {"name": "Horace Greeley (Newspaper Editor)", "opinion": "Finally, a General taking real action! Do not interfere with General Hunter. The people are behind him."}
+        ],
+        "lincoln_choice": "B",
+        "lincoln_action_phrase": "revoke the unauthorized emancipation order",
+        "reveal": "Lincoln stated clearly that he, as Commander-in-Chief, was the only one who could issue such an order, and he desperately needed the Border States to stay in the Union. However, secretly, Lincoln had already begun drafting the Emancipation Proclamation."
+    },
+    "dakota_war": {
+        "title": "The Dakota War Executions (Late 1862)",
+        "intro": "Following an uprising by the Dakota people in Minnesota due to broken treaties and starvation, a military tribunal has sentenced 303 Dakota men to hang. White settlers in Minnesota are demanding mass executions, threatening mob violence if you don't approve them. However, reviewing the transcripts shows the trials were incredibly rushed and unfair.",
+        "options": {
+            "A": "Approve all 303 executions to appease the furious settlers and prevent mob violence in Minnesota.",
+            "B": "Pardon all 303 men. The military tribunals were a sham, and the Dakota were driven to violence by the government breaking its promises.",
+            "C": "Personally review the trial transcripts and only approve the executions of those proven to have massacred civilians, rather than those who just fought in battles."
+        },
+        "advisors": [
+            {"name": "General John Pope", "opinion": "You must approve all the executions, Mr. President. If you do not, the white settlers will take the law into their own hands and slaughter every Native American in the state."},
+            {"name": "Bishop Henry Whipple", "opinion": "President {student_name}, this system is broken. Our own corrupt agents starved the Dakota into war. You must show mercy and reform the system."},
+            {"name": "Gideon Welles (Secretary of the Navy)", "opinion": "You are a lawyer, sir. You must look at the evidence. We cannot execute men based on sham trials, but we also cannot let murderers go free."}
+        ],
+        "lincoln_choice": "C",
+        "lincoln_action_phrase": "review the transcripts and reduce the executions to 38",
+        "reveal": "Lincoln and his lawyers worked for weeks reviewing the transcripts. He commuted the death sentences of 265 men, allowing 38 to be hanged. While it remains the largest mass execution in US history, Lincoln's decision to intervene cost him politically but prevented a much larger, legally baseless slaughter."
+    },
+    "cabinet_coup": {
+        "title": "The Cabinet Coup (December 1862)",
+        "intro": "The war is going terribly. After the devastating Union loss at Fredericksburg, Radical Republican Senators are furious. They blame your trusted Secretary of State, William Seward, for the Union's failures and demand you fire him. Your Secretary of the Treasury, Salmon P. Chase, has been secretly encouraging these Senators. Seward has offered his resignation to save you the trouble.",
+        "options": {
+            "A": "Accept Seward's resignation to please the powerful Senators and try to unite the Republican party.",
+            "B": "Refuse to let the Senate dictate your cabinet. Trap the Senators and Chase in a meeting so you can keep your team intact.",
+            "C": "Fire Secretary Chase immediately for his disloyalty and publicly defend Seward."
+        },
+        "advisors": [
+            {"name": "Senator William Fessenden", "opinion": "Seward is a terrible influence on you, President {student_name}. You must dismiss him immediately to save the country from ruin."},
+            {"name": "William Seward (Secretary of State)", "opinion": "I will resign my post to save you from this political crisis, Mr. President. My presence is tearing the government apart."},
+            {"name": "Salmon P. Chase (Secretary of the Treasury)", "opinion": "(In public to you) We must do what is best for the Union. (In secret to the Senators) Seward is ruining everything, the President is too weak to stop him."}
+        ],
+        "lincoln_choice": "B",
+        "lincoln_action_phrase": "refuse to let the Senate dictate your cabinet",
+        "reveal": "Lincoln set up a surprise meeting between the angry Senators and his entire Cabinet (except Seward). He forced Secretary Chase to defend the Cabinet in front of the Senators he had secretly been complaining to. Embarrassed, Chase offered his resignation the next day. Lincoln refused both resignations, effectively keeping his team and proving he was the one in charge."
+    },
+    "vallandigham": {
+        "title": "The Arrest of Clement Vallandigham (May 1863)",
+        "intro": "Clement Vallandigham, a prominent Northern politician and vocal critic of your administration, has been making fiery speeches urging soldiers to desert and calling the war a failure. General Burnside had him arrested and tried by a military tribunal, which sentenced him to prison for the rest of the war. Democrats are screaming that you are a tyrant destroying free speech.",
+        "options": {
+            "A": "Keep him in military prison. Free speech has limits during a rebellion, and he is actively hurting the Union army's morale.",
+            "B": "Release him and issue an apology. Arresting a political opponent for a speech violates the First Amendment.",
+            "C": "Change his sentence from prison to banishment. Send him across enemy lines into the Confederacy."
+        },
+        "advisors": [
+            {"name": "General Ambrose Burnside", "opinion": "The man is a traitor! He is discouraging enlistments while our boys are dying. He must remain locked up!"},
+            {"name": "Northern Democrats", "opinion": "Tyrant! You are destroying the Constitution! A man has the right to criticize the government without being thrown in a military dungeon!"},
+            {"name": "A Moderate Republican Advisor", "opinion": "If you keep him in prison, you make him a martyr. If you release him, you look weak. We must find a creative way to get rid of him."}
+        ],
+        "lincoln_choice": "C",
+        "lincoln_action_phrase": "banish Vallandigham to the Confederacy",
+        "reveal": "In a brilliant political maneuver, Lincoln commuted the prison sentence and ordered Vallandigham banished to the South. By sending him to the people he claimed to sympathize with, Lincoln made Vallandigham look ridiculous rather than like a martyr for free speech, deflating the crisis."
+    },
+    "fort_pillow": {
+        "title": "The Fort Pillow Massacre Response (April 1864)",
+        "intro": "Horrific news has reached Washington. Confederate troops under General Nathan Bedford Forrest captured Fort Pillow in Tennessee. Instead of taking the surrendered Black Union soldiers as prisoners of war, the Confederates massacred them. The Northern public and your military advisors are absolutely outraged, demanding blood for blood.",
+        "options": {
+            "A": "Order the immediate execution of Confederate prisoners of war in retaliation for the murdered Black soldiers.",
+            "B": "Demand an official investigation and threaten retaliation, but hold off on mass executions to prevent the war from becoming a cycle of endless murder.",
+            "C": "Issue an order refusing to take any Confederate prisoners at all going forward. No quarter shall be given."
+        },
+        "advisors": [
+            {"name": "Edwin Stanton (Secretary of War)", "opinion": "We must retaliate immediately! For every Black soldier murdered at Fort Pillow, we must execute a Confederate prisoner of war. They must learn there are consequences!"},
+            {"name": "Frederick Douglass (Abolitionist Leader)", "opinion": "The Confederacy must be taught that Black soldiers are Union soldiers. Severe retaliation is the only way to protect them from future massacres."},
+            {"name": "Gideon Welles (Secretary of the Navy)", "opinion": "Executing defenseless prisoners is savage, President {student_name}. We cannot sink to the Confederacy's level, or this war will become a dark cycle of endless revenge and bloodletting."}
+        ],
+        "lincoln_choice": "B",
+        "lincoln_action_phrase": "demand an investigation rather than order mass executions",
+        "reveal": "Lincoln officially threatened retaliation, but he ultimately could not bring himself to order the mass execution of innocent Confederate prisoners. He feared it would trigger a horrific cycle of revenge killings that would destroy the humanity of the nation. The lack of direct retaliation frustrated many, but it prevented the war from descending into further barbarism."
+    },
+    "hampton_roads": {
+        "title": "The Hampton Roads Peace Conference (February 1865)",
+        "intro": "The war is nearing its end, and the South is losing. Confederate leaders, including their Vice President Alexander Stephens, have requested a secret meeting to discuss peace. The country is exhausted by the horrific death toll. Some in the North want peace at any price, while others demand you crush the South utterly.",
+        "options": {
+            "A": "Accept a ceasefire immediately. Agree to let them keep slavery as long as they stop shooting and rejoin the Union.",
+            "B": "Refuse to meet with them entirely. The only acceptable outcome is their unconditional surrender and total destruction.",
+            "C": "Meet with them, but insist that the war will only stop if they rejoin the Union and accept the end of slavery entirely."
+        },
+        "advisors": [
+            {"name": "Francis Preston Blair (Journalist & Politician)", "opinion": "Mr. President, the slaughter must end. Meet with them. Find a compromise. Bring our boys home."},
+            {"name": "Radical Republican Congressman", "opinion": "Do not negotiate with traitors! If you compromise on slavery now, all those hundreds of thousands of men will have died for nothing!"},
+            {"name": "William Seward (Secretary of State)", "opinion": "You should hear them out, sir. But you hold all the cards. We are winning. Do not give up the core goals of this war."}
+        ],
+        "lincoln_choice": "C",
+        "lincoln_action_phrase": "meet but refuse to compromise on reunion and emancipation",
+        "reveal": "Lincoln personally attended the Hampton Roads conference. He was willing to listen, but he held firm to his absolute conditions: the Confederacy must disband, rejoin the Union, and accept the abolition of slavery. The Confederates refused, and the war continued for two more bloody months until Lee's surrender at Appomattox."
+    }
+}
 
-#user input for name
-name = get_user_name()
+# =====================================================================
+# SIMULATION FUNCTIONS
+# =====================================================================
 
-#sim introduction
-sim_introduction(name)
-print(line)
+def slow_print(text, delay=0.025):
+    """Prints text one character at a time for a typewriter effect."""
+    # Wrap long lines at 76 characters so words aren't split across lines
+    text = "\n".join(textwrap.fill(line, 76) if len(line) > 76 else line
+                     for line in text.split("\n"))
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(delay)
+    print() # Move to the next line after finishing the string
 
-#user input for side
-side = get_user_side().title()
-greet_user_side(name,side)
+def print_separator():
+    print("\n" + "="*70 + "\n")
 
-#list of battles
-list_of_battles = ["Bull Run", "Peninsula Campaign", "Antietam", "Fredericksburg", "Chancellorsville", "Gettysburg", "The Wilderness", "Siege of Petersburg", "Sailor's Creek"]
-print_slow("Here is a list of battles you can choose from (in chronological order): \n")
-for battles in list_of_battles:
-    print(battles)
+def run_scenario(scenario_key, student_name):
+    """Runs a single scenario and returns True if the student matched Lincoln, False otherwise."""
+    scenario = SIMULATION_DATA[scenario_key]
 
-#frequently used statements
-sim_end_statement = f"Thanks for playing the Civil War Simulation, {name}!"
+    print_separator()
+    slow_print(f"--- {scenario['title'].upper()} ---", 0.03)
+    print("\nTHE SITUATION:")
+    slow_print(scenario["intro"].format(student_name=student_name))
 
-#establish casualty rate
-casualty_rate = 0
+    # Advisor Loop
+    while True:
+        print("\n" + "-"*40)
+        slow_print("WHO WOULD YOU LIKE TO CONSULT?", 0.02)
 
-#tracks whether the player is still alive (set to False when killed in action)
-alive = True
+        # List out the available advisors dynamically
+        for i, advisor in enumerate(scenario["advisors"]):
+            print(f"{i + 1}) {advisor['name']}")
 
-#establish while loop
-battles_fought = 0
-if side == "Confederate":
-    battle_count = 8
-else:
-    battle_count = 6
-while battles_fought < battle_count:
-    print(line)
+        decision_number = len(scenario["advisors"]) + 1
+        print(f"{decision_number}) I'm ready to make my decision.")
 
-#establish while loop for user input for battles
-    battle = battle_selection()
-    battles_fought += 1
+        choice = input("\nEnter a number: ").strip()
 
-#bull run
-    if battle == "bull run" or battle == "battle of bull run":
-        battle = "Battle of Bull Run"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 15
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"{name}, you and your {side} comrades are fighting in the Battle of Bull Run,\nthe first major battle of the Civil War. ")
-            print_slow(f"\nYou and the men of your regiment are excited by the battle - \neveryone expects the war to be over by Christmas, \nand no one wants to miss out on the action.")
-            print_slow("\nDuring the battle, you and about 18,000 Union\nsoldiers were engaged in combat. \n1,982 of your comrades were killed, wounded or captured.\nThis is a 15% casualty rate.\n")
-            print_slow(f"The battle was a {side} defeat. This war might last longer than we expected.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2} or a {sim_roll3} you're either captured or wounded.  \nIf you entered a {sim_roll4} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll4:
-                print_slow(f"\nUnfortunately, {name}, you died today fighting the first battle \nof the Civil War.\n")
-                casualty_rate_statement(overall_rate)
-                alive = False
+        try:
+            choice_index = int(choice) - 1
+
+            if 0 <= choice_index < len(scenario["advisors"]):
+                # Student picked an advisor
+                advisor = scenario["advisors"][choice_index]
+                opinion = advisor["opinion"].format(student_name=student_name)
+                print("\n" + "."*20)
+                slow_print(f"[{advisor['name']} enters the room...]", 0.03)
+                slow_print(f"\"{opinion}\"")
+                print("."*20)
+                time.sleep(0.8) # A brief pause before looping the menu
+
+            elif choice_index == len(scenario["advisors"]):
+                # Student is ready to decide
                 break
-            else:
-                survived_one(name,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 11
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"{name}, you and your {side} comrades are fighting in the \nBattle of Bull Run, the first major battle of the Civil War. ")
-            print_slow("You and the soldiers of your regiment are excited to fight - \nthis is your chance to show those Yankees that one southerner can whip 10 of them!")
-            print_slow("\nAbout 18,000 Confederate soldiers fought in the battle; \n2,708 of them were killed, wounded or captured.\nThis is an 11% casualty rate.")
-            print_slow(f"\nFortunately for you, this battle was a {side} victory.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll} or a {sim_roll2} you're captured or wounded.  \nIf you entered a {sim_roll3} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll3:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_one(name,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
 
-#peninsula campaign
-    if battle == "peninsula campaign" or battle == "peninsula":
-        battle = "Peninsula Campaign"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 29
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"It is the spring of 1862, and the Army of the Potomac, led by General McClellan,\nis attempting to capture the Confederate capital of Richmond.\n")
-            print_slow("From March until July, \n102,236 Union soldiers fought in a series of battles outside Richmond. \n29,298 of them were killed, wounded or captured.\nThis is a 29% casualty rate.\n")
-            print_slow(f"This battle was a {side} defeat, and the Army of the Potomac retreated \nback to Washington having failed to capture Richmond.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, {sim_roll4} or a {sim_roll5} you're either captured or wounded.  \nIf you entered a {sim_roll6} or a {sim_roll7}, you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4 or user_number == sim_roll5:
-                captured_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll6 or user_number == sim_roll7:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
             else:
-                survived_two(battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 24
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"{name}, you and your regiment are defending Richmond in what \ncame to be known as the {battle}.")
-            print_slow(f"\nDuring the battle, the commander of the Army of Northern Virginia,\nGeneral Joe Johnston, was wounded in action. ")
-            print_slow(f"\nConfederate President Jefferson Davis replaced Johnston\nwith General Robert E. Lee, who successfully defended the capital.")
-            print_slow("\n94,813 Confederate soldiers fought in the campaign,\nwhich lasted from March until July of 1862.\n23,119 of them were killed, wounded or captured.\nThis is a 24% casualty rate.")
-            print_slow(f"\nThis battle was a {side} victory.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, or a {sim_roll4}, you're captured or wounded.  \nIf you entered a {sim_roll5} or {sim_roll6} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4:
-                print_slow(f"\nI can see that you've been wounded, {name}. Quickly, make your way to the \nregimental surgeon.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll5 or user_number == sim_roll6:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_two(battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+                print("\nInvalid choice. Please pick a number from the list.")
+        except ValueError:
+            print("\nPlease enter a valid number.")
 
-#antietam
-    if battle == "antietam" or battle == "battle of antietam":
-        battle = "Battle of Antietam"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 23
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"You and your {side} soldiers are fighting the worst one day battle\nin American history - the Battle of Antietam.\n")
-            print_slow("Under the command of General McClellan,\n53,632 Union soldiers were engaged in combat for 12 hours. \n12,410 of them were killed, wounded or captured.\nThis is a 23% casualty rate.\n")
-            print_slow(f"This battle was a {side} victory, and Lincoln used it as an opportunity\nto announce the Emancipation Proclamation.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2} or a {sim_roll3} you're either captured or wounded.\nIf you entered a {sim_roll4} or a {sim_roll5}, you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll4 or user_number == sim_roll5:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_three(side,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 34
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"You and your {side} soldiers are fighting the worst one day battle in\nAmerican history - the Battle of Antietam.")
-            print_slow("General Lee, hoping to win a decisive victory, invades Maryland.  \nThe two sides meet near a small creek called Antietam.")
-            print_slow("\n30,646 Confederate soldiers fought in this 12 hour battle under the command of \nGeneral Robert E. Lee; 10,337 of them were killed, wounded or captured.\nThis is a 34% casualty rate.")
-            print_slow(f"\nThis battle was a {side} defeat.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, or a {sim_roll4}, you're captured or wounded.  \nIf you entered a {sim_roll5} or {sim_roll6} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll5 or user_number == sim_roll6:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_three(side,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    # Present the final options dynamically
+    print("\n" + "="*40)
+    slow_print("IT IS TIME TO DECIDE.", 0.03)
+    print("YOUR OPTIONS:")
 
-#fredericksburg
-    if battle == "fredericksburg" or battle == "battle of fredericksburg":
-        battle = "Battle of Fredericksburg"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 11
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow("It is December of 1862.  Instead of preparing to celebrate Christmas with your\nfamily, you are fighting in the Battle of Fredericksburg.\n")
-            print_slow("Once again, the Army of the Potomac is trying to capture \nRichmond under the command of yet another general.")
-            print_slow(f"\nDuring the {battle}, about 114,000 Union soldiers \nwere engaged in combat under General Ambrose Burnside. \n12,653 of them were killed, wounded or captured.\nThis is an 11% casualty rate.\n")
-            print_slow("You and your regiment were ordered to charge up a hill against \nConfederates positioned behind a low stone wall.  It was a massacre.")
-            print_slow(f"\nThis battle was a crushing {side} defeat.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll} or a {sim_roll2} you're either captured or wounded.  \nIf you entered a {sim_roll3} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll3:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow("\nThat night as you warm yourself by the fire, \nyou can hear the cries and moans of the wounded still lying on the battlefield.")
-                print_slow(f"\nYou're relieved to not be among them, \nand you try to comfort yourself with the thought\nthat maybe you'll make it home in time for Christmas after all.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 7
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow("It is December of 1862.  Instead of preparing to celebrate Christmas with your\nfamily, you are fighting in the Battle of Fredericksburg.")
-            print_slow("\nThe battle is yet another attempt by the Union to capture Richmond.\nThey didn't get very far before you and your comrades stopped them.")
-            print_slow("\nLed by General Lee, about 72,500 Confederate soldiers fought in the battle; \n5,377 of them were killed, wounded or captured.\nThis is a 7% casualty rate.")
-            print_slow(f"\nThis battle was a major {side} victory.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll} you're captured or wounded.  \nIf you entered a {sim_roll2} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll:
-                captured_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll2:
-                print_slow(f"\nUnfortunately, {name}, you'll never celebrate Christmas with your family again.\n")
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow("\nAs the battle draws to a close, \nboth sides witness the most dazzling display of the \nnorthern lights perhaps ever seen in Virginia.")
-                print_slow(f"\nAs you look up to the sky, you think to yourself that \nmaybe you'll make it home for Christmas after all.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    valid_choices = list(scenario["options"].keys())
+    for key in valid_choices:
+        slow_print(f"{key}) {scenario['options'][key]}", 0.02)
 
-#chancellorsville
-    if battle == "chancellorsville" or battle == "battle of chancellorsville":
-        battle = "Battle of Chancellorsville"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 13
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"{name}, you and the Army of the Potomac are invading Virginia \nunder the command of General Joe Hooker. ")
-            print_slow("It is May of 1863.  \nUnion and Confederate forces are converging on a \nsmall town called Chancellorsville. ")
-            print_slow("During the battle, \nabout 133,868 Union soldiers were engaged in combat. \n17,287 of them were killed, wounded or captured.\nThis is a 13% casualty rate.\n")
-            print_slow(f"The battle was yet another crushing {side} defeat.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll} or a {sim_roll2} you're either captured or wounded.  \nIf you entered a {sim_roll3} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll3:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\nYou survived the battle, \nbut the war is not going well for the {side}.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 21
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow("The Army of the Potomac has invaded Virginia yet again and General Lee is \nmoving the Army of Northern Virginia to stop them. ")
-            print_slow("It is May of 1863.  \nUnion and Confederate forces are converging on a small town called \nChancellorsville.")
-            print_slow(f"\nAbout 60,298 Confederate soldiers fought in the {battle}; \n12,764 of them were killed, wounded or captured.\nThis is a 21% casualty rate.")
-            print_slow(f"\nThis battle was yet another major {side} victory.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3} or a {sim_roll4} you're captured or wounded.  \nIf you entered a {sim_roll5} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll5:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\nNot only did you survive, but it looks like the \nConfederate States of America might survive this war too -  \nGeneral Lee led your {side} forces to another brilliant victory!")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    # Input loop to ensure the student chooses a valid option
+    options_str = ", ".join(valid_choices[:-1]) + f", or {valid_choices[-1]}"
+    while True:
+        student_choice = input(f"\nPresident {student_name}, what is your order? (Type {options_str}): ").strip().upper()
+        if student_choice in valid_choices:
+            break
+        print(f"Invalid choice. Please enter {options_str}.")
 
+    print("\n" + "."*30)
+    slow_print("PROCESSING HISTORY...", 0.05)
+    print("."*30 + "\n")
 
-#gettysburg
-    if battle == "gettysburg" or battle == "battle of gettysburg":
-        battle = "Battle of Gettysburg"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 22
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Lee, encouraged by his victory at Chancellorsville,\nhas invaded Pennsylvania in an attempt to win the war. ")
-            print_slow(f"\nGeneral George Meade is leading you and your {side} comrades\ntowards a small crossroads town called \nGettysburg in an attempt to stop him. ")
-            print_slow(f"\nYou are among 104,256 Union soldiers fighting in the {battle}. \n23,049 of them were killed, wounded or captured.\nThis is a 22% casualty rate.\n")
-            print_slow(f"\nDuring the third day of the battle, Confederate forces charged \nacross an open field and were slaughtered.")
-            print_slow(f"\nThe attack was known as Pickett's Charge. \nAbout 50% of the Confederate forces became casualties. ")
-            print_slow(f"\nThe battle was a major {side} victory.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3} or a {sim_roll4} you're either captured or wounded.  \nIf you entered a {sim_roll5} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll5:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\nYou are amazed to come through this horrible battle unharmed when \nso many people you know did not.\nThe battle is won and for now, at least, the {side} is saved!")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 33
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Lee, encouraged by his victory at Chancellorsville,\nhas invaded Pennsylvania in an attempt to win the war. ")
-            print_slow(f"\nIt is hoped that a {side} victory in Pennsylvania\nwill convince the Union the war cannot be won.")
-            print_slow(f"\nAbout 75,000 Confederate soldiers fought in the {battle}; \nAbout 25,000 of them were killed, wounded or captured.\nThis is a 33% casualty rate.")
-            print_slow(f"\nThis battle was a significant {side} defeat.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, {sim_roll4}, {sim_roll5} or a {sim_roll6} you're captured or wounded.  \nIf you entered a {sim_roll7} or {sim_roll8}, you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4 or user_number == sim_roll5 or user_number == sim_roll6:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll7 or user_number == sim_roll8:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\nAs your regiment retreats across the field, Union forces begin to chant, 'Fredericksburg!'.")
-                print_slow(f"\nThey are reminding you and your comrades that your crushing defeat \nis payback for what you did to them at Fredericksburg.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    # Check if the student made the same choice as Lincoln
+    matched_lincoln = (student_choice == scenario["lincoln_choice"])
 
-#wilderness
-    if battle == "wilderness" or battle == "the wilderness" or battle == "battle of the wilderness":
-        battle = "Battle of the Wilderness"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 15
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"The Army of the Potomac is invading Virginia again\nwith a new commander (again).  His name is General Grant. ")
-            print_slow(f"\nGrant promised President Lincoln he wouldn't turn back until he won the war.  \nLet's see if he's true to his word. ")
-            print_slow(f"About 118,700 Union soldiers fought in the battle. \n17,666 of them were killed, wounded or captured.\nThis is a 15% casualty rate.\n")
-            print_slow(f"The battle was a {side} defeat.\nGeneral Grant, however, is continuing to advance south into Virginia.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, or a {sim_roll3} you're either captured or wounded.  \nIf you entered a {sim_roll4} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll4:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\n{name}, you survived! Let's hope that General Grant\nis the one who can finally defeat General Lee.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 17
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Lee, in command of the {side} Army of Northern Virginia,\nis moving to stop a Union invasion of Virginia. ")
-            print_slow(f"\nThe Union army is led by General Grant.\nLee hopes to stop Grant near a region of dense woods called The Wilderness. ")
-            print_slow("\nAbout 66,140 Confederate soldiers fought in the battle;\n11,033 of them were killed, wounded or captured.\nThis is a 17% casualty rate.")
-            print_slow(f"\nThis battle was a {side} victory,\nbut Union General Grant is advancing south regardless.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, or a {sim_roll3} you're either captured or wounded.  \nIf you entered a {sim_roll4} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3:
-                wounded_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll4:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_three(side,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    if matched_lincoln:
+        slow_print(f"Congratulations! You chose to lead like Lincoln and {scenario['lincoln_action_phrase']}.")
+        slow_print("Here's how it impacted the nation:\n")
+    else:
+        slow_print("You made a tough call, but President Lincoln took a different path.")
+        slow_print(f"He chose to {scenario['lincoln_action_phrase']}.")
+        slow_print("Here's how it impacted the nation:\n")
 
-#petersburg
-    if battle == "petersburg" or battle == "battle of petersburg" or battle == "siege of petersburg":
-        battle = "Siege of Petersburg"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 34
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Grant has moved the Army of the Potomac south of Richmond\nto a railroad junction town called Petersburg. ")
-            print_slow(f"\nInstead of one battle, this movement turns into a\nsiege that lasts about 10 months. ")
-            print_slow("During the siege, \nabout 125,000 Union soldiers were engaged in combat. \n42,000 of them were killed, wounded or captured.\nThis is a 34% casualty rate.\n")
-            print_slow(f"The battle was a {side} victory.\nGrant took Petersburg and the Confederate government fled Richmond.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, {sim_roll4}, {sim_roll5} or a {sim_roll6} you're either captured or wounded.  \nIf you entered a {sim_roll7} or a {sim_roll8} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4 or user_number == sim_roll5 or user_number == sim_roll6:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll7 or user_number == sim_roll8:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\n{name}, you survived! Richmond is ours! The war is coming to an end.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 47
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Lee is moving you and your comrades to Petersburg,\nan important railroad junction south of Richmond. ")
-            print_slow(f"\nIf Petersburg falls and the Union captures the railroad,\nRichmond - the capital of the Confederacy - will fall too. ")
-            print_slow("\nAbout 60,000 Confederate soldiers fought in the battle;\n28,000 of them were killed, wounded or captured.\nThis is a crushing 47% casualty rate.")
-            print_slow(f"\nThis battle was a {side} defeat, and the war looks like it is lost.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, {sim_roll4}, {sim_roll5},\n{sim_roll6}, {sim_roll7}, {sim_roll8}, {sim_roll9} or a {sim_roll10} you're either captured or wounded.  \nIf you entered a {sim_roll11} or a {sim_roll12} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4 or user_number == sim_roll5 or user_number == sim_roll6 or user_number == sim_roll7 or user_number == sim_roll8 or user_number == sim_roll9 or user_number == sim_roll10:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll11 or user_number == sim_roll12:
-                killed_in_action(name,battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_two(battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    slow_print(scenario["reveal"])
 
-#sailor's creek
-    if battle == "sailors creek" or battle == "sailor's creek" or battle == "battle of sailors creek" or battle == "battle of sailor's creek":
-        battle = "Battle of Sailor's Creek"
-#call random_roll function
-        sim_roll, sim_roll2, sim_roll3, sim_roll4, sim_roll5, sim_roll6, sim_roll7, sim_roll8, sim_roll9, sim_roll10, sim_roll11, sim_roll12 = random_roll()
-        if side == "Union":
-            casualty_rate += 5
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"General Grant is closely pursuing Lee's retreating Army of Northern Virginia. ")
-            print_slow(f"\nIf Grant can attack and defeat Lee, this war is as good as over.\nGrant caught up with Lee at a small creek called Sailor's Creek. ")
-            print_slow("\nDuring the battle, \nabout 25,000 Union soldiers were engaged in combat. \n1,148 of them were killed, wounded or captured.\nThis is a 5% casualty rate.\n")
-            print_slow(f"The battle was a huge {side} victory.\nAbout 25% of Lee's army surrendered.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, you're either captured or wounded.  \nIf you entered a {sim_roll2} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll:
-                wounded_two(name,side)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll2:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                print_slow(f"\n{name}, you survived! General Lee has surrendered to General Grant!\nOur national nightmare is finally over.")
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-        if side == "Confederate":
-            casualty_rate += 42
-            overall_rate = average_casualty_rate(casualty_rate,battles_fought)
-            print_slow(f"Since General Grant broke through at Petersburg, {name},\nyou and your comrades are on the run. ")
-            print_slow(f"\nGrant caught up to Lee at a small creek called Sailor's Creek.\nIt was Grant's and Lee's last battle. ")
-            print_slow(f"\nAbout 18,500 Confederate soldiers fought in the battle;\n7,700 of them were killed, wounded or captured.\nThis is a 42% casualty rate.")
-            print_slow(f"\nThis battle was a {side} defeat,\nand General Lee surrendered to General Grant shortly after.")
-            user_number = get_user_number()
-            print_slow(f"If you entered a {sim_roll}, {sim_roll2}, {sim_roll3}, {sim_roll4}, {sim_roll5},\n{sim_roll6}, {sim_roll7}, {sim_roll8}, {sim_roll9} or a {sim_roll10} you're either captured or wounded.  \nIf you entered a {sim_roll11} you're dead. ")
-            print_slow(f"\nYou entered a {user_number}.")
-            if user_number == sim_roll or user_number == sim_roll2 or user_number == sim_roll3 or user_number == sim_roll4 or user_number == sim_roll5 or user_number == sim_roll6 or user_number == sim_roll7 or user_number == sim_roll8 or user_number == sim_roll9 or user_number == sim_roll10:
-                captured_one(name)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
-            elif user_number == sim_roll11:
-                killed_in_action_two(battle)
-                casualty_rate_statement(overall_rate)
-                alive = False
-                break
-            else:
-                survived_three(side,battle)
-                survived_battles_statement(battles_fought)
-                casualty_rate_statement(overall_rate)
+    return matched_lincoln
 
-#end of the simulation - this runs after the loop finishes, whether the player survived or died
-print()
-print(line)
-if alive:
-    print_slow(f"Congratulations, {name}!  Your enlistment is up,\nand you've earned the right to go home in peace.")
-    print_slow(f"\nYou, unlike many of your fellow {side} soldiers, survived the Civil War.\n")
-    print(line)
-print_slow(sim_end_statement)
-print()
+def main():
+    print_separator()
+    slow_print("      WELCOME TO THE BE LINCOLN SIMULATION      ", 0.03)
+    print_separator()
+
+    slow_print("It is the middle of the American Civil War. President Lincoln faces the enormous challenge of keeping the Union together.")
+    slow_print("It is your turn to step into his boots and face similar difficulties.")
+    slow_print("The fate of the Union and millions of enslaved people rests on your shoulders. Good luck!")
+
+    student_name = input("\nPlease enter your last name: ").strip().title()
+    if not student_name:
+        student_name = "Lincoln"
+
+    print("\n" + "*"*50)
+    slow_print(f"Welcome to the Oval Office, President {student_name}.")
+    slow_print("Let's see if you can navigate some of the most difficult choices of the Civil War.")
+    print("*"*50)
+    time.sleep(1)
+
+    # Updated list of scenarios to play
+    scenarios_to_play = [
+        "trent_affair",
+        "hunters_proclamation",
+        "dakota_war",
+        "cabinet_coup",
+        "vallandigham",
+        "fort_pillow",
+        "hampton_roads"
+    ]
+
+    score = 0
+    total_rounds = len(scenarios_to_play)
+
+    # Run through the scenarios and track score
+    for i, scenario_key in enumerate(scenarios_to_play):
+        is_correct = run_scenario(scenario_key, student_name)
+
+        if is_correct:
+            score += 1
+        else:
+            # Provide encouragement if they missed it
+            print()
+            if i < total_rounds - 1:
+                slow_print("Even though you chose a different option than President Lincoln, you'll have an opportunity to get it right in the next round! Good luck!")
+            else:
+                slow_print("Even though you chose a different option than President Lincoln, you made it through the hardest choices of the war.")
+
+        # Display running score
+        current_round = i + 1
+        print("\n" + "-"*30)
+        slow_print(f"CURRENT SCORE: {score} / {current_round}", 0.04)
+        print("-"*30)
+
+        if current_round < total_rounds:
+            input("\nPress Enter to continue to the next crisis...")
+        else:
+            input("\nPress Enter to view your final results...")
+
+    # Final Sign-off
+    print_separator()
+    slow_print(f"Your term in office is complete, President {student_name}.")
+    slow_print(f"FINAL SCORE: {score} out of {total_rounds} decisions matched Lincoln.")
+    print("\nThanks for playing the Be Lincoln Simulation!")
+    print_separator()
+
+# =====================================================================
+# EXECUTE THE GAME
+# =====================================================================
+if __name__ == "__main__":
+    main()
