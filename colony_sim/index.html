@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Colony Simulation</title>
+  <!-- mini-coi must load first: it lets input() work on GitHub Pages -->
+  <script src="./mini-coi.js" scope="./"></script>
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+  <style>
+    body { margin: 0; background: #1e1e1e; color: #ddd; font-family: Georgia, serif; }
+    header { padding: 16px; text-align: center; }
+    h1 { margin: 0; font-size: 1.6rem; }
+    #loading { margin: 8px 0 0; font-style: italic; color: #aaa; }
+    main { max-width: 900px; margin: 0 auto; padding: 0 16px 24px; }
+    #report { margin-top: 20px; }
+    #report h2 { font-size: 1.2rem; margin: 0 0 8px; }
+    #report-text { width: 100%; box-sizing: border-box; height: 340px; background: #111; color: #eee;
+      border: 1px solid #555; padding: 10px; font: 14px/1.4 monospace; }
+    #copy-btn { margin-top: 8px; padding: 10px 18px; font-size: 1rem; cursor: pointer;
+      background: #2f5d8a; color: #fff; border: 0; border-radius: 6px; }
+    #copy-status { margin-left: 10px; color: #9fd49f; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Colony Simulation</h1>
+    <p id="loading">Loading the simulation... this can take up to 30 seconds the first time.</p>
+  </header>
+  <main>
+    <script type="py" terminal worker src="./main.py"></script>
+    <!-- Filled in by main.py when the game ends -->
+    <section id="report" hidden>
+      <h2>Your Summary Report</h2>
+      <textarea id="report-text" readonly></textarea>
+      <button id="copy-btn" type="button">Copy report</button><span id="copy-status"></span>
+    </section>
+  </main>
+  <script>
+    // hide the loading message once the terminal appears
+    new MutationObserver((_, obs) => {
+      if (document.querySelector(".xterm")) {
+        document.getElementById("loading").style.display = "none";
+        obs.disconnect();
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+
+    // copy the summary report so students can paste it into Canvas
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      const box = document.getElementById("report-text");
+      const status = document.getElementById("copy-status");
+      try {
+        await navigator.clipboard.writeText(box.value);
+      } catch (e) {
+        box.select();
+        document.execCommand("copy");
+      }
+      status.textContent = "Copied! Now paste it into Canvas.";
+    });
+  </script>
+</body>
+</html>
