@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crossroads of the Civil War</title>
+  <!-- mini-coi must load first: it lets input() work on GitHub Pages -->
+  <script src="./mini-coi.js" scope="./"></script>
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+  <style>
+    body { margin: 0; background: #1e1e1e; color: #ddd; font-family: Georgia, serif; }
+    header { padding: 16px; text-align: center; }
+    h1 { margin: 0; font-size: 1.6rem; }
+    #loading { margin: 8px 0 0; font-style: italic; color: #aaa; }
+    main { max-width: 900px; margin: 0 auto; padding: 0 16px 24px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Crossroads of the Civil War</h1>
+    <p id="loading">Loading the simulation... this can take up to 30 seconds the first time.</p>
+  </header>
+  <main>
+    <script type="py" terminal worker src="./main.py"></script>
+  </main>
+  <script>
+    // hide the loading message once the terminal appears
+    new MutationObserver((_, obs) => {
+      if (document.querySelector(".xterm")) {
+        document.getElementById("loading").style.display = "none";
+        obs.disconnect();
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  </script>
+</body>
+</html>
