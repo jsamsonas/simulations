@@ -1,63 +1,954 @@
-<!DOCTYPE html>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Be Washington</title>
-  <!-- mini-coi must load first: it lets input() work on GitHub Pages -->
-  <script src="./mini-coi.js" scope="./"></script>
-  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
-  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
-  <style>
-    body { margin: 0; background: #1e1e1e; color: #ddd; font-family: Georgia, serif; }
-    header { padding: 16px; text-align: center; }
-    h1 { margin: 0; font-size: 1.6rem; }
-    #loading { margin: 8px 0 0; font-style: italic; color: #aaa; }
-    main { max-width: 900px; margin: 0 auto; padding: 0 16px 24px; }
-    #report { margin-top: 20px; }
-    #report h2 { font-size: 1.2rem; margin: 0 0 8px; }
-    #report-text { width: 100%; box-sizing: border-box; height: 340px; background: #111; color: #eee;
-      border: 1px solid #555; padding: 10px; font: 14px/1.4 monospace; }
-    #copy-btn { margin-top: 8px; padding: 10px 18px; font-size: 1rem; cursor: pointer;
-      background: #2f5d8a; color: #fff; border: 0; border-radius: 6px; }
-    #copy-status { margin-left: 10px; color: #9fd49f; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be Lewis and Clark: The Corps of Discovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --leaf:#5C7A48;
+  --wood:#8A5A34;
+  --snow:#FBFCF8;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+/* pictures (drawn in SVG) */
+.visuals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.visuals{grid-template-columns:minmax(0,1fr)}}
+.scene{margin:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--paper-2)}
+.scene.wide{margin:0 0 6px}
+.scene svg{display:block;width:100%;height:auto}
+svg .ink{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .thin{stroke-width:1.3}
+svg .dash{stroke-dasharray:5 5}
+svg .red{stroke:var(--seal)}
+svg .f-none{fill:none} svg .f-paper{fill:var(--paper)} svg .f-wood{fill:var(--wood)} svg .f-gold{fill:var(--brass-fill)}
+svg .f-green{fill:var(--leaf)} svg .f-blue{fill:var(--river)} svg .f-red{fill:var(--seal)} svg .f-ink{fill:var(--ink)}
+svg .f-snow{fill:var(--snow)} svg .f-sky{fill:var(--paper-2);stroke:none}
+svg .f-soft{fill:color-mix(in srgb,var(--ink) 15%,var(--paper-2))}
+svg .f-water{fill:color-mix(in srgb,var(--river) 26%,var(--paper-2))}
+svg .f-clear{fill:color-mix(in srgb,var(--river) 48%,var(--paper-2))}
+svg .f-mud{fill:color-mix(in srgb,var(--wood) 48%,var(--paper-2))}
+svg .f-ground{fill:color-mix(in srgb,var(--leaf) 26%,var(--paper-2))}
+svg .f-sand{fill:color-mix(in srgb,var(--brass-fill) 34%,var(--paper-2))}
+svg .f-brick{fill:color-mix(in srgb,var(--seal) 50%,var(--paper-2))}
+.sv-label{font-family:var(--text);font-weight:700;fill:var(--ink)}
+.sv-tag{font-size:13px}
+.sv-tiny{font-size:8px}
+.sv-quote,.sv-hand{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px}
+.sv-poster-sm{font-family:var(--display);font-weight:400;font-size:14px}
+.sv-poster{font-family:var(--display);font-weight:400;font-size:24px}
+.sv-poster-lg{font-family:var(--display);font-weight:400;font-size:42px;fill:var(--seal)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Be Washington</h1>
-    <p id="loading">Loading the simulation... this can take up to 30 seconds the first time.</p>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
   </header>
-  <main>
-    <script type="py" terminal worker src="./main.py"></script>
-    <!-- Filled in by main.py when the game ends -->
-    <section id="report" hidden>
-      <h2>Your Summary Report</h2>
-      <textarea id="report-text" readonly></textarea>
-      <button id="copy-btn" type="button">Copy report</button><span id="copy-status"></span>
-    </section>
-  </main>
-  <script>
-    // hide the loading message once the terminal appears
-    new MutationObserver((_, obs) => {
-      if (document.querySelector(".xterm")) {
-        document.getElementById("loading").style.display = "none";
-        obs.disconnect();
-      }
-    }).observe(document.body, { childList: true, subtree: true });
+  <main id="app" aria-live="polite"></main>
+</div>
 
-    // copy the summary report so students can paste it into Canvas
-    document.getElementById("copy-btn").addEventListener("click", async () => {
-      const box = document.getElementById("report-text");
-      const status = document.getElementById("copy-status");
-      try {
-        await navigator.clipboard.writeText(box.value);
-      } catch (e) {
-        box.select();
-        document.execCommand("copy");
-      }
-      status.textContent = "Copied! Now paste it into Canvas.";
-    });
-  </script>
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be Lewis and Clark",
+  subtitle: "The Corps of Discovery, 1804–1806",
+  reportTitle: "BE LEWIS AND CLARK: The Corps of Discovery",
+  blurb: "Make six real decisions Lewis and Clark faced on their journey to the Pacific Ocean. After each one, find out what really happened. There are no right answers. You don’t know how the story ends.",
+  leader: "the captains",          // used in sentences: "same choice as the captains"
+  leaderLabel: "Captains",         // used in the report
+  storageKey: "beLewisClark.v1"
+};
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A country twice as big",
+  paras: [
+    "In 1803, President Thomas Jefferson bought the Louisiana Territory from France for $15 million. Overnight, the United States doubled in size.",
+    "There was just one problem: almost no Americans knew what was out there."
+  ],
+  listHeading: "Jefferson wants three things",
+  list: [
+    {name:"A water route", text:"Find a river route to the Pacific Ocean, the “Northwest Passage,” to carry trade across the continent."},
+    {name:"Peace and trade", text:"Make friends with the Native nations of the West and invite them to trade with Americans."},
+    {name:"Knowledge", text:"Map the land and record its plants, animals, and peoples."}
+  ],
+  after: "But this land was not empty. Dozens of Native nations already lived there, and most had never heard of the “purchase.”"
+};
+
+const START = {
+  heading: "You are the captains",
+  paras: [
+    "Jefferson picks his secretary, Captain Meriwether Lewis, to lead the expedition. Lewis asks his friend William Clark to share command. Together, you lead the Corps of Discovery.",
+    "In May 1804, your party pushes off from near St. Louis and heads up the Missouri River, into country no American has mapped."
+  ],
+  facts: [
+    ["Captains", "Meriwether Lewis (29) and William Clark (33)"],
+    ["Party", "About 45 men, including York, a man enslaved by Clark"],
+    ["Boats", "One 55-foot keelboat and two smaller boats"],
+    ["Maps of the route", "None"],
+    ["Orders", "Reach the Pacific Ocean, then come home and report"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"Showdown on the River", when:"September 1804", where:"Lakota lands on the Missouri River",
+    setup:[
+      "For four months, you’ve pushed your boats up the muddy Missouri, sometimes dragging them with ropes from the shore.",
+      "Now you’ve reached the land of the Lakota, also called the Teton Sioux, the most powerful nation on the river. They decide who travels and trades here.",
+      "After a meeting and an exchange of gifts, some Lakota warriors grab one of your boat’s ropes. They want more gifts, maybe even a boat, before you can pass. Bows are drawn. Clark’s hand is on his sword."
+    ],
+    question:"What do you do?",
+    options:[
+      {text:"Give them more gifts. Peace is worth the price.", short:"Give more gifts", style:"diplomatic", historical:false,
+       outcome:"The Lakota take the gifts, then ask for more. You need those goods for every nation still ahead of you, and word may spread that Americans are easy to push around."},
+      {text:"Refuse to give more, and show you’re ready to fight, but don’t fire first.", short:"Stand firm without firing first", style:"bold", historical:true,
+       outcome:"Clark draws his sword. Your men aim their rifles and the boat’s small cannon. For a long moment, no one moves."},
+      {text:"Back away downriver and wait until it’s safe to pass.", short:"Back away and wait", style:"cautious", historical:false,
+       outcome:"You lose precious days of the short travel season, and the Lakota still control the river. Sooner or later, you’ll have to get past them."}
+    ],
+    history:[
+      "The captains refused. Clark drew his sword, and the Corps aimed its guns. Just before shooting started, a Lakota chief named Black Buffalo stepped in and took the rope from his warriors. No one fired.",
+      "The Corps stayed a few tense days, then moved on. Jefferson had hoped the Lakota would become trading partners. Instead, they stayed wary of the Americans."
+    ],
+    think:"Was standing firm worth the risk? What did the Lakota want?",
+    map:{show:["stlouis","teton"], segs:["s1"], fresh:["s1"], here:"teton", caption:"You are here: Lakota lands on the Missouri River"}
+  },
+  {
+    title:"The Winter Camp", when:"November 1804", where:"The Mandan and Hidatsa villages",
+    setup:[
+      "Winter is coming, and soon it will be 40 degrees below zero. You build Fort Mandan next to the busy villages of the Mandan and Hidatsa, who trade you corn to survive.",
+      "A French-Canadian trader named Toussaint Charbonneau offers to be your interpreter. His young wife, Sacagawea, is Shoshone. She was captured as a girl and brought here. The Shoshone live near the Rocky Mountains, where you’ll need horses.",
+      "There’s one complication: Sacagawea is expecting a baby."
+    ],
+    question:"Who do you hire?",
+    options:[
+      {text:"Hire only Charbonneau. A young mother and a baby will slow you down.", short:"Hire only Charbonneau", style:"cautious", historical:false,
+       outcome:"Charbonneau speaks Hidatsa and French, but not Shoshone. When you reach the mountains, you’ll have no way to talk to the people with the horses."},
+      {text:"Hire both Charbonneau and Sacagawea, baby and all.", short:"Hire Charbonneau and Sacagawea", style:"diplomatic", historical:true,
+       outcome:"In February, Sacagawea gives birth to a son, Jean Baptiste. In April, the whole family heads west with you."},
+      {text:"Hire no one. Your men can handle it.", short:"Hire no one", style:"bold", historical:false,
+       outcome:"You save on pay and supplies. But every nation you meet from here on speaks a language none of your men know."}
+    ],
+    history:[
+      "The captains hired both. Sacagawea is often called the expedition’s guide, but she mostly helped in other ways. She gathered food plants, rescued supplies when a boat nearly flipped, and translated with the Shoshone.",
+      "Her presence also sent a message. Clark wrote that a woman traveling with them was “a token of peace.” War parties didn’t bring mothers and babies."
+    ],
+    think:"Why might a mother and baby make the expedition safer instead of weaker?",
+    map:{show:["stlouis","teton","mandan"], segs:["s1","s2"], fresh:["s2"], here:"mandan", caption:"You are here: Fort Mandan, beside the Mandan and Hidatsa villages"}
+  },
+  {
+    title:"Which River?", when:"June 1805", where:"A fork in the Missouri River",
+    setup:[
+      "Eight weeks after leaving Fort Mandan, you reach a fork. Two rivers, nearly the same size. Which one is the Missouri?",
+      "The north fork is muddy, just like the Missouri you’ve followed for a year. The south fork is clear and fast, with a rocky bottom, like water coming down from mountains.",
+      "The Hidatsa told you the Missouri has great waterfalls. Almost every one of your men is sure the north fork is the way. Pick wrong, and you could be trapped by winter."
+    ],
+    question:"Which way do you go?",
+    options:[
+      {text:"Go north. Your men know rivers, and they’re sure.", short:"Take the north fork", style:"diplomatic", historical:false,
+       outcome:"The muddy river bends away from the mountain passes you need. Weeks later, you realize your mistake, and now you’re racing winter to get back."},
+      {text:"Go south. Clear water must come from the mountains.", short:"Take the south fork", style:"bold", historical:true,
+       outcome:"Your men grumble, but they follow. A few days later, you hear a distant roar."},
+      {text:"Split up. Send half your party up each river.", short:"Split up", style:"cautious", historical:false,
+       outcome:"Now each group has half the people and half the supplies, deep in unknown country. If either group gets in trouble, no one can help."}
+    ],
+    history:[
+      "The captains scouted both rivers for days, then chose south, even though nearly every man disagreed. The men said they’d follow anyway.",
+      "Days later, Lewis found the thundering Great Falls of the Missouri, proof the captains were right. But carrying the boats and supplies around the falls took almost a month."
+    ],
+    think:"When should a leader go against what most of the group believes?",
+    map:{show:["stlouis","teton","mandan","marias"], segs:["s1","s2","s3"], fresh:["s3"], here:"marias", caption:"You are here: a fork in the river"}
+  },
+  {
+    title:"Horses or Nothing", when:"August 1805", where:"Shoshone country, near the Continental Divide",
+    setup:[
+      "The river has become too small for boats. To cross the mountains ahead, you need horses, and the Shoshone have them.",
+      "Lewis goes ahead and finds a Shoshone band led by Chief Cameahwait. But the Shoshone were recently attacked by enemies with guns. They fear these strangers are leading them into a trap, and many are ready to flee."
+    ],
+    question:"How do you win their trust?",
+    options:[
+      {text:"Take the horses by force. You have guns; they have very few.", short:"Take the horses by force", style:"bold", historical:false,
+       outcome:"You might get some horses, but you’d make enemies of the only people who know the way across the mountains. And Jefferson sent you to make friends."},
+      {text:"Wait for Clark and the others to catch up before doing anything.", short:"Wait for the others", style:"cautious", historical:false,
+       outcome:"The frightened Shoshone may slip away into the mountains with their horses, and you’ll be stuck."},
+      {text:"Hand Cameahwait your rifle. If it’s a trap, he can shoot you.", short:"Hand over your rifle", style:"diplomatic", historical:true,
+       outcome:"Cameahwait takes the rifle and looks you in the eye. The tension eases, just a little."}
+    ],
+    history:[
+      "Lewis handed over his rifle, and the Shoshone stayed. When Clark’s group arrived, Sacagawea came to translate, and she suddenly recognized Cameahwait. He was her brother.",
+      "The Shoshone traded horses to the expedition and sent along a guide the Corps called Old Toby."
+    ],
+    think:"How did trust, not weapons, save the expedition here?",
+    map:{show:["stlouis","teton","mandan","marias","falls","shoshone"], labels:{marias:"Marias River"}, segs:["s1","s2","s3","s4"], fresh:["s4"], here:"shoshone", caption:"You are here: Shoshone country, on today’s Montana–Idaho border"}
+  },
+  {
+    title:"The Snowy Mountains", when:"September 1805", where:"Travelers’ Rest, below the Bitterroot Mountains",
+    setup:[
+      "Old Toby leads you to a trail the Nez Perce use to cross the Bitterroot Mountains. But it’s already snowing in September. There’s almost nothing to hunt, and your food is running low.",
+      "Old Toby warns the crossing will be brutal. Winter is closing in."
+    ],
+    question:"What’s your plan?",
+    options:[
+      {text:"Cross now, before the snow gets any deeper.", short:"Cross the mountains now", style:"bold", historical:true,
+       outcome:"You start climbing. The trail is steep, icy, and narrow. Some of your horses slip and tumble down the mountainside."},
+      {text:"Wait out the winter here and cross in the spring.", short:"Wait until spring", style:"cautious", historical:false,
+       outcome:"You stay alive, but you lose most of a year. Supplies run out, and back home, people start to wonder if you’re dead."},
+      {text:"Ask Old Toby to find an easier route, even if it takes longer.", short:"Look for an easier route", style:"diplomatic", historical:false,
+       outcome:"There is no easier way. Clark already scouted the river route to the south, and it was impassable. You lose weeks and end up back here, in deeper snow."}
+    ],
+    history:[
+      "The Corps crossed. It took 11 brutal days. They waded through snow, lost the trail, and grew so hungry they killed some of their horses for food.",
+      "Starving, they stumbled out of the mountains into a Nez Perce village. Nez Perce stories say some warriors talked about killing the weak strangers. But an elder woman named Watkuweis, who had once been treated kindly by white traders, urged her people to help. The Nez Perce fed the Corps and helped them build canoes."
+    ],
+    think:"The Corps survived because Native nations helped them. How many times has that happened so far?",
+    map:{show:["stlouis","teton","mandan","marias","shoshone","rest"], labels:{marias:"Marias River"}, segs:["s1","s2","s3","s4","s5"], fresh:["s5"], here:"rest", caption:"You are here: Travelers’ Rest, at the edge of the Bitterroot Mountains"}
+  },
+  {
+    title:"Who Decides?", when:"November 1805", where:"The mouth of the Columbia River",
+    setup:[
+      "On November 7, Clark wrote in his journal: “Ocian in view! O! the joy.” (He was a creative speller.)",
+      "But the joy fades fast. It rains almost every day, and your clothes are rotting. You need a place to spend the winter: near the ocean, across the river where there are more elk, or back upriver where it’s drier.",
+      "Somebody has to decide."
+    ],
+    question:"How do you make the choice?",
+    options:[
+      {text:"You’re the captains. Make the call yourselves.", short:"The captains decide", style:"bold", historical:false,
+       outcome:"The men obey. But after 18 months of shared danger, some feel they’ve earned a say."},
+      {text:"Let only the soldiers vote.", short:"Only the soldiers vote", style:"cautious", historical:false,
+       outcome:"The soldiers vote. But York and Sacagawea, who worked and suffered as much as anyone, are left out."},
+      {text:"Let everyone vote, including York and Sacagawea.", short:"Everyone votes", style:"diplomatic", historical:true,
+       outcome:"One by one, every member of the expedition gives an opinion."}
+    ],
+    history:[
+      "The captains let everyone vote, including York, an enslaved man, and Sacagawea, a Native woman. Back in the United States, neither of them could have voted for anything.",
+      "Most voted for the south side of the river, where elk were plentiful. There they built Fort Clatsop, near today’s Astoria, Oregon. That winter, it rained on all but 12 days."
+    ],
+    think:"Why do you think the captains let York and Sacagawea vote? Why does it matter that they did?",
+    map:{show:["stlouis","teton","mandan","marias","shoshone","rest","nezperce","coast"], labels:{marias:"Marias River"}, segs:["s1","s2","s3","s4","s5","s6"], fresh:["s6"], here:"coast", caption:"You are here: the mouth of the Columbia River, on the Pacific coast"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "In March 1806, the Corps headed home. They reached St. Louis in September 1806, after more than two years and about 8,000 miles. Many people had given them up for dead. Amazingly, only one member died on the journey: Sergeant Charles Floyd, probably from a burst appendix.",
+    "They never found the Northwest Passage, because there wasn’t one. But they brought back maps, journals, and descriptions of more than 100 animals and nearly 200 plants new to science. Their journey strengthened the American claim to the Pacific Northwest and opened the way for fur traders and, later, settlers.",
+    "For the Native nations who helped them, the future was hard. The Americans who followed brought settlers, soldiers, and disease. Within a lifetime, most of these nations had lost much of their land.",
+    "And the two people who voted on the Pacific coast? Sacagawea was never paid; her husband received about $500. York asked Clark for his freedom after the journey. Clark refused, and York stayed enslaved for about ten more years."
+  ],
+  map:{show:["stlouis","teton","mandan","marias","shoshone","rest","nezperce","clatsop"], labels:{marias:"Marias River"}, segs:["s1","s2","s3","s4","s5","s6"], fresh:[], caption:"The route of the Corps of Discovery, 1804–1806"}
+};
+
+const PROFILES = {
+  bold:["The Trailblazer","You push ahead, even when the path is dangerous. So did Lewis and Clark, at the river fork and in the snowy Bitterroots. Without bold choices, they never would have reached the Pacific."],
+  cautious:["The Careful Planner","You protect your people and avoid unnecessary risks. Lewis and Clark almost never chose the safe path, yet they lost only one man. Would your careful choices have done better, or worse?"],
+  diplomatic:["The Peacemaker","You build trust and listen to others. That’s how the Corps survived. Again and again, the Mandan, Shoshone, Nez Perce, and others fed them, guided them, and traded with them."],
+  balanced:["The Balanced Leader","You mix boldness, caution, and cooperation depending on the situation. Lewis and Clark leaned on boldness and cooperation in equal measure."]
+};
+
+/* ======================================================================
+   MAP: the American West, 1804
+   ====================================================================== */
+const B = {lonMin:-126, lonMax:-89.3, latMin:37.4, latMax:49.6, kx:14, ky:19.5};
+const MW = Math.round((B.lonMax - B.lonMin) * B.kx), MH = Math.round((B.latMax - B.latMin) * B.ky);
+const proj = ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)];
+function curve(lls){
+  const p = lls.map(proj);
+  if (p.length === 2) return `M${p[0][0]} ${p[0][1]} L${p[1][0]} ${p[1][1]}`;
+  let d = `M${p[0][0]} ${p[0][1]}`;
+  for (let i = 0; i < p.length - 1; i++){
+    const p0 = p[i-1] || p[i], p1 = p[i], p2 = p[i+1], p3 = p[i+2] || p2;
+    const c1 = [p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6];
+    const c2 = [p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+}
+function mountains(lls, gap = 10, size = 3.6){
+  const p = lls.map(proj);
+  let d = "", carry = 0;
+  for (let i = 0; i < p.length - 1; i++){
+    const [x1,y1] = p[i], [x2,y2] = p[i+1], len = Math.hypot(x2-x1, y2-y1);
+    for (let t = carry; t <= len; t += gap){
+      const x = x1 + (x2-x1)*t/len, y = y1 + (y2-y1)*t/len;
+      d += `M${(x-size).toFixed(1)} ${(y+size*.7).toFixed(1)} L${x.toFixed(1)} ${(y-size*.8).toFixed(1)} L${(x+size).toFixed(1)} ${(y+size*.7).toFixed(1)} `;
+      carry = t + gap - len;
+    }
+  }
+  return d;
+}
+const COAST = [[-124.9,49.6],[-124.7,48.4],[-124.15,47.3],[-124.05,46.6],[-124.0,46.25],[-123.95,45.6],[-124.05,44.6],[-124.1,43.7],[-124.5,42.8],[-124.2,41.9],[-124.15,41.0],[-124.35,40.35],[-123.8,39.5],[-123.4,38.6],[-122.9,38.0],[-122.5,37.4]];
+const MISSOURI = [[-90.12,38.81],[-90.48,38.78],[-91.4,38.7],[-92.17,38.58],[-93.2,39.2],[-94.6,39.12],[-94.85,39.77],[-95.6,40.6],[-95.93,41.26],[-96.4,42.5],[-97.4,42.87],[-98.4,43.0],[-99.3,43.8],[-100.36,44.37],[-100.43,45.54],[-100.78,46.81],[-101.27,47.3],[-102.3,47.6],[-103.0,47.95],[-104.04,47.98],[-105.6,48.08],[-106.42,48.0],[-107.7,47.6],[-108.7,47.6],[-109.6,47.75],[-110.47,47.93],[-110.8,47.82],[-111.3,47.5],[-111.7,47.27],[-111.85,46.85],[-111.5,46.32],[-111.5,45.93],[-112.33,45.54],[-112.64,45.22],[-112.87,45.0]];
+const COLUMBIA = [[-117.6,49.6],[-118.1,48.6],[-118.98,47.96],[-119.6,48.0],[-120.3,47.4],[-119.98,46.95],[-119.9,46.65],[-119.28,46.3],[-119.05,46.2],[-118.95,46.05],[-119.35,45.92],[-120.5,45.7],[-121.18,45.6],[-121.95,45.65],[-122.67,45.62],[-122.95,46.13],[-123.4,46.2],[-123.83,46.2],[-124.0,46.25]];
+const RIVERS = [
+  {w:2.3, pts:MISSOURI},
+  {w:2.4, pts:[[-95.2,47.24],[-94.3,46.4],[-93.3,45.0],[-92.0,44.4],[-91.2,43.5],[-91.1,42.5],[-90.6,41.5],[-91.1,40.4],[-90.7,39.3],[-90.15,38.75],[-90.2,38.6],[-89.5,37.4]]},
+  {w:1.4, pts:[[-104.04,47.98],[-104.7,47.1],[-105.84,46.4],[-107.5,46.1],[-108.5,45.78],[-110.0,45.7],[-110.56,45.66],[-110.6,45.0],[-110.4,44.5]]},
+  {w:1.2, pts:[[-110.47,47.93],[-111.0,48.15],[-111.6,48.35],[-112.3,48.5]]},
+  {w:1.4, pts:[[-95.88,41.05],[-97.0,41.2],[-98.3,40.7],[-100.8,41.1],[-102.5,41.2],[-104.0,41.0],[-105.0,40.4]]},
+  {w:1.7, pts:[[-110.7,43.9],[-111.6,43.5],[-112.4,43.1],[-113.5,42.65],[-114.5,42.6],[-115.7,42.95],[-116.9,43.7],[-116.85,44.6],[-116.75,45.5],[-117.02,46.42],[-117.4,46.66],[-118.0,46.6],[-118.9,46.25],[-119.05,46.2]]},
+  {w:1.2, pts:[[-115.3,46.25],[-115.8,46.45],[-116.26,46.5],[-116.6,46.45],[-117.02,46.42]]},
+  {w:2.3, pts:COLUMBIA}
+];
+const RANGES = [
+  [[-114.2,49.5],[-113.3,48.2],[-112.4,47.1],[-112.6,46.0],[-113.4,45.0],[-111.5,44.5],[-110.3,43.6],[-109.3,42.6],[-107.5,41.4],[-105.8,40.4],[-106.2,39.2],[-106.6,37.5]],
+  [[-115.4,48.0],[-114.7,46.9],[-114.7,45.8],[-115.3,44.8]],
+  [[-121.4,49.5],[-121.6,47.5],[-121.7,46.0],[-121.9,44.5],[-122.2,42.5],[-121.8,41.2]]
+];
+const PLACES = {
+  stlouis: {ll:[-90.2,38.63],   dx:-7, dy:14, anchor:"end",   label:"St. Louis"},
+  teton:   {ll:[-100.36,44.37], dx:8,  dy:4,  anchor:"start", label:"Lakota (Teton Sioux)"},
+  mandan:  {ll:[-101.27,47.3],  dx:8,  dy:4,  anchor:"start", label:"Fort Mandan", fort:true},
+  marias:  {ll:[-110.47,47.93], dx:6,  dy:-7, anchor:"start", label:"The fork"},
+  falls:   {ll:[-111.3,47.5],   dx:-6, dy:13, anchor:"end",   label:"Great Falls"},
+  shoshone:{ll:[-113.44,44.97], dx:8,  dy:12, anchor:"start", label:"Shoshone camp"},
+  rest:    {ll:[-114.1,46.75],  dx:7,  dy:3,  anchor:"start", label:"Travelers’ Rest"},
+  nezperce:{ll:[-115.94,46.38], dx:4, dy:14, anchor:"start",   label:"Nez Perce"},
+  coast:   {ll:[-123.95,46.27], dx:5,  dy:-14, anchor:"start", label:"Mouth of the Columbia"},
+  clatsop: {ll:[-123.88,46.13], dx:5,  dy:-14, anchor:"start", label:"Fort Clatsop", fort:true}
+};
+const SEGS = {
+  s1: MISSOURI.slice(0, 14),
+  s2: MISSOURI.slice(13, 17),
+  s3: MISSOURI.slice(16, 26),
+  s4: MISSOURI.slice(25).concat([[-113.44,44.97]]),
+  s5: [[-113.44,44.97],[-113.9,45.18],[-113.99,45.4],[-113.95,45.69],[-114.18,46.02],[-114.16,46.25],[-114.1,46.75]],
+  s6: [[-114.1,46.75],[-114.55,46.65],[-115.0,46.6],[-115.5,46.5],[-115.94,46.38],[-116.26,46.5],[-116.6,46.45],[-117.02,46.42],[-117.4,46.66],[-118.0,46.6],[-118.9,46.25],[-119.05,46.2]].concat(COLUMBIA.slice(9, 18)).concat([[-123.95,46.27]])
+};
+
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  const show = cfg.show || ["stlouis"], segs = cfg.segs || [], labels = cfg.labels || {};
+  const fresh = animate ? (cfg.fresh || []) : [];
+  const P = ll => proj(ll);
+  let s = `<svg viewBox="0 0 ${MW} ${MH}" role="img" aria-label="Map of the American West showing the expedition’s route so far">`;
+  s += `<defs><clipPath id="cf"><rect x="4" y="4" width="${MW-8}" height="${MH-8}"/></clipPath></defs>`;
+  s += `<g clip-path="url(#cf)">`;
+  const coast = COAST.map(P);
+  s += `<path class="m-sea" d="M0 0 L${coast.map(q => q.join(" ")).join(" L")} L0 ${MH} Z"/>`;
+  s += `<path class="m-coast" d="${curve(COAST)}"/>`;
+  RANGES.forEach(r => s += `<path class="m-ridge" d="${mountains(r)}"/>`);
+  RIVERS.forEach(r => s += `<path class="m-river" stroke-width="${r.w}" d="${curve(r.pts)}"/>`);
+  s += `</g>`;
+  s += `<rect class="m-frame" x="4" y="4" width="${MW-8}" height="${MH-8}"/>`;
+
+  // region and river labels
+  s += `<text class="m-region" text-anchor="middle" transform="translate(13 165) rotate(-90)">Pacific Ocean</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="372" y="204">Louisiana Territory</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="84" y="112">Oregon Country</text>`;
+  s += `<text class="m-region" transform="translate(260 108) rotate(48)">Rocky Mountains</text>`;
+  s += `<text class="m-rlabel" x="262" y="50">Missouri R.</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(478 150) rotate(-80)">Mississippi R.</text>`;
+  s += `<text class="m-rlabel" x="68" y="91">Columbia R.</text>`;
+  s += `<text class="m-rlabel" x="148" y="146">Snake R.</text>`;
+  s += `<text class="m-rlabel" transform="translate(252 82) rotate(-12)">Yellowstone R.</text>`;
+  s += `<text class="m-rlabel" x="344" y="176">Platte R.</text>`;
+  s += `<g transform="translate(494 24)"><circle r="10" fill="none" stroke="var(--ink-soft)"/><path d="M0 -8 L3 3 L0 1 L-3 3 Z" fill="var(--ink-soft)"/><text class="m-note" text-anchor="middle" y="-13">N</text></g>`;
+  s += `<rect class="m-cart" x="104" y="194" width="124" height="34"/><rect class="m-cart" x="106.5" y="196.5" width="119" height="29"/>`;
+  s += `<text class="m-title" x="166" y="210" text-anchor="middle">The American West</text><text class="m-note" x="166" y="221" text-anchor="middle">1804–1806</text>`;
+
+  // route
+  segs.forEach(k => {
+    const isNew = fresh.includes(k);
+    s += `<path class="m-road${isNew ? " draw" : ""}"${isNew ? ' pathLength="1"' : ""} d="${curve(SEGS[k])}"/>`;
+  });
+
+  // places
+  show.forEach(k => {
+    const p = PLACES[k], [x,y] = P(p.ll), label = labels[k] || p.label;
+    if (p.fort) s += `<rect class="m-fort" x="${x-4}" y="${y-4}" width="8" height="8" transform="rotate(45 ${x} ${y})"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="2.8"/>`;
+    s += `<text class="m-label" x="${x + p.dx}" y="${y + p.dy}" text-anchor="${p.anchor}">${label}</text>`;
+  });
+
+  if (cfg.ring){ const [x,y] = P(PLACES[cfg.ring].ll); s += `<circle class="m-ring" cx="${x}" cy="${y}" r="9" stroke-dasharray="2.5 2.5"/>`; }
+  if (cfg.here){
+    const [x,y] = P(PLACES[cfg.here].ll);
+    s += `<circle class="m-ring pulse" cx="${x}" cy="${y}" r="7"/><circle class="m-here" cx="${x}" cy="${y}" r="4"/>`;
+  }
+  s += `</svg>`;
+  return `<figure class="map">${s}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   PICTURES: shared drawing helpers (SVG, theme-aware, no downloads)
+   ====================================================================== */
+const DRAW = (() => {
+  const P = (c, d) => `<path class="ink ${c}" d="${d}"/>`;
+  const R = (c, x, y, w, h, rx = 0) => `<rect class="ink ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C = (c, x, y, r) => `<circle class="ink ${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const E = (c, x, y, rx, ry) => `<ellipse class="ink ${c}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const L = (d, extra = "") => `<path class="ink f-none${extra}" d="${d}"/>`;
+  const T = (x, y, txt, cls = "", anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="sv-label ${cls}">${txt}</text>`;
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const sun = (x, y, r) => C("f-gold", x, y, r) + L(Array.from({length:8}, (_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `M${(x + c*(r+5)).toFixed(1)} ${(y + s*(r+5)).toFixed(1)} L${(x + c*(r+12)).toFixed(1)} ${(y + s*(r+12)).toFixed(1)}`; }).join(" "));
+  const waves = (x0, x1, y) => { let d = `M${x0} ${y}`; for (let x = x0; x < x1; x += 24) d += ` q6 -5 12 0 t12 0`; return L(d); };
+  const pine = (x, y, s = 1, snow = false) => g(x, y, s, R("f-wood", -3, -10, 6, 10) + P("f-green", "M0 -58 L16 -30 L8 -30 L20 -10 L-20 -10 L-8 -30 L-16 -30 Z") + (snow ? P("f-snow", "M0 -58 L7 -46 L2 -44 L-3 -47 L-7 -46 Z") : ""));
+  const tree = (x, y, s = 1) => g(x, y, s, R("f-wood", -3, -18, 6, 18) + C("f-green", 0, -30, 16) + C("f-green", -9, -22, 10) + C("f-green", 9, -22, 10));
+  const mtn = (x, y, w, h, snow = true) => P("f-soft", `M${x - w/2} ${y} L${x} ${y - h} L${x + w/2} ${y} Z`) +
+    (snow ? P("f-snow", `M${x - w*0.15} ${y - h*0.7} L${x} ${y - h} L${x + w*0.15} ${y - h*0.7} L${x + w*0.06} ${y - h*0.64} L${x} ${y - h*0.72} L${x - w*0.07} ${y - h*0.63} Z`) : "");
+  const flakes = (pts) => L(pts.map(([x, y]) => `M${x-3} ${y} L${x+3} ${y} M${x} ${y-3} L${x} ${y+3}`).join(" "), " thin");
+  const puff = (x, y, s = 1) => g(x, y, s, C("f-soft", 0, 0, 12) + C("f-soft", 14, -8, 10) + C("f-soft", 22, 4, 9));
+  const usFlag = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-red", 0, -70, 36, 22) +
+    `<path d="M0 -63.7 L36 -63.7 M0 -57.4 L36 -57.4 M0 -51.1 L36 -51.1" stroke="var(--paper)" stroke-width="3.1" fill="none"/>` +
+    R("f-blue", 0, -70, 15, 12) + R("f-none", 0, -70, 36, 22));
+  const canoe = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-38 -6 Q0 14 38 -6 Q0 4 -38 -6 Z"));
+  const barrel = (x, y, s = 1) => g(x, y, s, R("f-wood", -10, -26, 20, 26, 5) + L("M-10 -19 L10 -19 M-10 -7 L10 -7"));
+  const quill = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 Q30 -70 62 -96 Q30 -50 0 0 Z") + L("M0 0 L50 -82"));
+  const frame = (w, h, inner, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${R("f-sky", -2, -2, w + 4, h + 4)}${inner}</svg>`;
+  return {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame};
+})();
+
+const ART = (() => {
+  const {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, frame} = DRAW;
+  const W = 520, H = 240;
+  const keelboat = (x, y, s = 1) => g(x, y, s,
+    L("M0 -4 L0 -70") + P("f-paper", "M-20 -64 L20 -64 L18 -22 L-18 -22 Z") +
+    R("f-paper", -62, -20, 30, 16) + P("f-wood", "M-74 -4 L74 -4 L62 12 L-64 12 Z") +
+    L("M-40 4 L-52 22 M-20 4 L-30 22 M20 4 L30 22 M40 4 L52 22") + R("f-red", 0, -78, 14, 8));
+  const tipi = (x, y, s = 1) => g(x, y, s, P("f-paper", "M-22 0 L0 -50 L22 0 Z") + L("M-5 -60 L0 -50 L5 -60 M0 -50 L1 -61 M-14 -18 L14 -18") + P("f-soft", "M-6 0 L0 -14 L6 0 Z"));
+  const lodge = (x, y, w) => P("f-wood", `M${x - w/2} ${y} Q${x} ${y - w*0.75} ${x + w/2} ${y} Z`) + R("f-soft", x - 7, y - 14, 14, 14) + L(`M${x} ${y - w*0.37} q-6 -10 2 -18 q6 -8 0 -16`, " thin");
+  const horse = (x, y, s = 1, cls = "f-wood") => g(x, y, s,
+    L("M-16 -18 L-19 0 M-8 -18 L-7 0 M10 -18 L9 0 M18 -18 L21 0 M-23 -30 Q-33 -24 -31 -10") +
+    E(cls, 0, -26, 24, 10) + P(cls, "M14 -32 L25 -52 L33 -48 L23 -24 Z") + P(cls, "M25 -53 L40 -46 L38 -40 L27 -44 Z"));
+
+  const start = frame(640, 220,
+    sun(560, 46, 16) + mtn(110, 140, 160, 50, false) + mtn(220, 140, 200, 40, false) +
+    P("f-ground", "M-2 140 Q160 126 320 138 T642 132 L642 222 L-2 222 Z") +
+    P("f-water", "M-2 168 Q320 150 642 170 L642 210 Q320 192 -2 208 Z") + waves(40, 600, 196) +
+    keelboat(330, 182, .95) + canoe(470, 184, .8) + canoe(540, 190, .7) + tree(40, 140, .8) + tree(600, 136, .9),
+    "The expedition's keelboat and two canoes heading up the Missouri River");
+
+  const scenes = [
+    frame(W, H,
+      sun(462, 46, 15) + P("f-ground", "M-2 128 Q130 110 260 126 T522 120 L522 242 L-2 242 Z") +
+      P("f-water", "M-2 176 Q200 160 522 178 L522 216 Q260 200 -2 212 Z") + waves(220, 520, 202) +
+      tipi(66, 152) + tipi(116, 146, .9) + tipi(162, 154, .8) +
+      L("M300 186 Q240 178 196 160") + keelboat(372, 192, .85),
+      "Lakota tipis on the riverbank and the expedition's keelboat held by a rope"),
+    frame(W, H,
+      P("f-snow", "M-2 160 Q260 148 522 162 L522 242 L-2 242 Z") +
+      R("f-paper", 50, 126, 46, 34) + R("f-paper", 104, 130, 46, 30) + P("f-wood", "M46 126 L73 108 L100 126 Z M100 130 L127 112 L154 130 Z") +
+      (() => { let s = ""; for (let x = 30; x < 180; x += 9) s += P("f-wood", `M${x} 166 L${x} 140 L${x+4.5} 133 L${x+9} 140 L${x+9} 166 Z`); return s; })() +
+      usFlag(176, 140, .7) + lodge(300, 168, 72) + lodge(378, 170, 60) + lodge(452, 166, 78) + pine(500, 168, .7, true) +
+      flakes([[30, 40], [90, 70], [150, 30], [210, 80], [260, 40], [320, 70], [380, 30], [430, 90], [490, 50], [120, 100], [350, 110], [470, 120], [240, 120]]),
+      "Fort Mandan's log wall beside the earth lodges of the Mandan villages in winter snow"),
+    frame(W, H,
+      mtn(380, 120, 150, 80) + mtn(470, 120, 120, 64) + mtn(300, 120, 110, 50) +
+      P("f-ground", "M-2 118 L522 118 L522 242 L-2 242 Z") +
+      P("f-mud", "M254 190 Q200 160 70 146 L64 158 Q190 174 262 202 Z") +
+      P("f-clear", "M286 190 Q326 150 396 118 L410 126 Q346 162 280 202 Z") +
+      P("f-water", "M226 242 Q250 210 254 188 L288 188 Q292 210 316 242 Z") +
+      T(110, 140, "North fork: muddy", "sv-tag", "middle") + T(408, 146, "South fork: clear", "sv-tag", "start") + canoe(270, 226, .7),
+      "A fork in the river: a muddy north branch and a clear south branch toward the mountains"),
+    frame(W, H,
+      mtn(90, 140, 200, 96) + mtn(250, 140, 240, 116) + mtn(420, 140, 220, 90) +
+      P("f-ground", "M-2 138 Q260 128 522 140 L522 242 L-2 242 Z") +
+      P("f-clear", "M-2 212 Q160 196 300 214 T522 206 L522 222 Q300 228 -2 226 Z") +
+      horse(150, 196, 1.1) + horse(250, 186, .9, "f-paper") + horse(346, 200, 1.05, "f-soft") + pine(470, 190, .9) + pine(40, 184, .8),
+      "Horses grazing in a mountain meadow in Shoshone country"),
+    frame(W, H,
+      mtn(110, 200, 260, 170) + mtn(300, 200, 280, 196) + mtn(470, 200, 240, 150) +
+      P("f-snow", "M-2 190 Q260 176 522 192 L522 242 L-2 242 Z") +
+      L("M40 230 Q120 200 200 206 T340 184 T460 160", " dash red") +
+      pine(30, 214, .9, true) + pine(70, 222, .7, true) + pine(480, 222, .9, true) + pine(440, 228, .7, true) +
+      flakes([[20, 30], [70, 80], [140, 50], [200, 20], [250, 90], [330, 40], [390, 80], [450, 30], [500, 70], [170, 120], [420, 130], [90, 140]]),
+      "Snow-covered Bitterroot Mountains with a faint trail climbing through them"),
+    frame(W, H,
+      L("M40 10 l-10 20 M110 6 l-10 20 M190 14 l-10 20 M270 4 l-10 20 M350 12 l-10 20 M430 6 l-10 20 M500 14 l-10 20 M70 50 l-10 20 M150 44 l-10 20 M230 54 l-10 20 M310 46 l-10 20 M390 52 l-10 20 M470 48 l-10 20", " thin") +
+      R("f-water", -2, 110, 524, 132) + waves(0, 520, 140) + waves(20, 520, 168) +
+      P("f-soft", "M330 132 L340 84 L356 80 L366 132 Z") + P("f-soft", "M396 132 L402 104 L414 102 L420 132 Z") +
+      P("f-sand", "M-2 190 Q200 176 522 196 L522 242 L-2 242 Z") +
+      P("f-ground", "M-2 96 L60 92 Q110 100 130 130 L130 200 L-2 200 Z") + pine(30, 110, .9) + pine(80, 116, .8) +
+      canoe(260, 206, 1) + T(440, 228, "“Ocian in view! O! the joy.”", "sv-quote", "middle"),
+      "Rain over the Pacific Ocean at the mouth of the Columbia River, with a canoe on the beach")
+  ];
+  return {start, scenes};
+})();
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG({show:["stlouis"], ring:"stlouis", caption:"From St. Louis to the Pacific: about 4,000 miles of country no American had mapped"}, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG({show:["stlouis"], ring:"stlouis", caption:"The Louisiana Territory and the unknown lands beyond it"}, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <figure class="scene wide">${ART.start}</figure>
+    <div class="content">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>The expedition</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    <div class="visuals"><figure class="scene">${ART.scenes[i]}</figure>${mapSVG(d.map, fresh)}</div>
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null});
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {bold:0, cautious:0, diplomatic:0}; list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(c.bold, c.cautious, c.diplomatic); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:6}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${c.bold} bold, ${c.cautious} cautious, ${c.diplomatic} diplomatic)`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${cap(GAME.leader)}’ choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leader}’">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${["bold","cautious","diplomatic"].map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
 </body>
 </html>
+
+</body></html>
