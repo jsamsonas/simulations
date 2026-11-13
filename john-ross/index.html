@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be John Ross: The Cherokee Nation and the Trail of Tears</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+.m-nation{fill:color-mix(in srgb,var(--brass-fill) 26%,transparent);stroke:var(--brass);stroke-width:1;stroke-dasharray:4 3}
+.m-nlabel{fill:var(--brass);font-family:var(--display);font-style:italic;font-size:12.5px}
+.m-land{fill:var(--map);stroke:var(--ink-soft);stroke-width:.9}
+.m-water{fill:var(--sea)}
+.m-us{fill:var(--river);stroke:var(--paper);stroke-width:1}
+.m-csa{fill:var(--seal);stroke:var(--paper);stroke-width:1}
+.m-fire{fill:none;stroke:var(--seal);stroke-width:1.8;stroke-dasharray:4 3}
+.m-ship{fill:var(--ink)}
+.m-sea-route{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 3}
+.m-rail{fill:none;stroke:var(--ink);stroke-width:1.6}
+.m-ties{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 6}
+.m-x{fill:none;stroke:var(--seal);stroke-width:2}
+.m-border{fill:none;stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:6 4}
+.fadein{opacity:0;animation:fade .9s ease .6s forwards}
+@keyframes fade{to{opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  .fadein{opacity:1}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
+  </header>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be John Ross",
+  subtitle: "The Cherokee Nation and the Trail of Tears, 1828–1839",
+  reportTitle: "BE JOHN ROSS: The Cherokee Nation and the Trail of Tears",
+  blurb: "Make six real decisions John Ross faced as principal chief of the Cherokee Nation. After each one, find out what really happened. Watch closely: some of these decisions have no good options.",
+  leader: "John Ross",
+  leaderPoss: "John Ross’s",
+  leaderLabel: "Ross",
+  storageKey: "beJohnRoss.v1",
+  titleMap: {show:["newechota"], caption:"The Cherokee Nation in the 1820s, in parts of four states"}
+};
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A nation in the way",
+  paras: [
+    "In the early 1800s, the Cherokee Nation covered parts of Georgia, Tennessee, Alabama, and North Carolina. It was their homeland, and treaties with the United States promised to protect it.",
+    "Many Cherokee had adopted American-style farms, schools, and churches. In 1821, a Cherokee man named Sequoyah created a writing system for the Cherokee language, and thousands of Cherokee quickly learned to read and write it."
+  ],
+  listHeading: "Who wants what?",
+  list: [
+    {name:"Georgia", text:"Wants Cherokee land for its farmers. After gold is discovered there in 1829, it wants it even more."},
+    {name:"President Jackson", text:"Believes Native nations in the East must move west of the Mississippi River, by treaty or by pressure."},
+    {name:"The Cherokee", text:"Most want to stay in their homeland and govern themselves."}
+  ],
+  after: "The Cherokee had a written constitution, a capital, courts, and a newspaper: everything Americans said a “civilized” nation should have. Would it be enough?",
+  map: {show:["newechota","dahlonega"], caption:"The Cherokee Nation, with its capital at New Echota, Georgia"}
+};
+
+const START = {
+  heading: "You are John Ross",
+  paras: [
+    "In 1828, the Cherokee elect John Ross as their principal chief. His father was a Scottish trader, and his mother was of Cherokee and Scottish descent. Ross grew up between two worlds and speaks English more easily than Cherokee, but he is completely devoted to his nation.",
+    "Your job is to keep the Cherokee Nation on its homeland."
+  ],
+  factsHeading: "Your position",
+  facts: [
+    ["Title", "Principal chief of the Cherokee Nation"],
+    ["Age", "38"],
+    ["Your people", "About 16,000 Cherokee"],
+    ["Capital", "New Echota, Georgia"],
+    ["Government", "A written constitution, an elected council, courts, and a newspaper"],
+    ["Home", "A plantation in Georgia, worked by enslaved Black people"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"Georgia Moves In", when:"1830", where:"New Echota, capital of the Cherokee Nation",
+    setup:[
+      "Gold has been discovered on Cherokee land, and thousands of Georgians are rushing in. Georgia passes laws claiming Cherokee land as its own. Cherokee can’t testify against white people in Georgia courts, and your government is banned from meeting in Georgia.",
+      "In Washington, President Jackson signs the Indian Removal Act. He says he can’t stop Georgia, and he won’t try."
+    ],
+    question:"How do you protect your nation?",
+    options:[
+      {text:"Fight. Defend Cherokee land by force if Georgians invade it.", short:"Fight back by force", style:"bold", historical:false,
+       outcome:"The Cherokee are badly outnumbered by Georgia’s militia and the U.S. Army. A war would give Jackson the excuse he needs to remove your people by force, and many would die."},
+      {text:"Sell the land now and move west while you can still get a fair price.", short:"Sell and move west now", style:"cautious", historical:false,
+       outcome:"Your people get some money and avoid bloodshed. But they give up their homeland, the graves of their ancestors, and everything they’ve built, without a fight."},
+      {text:"Fight in the courts. Hire top American lawyers and sue Georgia.", short:"Sue Georgia in court", style:"diplomatic", historical:true,
+       outcome:"You hire William Wirt, a former U.S. attorney general, and take Georgia to court."}
+    ],
+    history:[
+      "Ross took the fight to the courts. In 1831, the Supreme Court said it couldn’t hear the Cherokee’s case because they weren’t a foreign country.",
+      "But in 1832, in Worcester v. Georgia, a case about a missionary arrested by Georgia, the Court ruled that Georgia’s laws had no power inside the Cherokee Nation. The Cherokee had won."
+    ],
+    think:"Why might Ross choose courts instead of war? What did he believe about the United States?",
+    map:{show:["newechota","dahlonega"], here:"newechota", caption:"You are here: New Echota. Gold seekers pour into the hills nearby."}
+  },
+  {
+    title:"A Victory Ignored", when:"1832", where:"New Echota",
+    setup:[
+      "You won in the Supreme Court, but nothing changes. Georgia ignores the ruling, and President Jackson does nothing to enforce it.",
+      "Georgia holds a lottery to give away Cherokee land and homes to its citizens. Some Cherokee leaders, including your old ally Major Ridge, begin to say removal can’t be stopped."
+    ],
+    question:"What now?",
+    options:[
+      {text:"Keep resisting peacefully. Send delegations to Washington, petition Congress, and hope a new president will help.", short:"Keep resisting peacefully", style:"cautious", historical:true,
+       outcome:"Your delegations travel to Washington again and again. Many Americans support you, but Congress and the president don’t budge."},
+      {text:"Negotiate the best removal deal you can while you still have something to bargain with.", short:"Negotiate a removal deal", style:"diplomatic", historical:false,
+       outcome:"You might win more money and better land in the West. But many Cherokee would call it surrender, and your people would still lose their homeland."},
+      {text:"Prepare to defend your homes. Quietly gather weapons.", short:"Gather weapons", style:"bold", historical:false,
+       outcome:"Georgia’s armed guard patrols Cherokee land and arrests anyone it sees as a threat. Gathering weapons would invite a crackdown."}
+    ],
+    history:[
+      "Ross kept resisting peacefully. He led delegation after delegation to Washington and won support from many Americans in the North.",
+      "Jackson probably never said the famous line, “John Marshall has made his decision; now let him enforce it.” But he acted like it. And waiting for a friendlier president didn’t work: Jackson’s handpicked successor, Martin Van Buren, kept the same policy."
+    ],
+    think:"What can people do when the government won’t enforce its own laws?",
+    map:{show:["newechota","dahlonega"], here:"newechota", caption:"Georgia gives away Cherokee land in a lottery"}
+  },
+  {
+    title:"The Newspaper", when:"1832", where:"The Cherokee Phoenix, New Echota",
+    setup:[
+      "The Cherokee Phoenix is the first Native American newspaper, printed in both English and Cherokee. Its editor, Elias Boudinot, has come to believe removal can’t be stopped. He wants to print articles debating whether the Cherokee should sign a treaty and move west.",
+      "You worry that public disagreement will split the nation at the worst possible moment."
+    ],
+    question:"Do you let him print it?",
+    options:[
+      {text:"Shut the newspaper down. This is no time for division.", short:"Shut the paper down", style:"bold", historical:false,
+       outcome:"The Cherokee lose their strongest voice to the outside world. Supporters in the North who read the Phoenix wonder what’s going on."},
+      {text:"Let him print both sides. A free people should debate their future openly.", short:"Let him print both sides", style:"diplomatic", historical:false,
+       outcome:"The debate is fierce. More Cherokee start questioning your strategy, and Georgia and Jackson notice the nation is divided."},
+      {text:"Keep the paper running, but don’t let it print arguments for removal.", short:"Block pro-removal articles", style:"cautious", historical:true,
+       outcome:"The Phoenix stays on message. Boudinot is furious."}
+    ],
+    history:[
+      "Ross and the council kept the Phoenix from printing arguments for removal. Boudinot resigned as editor in protest.",
+      "Boudinot joined Major Ridge and his son John Ridge in what became known as the Treaty Party, a group convinced the Cherokee had to make a deal before they lost everything. The nation was splitting anyway."
+    ],
+    think:"Was Ross right to limit the debate? When, if ever, should leaders limit what can be printed?",
+    map:{show:["newechota","dahlonega"], here:"newechota", caption:"The Cherokee Phoenix is printed at New Echota"}
+  },
+  {
+    title:"The Treaty Meeting", when:"December 1835", where:"Red Clay, Tennessee",
+    setup:[
+      "Georgia has banned Cherokee councils, so your government now meets at Red Clay, just over the Tennessee line. Georgia guards even seized your own home and gave it to a lottery winner.",
+      "Now a U.S. agent announces a treaty meeting at New Echota, and the Treaty Party plans to attend. The treaty would trade all Cherokee land in the East for $5 million and land in the West. You and most Cherokee oppose it."
+    ],
+    question:"How do you respond?",
+    options:[
+      {text:"Go to the meeting and fight the treaty from inside.", short:"Attend and fight it", style:"bold", historical:false,
+       outcome:"You make your case, but the agent and the Treaty Party have already made up their minds. Your presence only makes the meeting look more official."},
+      {text:"Make your own offer: agree to sell, but for far more money and better terms.", short:"Make a better offer", style:"diplomatic", historical:false,
+       outcome:"Washington won’t pay more than $5 million, and many Cherokee are angry that you offered to sell at all."},
+      {text:"Boycott the meeting. Without the Cherokee council, no treaty can be legal.", short:"Boycott the meeting", style:"cautious", historical:true,
+       outcome:"Most Cherokee stay home. Only a few hundred people show up at New Echota."}
+    ],
+    history:[
+      "Ross and most Cherokee boycotted the meeting. Only a few hundred of about 16,000 Cherokee attended. About 20 Treaty Party men signed the Treaty of New Echota, without permission from the Cherokee council.",
+      "Ross gathered a petition against the treaty signed by more than 15,000 Cherokee. It didn’t matter. The U.S. Senate approved the treaty by a single vote. The Cherokee had two years to leave."
+    ],
+    think:"Was boycotting the meeting a mistake? Who has the right to sign a treaty for a nation?",
+    map:{show:["newechota","dahlonega","redclay"], here:"redclay", caption:"You are here: Red Clay, Tennessee, beyond Georgia’s reach"}
+  },
+  {
+    title:"The Camps", when:"June 1838", where:"Near the Tennessee River",
+    setup:[
+      "The deadline has passed. Many Cherokee refused to believe they would really be forced out. Now General Winfield Scott and about 7,000 soldiers are rounding up Cherokee families at gunpoint and forcing them into crowded camps.",
+      "In the summer heat, disease is spreading. People are dying in the camps."
+    ],
+    question:"What do you do?",
+    options:[
+      {text:"Call on your people to resist the soldiers.", short:"Resist the soldiers", style:"bold", historical:false,
+       outcome:"Most Cherokee are already in the camps, unarmed and surrounded. Resistance would turn into a massacre."},
+      {text:"Lead families into the mountains to hide.", short:"Hide in the mountains", style:"cautious", historical:false,
+       outcome:"A few hundred Cherokee do escape into the Smoky Mountains. But you can’t hide 16,000 people, and most are already under guard."},
+      {text:"Convince General Scott to let the Cherokee run their own removal.", short:"Lead the removal yourselves", style:"diplomatic", historical:true,
+       outcome:"Scott agrees. The Cherokee will organize the journey, the food, and the wagons themselves."}
+    ],
+    history:[
+      "Ross convinced Scott to let the Cherokee lead their own removal and to wait until the summer heat passed. In the fall of 1838, about 13 groups of roughly 1,000 people each set out on foot, on horseback, and in wagons.",
+      "But the journey stretched into winter. Thousands died from cold, hunger, and disease. In all, about 4,000 Cherokee, roughly one in four, died in the camps and on the trail. Ross’s wife, Quatie, died on the journey. The Cherokee remember it as the trail where they cried."
+    ],
+    think:"Ross couldn’t stop removal. Did his decision still matter? Why?",
+    map:{show:["newechota","redclay","camps"], here:"camps", caption:"You are here: the camps near Fort Cass, Tennessee"}
+  },
+  {
+    title:"Starting Over", when:"1839", where:"Indian Territory, in today’s Oklahoma",
+    setup:[
+      "Your people arrive in Indian Territory. But about 3,000 Cherokee already live there. These “Old Settlers” moved west years ago and have their own government and chiefs. The Treaty Party leaders, who moved earlier, have sided with them.",
+      "Now there are two Cherokee governments, and a lot of anger. Your followers outnumber everyone else."
+    ],
+    question:"How do you govern?",
+    options:[
+      {text:"Let the Old Settlers’ government rule. They were here first.", short:"Let the Old Settlers rule", style:"cautious", historical:false,
+       outcome:"Most of the Cherokee people now live under leaders they never chose. Many feel betrayed twice."},
+      {text:"Keep two separate Cherokee governments side by side.", short:"Keep two governments", style:"bold", historical:false,
+       outcome:"Two governments mean two sets of laws and constant fights over land and money. The United States can play one side against the other."},
+      {text:"Unite everyone under one new constitution and one government.", short:"Unite under one constitution", style:"diplomatic", historical:true,
+       outcome:"You call a council to write a new constitution for a single, united Cherokee Nation."}
+    ],
+    history:[
+      "Ross pushed for unity. In 1839, the Cherokee adopted a new constitution and made Tahlequah their capital. Ross was elected principal chief of the reunited nation.",
+      "But the anger didn’t disappear. Even before the new constitution was finished, some of Ross’s followers killed Major Ridge, John Ridge, and Elias Boudinot for signing the treaty, under a Cherokee law that made selling the nation’s land punishable by death. Ross said he knew nothing about the plan. Violence between the groups went on for seven years."
+    ],
+    think:"After a disaster like the Trail of Tears, what does a nation need to rebuild?",
+    map:{show:["newechota","camps","tahlequah"], route:true, fresh:true, here:"tahlequah", caption:"You are here: Tahlequah, the new Cherokee capital in Indian Territory"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "John Ross served as principal chief for 38 years, until his death in 1866. He led the Cherokee as they rebuilt in the West, and through the Civil War, which split the nation once again.",
+    "In the West, the Cherokee rebuilt their schools, churches, courts, and newspapers. Today the Cherokee Nation, with its capital still in Tahlequah, is one of the largest Native nations in the United States.",
+    "Not every Cherokee left. A group in the North Carolina mountains managed to stay, and their descendants form the Eastern Band of Cherokee Indians.",
+    "The Treaty of New Echota had promised that the Cherokee’s new land would never become part of any state without their consent. In 1907, it became part of Oklahoma."
+  ],
+  map:{show:["newechota","camps","tahlequah"], route:true, caption:"The main overland route of the Trail of Tears, 1838–1839"}
+};
+
+const PROFILES = {
+  bold:["The Fighter","You’re willing to fight for what’s yours. John Ross never chose force; he believed war would destroy his people. Would fighting have changed anything, or made it worse?"],
+  cautious:["The Protector","You hold the line and protect your nation from division and risk. Ross often did the same, refusing to give in even when it cost him."],
+  diplomatic:["The Negotiator","You work through courts, councils, and agreements. That was Ross’s main weapon: he fought the United States with its own laws and promises."],
+  balanced:["The Balanced Leader","You used every tool you had. Ross faced choices where no option could save the homeland. Sometimes leaders can only choose the least terrible path."]
+};
+
+/* ======================================================================
+   MAP: the Cherokee Nation and the route west
+   ====================================================================== */
+const B = {lonMin:-96.5, lonMax:-82.5, latMin:33.2, latMax:38.2, kx:36, ky:44.1};
+const MW = Math.round((B.lonMax - B.lonMin) * B.kx), MH = Math.round((B.latMax - B.latMin) * B.ky);
+const proj = ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)];
+function curve(lls){
+  const p = lls.map(proj);
+  if (p.length === 2) return `M${p[0][0]} ${p[0][1]} L${p[1][0]} ${p[1][1]}`;
+  let d = `M${p[0][0]} ${p[0][1]}`;
+  for (let i = 0; i < p.length - 1; i++){
+    const p0 = p[i-1] || p[i], p1 = p[i], p2 = p[i+1], p3 = p[i+2] || p2;
+    const c1 = [p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6];
+    const c2 = [p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+}
+function mountains(lls, gap = 10, size = 3.6){
+  const p = lls.map(proj);
+  let d = "", carry = 0;
+  for (let i = 0; i < p.length - 1; i++){
+    const [x1,y1] = p[i], [x2,y2] = p[i+1], len = Math.hypot(x2-x1, y2-y1);
+    for (let t = carry; t <= len; t += gap){
+      const x = x1 + (x2-x1)*t/len, y = y1 + (y2-y1)*t/len;
+      d += `M${(x-size).toFixed(1)} ${(y+size*.7).toFixed(1)} L${x.toFixed(1)} ${(y-size*.8).toFixed(1)} L${(x+size).toFixed(1)} ${(y+size*.7).toFixed(1)} `;
+      carry = t + gap - len;
+    }
+  }
+  return d;
+}
+const NATION = [[-86.2,34.3],[-85.9,34.95],[-85.4,35.05],[-84.95,35.4],[-84.3,35.35],[-83.7,35.5],[-83.15,35.45],[-83.2,35.0],[-83.6,34.75],[-84.0,34.5],[-84.3,34.1],[-85.0,33.95],[-85.6,33.9],[-86.0,34.0]];
+const RIVERS = [
+  {w:2.4, pts:[[-90.25,38.2],[-89.95,37.95],[-89.52,37.31],[-89.25,37.0],[-89.53,36.59],[-89.7,36.0],[-90.05,35.15],[-90.6,34.5],[-91.1,33.8],[-91.1,33.2]]},
+  {w:2.0, pts:[[-89.18,37.0],[-88.6,37.08],[-88.49,37.36],[-88.13,37.69],[-87.57,37.97],[-87.11,37.77],[-86.5,37.95],[-85.9,38.2]]},
+  {w:1.7, pts:[[-88.6,37.08],[-88.15,36.6],[-88.1,36.0],[-88.2,35.2],[-88.0,35.0],[-87.68,34.8],[-86.98,34.6],[-86.29,34.36],[-86.03,34.67],[-85.6,34.95],[-85.31,35.05],[-85.0,35.5],[-84.5,35.75],[-83.92,35.96],[-83.3,36.2]]},
+  {w:1.3, pts:[[-88.25,37.1],[-87.8,36.6],[-87.36,36.53],[-86.78,36.16],[-86.0,36.25],[-85.4,36.6],[-84.6,36.85]]},
+  {w:1.8, pts:[[-96.5,36.25],[-95.9,36.1],[-95.25,35.8],[-94.4,35.39],[-93.1,35.2],[-92.29,34.75],[-92.0,34.23],[-91.1,33.8]]},
+  {w:1.0, pts:[[-84.95,35.42],[-84.6,35.3],[-84.3,35.2],[-83.9,35.05]]}
+];
+const RANGES = [
+  [[-82.6,36.5],[-83.4,35.7],[-83.9,35.2],[-84.2,34.8],[-84.4,34.4]],
+  [[-84.4,36.9],[-85.0,36.2],[-85.5,35.3],[-85.9,34.6]],
+  [[-94.3,35.75],[-93.2,35.8],[-92.3,35.95]]
+];
+const PLACES = {
+  newechota:{ll:[-84.91,34.54], dx:-7, dy:4,  anchor:"end",   label:"New Echota", capital:true},
+  dahlonega:{ll:[-83.98,34.53], dx:-3, dy:14, anchor:"start", label:"Gold fields"},
+  redclay:  {ll:[-84.95,34.99], dx:-7, dy:3,  anchor:"end",   label:"Red Clay"},
+  camps:    {ll:[-84.76,35.29], dx:7,  dy:-3, anchor:"start", label:"Fort Cass camps"},
+  tahlequah:{ll:[-94.97,35.91], dx:7,  dy:4,  anchor:"start", label:"Tahlequah", capital:true}
+};
+const ROUTE = [[-84.76,35.29],[-85.3,35.6],[-85.77,35.68],[-86.39,35.85],[-86.78,36.16],[-87.49,36.87],[-87.88,37.11],[-88.49,37.36],[-89.27,37.45],[-89.52,37.33],[-89.67,37.38],[-90.42,37.78],[-91.77,37.95],[-92.66,37.68],[-93.29,37.21],[-93.87,36.68],[-94.12,36.45],[-94.57,35.99],[-94.97,35.91]];
+
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  const show = cfg.show || ["newechota"];
+  let s = `<svg viewBox="0 0 ${MW} ${MH}" role="img" aria-label="Map of the Cherokee Nation and the route west to Indian Territory">`;
+  s += `<defs><clipPath id="cf"><rect x="4" y="4" width="${MW-8}" height="${MH-8}"/></clipPath></defs><g clip-path="url(#cf)">`;
+  s += `<path class="m-nation" d="M${NATION.map(proj).map(q => q.join(" ")).join(" L")} Z"/>`;
+  RANGES.forEach(r => s += `<path class="m-ridge" d="${mountains(r)}"/>`);
+  RIVERS.forEach(r => s += `<path class="m-river" stroke-width="${r.w}" d="${curve(r.pts)}"/>`);
+  s += `</g><rect class="m-frame" x="4" y="4" width="${MW-8}" height="${MH-8}"/>`;
+
+  s += `<text class="m-nlabel" text-anchor="middle" x="392" y="182">Cherokee Nation</text>`;
+  [["Georgia",450,206],["Alabama",346,202],["Tennessee",330,112],["Kentucky",372,36],["North Carolina",446,86],["Missouri",200,60],["Arkansas",133,170],["Indian Territory",52,150]]
+    .forEach(([t,x,y]) => s += `<text class="m-region" text-anchor="middle" x="${x}" y="${y}">${t}</text>`);
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(234 128) rotate(-78)">Mississippi R.</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(296 116) rotate(-88)">Tennessee R.</text>`;
+  s += `<text class="m-rlabel" transform="translate(98 150) rotate(16)">Arkansas R.</text>`;
+  s += `<text class="m-rlabel" x="318" y="24">Ohio R.</text>`;
+  s += `<text class="m-note" x="120" y="124">Ozark Mts.</text>`;
+  s += `<g transform="translate(24 26)"><circle r="10" fill="none" stroke="var(--ink-soft)"/><path d="M0 -8 L3 3 L0 1 L-3 3 Z" fill="var(--ink-soft)"/><text class="m-note" text-anchor="middle" y="-13">N</text></g>`;
+  s += `<rect class="m-cart" x="12" y="180" width="128" height="32"/><rect class="m-cart" x="14.5" y="182.5" width="123" height="27"/>`;
+  s += `<text class="m-title" x="76" y="195" text-anchor="middle">The Cherokee Nation</text><text class="m-note" x="76" y="206" text-anchor="middle">1828–1839</text>`;
+
+  if (cfg.route){
+    const isNew = animate && cfg.fresh;
+    s += `<path class="m-road${isNew ? " draw" : ""}"${isNew ? ' pathLength="1"' : ""} d="${curve(ROUTE)}"/>`;
+  }
+  show.forEach(k => {
+    const p = PLACES[k], [x,y] = proj(p.ll);
+    if (p.capital) s += `<rect class="m-fort" x="${x-3.5}" y="${y-3.5}" width="7" height="7" transform="rotate(45 ${x} ${y})"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="2.8"/>`;
+    s += `<text class="m-label" x="${x + p.dx}" y="${y + p.dy}" text-anchor="${p.anchor}">${p.label}</text>`;
+  });
+  if (cfg.here){
+    const [x,y] = proj(PLACES[cfg.here].ll);
+    s += `<circle class="m-ring pulse" cx="${x}" cy="${y}" r="7"/><circle class="m-here" cx="${x}" cy="${y}" r="4"/>`;
+  }
+  s += `</svg>`;
+  return `<figure class="map">${s}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG(GAME.titleMap, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(INTRO.map, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <div class="content" style="margin-top:0">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>${START.factsHeading}</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    ${mapSVG(d.map, fresh)}
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null});
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {bold:0, cautious:0, diplomatic:0}; list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(c.bold, c.cautious, c.diplomatic); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:6}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${c.bold} bold, ${c.cautious} cautious, ${c.diplomatic} diplomatic)`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${GAME.leaderPoss} choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leaderPoss}">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${["bold","cautious","diplomatic"].map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
+</body>
+</html>
