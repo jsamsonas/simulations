@@ -1,0 +1,1011 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be Lincoln: The Fort Sumter Crisis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --leaf:#5C7A48;
+  --wood:#8A5A34;
+  --snow:#FBFCF8;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+.m-nation{fill:color-mix(in srgb,var(--brass-fill) 26%,transparent);stroke:var(--brass);stroke-width:1;stroke-dasharray:4 3}
+.m-nlabel{fill:var(--brass);font-family:var(--display);font-style:italic;font-size:12.5px}
+.m-land{fill:var(--map);stroke:var(--ink-soft);stroke-width:.9}
+.m-water{fill:var(--sea)}
+.m-us{fill:var(--river);stroke:var(--paper);stroke-width:1}
+.m-csa{fill:var(--seal);stroke:var(--paper);stroke-width:1}
+.m-fire{fill:none;stroke:var(--seal);stroke-width:1.8;stroke-dasharray:4 3}
+.m-ship{fill:var(--ink)}
+.m-sea-route{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 3}
+.m-rail{fill:none;stroke:var(--ink);stroke-width:1.6}
+.m-ties{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 6}
+.m-x{fill:none;stroke:var(--seal);stroke-width:2}
+.m-border{fill:none;stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:6 4}
+.fadein{opacity:0;animation:fade .9s ease .6s forwards}
+@keyframes fade{to{opacity:1}}
+/* pictures (drawn in SVG) */
+.visuals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.visuals{grid-template-columns:minmax(0,1fr)}}
+.scene{margin:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--paper-2)}
+.scene.wide{margin:0 0 6px}
+.scene svg{display:block;width:100%;height:auto}
+svg .ink{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .thin{stroke-width:1.3}
+svg .dash{stroke-dasharray:5 5}
+svg .red{stroke:var(--seal)}
+svg .f-none{fill:none} svg .f-paper{fill:var(--paper)} svg .f-wood{fill:var(--wood)} svg .f-gold{fill:var(--brass-fill)}
+svg .f-green{fill:var(--leaf)} svg .f-blue{fill:var(--river)} svg .f-red{fill:var(--seal)} svg .f-ink{fill:var(--ink)}
+svg .f-snow{fill:var(--snow)} svg .f-sky{fill:var(--paper-2);stroke:none}
+svg .f-soft{fill:color-mix(in srgb,var(--ink) 15%,var(--paper-2))}
+svg .f-water{fill:color-mix(in srgb,var(--river) 26%,var(--paper-2))}
+svg .f-clear{fill:color-mix(in srgb,var(--river) 48%,var(--paper-2))}
+svg .f-mud{fill:color-mix(in srgb,var(--wood) 48%,var(--paper-2))}
+svg .f-ground{fill:color-mix(in srgb,var(--leaf) 26%,var(--paper-2))}
+svg .f-sand{fill:color-mix(in srgb,var(--brass-fill) 34%,var(--paper-2))}
+svg .f-brick{fill:color-mix(in srgb,var(--seal) 50%,var(--paper-2))}
+.sv-label{font-family:var(--text);font-weight:700;fill:var(--ink)}
+.sv-tag{font-size:13px}
+.sv-tiny{font-size:8px}
+.sv-quote,.sv-hand{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px}
+.sv-poster-sm{font-family:var(--display);font-weight:400;font-size:14px}
+.sv-poster{font-family:var(--display);font-weight:400;font-size:24px}
+.sv-poster-lg{font-family:var(--display);font-weight:400;font-size:42px;fill:var(--seal)}
+
+@media (prefers-reduced-motion: reduce){
+  .fadein{opacity:1}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
+  </header>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be Lincoln",
+  subtitle: "The Fort Sumter Crisis, 1861",
+  reportTitle: "BE LINCOLN: The Fort Sumter Crisis",
+  blurb: "Make six real decisions Abraham Lincoln faced in his first weeks as president, as the country split apart. After each one, find out what really happened. There are no right answers. You don’t know how the story ends.",
+  leader: "Lincoln",
+  leaderPoss: "Lincoln’s",
+  leaderLabel: "Lincoln",
+  storageKey: "beLincoln.v1",
+  titleMap: {kind:"harbor", ring:true, caption:"Charleston Harbor, South Carolina, where secession began"}
+};
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A house divided",
+  paras: [
+    "In November 1860, Abraham Lincoln won the presidency. He promised to stop slavery from spreading into the western territories, though not to end it where it already existed.",
+    "Many white Southerners believed he would destroy slavery anyway. Six weeks after his election, South Carolina seceded, or left the Union. By February 1861, six more states had joined it to form the Confederate States of America."
+  ],
+  listHeading: "Who wants what?",
+  list: [
+    {name:"The Confederacy", text:"Wants to be an independent nation where slavery is protected. It is seizing U.S. forts and weapons across the South."},
+    {name:"Lincoln", text:"Believes no state has the right to leave the Union. He wants to save it, without starting a war if he can."},
+    {name:"The undecided", text:"Eight slave states, including Virginia, Maryland, and Kentucky, haven’t left yet. They’re watching what Lincoln does."}
+  ],
+  after: "One of the last U.S. forts still standing in the Confederacy is Fort Sumter, on an island in the harbor of Charleston, South Carolina, the city where secession began.",
+  map: {kind:"harbor", ring:true, caption:"Fort Sumter, surrounded by Confederate guns"}
+};
+
+const START = {
+  heading: "You are Abraham Lincoln",
+  paras: [
+    "On March 4, 1861, you take the oath of office as the 16th president of the United States. You’re a 52-year-old lawyer from Illinois who served one term in Congress. You’ve never run anything bigger than a law office.",
+    "The country is falling apart, and everyone is waiting to see what you’ll do."
+  ],
+  factsHeading: "The situation",
+  facts: [
+    ["President", "Abraham Lincoln, age 52"],
+    ["States that have left", "7"],
+    ["Confederate president", "Jefferson Davis"],
+    ["Fort Sumter", "About 85 U.S. soldiers under Major Robert Anderson"],
+    ["The U.S. Army", "About 16,000 soldiers, mostly far out West"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"The Inaugural Address", when:"March 4, 1861", where:"Washington, D.C.",
+    setup:[
+      "Today you give your first speech as president. Americans, North and South, will read every word.",
+      "The seven Confederate states are listening. So are eight slave states that haven’t left the Union yet, but might."
+    ],
+    question:"What message do you send?",
+    options:[
+      {text:"Warn the Confederate states that you’ll use force to bring them back.", short:"Threaten force", style:"bold", historical:false,
+       outcome:"Northerners cheer. But the slave states still in the Union hear a threat, and Virginia moves closer to leaving."},
+      {text:"Offer a compromise: let slavery spread into some western territories if the South comes back.", short:"Offer a compromise on slavery", style:"diplomatic", historical:false,
+       outcome:"Some Southerners might listen. But you’d be breaking the promise that got you elected, and your own party could turn against you."},
+      {text:"Promise not to attack the South or interfere with slavery where it exists, but vow to keep federal forts. If war comes, the South must start it.", short:"Firm but peaceful", style:"cautious", historical:true,
+       outcome:"Your words are calm but firm. Each side reads them differently."}
+    ],
+    history:[
+      "Lincoln promised not to interfere with slavery where it already existed and not to invade the South. But he said secession was illegal, and that he would “hold, occupy, and possess” federal property.",
+      "He told the South, “You can have no conflict without being yourselves the aggressors.” And he ended with a plea: “We are not enemies, but friends. We must not be enemies.”"
+    ],
+    think:"Why did Lincoln want the South to be the side that fired first?",
+    map:{kind:"harbor", ring:true, caption:"Fort Sumter: about 85 U.S. soldiers, surrounded by Confederate guns"}
+  },
+  {
+    title:"Six Weeks of Food", when:"March 5, 1861", where:"The White House",
+    setup:[
+      "On your first full day as president, you learn that Major Anderson’s men at Fort Sumter have only about six weeks of food left. Anderson estimates it would take 20,000 soldiers to rescue the fort, and you don’t have them.",
+      "General Winfield Scott, the head of the army, advises giving the fort up. Most of your cabinet agrees."
+    ],
+    question:"What do you decide?",
+    options:[
+      {text:"Give up the fort. Leaving might calm the South and keep more states from leaving.", short:"Give up the fort", style:"diplomatic", historical:false,
+       outcome:"Some Southerners breathe easier. But many Northerners see it as surrender, and the Confederacy grows bolder. If you give up Sumter, which fort is next?"},
+      {text:"Find a way to keep the fort supplied.", short:"Keep the fort supplied", style:"bold", historical:true,
+       outcome:"You start working on a plan, quietly, while the clock ticks."},
+      {text:"Wait. Maybe the crisis will cool down on its own.", short:"Wait it out", style:"cautious", historical:false,
+       outcome:"Weeks pass, and Anderson’s food keeps shrinking. Eventually the fort will fall, and waiting will have decided for you."}
+    ],
+    history:[
+      "Lincoln spent weeks weighing the problem, but he refused to simply give up the fort. To him, giving up Sumter would look like accepting secession. By the end of March, most of his cabinet had come around to his view."
+    ],
+    think:"Why did one small fort matter so much to both sides?",
+    map:{kind:"harbor", ring:true, caption:"Fort Sumter: about six weeks of food left"}
+  },
+  {
+    title:"A Surprising Letter", when:"April 1, 1861", where:"The White House",
+    setup:[
+      "Your secretary of state, William Seward, is the most famous Republican in the country. Many people, including Seward, think he should have been president.",
+      "Today he hands you a startling memo. He says your government has no policy. He suggests picking a fight with Spain or France to unite Americans against a foreign enemy. And he offers to take charge of policy himself."
+    ],
+    question:"How do you respond?",
+    options:[
+      {text:"Try his plan. A foreign war might bring the South back.", short:"Try Seward’s plan", style:"bold", historical:false,
+       outcome:"You’d be fighting a powerful European nation, and the Confederacy might not rejoin you anyway. Now you could have two wars."},
+      {text:"Let Seward take charge. He has more experience than you.", short:"Let Seward take charge", style:"cautious", historical:false,
+       outcome:"The country soon learns its president isn’t really in charge. Your authority, already shaky, collapses."},
+      {text:"Turn him down privately and firmly, but keep him in the cabinet.", short:"Turn him down privately", style:"diplomatic", historical:true,
+       outcome:"You write a short reply and keep the whole thing secret."}
+    ],
+    history:[
+      "Lincoln wrote back the same day, politely reminding Seward who would make the decisions: “If this must be done, I must do it.” He never made the memo public, and he kept Seward in the cabinet.",
+      "Seward got the message. He became one of Lincoln’s most loyal advisers and served as secretary of state for the rest of the war."
+    ],
+    think:"Why didn’t Lincoln fire Seward or embarrass him publicly?",
+    map:{kind:"harbor", ring:true, caption:"Fort Sumter is still waiting"}
+  },
+  {
+    title:"The Relief Mission", when:"Early April 1861", where:"The White House",
+    setup:[
+      "Anderson’s food is almost gone. You’ve decided to help the fort, but how? Ships are ready in New York.",
+      "If you send warships, the Confederacy will say you invaded. If you do nothing, the fort falls. Either way, you might start a war."
+    ],
+    question:"How do you resupply Fort Sumter?",
+    options:[
+      {text:"Send warships and soldiers to fight their way into the harbor.", short:"Send warships to fight in", style:"bold", historical:false,
+       outcome:"The Confederacy gets exactly the story it wants: Lincoln invaded the South. Virginia and other undecided states rush to join the Confederacy."},
+      {text:"Send only food, and tell South Carolina’s governor ahead of time.", short:"Send food only, with notice", style:"diplomatic", historical:true,
+       outcome:"Your messenger tells the governor that if no one fires, the ships will bring food only: no soldiers, no weapons. Now the choice is theirs."},
+      {text:"Sneak a small boat in at night with supplies.", short:"Sneak supplies in at night", style:"cautious", historical:false,
+       outcome:"Confederate guards watch the harbor closely. If the boat is caught, it looks like you’re sneaking in soldiers, and you get the blame anyway."}
+    ],
+    history:[
+      "Lincoln sent a messenger to tell South Carolina’s governor that ships would bring “provisions only.” Confederate President Jefferson Davis decided not to wait. His forces demanded that Anderson surrender. Anderson refused.",
+      "At 4:30 a.m. on April 12, 1861, Confederate cannons opened fire on Fort Sumter. The bombardment lasted 34 hours. With the fort burning and his men exhausted, Anderson surrendered. Amazingly, no one on either side was killed in the battle."
+    ],
+    think:"Lincoln’s plan forced the Confederacy to choose. Was it smart, sneaky, or both?",
+    map:{kind:"harbor", ring:true, fleet:true, freshFleet:true, caption:"Relief ships sail south from New York"}
+  },
+  {
+    title:"The Call", when:"April 15, 1861", where:"The White House",
+    setup:[
+      "The Confederacy has fired on the American flag. Across the North, crowds gather, and men demand to fight. Congress isn’t in session, and the U.S. Army has only about 16,000 soldiers.",
+      "But the eight slave states still in the Union are watching. If you raise an army to fight the Confederacy, they may join it."
+    ],
+    question:"How do you respond?",
+    options:[
+      {text:"Call for a huge army of 300,000 volunteers to serve for three years.", short:"Call a huge army", style:"bold", historical:false,
+       outcome:"It shows you’re serious, but it terrifies the undecided states. And without Congress, you may not have the legal power to raise an army that large."},
+      {text:"Let the Confederacy go in peace. A war isn’t worth it.", short:"Let the South go", style:"diplomatic", historical:false,
+       outcome:"War is avoided, for now. But the country splits in two, slavery is protected in a new nation, and other states might decide to leave too."},
+      {text:"Call 75,000 state militia to serve for 90 days to put down the rebellion.", short:"Call 75,000 militia", style:"cautious", historical:true,
+       outcome:"Northern governors send more men than you asked for. But in the South, your call lands like a declaration of war."}
+    ],
+    history:[
+      "Lincoln called for 75,000 militia to serve for 90 days, the longest the law allowed. Northern states rushed to answer.",
+      "But four more slave states, Virginia, Arkansas, North Carolina, and Tennessee, refused to fight their fellow Southerners and joined the Confederacy, which now had 11 states. And 90 days turned out to be far too short. The war would last four years."
+    ],
+    think:"Was it possible to save the Union without a war? Explain.",
+    map:{kind:"harbor", fleet:true, fire:true, captured:true, caption:"April 12–13, 1861: Confederate guns fire on Fort Sumter"}
+  },
+  {
+    title:"The Capital in Danger", when:"Late April 1861", where:"Washington, D.C.",
+    setup:[
+      "Washington is surrounded by slave states. Virginia has just seceded, right across the Potomac River. Maryland, on the other side, might be next.",
+      "On April 19, a pro-Confederate mob in Baltimore attacks Massachusetts soldiers on their way to defend the capital. Then railroad bridges are burned and telegraph lines are cut. For days, Washington is cut off from the North."
+    ],
+    question:"How do you protect the capital?",
+    options:[
+      {text:"Pull Union troops away from Maryland to calm things down.", short:"Pull troops out of Maryland", style:"diplomatic", historical:false,
+       outcome:"Maryland’s secessionists see weakness. With no troops coming, the capital itself could fall."},
+      {text:"Follow normal law. Anyone suspected of sabotage must go through the regular courts.", short:"Use the regular courts", style:"cautious", historical:false,
+       outcome:"Local courts are slow, and some judges sympathize with the saboteurs. Bridges keep burning while cases drag on."},
+      {text:"Suspend habeas corpus: let the army arrest suspected saboteurs and hold them without a trial.", short:"Suspend habeas corpus", style:"bold", historical:true,
+       outcome:"Soldiers begin arresting suspects along the railroad. Some Americans cheer. Others are alarmed."}
+    ],
+    history:[
+      "Lincoln suspended habeas corpus, the right to challenge your imprisonment before a judge, along the railroad from Philadelphia to Washington. When the army arrested a Maryland man named John Merryman, Chief Justice Roger Taney ruled that only Congress could suspend habeas corpus. Lincoln ignored the ruling.",
+      "He later asked Congress: “Are all the laws, but one, to go unexecuted, and the government itself go to pieces, lest that one be violated?” Troops reached Washington by ship and rail through Annapolis, and Maryland stayed in the Union."
+    ],
+    think:"Lincoln ignored the Chief Justice to protect the Union. Andrew Jackson ignored the Supreme Court in the Cherokee case. Is there a difference? Explain.",
+    map:{kind:"capital", here:true, caption:"You are here: Washington, D.C., cut off from the North"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "The war that began at Fort Sumter lasted four years and killed more than 600,000 Americans, more than any other war in the nation’s history.",
+    "As the war went on, Lincoln’s goals grew. In 1863, his Emancipation Proclamation declared enslaved people in Confederate-held areas free, and nearly 200,000 Black men went on to serve in the Union army and navy. In 1865, the 13th Amendment abolished slavery in the United States.",
+    "On April 14, 1865, exactly four years after he lowered his flag over Fort Sumter, Robert Anderson returned and raised that same flag over the fort. That night in Washington, Abraham Lincoln was shot at Ford’s Theatre. He died the next morning."
+  ],
+  map:{kind:"harbor", caption:"Fort Sumter, where the war began, and where Anderson raised his flag again in 1865"}
+};
+
+const PROFILES = {
+  bold:["The Commander","You act decisively when the moment comes. Lincoln could be bold too, as when he suspended habeas corpus, but he picked his moments carefully."],
+  cautious:["The Strategist","You avoid moves that could backfire. Lincoln was famous for his patience: he waited until the Confederacy had to decide whether to fire first."],
+  diplomatic:["The Peacemaker","You look for ways to talk instead of fight. Lincoln tried hard to avoid war, but some conflicts can’t be talked away."],
+  balanced:["The Balanced Leader","You mix boldness, patience, and diplomacy. So did Lincoln: in this crisis, his choices were split evenly among all three."]
+};
+
+/* ======================================================================
+   MAPS: Charleston Harbor and the Washington region
+   ====================================================================== */
+function makeProj(B){ return ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)]; }
+function curveP(lls, P){
+  const p = lls.map(P);
+  if (p.length === 2) return `M${p[0][0]} ${p[0][1]} L${p[1][0]} ${p[1][1]}`;
+  let d = `M${p[0][0]} ${p[0][1]}`;
+  for (let i = 0; i < p.length - 1; i++){
+    const p0 = p[i-1] || p[i], p1 = p[i], p2 = p[i+1], p3 = p[i+2] || p2;
+    const c1 = [p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6];
+    const c2 = [p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+}
+const poly = (lls, P) => `M${lls.map(P).map(q => q.join(" ")).join(" L")} Z`;
+const compass = (x, y) => `<g transform="translate(${x} ${y})"><circle r="10" fill="none" stroke="var(--ink-soft)"/><path d="M0 -8 L3 3 L0 1 L-3 3 Z" fill="var(--ink-soft)"/><text class="m-note" text-anchor="middle" y="-13">N</text></g>`;
+const tri = (x, y, r = 5.5) => `<path class="m-csa" d="M${x} ${y - r} L${x + r*.9} ${y + r*.6} L${x - r*.9} ${y + r*.6} Z"/>`;
+function penta(x, y, r, cls){
+  const pts = Array.from({length:5}, (_, i) => { const a = -Math.PI/2 + i * 2*Math.PI/5; return `${(x + r*Math.cos(a)).toFixed(1)} ${(y + r*Math.sin(a)).toFixed(1)}`; });
+  return `<path class="${cls}" d="M${pts.join(" L")} Z"/>`;
+}
+const ship = (x, y) => `<path class="m-ship" d="M${x-6} ${y} L${x+6} ${y} L${x+4} ${y+3} L${x-4} ${y+3} Z M${x} ${y} L${x} ${y-9} L${x+5} ${y-2} Z"/>`;
+
+/* Charleston Harbor */
+const HB = {lonMin:-79.99, lonMax:-79.80, latMin:32.69, latMax:32.82, kx:2800, ky:3329};
+const HP = makeProj(HB);
+const HW = Math.round((HB.lonMax - HB.lonMin) * HB.kx), HH = Math.round((HB.latMax - HB.latMin) * HB.ky);
+const LAND = [
+  [[-79.962,32.82],[-79.957,32.80],[-79.952,32.788],[-79.946,32.778],[-79.938,32.771],[-79.931,32.768],[-79.926,32.772],[-79.925,32.782],[-79.928,32.795],[-79.932,32.81],[-79.935,32.82]],
+  [[-79.99,32.82],[-79.972,32.82],[-79.968,32.80],[-79.965,32.788],[-79.972,32.778],[-79.99,32.776]],
+  [[-79.918,32.82],[-79.912,32.805],[-79.905,32.795],[-79.895,32.788],[-79.88,32.786],[-79.865,32.788],[-79.85,32.792],[-79.83,32.796],[-79.80,32.80],[-79.80,32.82]],
+  [[-79.868,32.7605],[-79.862,32.7575],[-79.85,32.758],[-79.83,32.764],[-79.80,32.774],[-79.80,32.780],[-79.83,32.770],[-79.85,32.765],[-79.862,32.764]],
+  [[-79.99,32.772],[-79.975,32.768],[-79.96,32.762],[-79.945,32.758],[-79.93,32.755],[-79.915,32.752],[-79.903,32.752],[-79.895,32.749],[-79.893,32.744],[-79.899,32.738],[-79.905,32.725],[-79.91,32.71],[-79.915,32.69],[-79.99,32.69]],
+  [[-79.884,32.739],[-79.877,32.735],[-79.872,32.725],[-79.869,32.71],[-79.868,32.69],[-79.88,32.69],[-79.882,32.71],[-79.885,32.725],[-79.888,32.734]],
+  [[-79.913,32.7745],[-79.909,32.7735],[-79.908,32.7755],[-79.912,32.7765]]
+];
+const SUMTER = [-79.8745,32.7523];
+const BATTERIES = {
+  moultrie:{ll:[-79.857,32.7595], label:"Fort Moultrie", dx:2,  dy:-10, anchor:"start"},
+  johnson: {ll:[-79.898,32.751],  label:"Fort Johnson",  dx:-8, dy:14,  anchor:"end"},
+  cummings:{ll:[-79.8825,32.737], label:"Cummings Point",dx:-8, dy:12,  anchor:"end"},
+  pinckney:{ll:[-79.9105,32.775], label:"Castle Pinckney",dx:7, dy:-5,  anchor:"start"}
+};
+
+function harborSVG(cfg, animate){
+  const P = HP;
+  let s = `<svg viewBox="0 0 ${HW} ${HH}" role="img" aria-label="Map of Charleston Harbor showing Fort Sumter and the Confederate batteries around it">`;
+  s += `<rect class="m-water" x="0" y="0" width="${HW}" height="${HH}"/>`;
+  s += `<defs><clipPath id="cfh"><rect x="4" y="4" width="${HW-8}" height="${HH-8}"/></clipPath></defs><g clip-path="url(#cfh)">`;
+  LAND.forEach(l => s += `<path class="m-land" d="${poly(l, P)}"/>`);
+  s += `</g>`;
+  s += `<rect class="m-frame" x="4" y="4" width="${HW-8}" height="${HH-8}"/>`;
+
+  s += `<text class="m-region" text-anchor="middle" x="134" y="86">Charleston</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="380" y="44">Mount Pleasant</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="100" y="300">James Island</text>`;
+  s += `<text class="m-region" text-anchor="middle" transform="translate(325 372) rotate(-86)">Morris Island</text>`;
+  s += `<text class="m-region" text-anchor="middle" transform="translate(470 210) rotate(-18)">Sullivan’s Island</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="430" y="392">Atlantic Ocean</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" x="238" y="196">Charleston Harbor</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(192 62) rotate(-74)">Cooper R.</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(79 66) rotate(-80)">Ashley R.</text>`;
+  s += compass(26, 28);
+  s += `<path d="M508 46 L508 18" stroke="var(--ink-soft)" stroke-width="1.2"/><path d="M504 24 L508 16 L512 24" fill="none" stroke="var(--ink-soft)" stroke-width="1.2"/>`;
+  s += `<text class="m-note" text-anchor="end" x="500" y="26">To Washington, D.C., 450 miles</text>`;
+  s += `<rect class="m-cart" x="14" y="344" width="150" height="74"/><rect class="m-cart" x="16.5" y="346.5" width="145" height="69"/>`;
+  s += `<text class="m-title" x="89" y="363" text-anchor="middle">Charleston Harbor</text><text class="m-note" x="89" y="375" text-anchor="middle">1861</text>`;
+  s += penta(32, 391, 5, "m-us") + `<text class="m-note" x="42" y="394">U.S. fort</text>`;
+  s += tri(32, 406, 5) + `<text class="m-note" x="42" y="409">Confederate guns</text>`;
+
+  const [sx, sy] = P(SUMTER);
+  if (cfg.fleet){
+    const f = cfg.freshFleet && animate ? " fadein" : "";
+    s += `<g class="${f}"><path class="m-sea-route" d="${curveP([[-79.80,32.722],[-79.815,32.729],[-79.832,32.737]], P)}"/>${ship(470, 300)}${ship(448, 290)}<text class="m-label" x="456" y="318">Relief ships</text></g>`;
+  }
+  if (cfg.fire){
+    const f = animate ? " fadein" : "";
+    s += `<g class="${f}">`;
+    ["moultrie","johnson","cummings"].forEach(k => { const [x,y] = P(BATTERIES[k].ll); s += `<path class="m-fire" d="M${x} ${y} L${sx} ${sy}"/>`; });
+    s += `</g>`;
+  }
+  Object.values(BATTERIES).forEach(b => {
+    const [x,y] = P(b.ll);
+    s += tri(x, y) + `<text class="m-label" x="${x + b.dx}" y="${y + b.dy}" text-anchor="${b.anchor}">${b.label}</text>`;
+  });
+  if (cfg.ring) s += `<circle class="m-ring pulse" cx="${sx}" cy="${sy}" r="12"/>`;
+  s += penta(sx, sy, 7.5, cfg.captured ? "m-csa" : "m-us");
+  s += `<text class="m-label" x="${sx + 10}" y="${sy + 15}">Fort Sumter${cfg.captured ? " (surrendered)" : ""}</text>`;
+  s += `</svg>`;
+  return s;
+}
+
+/* Washington and Maryland */
+const CB = {lonMin:-78.0, lonMax:-74.9, latMin:38.55, latMax:40.15, kx:170, ky:220};
+const CP = makeProj(CB);
+const CW = Math.round((CB.lonMax - CB.lonMin) * CB.kx), CH = Math.round((CB.latMax - CB.latMin) * CB.ky);
+const BAY = [[-76.09,39.56],[-76.2,39.42],[-76.32,39.33],[-76.42,39.24],[-76.47,39.2],[-76.44,39.12],[-76.47,39.03],[-76.49,38.98],[-76.52,38.88],[-76.53,38.75],[-76.52,38.55],[-76.3,38.55],[-76.38,38.75],[-76.33,38.9],[-76.25,39.05],[-76.2,39.15],[-76.1,39.3],[-76.0,39.45],[-76.02,39.56]];
+const DBAY = [[-75.58,39.5],[-75.45,39.3],[-75.35,39.12],[-75.2,38.95],[-75.05,38.8],[-74.9,38.85],[-74.9,39.2],[-75.15,39.25],[-75.35,39.4],[-75.5,39.52]];
+const RAIL = [[-75.16,39.95],[-75.35,39.85],[-75.55,39.74],[-75.75,39.65],[-76.09,39.56],[-76.3,39.45],[-76.45,39.35],[-76.61,39.29],[-76.78,39.13],[-77.03,38.9]];
+const CPLACES = {
+  washington:  {ll:[-77.03,38.9],  label:"Washington, D.C.", dx:-15, dy:4,  anchor:"end", capital:true},
+  baltimore:   {ll:[-76.61,39.29], label:"Baltimore",        dx:-8, dy:-4, anchor:"end"},
+  annapolis:   {ll:[-76.49,38.98], label:"Annapolis",        dx:-7, dy:13, anchor:"end"},
+  philadelphia:{ll:[-75.16,39.95], label:"Philadelphia",     dx:-7, dy:-6, anchor:"end"}
+};
+
+function capitalSVG(cfg, animate){
+  const P = CP;
+  let s = `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Map of Washington, D.C., Maryland, and the railroad north to Philadelphia">`;
+  s += `<defs><clipPath id="cf2"><rect x="4" y="4" width="${CW-8}" height="${CH-8}"/></clipPath></defs><g clip-path="url(#cf2)">`;
+  s += `<path class="m-water m-coast" d="${poly(BAY, P)}"/><path class="m-water m-coast" d="${poly(DBAY, P)}"/>`;
+  s += `<path class="m-river" stroke-width="3.2" d="${curveP([[-76.47,39.2],[-76.55,39.24],[-76.61,39.28]], P)}"/>`;
+  s += `<path class="m-river" stroke-width="2.4" d="${curveP([[-78.0,39.45],[-77.73,39.32],[-77.45,39.2],[-77.25,39.0],[-77.07,38.92],[-77.03,38.86],[-77.04,38.8],[-77.1,38.7],[-77.2,38.62],[-77.25,38.55]], P)}"/>`;
+  s += `<path class="m-river" stroke-width="2" d="${curveP([[-74.95,40.12],[-75.13,39.95],[-75.3,39.86],[-75.47,39.75],[-75.55,39.6],[-75.56,39.5]], P)}"/>`;
+  s += `<path class="m-river" stroke-width="1.8" d="${curveP([[-76.9,40.15],[-76.75,40.05],[-76.55,39.9],[-76.3,39.7],[-76.09,39.56]], P)}"/>`;
+  s += `</g><rect class="m-frame" x="4" y="4" width="${CW-8}" height="${CH-8}"/>`;
+
+  const md = P([-75.79,39.72]);
+  s += `<path class="m-border" d="M4 ${md[1]} L${md[0]} ${md[1]}"/><text class="m-note" x="12" y="${md[1] - 5}">Mason–Dixon line</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="150" y="40">Pennsylvania</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="120" y="150">Maryland</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="80" y="318">Virginia</text><text class="m-note" text-anchor="middle" x="80" y="330" style="fill:var(--seal)">seceded April 17</text>`;
+  s += `<text class="m-region" text-anchor="middle" x="410" y="196">Delaware</text>`;
+  s += `<text class="m-region" text-anchor="end" x="515" y="120">New Jersey</text>`;
+  s += `<text class="m-rlabel" text-anchor="middle" transform="translate(286 300) rotate(-82)">Chesapeake Bay</text>`;
+  s += `<text class="m-rlabel" transform="translate(70 228) rotate(32)">Potomac R.</text>`;
+  s += compass(28, 28);
+  s += `<rect class="m-cart" x="330" y="300" width="138" height="34"/><rect class="m-cart" x="332.5" y="302.5" width="133" height="29"/>`;
+  s += `<text class="m-title" x="399" y="316" text-anchor="middle">The Capital Cut Off</text><text class="m-note" x="399" y="327" text-anchor="middle">April 1861</text>`;
+
+  s += `<path class="m-rail" d="${curveP(RAIL, P)}"/><path class="m-ties" d="${curveP(RAIL, P)}"/>`;
+  s += `<path class="m-rail" d="${curveP([[-76.49,38.98],[-76.62,39.06],[-76.78,39.13]], P)}"/>`;
+  s += `<path class="m-sea-route" d="${curveP([[-76.09,39.55],[-76.18,39.35],[-76.33,39.12],[-76.49,38.98]], P)}"/>`;
+  s += `<text class="m-note" transform="translate(318 214) rotate(-62)">Troops by ship</text>`;
+  [[-76.37,39.40],[-76.25,39.47]].forEach(ll => { const [x,y] = P(ll); s += `<path class="m-x" d="M${x-4} ${y-4} L${x+4} ${y+4} M${x+4} ${y-4} L${x-4} ${y+4}"/>`; });
+  s += `<text class="m-label" x="262" y="146" text-anchor="end" style="fill:var(--seal)">Bridges burned</text>`;
+
+  Object.values(CPLACES).forEach(p => {
+    const [x,y] = P(p.ll);
+    if (p.capital) s += `<path class="m-us" d="M${x} ${y-7} L${x+2} ${y-2} L${x+7} ${y-2} L${x+3} ${y+1.5} L${x+4.5} ${y+7} L${x} ${y+3.5} L${x-4.5} ${y+7} L${x-3} ${y+1.5} L${x-7} ${y-2} L${x-2} ${y-2} Z"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="3"/>`;
+    s += `<text class="m-label" x="${x + p.dx}" y="${y + p.dy}" text-anchor="${p.anchor}">${p.label}</text>`;
+  });
+  const [bx, by] = P(CPLACES.baltimore.ll);
+  s += `<text class="m-note" x="${bx - 8}" y="${by + 9}" text-anchor="end" style="fill:var(--seal)">Riot, April 19</text>`;
+  if (cfg.here){ const [x,y] = P(CPLACES.washington.ll); s += `<circle class="m-ring pulse" cx="${x}" cy="${y}" r="11"/>`; }
+  s += `</svg>`;
+  return s;
+}
+
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  const svg = cfg.kind === "capital" ? capitalSVG(cfg, animate) : harborSVG(cfg, animate);
+  return `<figure class="map">${svg}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   PICTURES: shared drawing helpers (SVG, theme-aware, no downloads)
+   ====================================================================== */
+const DRAW = (() => {
+  const P = (c, d) => `<path class="ink ${c}" d="${d}"/>`;
+  const R = (c, x, y, w, h, rx = 0) => `<rect class="ink ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C = (c, x, y, r) => `<circle class="ink ${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const E = (c, x, y, rx, ry) => `<ellipse class="ink ${c}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const L = (d, extra = "") => `<path class="ink f-none${extra}" d="${d}"/>`;
+  const T = (x, y, txt, cls = "", anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="sv-label ${cls}">${txt}</text>`;
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const sun = (x, y, r) => C("f-gold", x, y, r) + L(Array.from({length:8}, (_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `M${(x + c*(r+5)).toFixed(1)} ${(y + s*(r+5)).toFixed(1)} L${(x + c*(r+12)).toFixed(1)} ${(y + s*(r+12)).toFixed(1)}`; }).join(" "));
+  const waves = (x0, x1, y) => { let d = `M${x0} ${y}`; for (let x = x0; x < x1; x += 24) d += ` q6 -5 12 0 t12 0`; return L(d); };
+  const pine = (x, y, s = 1, snow = false) => g(x, y, s, R("f-wood", -3, -10, 6, 10) + P("f-green", "M0 -58 L16 -30 L8 -30 L20 -10 L-20 -10 L-8 -30 L-16 -30 Z") + (snow ? P("f-snow", "M0 -58 L7 -46 L2 -44 L-3 -47 L-7 -46 Z") : ""));
+  const tree = (x, y, s = 1) => g(x, y, s, R("f-wood", -3, -18, 6, 18) + C("f-green", 0, -30, 16) + C("f-green", -9, -22, 10) + C("f-green", 9, -22, 10));
+  const mtn = (x, y, w, h, snow = true) => P("f-soft", `M${x - w/2} ${y} L${x} ${y - h} L${x + w/2} ${y} Z`) +
+    (snow ? P("f-snow", `M${x - w*0.15} ${y - h*0.7} L${x} ${y - h} L${x + w*0.15} ${y - h*0.7} L${x + w*0.06} ${y - h*0.64} L${x} ${y - h*0.72} L${x - w*0.07} ${y - h*0.63} Z`) : "");
+  const flakes = (pts) => L(pts.map(([x, y]) => `M${x-3} ${y} L${x+3} ${y} M${x} ${y-3} L${x} ${y+3}`).join(" "), " thin");
+  const puff = (x, y, s = 1) => g(x, y, s, C("f-soft", 0, 0, 12) + C("f-soft", 14, -8, 10) + C("f-soft", 22, 4, 9));
+  const usFlag = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-red", 0, -70, 36, 22) +
+    `<path d="M0 -63.7 L36 -63.7 M0 -57.4 L36 -57.4 M0 -51.1 L36 -51.1" stroke="var(--paper)" stroke-width="3.1" fill="none"/>` +
+    R("f-blue", 0, -70, 15, 12) + R("f-none", 0, -70, 36, 22));
+  const canoe = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-38 -6 Q0 14 38 -6 Q0 4 -38 -6 Z"));
+  const barrel = (x, y, s = 1) => g(x, y, s, R("f-wood", -10, -26, 20, 26, 5) + L("M-10 -19 L10 -19 M-10 -7 L10 -7"));
+  const quill = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 Q30 -70 62 -96 Q30 -50 0 0 Z") + L("M0 0 L50 -82"));
+  const frame = (w, h, inner, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${R("f-sky", -2, -2, w + 4, h + 4)}${inner}</svg>`;
+  return {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame};
+})();
+
+const ART = (() => {
+  const {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame} = DRAW;
+  const W = 520, H = 380;
+  const capitol = (x, y, s = 1) => g(x, y, s,
+    L("M0 -122 L0 -190 M-34 -184 L44 -184 M38 -184 L38 -164", " thin") + R("f-ink", 33, -164, 10, 8) +
+    L("M-27 -122 Q0 -172 27 -122 M-14 -122 L-14 -152 M0 -122 L0 -158 M14 -122 L14 -152", " dash") +
+    R("f-paper", -30, -124, 60, 34) + L("M-20 -120 L-20 -96 M-10 -120 L-10 -96 M0 -120 L0 -96 M10 -120 L10 -96 M20 -120 L20 -96", " thin") +
+    R("f-paper", -150, -52, 110, 52) + R("f-paper", 40, -52, 110, 52) +
+    L("M-150 -44 L-40 -44 M40 -44 L150 -44") +
+    [-136, -116, -96, -76, -56, 54, 74, 94, 114, 134].map(xx => R("f-soft", xx, -36, 8, 14)).join("") +
+    R("f-paper", -44, -72, 88, 72) + P("f-paper", "M-48 -72 L0 -94 L48 -72 Z") +
+    L("M-34 -68 L-34 -8 M-22 -68 L-22 -8 M-10 -68 L-10 -8 M2 -68 L2 -8 M14 -68 L14 -8 M26 -68 L26 -8 M36 -68 L36 -8", " thin") +
+    R("f-soft", -54, -8, 108, 8));
+  const brickWall = (x, y, w, h) => { let s = R("f-brick", x, y, w, h); for (let yy = y + 12; yy < y + h; yy += 12) s += L(`M${x} ${yy} L${x + w} ${yy}`, " thin"); return s; };
+
+  const start = frame(640, 220,
+    P("f-ground", "M-2 188 L642 188 L642 222 L-2 222 Z") + tree(60, 190, 1) + tree(110, 192, .8) + tree(580, 190, 1) + tree(530, 192, .8) +
+    capitol(320, 190, 1) + usFlag(146, 190, .8) + usFlag(484, 190, .8),
+    "The U.S. Capitol in 1861, its new dome still unfinished, with a construction crane on top");
+
+  const scenes = [
+    frame(W, H,
+      P("f-ground", "M-2 300 L522 300 L522 382 L-2 382 Z") + capitol(260, 300, 1.35) +
+      R("f-wood", 170, 286, 180, 20) + L("M180 296 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0 q10 8 20 0", " red") +
+      (() => { let s = ""; for (let r = 0; r < 4; r++) for (let x = 14 + (r % 2) * 9; x < 520; x += 18) s += C(r % 2 ? "f-soft" : "f-wood", x, 322 + r * 15, 6.5); return s; })(),
+      "A crowd gathered in front of the unfinished Capitol dome for Lincoln's inauguration"),
+    frame(W, H,
+      R("f-water", -2, 150, 524, 232) + waves(0, 520, 180) + waves(20, 520, 336) + P("f-ground", "M-2 140 L130 136 Q170 140 200 150 L-2 152 Z") +
+      E("f-sand", 270, 262, 170, 26) +
+      P("f-brick", "M150 254 L190 196 L350 196 L390 254 Z") + R("f-brick", 150, 254, 240, 2) +
+      L("M190 196 L350 196 M172 224 L368 224", " thin") + [200, 230, 260, 290, 320].map(x => R("f-ink", x, 230, 10, 8)).join("") +
+      usFlag(270, 196, 1.1) +
+      barrel(54, 340, 1.4) + barrel(90, 340, 1.4) + barrel(72, 304, 1.4) + g(132, 340, 1.4, `<g transform="rotate(84)">${R("f-wood", -10, -26, 20, 26, 5)}</g>`) +
+      T(80, 362, "6 weeks of food left", "sv-tag", "middle"),
+      "Fort Sumter on its island in Charleston Harbor, with the fort's last barrels of food"),
+    frame(W, H,
+      R("f-wood", -2, 220, 524, 162) +
+      `<g transform="rotate(-5 230 250)">${R("f-paper", 110, 150, 230, 180)}` +
+      T(225, 182, "Some thoughts for the", "sv-hand") + T(225, 200, "President’s consideration", "sv-hand") +
+      L("M132 222 L318 222 M132 240 L318 240 M132 258 L300 258 M132 276 L318 276 M132 294 L270 294") + T(300, 318, "W.H.S.", "sv-hand") + `</g>` +
+      R("f-ink", 386, 292, 40, 30, 5) + quill(404, 294, .9) +
+      C("f-none", 120, 352, 16) + C("f-none", 160, 352, 16) + L("M136 350 q4 -6 8 0 M104 348 L84 340 M176 348 L196 340") +
+      R("f-gold", 432, 210, 50, 14, 3) + P("f-paper", "M444 210 Q438 176 450 156 L466 156 Q478 176 472 210 Z") + P("f-gold", "M456 196 q-6 -12 2 -24 q6 12 -2 24 Z"),
+      "Seward's memo on Lincoln's desk beside a quill, inkwell, oil lamp and Lincoln's spectacles"),
+    frame(W, H,
+      L("M60 60 q8 -8 16 0 q8 -8 16 0 M150 90 q6 -6 12 0 q6 -6 12 0 M420 50 q8 -8 16 0 q8 -8 16 0") +
+      R("f-water", -2, 200, 524, 182) + waves(0, 520, 236) + waves(20, 520, 300) + waves(0, 520, 350) +
+      g(180, 262, 1.25, puff(-20, -110, 1) + puff(0, -132, 1.1) + R("f-ink", -16, -96, 14, 50) + P("f-paper", "M-60 -46 L60 -46 L52 -30 L-56 -30 Z") +
+        R("f-paper", -46, -62, 50, 16) + C("f-wood", 20, -44, 18) + L("M20 -62 L20 -26 M2 -44 L38 -44") + P("f-ink", "M-80 -30 L80 -30 L66 0 L-70 0 Z") +
+        R("f-gold", -40, -78, 28, 16) + T(-26, -66, "FOOD", "sv-tiny")) +
+      g(400, 250, .9, L("M0 -4 L0 -100 M30 -4 L30 -86") + P("f-paper", "M-20 -94 Q0 -86 18 -94 L18 -40 Q0 -32 -20 -40 Z") + P("f-paper", "M14 -80 Q30 -74 46 -80 L46 -36 Q30 -30 14 -36 Z") +
+        P("f-ink", "M-50 -4 L74 -4 L62 16 L-40 16 Z") + usFlag(0, -100, .4)),
+      "A steamship and a sailing ship carrying food south to Fort Sumter"),
+    frame(W, H,
+      brickWall(-2, -2, 524, 300) + P("f-ground", "M-2 296 L522 296 L522 382 L-2 382 Z") +
+      R("f-paper", 150, 40, 220, 230) + T(260, 78, "BY THE PRESIDENT", "sv-poster-sm") + T(260, 114, "75,000", "sv-poster-lg") +
+      T(260, 142, "MEN WANTED", "sv-poster") + L("M180 158 L340 158") + T(260, 184, "To put down the rebellion", "sv-poster-sm") +
+      T(260, 206, "90 days’ service", "sv-poster-sm") + T(260, 248, "VOLUNTEERS, ENLIST NOW!", "sv-poster-sm") +
+      usFlag(430, 300, 1.4) +
+      E("f-red", 90, 296, 40, 10) + R("f-red", 50, 256, 80, 40) + E("f-paper", 90, 256, 40, 10) +
+      L("M50 262 L70 292 L90 262 L110 292 L130 262") + L("M70 246 L104 214 M110 246 L80 214"),
+      "A recruiting poster calling for 75,000 volunteers, with a drum and the U.S. flag"),
+    frame(W, H,
+      R("f-water", -2, 250, 524, 132) + waves(0, 520, 284) + waves(20, 520, 330) +
+      P("f-ground", "M-2 200 L120 200 L140 250 L-2 260 Z") + P("f-ground", "M400 200 L522 200 L522 260 L380 250 Z") +
+      R("f-wood", 110, 192, 300, 10) + L("M110 192 L150 150 L190 192 L230 150 L270 192 L310 150 L350 192 L390 150 L410 192 M150 150 L390 150 M150 202 L150 262 M370 202 L370 262") +
+      P("f-red", "M236 194 Q220 160 244 130 Q246 150 256 156 Q262 136 276 124 Q290 160 272 194 Z") + P("f-gold", "M246 194 Q240 172 254 156 Q258 172 266 176 Q274 184 264 194 Z") +
+      P("f-red", "M320 194 Q312 172 328 152 Q340 172 336 194 Z") + puff(240, 100, 1.2) + puff(270, 70, 1.4) +
+      L("M40 200 L40 70 M24 82 L56 82") + L("M24 82 Q12 130 18 170 M56 82 Q120 92 140 90") + L("M140 90 l6 6 M140 90 l8 -4", " red") +
+      L("M480 200 L480 70 M464 82 L496 82 M464 82 Q430 92 420 96 M420 96 l-6 6 M420 96 l-8 -4") +
+      T(260, 368, "April 1861: bridges burned, telegraph wires cut", "sv-tag", "middle"),
+      "A railroad bridge burning and a telegraph wire cut between Washington and the North")
+  ];
+  return {start, scenes};
+})();
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG(GAME.titleMap, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(INTRO.map, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <figure class="scene wide">${ART.start}</figure>
+    <div class="content">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>${START.factsHeading}</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    <div class="visuals"><figure class="scene">${ART.scenes[i]}</figure>${mapSVG(d.map, fresh)}</div>
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null});
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {bold:0, cautious:0, diplomatic:0}; list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(c.bold, c.cautious, c.diplomatic); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:6}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${c.bold} bold, ${c.cautious} cautious, ${c.diplomatic} diplomatic)`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${GAME.leaderPoss} choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leaderPoss}">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${["bold","cautious","diplomatic"].map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
+</body>
+</html>
+
+</body></html>
