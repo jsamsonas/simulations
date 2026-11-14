@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A six-round classroom simulation: lead one state under the Articles of Confederation, 1781–1788.">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Rope of Sand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Continental-blue header band over a two-column "treasurer's report" workspace; one column on phones. */
+:root {
+  --bg: #EDEEEA; --surface: #FAFAF7; --sunk: #E1E4DF; --ink: #1C2127; --muted: #59616A; --line: #C9CEC8;
+  --accent: #1F3A5F; --accent-ink: #FFFFFF; --buff: #B8893A; --red: #9E2F2A;
+  --good: #2E7547; --bad: #B03A2A; --warn: #9A6C12;
+  --f-merchants: #1F3A5F; --f-farmers: #5A7A3A; --f-veterans: #9E2F2A; --f-gentry: #9A6C12;
+  --f-display: "IM Fell English", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-body: "Libre Franklin", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161B; --surface: #1A1F26; --sunk: #232931; --ink: #E3E6E8; --muted: #9AA3AC; --line: #313842;
+  --accent: #A4BEE0; --accent-ink: #0F1620; --buff: #D9AE62; --red: #E07A70;
+  --good: #79BE8D; --bad: #EC7B67; --warn: #DDAE4E;
+  --f-merchants: #A4BEE0; --f-farmers: #A8C88A; --f-veterans: #E58A80; --f-gentry: #DDAE4E;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12161B; --surface: #1A1F26; --sunk: #232931; --ink: #E3E6E8; --muted: #9AA3AC; --line: #313842;
+  --accent: #A4BEE0; --accent-ink: #0F1620; --buff: #D9AE62; --red: #E07A70;
+  --good: #79BE8D; --bad: #EC7B67; --warn: #DDAE4E;
+  --f-merchants: #A4BEE0; --f-farmers: #A8C88A; --f-veterans: #E58A80; --f-gentry: #DDAE4E;
+  color-scheme: dark; }
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.band{background:var(--accent);color:var(--accent-ink);border-bottom:4px solid var(--buff)}
+header.band .wrap{padding-block:14px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{font-family:var(--f-display);font-size:32px;line-height:1.05}
+.brand small{display:block;font-family:var(--f-body);font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:2px}
+.timeline{display:flex;gap:4px;flex-wrap:wrap}
+.timeline span{font-family:var(--f-mono);font-size:13px;padding:3px 9px;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);opacity:.6}
+.timeline span.done{opacity:.85}
+.timeline span.now{opacity:1;background:var(--accent-ink);color:var(--accent);font-weight:500}
+.statusbar{border-bottom:1px solid var(--line);background:var(--surface)}
+.statusbar .wrap{display:flex;flex-wrap:wrap;gap:6px 26px;padding-block:10px;align-items:baseline}
+.stat{display:flex;gap:8px;align-items:baseline}
+.stat b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;font-size:16px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.meter{display:inline-block;width:64px;height:7px;border-radius:4px;background:var(--sunk);vertical-align:middle;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--good)}
+.meter i.mid{background:var(--warn)} .meter i.low{background:var(--bad)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--sunk);color:var(--ink);white-space:nowrap}
+.pill.bad{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.pill.good{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+main{padding-block:22px 60px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.04}
+h2{font-size:19px;font-weight:700}
+h3{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start}
+.grid.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:880px){.grid,.grid.even{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--r);padding:11px 20px;font-weight:700;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn:focus-visible,input:focus-visible,.opt:focus-visible,.choice:focus-visible,summary:focus-visible{outline:3px solid var(--buff);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+.yearhead{display:flex;flex-direction:column;gap:4px}
+.era{font-family:var(--f-mono);font-size:13px;color:var(--red);letter-spacing:.03em}
+.intro{max-width:64ch}
+.callout{border-left:4px solid var(--buff);background:color-mix(in srgb,var(--buff) 10%,transparent);padding:10px 14px;border-radius:0 var(--r) var(--r) 0;font-size:14px}
+.callout.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.callout.good{border-color:var(--good);background:color-mix(in srgb,var(--good) 8%,transparent)}
+.issue .who{font-size:12.5px;color:var(--muted);font-style:italic}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.opt{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--bg);text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:5px}
+.opt b{font-size:14.5px}
+.opt .d{font-size:13px;color:var(--muted)}
+.opt[aria-pressed="true"]{border:2px solid var(--accent);padding:9px 11px;background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:4px;background:var(--sunk);white-space:nowrap}
+.tag.up{color:var(--good)} .tag.dn{color:var(--bad)}
+.hint{font-size:12.5px;border-top:1px dashed var(--line);padding-top:5px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right}
+td.num{white-space:nowrap}
+tr.me td{background:color-mix(in srgb,var(--buff) 16%,transparent);font-weight:600}
+.receipt{font-size:14px}
+.receipt .sec{display:flex;flex-direction:column;gap:4px;padding-block:10px;border-top:1px dashed var(--line)}
+.receipt .sec:first-of-type{border-top:none;padding-top:0}
+.rline{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px}
+.rline .how{color:var(--muted);font-size:12.5px;grid-column:1/-1;margin-top:-2px}
+.rline .amt{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.bigline{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:16px;padding-top:8px;border-top:2px solid var(--ink)}
+.reporthead{font-family:var(--f-display);font-size:23px;line-height:1.15}
+.fac{display:grid;grid-template-columns:minmax(0,1fr) 110px 44px;gap:4px 10px;align-items:center}
+.fac .nm{font-weight:700;display:flex;align-items:center;gap:7px}
+.fac .nm::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.fac .bar{height:9px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.fac .bar i{display:block;height:100%;background:var(--c)}
+.why{display:block;font-size:12.5px;color:var(--muted);margin:2px 0 6px}
+.facd summary{list-style:none;cursor:pointer}
+.facd summary::-webkit-details-marker{display:none}
+.facd[open] summary .nm{text-decoration:underline}
+.c-merchants{--c:var(--f-merchants)} .c-farmers{--c:var(--f-farmers)} .c-veterans{--c:var(--f-veterans)} .c-gentry{--c:var(--f-gentry)}
+.quote{border-left:3px solid var(--c);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:2px}
+.quote q{font-family:var(--f-display);font-size:18px;line-height:1.3;quotes:"“" "”"}
+.quote span{font-size:12.5px;color:var(--muted)}
+.facgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.facgrid{grid-template-columns:minmax(0,1fr)}}
+.faccard{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.faccard p{font-size:13.5px}
+.votebar{display:flex;height:18px;border-radius:4px;overflow:hidden;background:var(--sunk)}
+.votebar i{display:block;height:100%;background:var(--c)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend span::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--c)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}
+.kv div{display:flex;flex-direction:column;gap:1px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:7px 10px}
+.kv b{font-family:var(--f-mono);font-weight:500;font-size:16px;font-variant-numeric:tabular-nums}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.choice{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--surface);text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:3px}
+.choice[aria-pressed="true"]{border:2px solid var(--accent);padding:9px 11px}
+.choice span{font-size:12.5px;color:var(--muted)}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-size:14px}
+label.chk input{margin-top:3px}
+.chain{display:flex;flex-wrap:wrap;gap:4px}
+.chain span{font-family:var(--f-mono);font-size:11.5px;padding:3px 6px;border-radius:4px;border:1px solid var(--line);background:var(--bg)}
+.chain span.five{border-color:var(--accent);color:var(--accent);font-weight:600}
+.chain span.yes{background:color-mix(in srgb,var(--good) 18%,transparent);border-color:var(--good);color:var(--good)}
+.chain span.no{background:color-mix(in srgb,var(--bad) 15%,transparent);border-color:var(--bad);color:var(--bad)}
+.unionbar{height:14px;border-radius:7px;background:var(--sunk);overflow:hidden}
+.unionbar i{display:block;height:100%;background:var(--accent)}
+.chart svg{width:100%;height:auto;display:block}
+.qs{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.grade{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--bg)}
+.grade b{font-family:var(--f-display);font-size:36px;line-height:1}
+.g-A,.g-B{color:var(--good)} .g-C{color:var(--warn)} .g-D,.g-F{color:var(--bad)}
+.footer-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;align-items:center}
+details summary{cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.fade{animation:fade .35s ease-out}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="brand"><small>The Confederation Game · Your state + 4 others</small>Rope of Sand</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</header>
+<div class="statusbar" id="statusbar" hidden><div class="wrap" id="statusInner"></div></div>
+<main><div class="wrap" id="app"></div></main>
+
+<script>
+// ===== Confederation engine =====
+const CF = (() => {
+  const FK = ['merchants', 'farmers', 'veterans', 'gentry'];
+  const IDS = ['MA', 'RI', 'NY', 'NJ', 'VA'];
+  const STATES = {
+    MA: { name: 'Massachusetts', E: 100, T: 100, debt: 5000000, specie: 150000, D: 45, quota: 0.16, landed: true, port: true, gentry: 'Gentry & officials',
+      voters: { merchants: 0.25, farmers: 0.45, veterans: 0.15, gentry: 0.15 }, neighbors: ['RI', 'NY'],
+      blurb: 'Rich coastal merchants in Boston, struggling farmers in the western hills, and the biggest war debt of any state.' },
+    RI: { name: 'Rhode Island', E: 30, T: 45, debt: 1000000, specie: 40000, D: 48, quota: 0.02, landed: false, port: true, gentry: 'Landowners',
+      voters: { merchants: 0.25, farmers: 0.55, veterans: 0.10, gentry: 0.10 }, neighbors: ['MA'],
+      blurb: 'The smallest state. Fiercely independent, with busy ports at Newport and Providence and farmers deep in debt.' },
+    NY: { name: 'New York', E: 90, T: 120, debt: 2000000, specie: 180000, D: 28, quota: 0.12, landed: true, port: true, gentry: 'Manor lords & landowners',
+      voters: { merchants: 0.30, farmers: 0.35, veterans: 0.10, gentry: 0.25 }, neighbors: ['NJ'],
+      blurb: 'New York City is the busiest port in the country. Your import duties fall on goods your neighbors buy too.' },
+    NJ: { name: 'New Jersey', E: 55, T: 25, debt: 1500000, specie: 60000, D: 38, quota: 0.05, landed: false, port: false, gentry: 'Landowners',
+      voters: { merchants: 0.15, farmers: 0.55, veterans: 0.15, gentry: 0.15 }, neighbors: ['NY'],
+      blurb: 'A farming state with no big port. You buy imports through New York and Philadelphia and pay their taxes.' },
+    VA: { name: 'Virginia', E: 140, T: 70, debt: 4000000, specie: 120000, D: 30, quota: 0.19, landed: true, port: true, gentry: 'Planters',
+      voters: { merchants: 0.10, farmers: 0.35, veterans: 0.10, gentry: 0.45 }, neighbors: [],
+      blurb: 'The largest and richest state. Tobacco planters, many in debt to British merchants, rule. Claims a huge western territory.' },
+  };
+  const FACTION = {
+    merchants: { name: 'Merchants & creditors', short: 'Merchants', who: 'Shippers, shopkeepers, and wealthy men who lent money to the state during the war. They hold the state’s bonds and want them paid in gold and silver.' },
+    farmers: { name: 'Farmers & debtors', short: 'Farmers', who: 'Most of your people. They owe taxes and debts in gold and silver coin (“hard money”) that almost nobody in the countryside has.' },
+    veterans: { name: 'Continental veterans', short: 'Veterans', who: 'Men who fought the war and were paid in IOUs. Many sold them to speculators for a few cents on the dollar.' },
+    gentry: { name: 'Large landowners', short: 'Landowners', who: 'Big landowners and leading families. They want order, low land taxes, and power kept close to home.' },
+  };
+  const REQ = [3000000, 2000000, 3000000, 3800000, 1700000, 1500000];
+  const OTHER_QUOTA = 1 - IDS.reduce((s, k) => s + STATES[k].quota, 0);
+
+  const EVENTS = {
+    cropFail:   { name: 'Crop failure', kind: 'local', p: 0.15, note: 'Drought and an early frost ruin the harvest. Farmers have even less to pay their taxes with.', rumor: ['A poor harvest?', 'Dry weather all spring has farmers worried.'] },
+    goodHarvest:{ name: 'Good harvest', kind: 'local', p: 0.2, note: 'A fine harvest. Farmers can sell their surplus and catch up on debts.', rumor: ['A fine season?', 'Spring rains came on time this year.'] },
+    frontierWar:{ name: 'Frontier fighting', kind: 'local', p: 0.15, landed: true, note: 'Native nations defend their lands against settlers moving west. Your state pays militia to guard the frontier.', rumor: ['Trouble on the frontier', 'Settlers keep pushing onto land that Native nations never gave up.'] },
+    taxRevolt:  { name: 'Tax collectors attacked', kind: 'local', p: null, note: 'Angry crowds chase off tax collectors and block auctions of farms seized for unpaid taxes.', rumor: ['Angry tax meetings', 'Town meetings in the countryside are protesting high taxes.'] },
+    counterfeit:{ name: 'Counterfeit paper money', kind: 'local', p: 0.3, paper: true, note: 'Fake bills flood the market, and people trust your paper money even less.', rumor: ['Fake bills?', 'Shopkeepers are squinting hard at paper money.'] },
+    britishBan: { name: 'Britain closes its ports', kind: 'world', note: 'Britain bans American ships from its sugar islands in the West Indies, once a key market for American fish, lumber, and grain.', rumor: ['Trade with the British islands?', 'Merchants hope peace will reopen the British West Indies to American ships.'] },
+    depression: { name: 'Hard times', kind: 'world', note: 'Americans buy British goods on credit, and gold and silver drain away to pay for them. Prices and wages fall, and coin becomes scarce.', rumor: ['Where has all the coin gone?', 'British goods fill the shops, and coin is disappearing.'] },
+    barbary:    { name: 'Barbary pirates', kind: 'world', note: 'Pirates from Algiers seize American ships and enslave their crews. Without a navy or money, Congress can’t protect American trade.', rumor: ['Pirates in the Mediterranean?', 'American ships no longer have Britain’s navy to protect them.'] },
+    mississippi:{ name: 'Spain closes the Mississippi', kind: 'world', note: 'Spain blocks American use of the Mississippi River, and Congress talks of giving up the right for 25 years in exchange for a trade treaty.', rumor: ['The Mississippi closed?', 'Western farmers need the river to ship their crops to New Orleans.'] },
+  };
+
+  const ISSUES = {
+    impost: { title: 'A tax for Congress', short: 'The Impost', who: 'A request from the Congress of the Confederation',
+      text: 'Congress cannot tax anyone. It can only ask the states for money, and they rarely pay. Congress asks every state to let it collect a 5% tax on imports to pay the war debt. The Articles say every single state must agree.',
+      opts: [
+        { k: 'approve', label: 'Approve the impost', desc: 'Give Congress its own money to pay soldiers and lenders.', fx: { union: 8, merchants: 5, veterans: 5, gentry: -3 } },
+        { k: 'conditional', label: 'Approve, with conditions', desc: 'Yes, but your state picks the collectors, and the tax ends in 25 years.', fx: { union: 4, merchants: 2, veterans: 3 } },
+        { k: 'reject', label: 'Reject it', desc: 'No body but your own legislature should tax your people. That is what the Revolution was about.', fx: { union: -10, farmers: 3, gentry: 5, merchants: -4 } },
+      ] },
+    soldiers: { title: 'The soldiers’ IOUs', short: 'Soldiers’ pay', who: 'A petition from veterans of your state’s regiments',
+      text: 'Your soldiers were paid in paper IOUs (“certificates”) that now sell for 15 to 20 cents on the dollar. Speculators are buying them up cheap. Should your state take responsibility for them?',
+      opts: [
+        { k: 'assume', label: 'Take over the IOUs', desc: 'Your state promises to pay interest on certificates held by its citizens. Your debt grows.', fx: { debtE: 5000, veterans: 10, merchants: 6, farmers: -4 }, hint: 'Whoever holds the certificate gets paid, even a speculator who bought it cheap.' },
+        { k: 'land', label: 'Pay them in western land', when: S => S.landed, desc: 'Grant veterans land on the frontier instead of money.', fx: { veterans: 7, gentry: 3, union: -2 } },
+        { k: 'congress', label: 'Leave it to Congress', desc: 'The soldiers served the United States. Let Congress pay them.', fx: { veterans: -10, merchants: -3, farmers: 2 } },
+      ] },
+    loyalists: { title: 'The Loyalists and British debts', short: 'Loyalists', who: 'A recommendation from Congress under the peace treaty',
+      text: 'The Treaty of Paris (1783) asks the states to return property taken from Loyalists and to let British merchants collect debts Americans owed before the war. Britain says it will keep its forts on the frontier until the states comply.',
+      opts: [
+        { k: 'comply', label: 'Obey the treaty', desc: 'Open your courts to British creditors and return Loyalist estates.', fx: { union: 6, merchants: 6, farmers: -5, veterans: -8, gentry: -4 }, by: { VA: { gentry: -14 } } },
+        { k: 'partial', label: 'Debts yes, property no', desc: 'Let British creditors sue, but keep confiscated Loyalist land.', fx: { union: 2, merchants: 2, gentry: -1 }, by: { VA: { gentry: -5 } } },
+        { k: 'refuse', label: 'Refuse', desc: 'Keep the Loyalists’ land and block lawsuits by British creditors.', fx: { union: -6, farmers: 4, veterans: 6, gentry: 4, merchants: -3 }, by: { VA: { gentry: 12 } } },
+      ] },
+    commute: { title: 'The officers’ pensions', short: 'Officers’ pay', who: 'A request from Congress after the Newburgh crisis',
+      text: 'In March 1783, unpaid Continental officers at Newburgh, New York, hinted they might refuse to disband. George Washington calmed them. Congress promised officers five years’ full pay, called “commutation,” and asks the states to help pay. Many farmers call it a pension for a privileged few.',
+      opts: [
+        { k: 'support', label: 'Support commutation', desc: 'The officers earned it. Pay your share.', fx: { veterans: 12, farmers: -8, union: 5 } },
+        { k: 'oppose', label: 'Protest it', desc: 'Send Congress a protest. Common soldiers got nothing like it.', fx: { farmers: 6, veterans: -10, union: -5 } },
+        { k: 'quiet', label: 'Say nothing', desc: 'Neither support nor protest.', fx: { veterans: -3 } },
+      ] },
+    trade: { title: 'Trade war with the neighbors', short: 'Trade war', who: 'A bill in the legislature',
+      text: 'Every state sets its own taxes on goods from other states and countries. Some legislators want to tax goods coming in from neighboring states to protect local farmers and raise money.',
+      opts: [
+        { k: 'tax', label: 'Tax the neighbors’ goods', desc: 'Raise money and protect local farmers. Your neighbors will be angry.', fx: { cashE: 800, farmers: 4, merchants: -2, union: -5, hitNeighbors: true } },
+        { k: 'free', label: 'Keep trade free', desc: 'Goods from other states cross your borders untaxed.', fx: { merchants: 3, union: 3 } },
+        { k: 'meet', label: 'Meet with the neighbors', desc: 'Invite nearby states to a meeting on trade and rivers, as Virginia and Maryland did at Mount Vernon in 1785.', fx: { cash: -5000, merchants: 4, union: 5 } },
+      ] },
+    tradeNJ: { title: 'A barrel tapped at both ends', short: 'Trade war', who: 'A bill in the legislature',
+      text: 'New Jersey has no big port. New York taxes goods bound for New Jersey, and Philadelphia profits on the rest. People say New Jersey is “a barrel tapped at both ends.”',
+      opts: [
+        { k: 'retaliate', label: 'Strike back at New York', desc: 'Tax New York’s lighthouse at Sandy Hook, on New Jersey land, as New Jersey really did.', fx: { cash: 8000, farmers: 4, union: -4 } },
+        { k: 'appeal', label: 'Appeal to Congress', desc: 'Ask Congress to stop New York. Congress has no power to regulate trade.', fx: { union: 2 } },
+        { k: 'strike', label: 'Stop paying Congress', desc: 'Refuse to pay Congress until it can protect you. New Jersey did this in 1786.', fx: { union: -8, farmers: 5, merchants: -3 } },
+      ] },
+    west: { title: 'The western lands', short: 'Western lands', who: 'A request from Congress and the states without western claims',
+      text: 'Your state’s colonial charter claims land stretching far to the west, past the Appalachians, land where Native nations live. States without such claims say the West was won by everyone and should belong to Congress, which could sell it to pay the national debt.',
+      opts: [
+        { k: 'cede', label: 'Give it all to Congress', desc: 'Turn your claim over to the United States.', fx: { union: 10, gentry: -5, veterans: 3 } },
+        { k: 'reserve', label: 'Give it, but keep a district for veterans', desc: 'Like Virginia’s Military District and Connecticut’s Western Reserve, both in present-day Ohio.', fx: { union: 6, veterans: 8, gentry: -2 } },
+        { k: 'keep', label: 'Keep it and sell it yourselves', desc: 'Sell the land to settlers and speculators to pay your own debts.', fx: { cashE: 1500, union: -10, gentry: 6 } },
+      ] },
+    westNL: { title: 'The western lands', short: 'Western lands', who: 'A debate in the legislature',
+      text: 'Big states like Virginia and New York claim western land stretching to the Mississippi. Your state has no such claim. Your leaders say the West was won by all the states and should belong to Congress, which could sell it to pay the national debt.',
+      opts: [
+        { k: 'press', label: 'Press Congress to take the West', desc: 'Send strong delegates and petitions.', fx: { union: 5, merchants: 2 } },
+        { k: 'withhold', label: 'Withhold money until they do', desc: 'Pay Congress nothing until the big states give up their claims.', fx: { union: -8, farmers: 4, merchants: -3 } },
+        { k: 'ignore', label: 'Stay out of it', desc: 'Your state has its own problems.', fx: {} },
+      ] },
+    paper: { title: 'Paper money', short: 'Paper money', who: 'A petition signed by hundreds of farmers',
+      text: 'There is almost no gold or silver coin in the countryside. Farmers can’t pay taxes or debts, and courts are seizing their farms. They want the state to print paper money.',
+      opts: [
+        { k: 'legal', label: 'Print paper and force creditors to take it', desc: 'Print paper money and make it “legal tender”: creditors must accept it at full value, as Rhode Island did.', fx: { paper: 'legal', farmers: 14, merchants: -16, D: -15 }, hint: 'Paper money loses value fast when creditors are forced to take it.' },
+        { k: 'loan', label: 'Lend paper to farmers', desc: 'Lend paper money to farmers, with their land as security. Nobody is forced to accept it.', fx: { paper: 'loan', farmers: 7, merchants: -5, D: -8 } },
+        { k: 'hard', label: 'Hard money only', desc: 'Taxes and debts must be paid in gold and silver. Sound money protects lenders.', fx: { merchants: 8, farmers: -8, D: 5 } },
+      ] },
+    annapolis: { title: 'A meeting at Annapolis', short: 'Annapolis', who: 'An invitation from Virginia',
+      text: 'Virginia invites every state to send commissioners to Annapolis, Maryland, in September 1786 to discuss trade between the states.',
+      opts: [
+        { k: 'send', label: 'Send commissioners', desc: 'Costs a little. Shows you are serious about fixing the Union.', fx: { cash: -3000, union: 4, merchants: 3 } },
+        { k: 'skip', label: 'Don’t bother', desc: 'Only five states sent anyone. Another meeting won’t change much.', fx: { union: -2, farmers: 1 } },
+      ] },
+    rebellion: { title: 'The courts are closed', short: 'Rebellion', who: 'An urgent report from the county sheriffs',
+      text: 'Armed farmers, many of them war veterans, have marched on the courthouses in three counties to stop the courts from seizing farms for debts and taxes. They call themselves Regulators. In Massachusetts, people will call it Shays’ Rebellion. Merchants demand action. Congress has no army to send.',
+      opts: [
+        { k: 'militia', label: 'Raise an army to crush it', desc: 'Merchants lend money to pay the militia. The Regulators will be scattered by force.', fx: { cashE: -300, merchants: 10, gentry: 6, farmers: -14, veterans: -6, union: 3, unrest: -30 } },
+        { k: 'relief', label: 'Pardon them and pass relief', desc: 'Pardon the rank and file, cut taxes, and let debtors pay later.', fx: { farmers: 12, merchants: -10, D: -15, unrest: -15 } },
+        { k: 'giveIn', label: 'Give the Regulators what they want', desc: 'Close the courts to debt cases and pass paper-money laws.', fx: { farmers: 16, merchants: -18, union: -6, D: -20, unrest: -10 } },
+      ] },
+    rebelNear: { title: 'Rebellion next door', short: 'Rebellion', who: 'News from Massachusetts',
+      text: 'In western Massachusetts, armed farmers led by the veteran Daniel Shays have closed the courts to stop farm seizures. Massachusetts asks for help. Your own farmers are watching closely, and wealthy people everywhere are frightened.',
+      opts: [
+        { k: 'help', label: 'Help put it down', desc: 'Send money and support to Massachusetts.', fx: { cashE: -100, union: 5, merchants: 5, farmers: -4 } },
+        { k: 'relief', label: 'Head it off at home', desc: 'Pass debt relief so your own farmers don’t rise up.', fx: { farmers: 8, merchants: -6, D: -10 } },
+        { k: 'nothing', label: 'Stay out of it', desc: 'It’s Massachusetts’s problem.', fx: {} },
+      ] },
+    philly: { title: 'The convention in Philadelphia', short: 'Convention', who: 'A call from Congress',
+      text: 'After Shays’ Rebellion, Congress calls a convention in Philadelphia in May 1787 “for the sole and express purpose of revising the Articles of Confederation.” Who will you send?',
+      opts: [
+        { k: 'strong', label: 'Send nationalists', desc: 'Delegates who want a much stronger national government.', fx: { union: 8, merchants: 5, veterans: 3, farmers: -4 } },
+        { k: 'states', label: 'Send states’-rights men', desc: 'Delegates who will defend your state’s power.', fx: { union: 2, farmers: 3, gentry: 3 } },
+        { k: 'boycott', label: 'Send no one', desc: 'Rhode Island refused to attend. The Articles just need small fixes, if any.', fx: { union: -8, farmers: 5, merchants: -8 } },
+      ] },
+    ratify: { title: 'Ratify the Constitution?', short: 'Ratification', who: 'Your state’s ratifying convention',
+      text: 'The Philadelphia convention did not fix the Articles. It wrote a new Constitution, with a national government that can tax, regulate trade, and raise an army. It takes effect when nine states ratify. Federalists say it will save the Union. Anti-Federalists warn it has no bill of rights and will swallow the states.',
+      opts: [
+        { k: 'yes', label: 'Ratify it', desc: 'Accept the Constitution as written.', fx: { union: 15, merchants: 10, veterans: 8, farmers: -10, gentry: 2 }, by: { VA: { gentry: -6 } } },
+        { k: 'amend', label: 'Ratify and demand amendments', desc: 'Ratify, but call for a bill of rights, as Massachusetts, Virginia, and New York did.', fx: { union: 10, merchants: 6, veterans: 5, farmers: -2, gentry: 2 } },
+        { k: 'no', label: 'Reject it', desc: 'Stay under the Articles. Rhode Island and North Carolina held out.', fx: { union: -15, merchants: -15, veterans: -6, farmers: 10 } },
+      ] },
+  };
+
+  const YEARS = [
+    { year: 1781, title: 'Victory, and the Bill', events: [['cropFail', false], ['goodHarvest', false], ['frontierWar', false]],
+      intro: 'In March 1781 Maryland finally signed the Articles of Confederation, the first constitution of the United States. In October, Washington and the French trapped the British army at Yorktown. The war is nearly won. But the bill is coming due. Your state owes millions to its own citizens, and Congress owes millions more to soldiers, farmers, and foreign lenders.',
+      hist: 'Congress proposed the Impost in February 1781. Twelve states agreed, but Rhode Island said no in November 1782, and the plan died. Under the Articles, one small state could block the whole country.' },
+    { year: 1783, title: 'Peace and the Loyalists', events: [['britishBan', true], ['cropFail', false], ['goodHarvest', false], ['frontierWar', false]],
+      intro: 'The Treaty of Paris recognizes American independence. Peace brings new problems. The army must be paid and sent home, Loyalists want their property back, and British merchants want to collect old debts. Britain is happy to sell Americans goods but not to buy theirs.',
+      hist: 'Most states ignored the treaty’s terms on Loyalists and British debts, and Britain kept its forts on the Great Lakes for 13 more years. In July 1783 Britain closed its West Indies colonies to American ships. Officers’ commutation caused angry protests in New England towns.' },
+    { year: 1785, title: 'Land and Trade Wars', events: [['depression', true], ['barbary', true], ['cropFail', false], ['frontierWar', false], ['taxRevolt', false]],
+      intro: 'Peace has not brought prosperity. Congress can’t make trade treaties stick because every state sets its own trade rules, and some states tax each other. Congress passed the Land Ordinance of 1785 to survey and sell the western lands, but only if the states hand them over.',
+      hist: 'Virginia gave its northwestern claims to Congress in 1784 but kept a Military District in Ohio for its veterans. Massachusetts ceded in 1785 and Connecticut in 1786, keeping its Western Reserve. In 1785 pirates from Algiers seized two American ships, and Congress could not pay the ransom. Virginia and Maryland met at Mount Vernon to settle trade on the Potomac.' },
+    { year: 1786, title: 'Paper Money', events: [['mississippi', true], ['cropFail', false], ['goodHarvest', false], ['taxRevolt', false], ['counterfeit', false]],
+      intro: 'Coin is so scarce that farmers can’t pay taxes or debts. Courts are seizing farms and jailing debtors. Seven states have printed paper money. In Rhode Island, a “Know Ye” law lets debtors pay creditors in paper that has lost most of its value, and some creditors are fleeing the state to avoid being paid.',
+      hist: 'Rhode Island’s 1786 paper money soon lost most of its value. Massachusetts refused to print paper and raised taxes payable in hard money. Only five states sent commissioners to Annapolis. They gave up on trade talks and instead called for a convention to fix the Articles.' },
+    { year: 1787, title: 'Rebellion', events: [['cropFail', false], ['goodHarvest', false], ['taxRevolt', false], ['frontierWar', false], ['counterfeit', false]],
+      intro: 'Since the fall of 1786, armed farmers in western Massachusetts have closed courthouses. In January 1787 about 1,500 of them marched on the federal arsenal at Springfield. Leaders all over the country are frightened. “There could be no stronger evidence of the want of energy in our government,” Washington writes.',
+      hist: 'A Massachusetts army paid for by Boston merchants scattered Shays’ men at Springfield in January 1787, killing four. Massachusetts then pardoned most rebels, and voters threw out the governor. Twelve states sent delegates to Philadelphia. Rhode Island sent no one.' },
+    { year: 1788, title: 'Ratification', events: [['cropFail', false], ['goodHarvest', false], ['counterfeit', false]],
+      intro: 'The Constitution is out, and the country is arguing about it in newspapers, taverns, and state conventions. Delaware ratified first, in December 1787. Now your state’s convention must decide.',
+      hist: 'New Hampshire became the ninth state to ratify in June 1788, putting the Constitution into effect. Massachusetts (187–168), Virginia (89–79), and New York (30–27) ratified narrowly, asking for amendments. North Carolina waited until 1789 and Rhode Island until May 1790, by 34–32.' },
+  ];
+
+  function issuesFor(yi, S) {
+    return [
+      ['impost', 'soldiers'],
+      ['loyalists', 'commute'],
+      [S.id === 'NJ' ? 'tradeNJ' : 'trade', S.landed ? 'west' : 'westNL'],
+      ['paper', 'annapolis'],
+      [S.id === 'MA' || S.unrest >= 55 ? 'rebellion' : 'rebelNear', 'philly'],
+      ['ratify'],
+    ][yi];
+  }
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const opt = (id, k) => ISSUES[id].opts.find(o => o.k === k);
+  const optsFor = (id, S) => ISSUES[id].opts.filter(o => !o.when || o.when(S));
+  const fxOf = (o, S) => ({ ...o.fx, ...(o.by && o.by[S.id] || {}) });
+
+  function newState(id) {
+    const P = STATES[id];
+    return { id, name: P.name, E: P.E, T: P.T, T0: P.T, debt: P.debt, specie: P.specie, D: P.D, D0: P.D, quota: P.quota, landed: P.landed, port: P.port,
+      paperOut: 0, paperV: 1, legal: false, unrest: 30, flags: {},
+      approval: { merchants: 55, farmers: 55, veterans: 50, gentry: 58 }, wins: 0 };
+  }
+  function newNation() { return { U: 45, impost: null, paidShare: [], ratified: {} }; }
+
+  const request = (yi, N) => REQ[yi] * (N.impost ? 0.6 : 1);
+  const paperValue = (out, E, legal) => clamp(1 - out / (E * 10000) * (legal ? 1.3 : 0.7), 0.15, 1);
+  function collectRate(S, B) {
+    let r = clamp(1 - S.D / 140 - Math.max(0, B.tax - 4) * 0.06, 0.35, 0.95);
+    return r;
+  }
+
+  function budget(S, yi, choices, B, N) {
+    const income = [], spend = [], bonds = [];
+    const ids = issuesFor(yi, S);
+    let paperAmt = 0, paperLegal = S.legal, paperOut = S.paperOut;
+    for (const id of ids) { const o = choices[id] && opt(id, choices[id]); if (o && o.fx.paper) { paperAmt = S.E * (o.fx.paper === 'legal' ? 4000 : 2500); paperLegal = o.fx.paper === 'legal'; paperOut += paperAmt; } }
+    const v = paperOut ? Math.min(S.paperV, paperValue(paperOut, S.E, paperLegal)) : 1;
+    let rate = collectRate(S, B);
+    const assessed = S.E * 1400 * B.tax;
+    let taxAmt = assessed * rate, how = `${fmt(assessed)} assessed, ${Math.round(rate * 100)}% actually collected`;
+    if (paperLegal && paperOut) { const r2 = Math.min(0.95, rate + 0.2); taxAmt = assessed * r2 * (0.4 + 0.6 * v); how = `${fmt(assessed)} assessed, ${Math.round(r2 * 100)}% collected, much of it in paper worth ${Math.round(v * 100)}¢ on the dollar`; }
+    income.push({ label: 'Direct tax on land and polls', amt: taxAmt, how, key: 'tax' });
+    if (B.duty) income.push({ label: `Import duty (${B.duty}%)`, amt: S.T * 250 * B.duty, how: S.port ? 'Collected at your ports' : 'You have little trade of your own to tax' });
+    if (paperAmt) income.push({ label: 'Paper money printed and spent', amt: paperAmt * v, how: `${fmt(paperAmt)} in new bills, worth about ${Math.round(v * 100)}¢ on the dollar` });
+    for (const id of ids) {
+      const o = choices[id] && opt(id, choices[id]); if (!o) continue; const fx = fxOf(o, S);
+      const cash = (fx.cash || 0) + (fx.cashE || 0) * S.E;
+      if (cash > 0) income.push({ label: o.label, amt: cash, how: ISSUES[id].short });
+      if (cash < 0) spend.push({ label: o.label, amt: -cash, how: ISSUES[id].short });
+      if (fx.debtE) bonds.push({ label: o.label, amt: fx.debtE * S.E });
+    }
+    spend.push({ label: 'Running the government', amt: S.E * 500, how: 'Governor, judges, legislature, and tax collectors' });
+    if (S.debt) spend.push({ label: `Interest to bondholders (${Math.round(B.int * 100)}% paid)`, amt: S.debt * 0.06 * B.int, how: `${fmt(S.debt)} state debt × 6% = ${fmt(S.debt * 0.06)} due` });
+    const req = request(yi, N) * S.quota;
+    spend.push({ label: `Paid to Congress (${Math.round(B.req * 100)}% of request)`, amt: req * B.req, how: `Congress asked your state for ${fmt(req)}, your ${Math.round(S.quota * 100)}% share of ${fmt(request(yi, N))}` });
+    const totalIn = income.reduce((s, x) => s + x.amt, 0), totalOut = spend.reduce((s, x) => s + x.amt, 0);
+    const newBonds = bonds.reduce((s, x) => s + x.amt, 0);
+    const end = S.specie + totalIn - totalOut;
+    return { income, spend, bonds, totalIn, totalOut, newBonds, net: totalIn - totalOut, end, req, paperAmt, paperOut, paperLegal, v, taxAmt };
+  }
+
+  function eventOdds(S, yi) {
+    return YEARS[yi].events.map(([id, hist]) => {
+      const E = EVENTS[id]; let p = E.p;
+      if (E.kind === 'world') p = 1;
+      if (id === 'taxRevolt') p = clamp((S.unrest - 35) / 80, 0.03, 0.6);
+      if (E.landed && !S.landed) p = 0.04;
+      if (E.paper && !S.paperOut) p = 0;
+      return { id, p, hist };
+    }).filter(e => e.p > 0);
+  }
+  function suggestEvents(S, yi, rnd = Math.random, mode = 'mix') {
+    return eventOdds(S, yi).filter(e => (mode !== 'random' && e.hist) || (mode !== 'history' && !e.hist && rnd() < e.p)).map(e => e.id);
+  }
+
+  // ctx: {N, cross:[[faction,label,delta]], tradeHit:number}
+  function resolve(S0, yi, choices, B, events, ctx) {
+    const S = clone(S0); const N = ctx.N; const ids = issuesFor(yi, S0);
+    const bud = budget(S0, yi, choices, B, N);
+    const parts = { merchants: [], farmers: [], veterans: [], gentry: [] };
+    const add = (f, label, v) => { if (Math.abs(v) >= 0.5) parts[f].push([label, v]); };
+    let unionFx = 0, dFx = 0, unrestFx = 0; const notes = [];
+    for (const id of ids) {
+      const o = opt(id, choices[id]); const fx = fxOf(o, S0);
+      for (const f of FK) if (fx[f]) add(f, `${ISSUES[id].short}: ${o.label}`, fx[f]);
+      if (fx.union) unionFx += fx.union;
+      if (fx.D) dFx += fx.D;
+      if (fx.unrest) unrestFx += fx.unrest;
+      S.flags[id] = o.k;
+    }
+    for (const c of ctx.cross || []) add(c[0], c[1], c[2]);
+    // money
+    S.specie = bud.end; S.debt = S0.debt + bud.newBonds;
+    if (bud.paperAmt) { S.paperOut = bud.paperOut; S.legal = bud.paperLegal; }
+    S.paperV = S.paperOut ? bud.v : 1;
+    const arrears = S0.debt * 0.06 * (1 - B.int) * 0.5;
+    if (arrears > 1) { S.debt += arrears; notes.push(`Unpaid interest of ${fmt(S0.debt * 0.06 * (1 - B.int))}: bondholders were given new IOUs for half of it, adding ${fmt(arrears)} to the debt.`); }
+    const ev = []; let evCost = 0;
+    for (const id of events) {
+      const E = EVENTS[id]; const r = { id, name: E.name, note: E.note, lines: [] };
+      if (id === 'cropFail') { dFx += 8; const c = bud.taxAmt * 0.1; evCost += c; r.cost = c; r.lines.push(`Tax collections fell by ${fmt(c)}.`); }
+      else if (id === 'goodHarvest') { dFx -= 6; }
+      else if (id === 'frontierWar') { const c = S.E * 200; evCost += c; r.cost = c; add('gentry', 'Frontier fighting', -3); add('farmers', 'Frontier fighting', -3); }
+      else if (id === 'taxRevolt') { const c = bud.taxAmt * 0.2; evCost += c; r.cost = c; unrestFx += 8; add('merchants', 'Tax collectors attacked', -4); add('gentry', 'Tax collectors attacked', -3); r.lines.push(`About ${fmt(c)} in taxes went uncollected.`); }
+      else if (id === 'counterfeit') { S.paperV = Math.max(0.1, S.paperV - 0.1); add('merchants', 'Counterfeit paper', -3); }
+      else if (id === 'britishBan') { if (S.port) { S.T -= 15; add('merchants', 'British ports closed', -6); } }
+      else if (id === 'depression') { dFx += 10; S.T -= 10; add('merchants', 'Hard times', -4); add('farmers', 'Hard times', -3); }
+      else if (id === 'barbary') { const hit = Math.round(10 * (1 - N.U / 100)); if (S.port) { S.T -= hit; add('merchants', 'Ships seized by pirates', -4); r.lines.push(`Your trade fell ${hit} points. A stronger Union might have been able to pay for protection.`); } }
+      else if (id === 'mississippi') { if (S.id === 'VA') { add('gentry', 'Mississippi closed to the West', -6); add('farmers', 'Mississippi closed to the West', -4); } else if (S.id === 'MA' || S.id === 'NY') add('merchants', 'Spanish trade treaty talks', 2); }
+      ev.push(r);
+    }
+    if (ctx.tradeHit) { S.T -= ctx.tradeHit; }
+    S.specie -= evCost;
+    let ious = 0; if (S.specie < 0) { ious = -S.specie; S.debt += ious; S.specie = 0; add('merchants', 'State paid bills in IOUs', -4); }
+    if (S.legal && S0.legal) S.paperV = Math.max(0.1, S.paperV - 0.1);
+    // economy
+    const D0 = S0.D;
+    S.D = clamp(S0.D0 + (S0.D - S0.D0) * 0.85 + (B.tax - 3) * 4 + dFx, 0, 100);
+    S.T = clamp(S.T - (B.duty - 4) * 1.5 + (S.T0 - S.T) * 0.2, 5, 160);
+    // standing reactions
+    const tl = B.tax - 2.5;
+    add('farmers', `Direct tax level ${B.tax}`, -tl * 2.5 * (1 + S.D / 150));
+    add('gentry', `Direct tax level ${B.tax}`, -tl * 1.2);
+    add('veterans', `Direct tax level ${B.tax}`, -tl * 0.8);
+    add('merchants', `Interest paid: ${Math.round(B.int * 100)}%`, (B.int - 0.5) * 16);
+    add('veterans', `Interest paid: ${Math.round(B.int * 100)}%`, (B.int - 0.5) * 4);
+    add('farmers', 'Taxes going to bondholders', -(B.int - 0.5) * 6);
+    add('merchants', `Paid Congress ${Math.round(B.req * 100)}%`, (B.req - 0.3) * 8);
+    add('veterans', `Paid Congress ${Math.round(B.req * 100)}%`, (B.req - 0.3) * 10);
+    add('farmers', `Paid Congress ${Math.round(B.req * 100)}%`, -(B.req - 0.3) * 4);
+    add('merchants', `Import duty ${B.duty}%`, -(B.duty - 4) * 1.2);
+    add('farmers', `Import duty ${B.duty}% (instead of land taxes)`, (B.duty - 4) * 0.6);
+    add('farmers', `Hard times (${Math.round(S.D)})`, -(S.D - 45) / 6);
+    if (S.paperOut) add('merchants', `Paper money worth ${Math.round(S.paperV * 100)}¢`, -(1 - S.paperV) * 15);
+    add('veterans', 'Strength of the Union', (N.U - 50) / 12);
+    add('merchants', 'Strength of the Union', (N.U - 50) / 12);
+    const unrest0 = S0.unrest;
+    if (unrest0 > 55) { add('merchants', 'Fear of disorder', -(unrest0 - 55) / 5); add('gentry', 'Fear of disorder', -(unrest0 - 55) / 5); }
+    const approvals = {};
+    for (const f of FK) {
+      const start = S0.approval[f]; const drift = 50 + (start - 50) * 0.75;
+      const sum = parts[f].reduce((s, p) => s + p[1], 0);
+      S.approval[f] = Math.round(clamp(drift + sum, 0, 100));
+      approvals[f] = { before: start, after: S.approval[f], drift: drift - start, parts: parts[f] };
+    }
+    S.unrest = clamp(S.D * 0.6 + (60 - S.approval.farmers) * 0.5 + (60 - S.approval.veterans) * 0.3 + 15 + unrestFx, 0, 100);
+    const voters = STATES[S.id].voters;
+    const support = FK.reduce((s, f) => s + voters[f] * S.approval[f], 0);
+    const won = support >= 50; if (won) S.wins++;
+    return { S, report: { yi, year: YEARS[yi].year, ids, bud, notes, events: ev, evCost, ious, approvals, support, won, unionFx, choices: { ...choices }, B: clone(B),
+      before: { specie: S0.specie, debt: S0.debt, D: D0, T: S0.T, unrest: unrest0, paperV: S0.paperV }, after: { specie: S.specie, debt: S.debt, D: S.D, T: S.T, unrest: S.unrest, paperV: S.paperV } } };
+  }
+
+  // Cross-state effects from everyone’s choices this round.
+  function crossEffects(all, yi) {
+    const out = {}; for (const id of IDS) out[id] = { cross: [], tradeHit: 0 };
+    for (const id of IDS) {
+      const { choices, B } = all[id];
+      if (choices.trade === 'tax') for (const nb of STATES[id].neighbors) { out[nb].cross.push(['farmers', `${STATES[id].name} taxes your goods`, -4]); out[nb].tradeHit += 5; }
+      if (id === 'NY' && B.duty >= 5) out.NJ.cross.push(['farmers', `New York’s ${B.duty}% import duty`, -(B.duty - 3)]);
+      if (choices.tradeNJ === 'retaliate') out.NY.cross.push(['merchants', 'New Jersey taxes the Sandy Hook lighthouse', -2]);
+    }
+    return out;
+  }
+  function updateNation(N0, yi, all, reports) {
+    const N = clone(N0);
+    const paid = IDS.reduce((s, id) => s + STATES[id].quota * all[id].B.req, 0) + OTHER_QUOTA * 0.3;
+    N.paidShare.push(paid);
+    const fx = IDS.reduce((s, id) => s + reports[id].unionFx, 0) / IDS.length;
+    if (yi === 0) N.impost = IDS.every(id => all[id].choices.impost !== 'reject');
+    if (yi === 5) for (const id of IDS) N.ratified[id] = all[id].choices.ratify !== 'no';
+    N.U = clamp(N.U + (paid - 0.35) * 25 + fx * 0.6 + (yi === 0 ? (N.impost ? 12 : -6) : 0), 0, 100);
+    return N;
+  }
+
+  // Historical strategies for the computer-run states.
+  const AI = {
+    MA: { tax: 5, duty: 5, int: 0.8, req: 0.4, pick: { impost: 'approve', soldiers: 'assume', loyalists: 'partial', commute: 'oppose', trade: 'free', west: 'cede', paper: 'hard', annapolis: 'skip', rebellion: 'militia', rebelNear: 'help', philly: 'strong', ratify: 'amend' } },
+    RI: { tax: 2, duty: 3, int: 0.3, req: 0.1, pick: { impost: 'reject', soldiers: 'congress', loyalists: 'partial', commute: 'oppose', trade: 'free', westNL: 'withhold', paper: 'legal', annapolis: 'skip', rebellion: 'giveIn', rebelNear: 'nothing', philly: 'boycott', ratify: 'no' } },
+    NY: { tax: 2, duty: 6, int: 0.7, req: 0.45, pick: { impost: 'conditional', soldiers: 'land', loyalists: 'refuse', commute: 'support', trade: 'tax', west: 'cede', paper: 'loan', annapolis: 'send', rebellion: 'relief', rebelNear: 'nothing', philly: 'states', ratify: 'amend' } },
+    NJ: { tax: 3, duty: 2, int: 0.6, req: 0.3, pick: { impost: 'approve', soldiers: 'assume', loyalists: 'partial', commute: 'support', tradeNJ: 'strike', westNL: 'press', paper: 'loan', annapolis: 'send', rebellion: 'relief', rebelNear: 'nothing', philly: 'strong', ratify: 'yes' } },
+    VA: { tax: 3, duty: 4, int: 0.5, req: 0.35, pick: { impost: 'approve', soldiers: 'land', loyalists: 'refuse', commute: 'support', trade: 'meet', west: 'reserve', paper: 'hard', annapolis: 'send', rebellion: 'relief', rebelNear: 'relief', philly: 'strong', ratify: 'amend' } },
+  };
+  function aiPlan(S, yi) {
+    const A = AI[S.id]; const choices = {};
+    for (const id of issuesFor(yi, S)) choices[id] = A.pick[id];
+    const B = { tax: A.tax, duty: A.duty, int: A.int, req: A.req };
+    if (S.id === 'NJ' && choices.tradeNJ === 'strike') B.req = 0;
+    return { choices, B };
+  }
+
+  function fmt(v) { const n = Math.round(v); return (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString('en-US'); }
+
+  return { FK, IDS, STATES, FACTION, EVENTS, ISSUES, YEARS, REQ, issuesFor, optsFor, opt, fxOf, newState, newNation, request, budget, eventOdds, suggestEvents, resolve, crossEffects, updateNation, aiPlan, fmt, clamp, clone };
+})();
+</script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const KEY = 'ropeOfSand.v1';
+const { FK, IDS, STATES, FACTION, EVENTS, ISSUES, YEARS, fmt, clamp } = CF;
+const money = (v, sign) => { const n = Math.round(v); return (n < 0 ? '−$' : sign && n > 0 ? '+$' : '$') + Math.abs(n).toLocaleString('en-US'); };
+const cls = v => v >= 0 ? 'pos' : 'neg';
+const signed = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LAST = YEARS.length - 1;
+
+let G = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+const me = () => G.states[G.mine];
+const fname = (f, S) => f === 'gentry' ? STATES[S.id].gentry : FACTION[f].name;
+const defaultBudget = () => G && G.lastB ? { ...G.lastB } : { tax: 3, duty: 4, int: 0.5, req: 0.3 };
+
+// ---------- chrome ----------
+function renderChrome() {
+  $('#timeline').innerHTML = YEARS.map((y, i) => `<span class="${G && G.stage !== 'setup' && (i < G.yi || G.stage === 'end') ? 'done' : ''} ${G && i === G.yi && G.stage !== 'end' ? 'now' : ''}">${y.year}</span>`).join('');
+  const sb = $('#statusbar');
+  if (!G) { sb.hidden = true; return; }
+  sb.hidden = false; const S = me();
+  const sup = G.history.length ? G.history[G.history.length - 1].support : null;
+  const uc = S.unrest < 40 ? '' : S.unrest < 60 ? 'mid' : 'low';
+  $('#statusInner').innerHTML = `
+    <div class="stat"><span class="lbl">State</span><b style="font-family:var(--f-body);font-weight:700">${S.name}</b></div>
+    <div class="stat"><span class="lbl">Treasury</span><b>${money(S.specie)}</b></div>
+    <div class="stat"><span class="lbl">State debt</span><b>${money(S.debt)}</b></div>
+    ${S.paperOut ? `<div class="stat"><span class="lbl">Paper money</span><b class="${S.paperV < 0.6 ? 'neg' : ''}">${Math.round(S.paperV * 100)}¢</b></div>` : ''}
+    <div class="stat"><span class="lbl">Unrest</span><span class="meter"><i class="${uc}" style="width:${S.unrest}%"></i></span><b>${Math.round(S.unrest)}</b></div>
+    <div class="stat"><span class="lbl">Union</span><b>${Math.round(G.N.U)}</b></div>
+    ${sup != null ? `<div class="stat"><span class="lbl">Last vote</span><b class="${sup >= 50 ? 'pos' : 'neg'}">${Math.round(sup)}%</b></div>` : ''}
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="restartBtn">Restart game</button>`;
+}
+
+// ---------- setup ----------
+let setup = { state: 'MA', desk: false };
+function renderSetup() {
+  app.innerHTML = `<div class="stack fade" style="max-width:860px">
+    <h1>Thirteen States, One Rope of Sand</h1>
+    <p class="intro">It is 1781. The United States is a league of thirteen states under the Articles of Confederation. Congress can declare war and make treaties, but it cannot tax, cannot regulate trade, and cannot make the states do anything. Critics called it a “rope of sand.” You will lead one state’s government for the next seven years, balancing your own people’s needs against the Union’s.</p>
+    <div class="panel">
+      <span class="lbl">Choose your state</span>
+      <div class="choices">${IDS.map(id => `<button class="choice" data-state="${id}" aria-pressed="${setup.state === id}"><b>${STATES[id].name}</b><span>${STATES[id].blurb}</span></button>`).join('')}</div>
+      <p class="small muted">The computer runs the other four states, following what those states really did.</p>
+      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events (crop failures, tax revolts, pirates). Leave this off when playing on your own.</span></span></label>
+      <div class="row"><button class="btn" id="startBtn">Take office</button><span class="muted small">Your progress saves in this browser.</span></div>
+    </div>
+  </div>`;
+}
+function startGame() {
+  const states = {}; for (const id of IDS) states[id] = CF.newState(id);
+  G = { stage: 'intro', yi: 0, mine: setup.state, desk: setup.desk, states, N: CF.newNation(), history: [], others: [], choices: {}, budget: null, cond: null, lastB: null, track: {} };
+  for (const id of IDS) G.track[id] = [{ debt: states[id].debt, unrest: states[id].unrest, U: G.N.U }];
+  G.budget = defaultBudget();
+  save(); render();
+}
+
+// ---------- intro ----------
+function voteBar(S) {
+  const v = STATES[S.id].voters;
+  return `<div class="votebar">${FK.map(f => `<i class="c-${f}" style="width:${v[f] * 100}%"></i>`).join('')}</div>
+    <div class="legend">${FK.map(f => `<span class="c-${f}">${f === 'gentry' ? STATES[S.id].gentry : FACTION[f].short} ${Math.round(v[f] * 100)}%</span>`).join('')}</div>`;
+}
+function renderIntro() {
+  const S = me();
+  app.innerHTML = `<div class="stack fade">
+    <h1>Governing ${S.name}</h1>
+    <p class="intro">${STATES[S.id].blurb} Each round you make one or two big decisions, set taxes, and decide whom to pay: your own bondholders, Congress, or neither. Then you face an election. Most states held elections every year.</p>
+    <div class="panel"><h2>Four groups are watching you</h2>
+      <div class="facgrid">${FK.map(f => `<div class="faccard c-${f}"><b>${fname(f, S)}</b><p>${FACTION[f].who}</p></div>`).join('')}</div></div>
+    <div class="grid even">
+      <div class="panel"><h2>Who votes in ${S.name}</h2>
+        <p class="small">Only free men who own enough property can vote. Women, enslaved people, and poor men without property cannot. ${S.id === 'VA' ? 'About 40% of Virginia’s people are enslaved. They have no voice at all, though the planters’ wealth depends on their forced labor.' : ''} Native nations in the West are affected by your land decisions but have no say in your government.</p>
+        ${voteBar(S)}
+        <p class="small muted">Each group’s approval counts toward your re-election by its share of the voters. You need 50% to win.</p></div>
+      <div class="panel"><h2>Your tools</h2>
+        <ul class="qs" style="list-style:disc">
+          <li><b>Direct tax</b> on land and on every adult man (a “poll tax”). It brings in the most money, but farmers must pay it in scarce gold and silver.</li>
+          <li><b>Import duty</b> on goods arriving at your ports. Merchants dislike it. Farmers prefer it to land taxes.</li>
+          <li><b>Interest to bondholders.</b> Your state borrowed millions during the war. Pay less, and your debt grows.</li>
+          <li><b>Payments to Congress.</b> Congress asks each state for money (a “requisition”), but it can’t make you pay.</li>
+        </ul></div>
+    </div>
+    <div class="panel"><h2>The Union</h2>
+      <p class="small">The Union meter (0 to 100) shows how strong and trusted the United States is. It rises when states pay Congress and cooperate, and falls when they refuse. Every state’s choices move it, not just yours. A weak Union can’t protect your ships from pirates or force Britain out of its frontier forts.</p>
+      <div class="unionbar"><i style="width:${G.N.U}%"></i></div></div>
+    <div class="footer-actions"><button class="btn" id="introBtn">Open the 1781 session</button></div>
+  </div>`;
+}
+
+// ---------- planning ----------
+function tagsFor(o, S) {
+  const fx = CF.fxOf(o, S); const t = [];
+  const arrows = v => (Math.abs(v) < 6 ? 1 : Math.abs(v) < 13 ? 2 : 3);
+  for (const f of FK) if (fx[f]) t.push(`<span class="tag ${fx[f] > 0 ? 'up' : 'dn'}">${f === 'gentry' ? STATES[S.id].gentry.split(' ')[0] : FACTION[f].short} ${(fx[f] > 0 ? '▲' : '▼').repeat(arrows(fx[f]))}</span>`);
+  if (fx.union) t.push(`<span class="tag ${fx.union > 0 ? 'up' : 'dn'}">Union ${(fx.union > 0 ? '▲' : '▼').repeat(arrows(fx.union))}</span>`);
+  const cash = (fx.cash || 0) + (fx.cashE || 0) * S.E;
+  if (cash) t.push(`<span class="tag ${cash > 0 ? 'up' : 'dn'}">${money(cash, true)}</span>`);
+  if (fx.debtE) t.push(`<span class="tag dn">Debt +${money(fx.debtE * S.E)}</span>`);
+  if (fx.D) t.push(`<span class="tag ${fx.D < 0 ? 'up' : 'dn'}">Hard times ${fx.D < 0 ? '▼' : '▲'}</span>`);
+  if (fx.unrest) t.push(`<span class="tag up">Unrest ▼</span>`);
+  return t.join('');
+}
+function approvalBars(S, label) {
+  return `<div class="stack" style="gap:6px">${label ? `<h3>${label}</h3>` : ''}${FK.map(f => `<div class="fac c-${f}"><span class="nm">${fname(f, S)}</span><span class="bar"><i style="width:${S.approval[f]}%"></i></span><b class="num" style="text-align:right">${Math.round(S.approval[f])}</b></div>`).join('')}</div>`;
+}
+function unionPanel() {
+  const N = G.N; const last = N.paidShare[N.paidShare.length - 1];
+  return `<div class="panel"><h3>The Union</h3>
+    <div class="row"><span class="small">Union strength</span><span class="spacer"></span><b class="num">${Math.round(N.U)}</b></div>
+    <div class="unionbar"><i style="width:${N.U}%"></i></div>
+    <div class="chain">${['NH', 'MA', 'RI', 'CT', 'NY', 'NJ', 'PA', 'DE', 'MD', 'VA', 'NC', 'SC', 'GA'].map(id => `<span class="${IDS.includes(id) ? 'five' : ''}">${id}</span>`).join('')}</div>
+    <p class="small">${last != null ? `Last round, the states paid Congress about <b>${Math.round(last * 100)}%</b> of what it asked.` : 'Congress has not yet asked for money.'} ${N.impost === true ? 'The Impost passed, so Congress has its own income and asks the states for less.' : N.impost === false ? 'The Impost failed, so Congress still depends entirely on the states.' : ''}</p></div>`;
+}
+function renderPlan() {
+  const yr = YEARS[G.yi]; const S = me();
+  const odds = CF.eventOdds(S, G.yi);
+  app.innerHTML = `<div class="grid fade">
+    <div class="stack">
+      <div class="yearhead"><span class="era">Round ${G.yi + 1} of ${YEARS.length} · ${S.name}</span><h1>${yr.year}: ${yr.title}</h1></div>
+      <p class="intro">${yr.intro}</p>
+      <div class="panel"><h3>${S.name} now</h3>
+        <div class="kv">
+          <div><span class="lbl">Treasury</span><b>${money(S.specie)}</b></div>
+          <div><span class="lbl">State debt</span><b>${money(S.debt)}</b></div>
+          <div><span class="lbl">Hard times</span><b class="${S.D > 55 ? 'neg' : ''}">${Math.round(S.D)}</b></div>
+          <div><span class="lbl">Trade</span><b>${Math.round(S.T)}</b></div>
+          <div><span class="lbl">Unrest</span><b class="${S.unrest > 55 ? 'neg' : ''}">${Math.round(S.unrest)}</b></div>
+          ${S.paperOut ? `<div><span class="lbl">Paper money</span><b>${Math.round(S.paperV * 100)}¢</b></div>` : ''}
+        </div>
+        <p class="small muted">Hard times (0–100) measures how badly farmers are squeezed by debts and scarce coin. Unrest above 55 can lead to rebellion.</p>
+        ${approvalBars(S)}
+      </div>
+      ${unionPanel()}
+      <div class="panel"><h3>In the newspapers</h3>
+        ${odds.map(e => { const E = EVENTS[e.id]; return `<p class="small"><b>${E.rumor[0]}</b> ${E.rumor[1]} ${E.kind === 'local' ? `<span class="muted">(About ${Math.round(e.p * 100)}% chance.)</span>` : ''}</p>`; }).join('')}
+        <p class="small muted">Rumors, not facts.</p>
+      </div>
+      <div class="panel"><h3>Who votes in ${S.name}</h3>${voteBar(S)}</div>
+    </div>
+    <div class="stack" id="planner"></div>
+  </div>`;
+  renderPlanner();
+}
+function renderPlanner() {
+  const S = me(); const ids = CF.issuesFor(G.yi, S); const B = G.budget;
+  $('#planner').innerHTML = `
+    ${ids.map(id => { const I = ISSUES[id]; return `<div class="panel issue">
+      <h2>${I.title}</h2><span class="who">${I.who}</span><p class="small">${I.text}</p>
+      <div class="opts">${CF.optsFor(id, S).map(o => `<button class="opt" data-issue="${id}" data-opt="${o.k}" aria-pressed="${G.choices[id] === o.k}"><b>${o.label}</b><span class="d">${o.desc}</span><span class="tags">${tagsFor(o, S)}</span>${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</button>`).join('')}</div>
+    </div>`; }).join('')}
+    <div class="panel">
+      <h2>The ${YEARS[G.yi].year} budget</h2>
+      <div class="stack" style="gap:4px"><div class="brow"><label class="lbl" for="tax">Direct tax level</label><b class="num" id="taxV"></b></div>
+        <input type="range" id="tax" min="0" max="8" step="0.5" value="${B.tax}"><span class="small muted" id="taxHint"></span></div>
+      <div class="stack" style="gap:4px"><div class="brow"><label class="lbl" for="duty">Import duty</label><b class="num" id="dutyV"></b></div>
+        <input type="range" id="duty" min="0" max="10" step="1" value="${B.duty}"><span class="small muted">A tax on goods arriving from overseas${S.port ? '' : '. With no big port, your state collects little'}. High duties drive trade to other states’ ports.</span></div>
+      <div class="stack" style="gap:4px"><div class="brow"><label class="lbl" for="int">Interest paid to bondholders</label><b class="num" id="intV"></b></div>
+        <input type="range" id="int" min="0" max="1" step="0.1" value="${B.int}"><span class="small muted">Half of any unpaid interest is added to the debt as new IOUs.</span></div>
+      <div class="stack" style="gap:4px"><div class="brow"><label class="lbl" for="req">Payment to Congress</label><b class="num" id="reqV"></b></div>
+        <input type="range" id="req" min="0" max="1" step="0.1" value="${B.req}"><span class="small muted">Most states paid well under half. Congress can’t make you pay, but the Union suffers when states don’t.</span></div>
+    </div>
+    <div class="panel" id="fcPanel"></div>`;
+  updateForecast();
+}
+function updateForecast() {
+  const S = me(); const B = G.budget; const ids = CF.issuesFor(G.yi, S);
+  const ready = ids.every(id => G.choices[id]);
+  const bud = CF.budget(S, G.yi, G.choices, B, G.N);
+  $('#taxV').textContent = `${B.tax} · ${money(S.E * 1400 * B.tax)}`;
+  $('#dutyV').textContent = B.duty + '%';
+  $('#intV').textContent = Math.round(B.int * 100) + '%';
+  $('#reqV').textContent = Math.round(B.req * 100) + '%';
+  $('#taxHint').textContent = `Tax assessed on land and polls. Collectors will actually gather about ${Math.round(CF.budget(S, G.yi, {}, B, G.N).income[0].amt / Math.max(1, S.E * 1400 * B.tax) * 100) || 0}%, less in hard times. Level 2 to 3 is normal. Above 4 is crushing.`;
+  const tone = B.tax >= 5 ? ['bad', 'A crushing tax. Farmers will be furious, and many simply can’t pay.'] : B.tax >= 4 ? ['', 'A heavy tax. Farmers will complain loudly.'] : B.tax <= 1.5 ? ['good', 'A light tax. Farmers are pleased, but bills may go unpaid.'] : ['', 'A normal tax.'];
+  $('#fcPanel').innerHTML = `<h2>Your forecast</h2>
+    <p class="small muted">Money in and out this year, before crop failures, revolts, and other surprises.</p>
+    <div class="receipt">
+      <div class="sec">${bud.income.map(x => `<div class="rline"><span>${x.label}</span><span class="amt pos">${money(x.amt)}</span>${x.how ? `<span class="how">${x.how}</span>` : ''}</div>`).join('')}</div>
+      <div class="sec">${bud.spend.map(x => `<div class="rline"><span>${x.label}</span><span class="amt neg">${money(-x.amt)}</span>${x.how ? `<span class="how">${x.how}</span>` : ''}</div>`).join('')}</div>
+      <div class="bigline"><span>Surplus or deficit</span><span class="num ${cls(bud.net)}">${money(bud.net, true)}</span></div>
+    </div>
+    <div class="kv"><div><span class="lbl">Treasury after</span><b class="${bud.end < 0 ? 'neg' : ''}">${money(Math.max(0, bud.end))}</b></div><div><span class="lbl">Debt after</span><b>${money(S.debt + bud.newBonds + Math.max(0, -bud.end) + S.debt * 0.06 * (1 - B.int) * 0.5)}</b></div></div>
+    ${bud.end < 0 ? `<div class="callout bad">You are ${money(-bud.end)} short. The state will pay its bills in IOUs, adding to the debt and angering merchants.</div>` : ''}
+    <div class="callout ${tone[0]} small">${tone[1]}</div>
+    <div class="footer-actions">${ready ? '' : '<span class="small muted">Decide every issue above first.</span>'}<button class="btn" id="adoptBtn" ${ready ? '' : 'disabled'}>Pass the ${YEARS[G.yi].year} laws</button></div>`;
+}
+function adopt() {
+  G.lastB = { ...G.budget };
+  G.cond = { events: CF.suggestEvents(me(), G.yi) };
+  if (G.desk) { G.stage = 'desk'; save(); render(); window.scrollTo(0, 0); } else reveal();
+}
+
+// ---------- the whole round, for all five states ----------
+function plans() {
+  const all = {};
+  for (const id of IDS) all[id] = id === G.mine ? { choices: G.choices, B: G.budget } : CF.aiPlan(G.states[id], G.yi);
+  return all;
+}
+function runRound(events) {
+  const all = plans(); const cross = CF.crossEffects(all, G.yi); const out = {};
+  const world = events.filter(id => EVENTS[id].kind === 'world');
+  for (const id of IDS) {
+    let ev = events;
+    if (id !== G.mine) { const r = rngFor(id); ev = [...world, ...CF.eventOdds(G.states[id], G.yi).filter(e => EVENTS[e.id].kind === 'local' && (e.hist || r() < e.p)).map(e => e.id)]; }
+    out[id] = CF.resolve(G.states[id], G.yi, all[id].choices, all[id].B, ev, { N: G.N, ...cross[id] });
+  }
+  const reports = {}; for (const id of IDS) reports[id] = out[id].report;
+  const N = CF.updateNation(G.N, G.yi, all, reports);
+  return { out, N, all };
+}
+function rngFor(id) { let h = 2166136261; const s = id + G.yi + G.mine; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); let a = h >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// ---------- teacher desk ----------
+function renderDesk() {
+  const yr = YEARS[G.yi]; const odds = CF.eventOdds(me(), G.yi);
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">Teacher’s desk · ${yr.year}</span><h1>Set the year’s events</h1></div>
+    <p class="intro muted">In class, only the teacher sees this screen. Events marked “happened” really occurred and hit every state. Accept the draw, change it, or draw again, then reveal the results.</p>
+    <div class="grid even">
+      <div class="panel"><h2>Events for ${me().name}</h2>
+        ${odds.map(e => { const E = EVENTS[e.id]; return `<label class="chk"><input type="checkbox" data-ev="${e.id}" ${G.cond.events.includes(e.id) ? 'checked' : ''}><span><b>${E.name}</b> <span class="muted small">(${e.hist ? 'happened' : Math.round(e.p * 100) + '% chance'})</span><br><span class="small">${E.note}</span></span></label>`; }).join('')}
+        <div class="row"><button class="btn ghost small" id="histEvBtn">Historical events only</button><button class="btn ghost small" id="redrawBtn">Draw again</button></div>
+        <p class="small muted"><b>What really happened:</b> ${yr.hist}</p></div>
+      <div class="panel" id="deskPreview" aria-live="polite"></div>
+    </div>
+    <div class="footer-actions"><button class="btn" id="revealBtn">Reveal the results</button></div>
+  </div>`;
+  updateDeskPreview();
+}
+function updateDeskPreview() {
+  const el = $('#deskPreview'); if (!el) return;
+  const { out, N } = runRound(G.cond.events); const { S, report: r } = out[G.mine];
+  el.innerHTML = `<div class="row"><h2>Preview</h2><span class="spacer"></span><span class="pill">Updates as you change events</span></div>
+    <div class="kv"><div><span class="lbl">Treasury</span><b>${money(S.specie)}</b></div><div><span class="lbl">Debt</span><b>${money(S.debt)}</b></div><div><span class="lbl">Unrest</span><b>${Math.round(S.unrest)}</b></div><div><span class="lbl">Support</span><b class="${r.won ? 'pos' : 'neg'}">${Math.round(r.support)}%</b></div></div>
+    <p class="small">${r.won ? 'The government would be re-elected.' : 'The government would be voted out.'} Union strength would go from ${Math.round(G.N.U)} to ${Math.round(N.U)}.</p>
+    ${approvalBars(S, 'Approval afterward')}`;
+}
+
+// ---------- reveal ----------
+function reveal() {
+  const { out, N, all } = runRound(G.cond.events);
+  for (const id of IDS) { G.states[id] = out[id].S; G.track[id].push({ debt: out[id].S.debt, unrest: out[id].S.unrest, U: N.U }); }
+  G.history.push(out[G.mine].report);
+  G.others.push(Object.fromEntries(IDS.map(id => [id, { choices: all[id].choices, B: all[id].B, won: out[id].report.won, support: out[id].report.support, events: out[id].report.events.map(e => e.name) }])));
+  G.Nbefore = G.N.U; G.N = N;
+  G.stage = 'results'; save(); render(); window.scrollTo(0, 0);
+}
+
+// ---------- results ----------
+function whyBox(r, prev, voters, nameOf) {
+  const R = v => Math.round(v);
+  const pts = v => `${R(Math.abs(v))} point${R(Math.abs(v)) === 1 ? '' : 's'}`;
+  const fks = Object.keys(r.approvals).filter(f => voters[f] > 0);
+  const base = prev != null ? prev : fks.reduce((s, f) => s + voters[f] * r.approvals[f].before, 0);
+  const diff = r.support - base;
+  const moves = fks.map(f => { const a = r.approvals[f]; const d = a.after - a.before; return { f, a, d, w: voters[f], impact: voters[f] * d }; });
+  const up = moves.filter(m => m.impact >= 0.5).sort((x, y) => y.impact - x.impact)[0];
+  const dn = moves.filter(m => m.impact <= -0.5).sort((x, y) => x.impact - y.impact)[0];
+  const reasons = m => { const ps = m.a.parts.filter(p => Math.sign(p[1]) === Math.sign(m.d)).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])).slice(0, 2);
+    return ps.length ? `, mostly because of ${ps.map(p => `<b>${p[0]}</b> (${signed(p[1])})`).join(' and ')}` : ', as old feelings faded'; };
+  const who = m => `<b>${nameOf(m.f)}</b> (${R(m.w * 100)}% of voters)`;
+  const big = moves.slice().sort((x, y) => y.w - x.w)[0];
+  const s = [];
+  s.push(r.won ? `You won with <b>${R(r.support)}%</b> of the vote. You needed 50%, so you won by ${pts(r.support - 50)}.` : `You lost with <b>${R(r.support)}%</b> of the vote. You needed 50%, so you fell ${pts(50 - r.support)} short.`);
+  if (prev != null) s.push(Math.abs(diff) < 1 ? `That is about the same as the last election (${R(prev)}%).` : `That is <b>${diff > 0 ? 'up' : 'down'} ${pts(diff)}</b> from the last election (${R(prev)}%).`);
+  else s.push(Math.abs(diff) < 1 ? `That is about the same support you had when you took office (${R(base)}%).` : `When you took office, about ${R(base)}% of voters were on your side, so your support went <b>${diff > 0 ? 'up' : 'down'} ${pts(diff)}</b>.`);
+  const lines = [];
+  if (dn) lines.push(`${who(dn)} turned against you, dropping from ${dn.a.before} to ${dn.a.after}${reasons(dn)}.`);
+  if (up) lines.push(`${who(up)} helped you, rising from ${up.a.before} to ${up.a.after}${reasons(up)}.`);
+  if (!up && !dn) lines.push('No group changed its mind very much.');
+  const tip = `Remember: ${nameOf(big.f)} cast the most votes (${R(big.w * 100)}%), so their opinion counts the most.`;
+  return `<div class="callout ${r.won ? 'good' : 'bad'}" style="max-width:76ch"><b style="font-size:16px">${r.won ? 'Why you won' : 'Why you lost'}</b><p style="margin-top:4px">${s.join(' ')}</p><ul style="margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px">${lines.map(l => `<li>${l}</li>`).join('')}</ul><p class="small" style="margin-top:6px">${tip}</p></div>`;
+}
+
+const QUOTES = {
+  merchants: { who: 'a merchant in the capital', lo: 'This government robs honest lenders and lets debtors run wild. No one will trust our credit.', mid: 'We are paid slowly and in part, but at least we are paid.', hi: 'At last, a government that keeps its promises and protects property.' },
+  farmers: { who: 'a farmer from the back country', lo: 'They want hard money we don’t have. The sheriff takes our cattle and our farms. Is this what we fought for?', mid: 'Taxes are heavy and coin is scarce, but we are getting by.', hi: 'The legislature remembers who does the work in this state.' },
+  veterans: { who: 'a Continental veteran', lo: 'I sold my pay certificate for a few shillings to feed my family. Now a speculator collects the full value.', mid: 'The country owes us. Some days it seems to remember.', hi: 'The men who won the war are finally being treated fairly.' },
+  gentry: { who: 'a leading landowner', lo: 'Mobs, paper money, and high land taxes. Government by the rabble.', mid: 'Order holds, though the times are uneasy.', hi: 'Sound and steady government. Our state is in good hands.' },
+};
+function voices(S) {
+  return FK.map(f => { const a = S.approval[f]; const Q = QUOTES[f]; const q = a < 40 ? Q.lo : a < 62 ? Q.mid : Q.hi;
+    return `<div class="quote c-${f}"><q>${q}</q><span>${Q.who} · ${fname(f, S)} ${Math.round(a)}</span></div>`; }).join('');
+}
+function renderResults() {
+  const r = G.history[G.history.length - 1]; const yr = YEARS[r.yi]; const S = me(); const bud = r.bud; const O = G.others[G.others.length - 1];
+  const a = r.after, b = r.before;
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">Results of ${yr.year}${r.events.length ? ' · ' + r.events.map(e => e.name).join(', ') : ''}</span><h1>${r.won ? 'Re-elected' : 'Voted out'}</h1></div>
+    <p class="intro">${r.won ? `${Math.round(r.support)}% of ${S.name}’s voters backed you.` : `Only ${Math.round(r.support)}% of voters backed you. Your opponents would take over the legislature. In this game you stay on, but the defeat goes on your record.`}</p>
+    ${whyBox(r, G.history.length > 1 ? G.history[G.history.length - 2].support : null, STATES[S.id].voters, f => fname(f, S))}
+    <div class="grid">
+      <div class="stack">
+        <div class="panel receipt">
+          <span class="reporthead">Report of the Treasurer of ${S.name}</span>
+          <span class="small muted">For the year ${yr.year}</span>
+          <div class="sec"><h3>1 · Laws passed</h3>
+            ${r.ids.map(id => `<div class="rline"><span>${ISSUES[id].title}</span><span class="amt"></span><span class="how">${CF.opt(id, r.choices[id]).label}</span></div>`).join('')}
+            <div class="rline"><span>Direct tax level</span><span class="amt">${r.B.tax}</span></div>
+            <div class="rline"><span>Import duty</span><span class="amt">${r.B.duty}%</span></div></div>
+          <div class="sec"><h3>2 · Money in</h3>${bud.income.map(x => `<div class="rline"><span>${x.label}</span><span class="amt">${money(x.amt)}</span>${x.how ? `<span class="how">${x.how}</span>` : ''}</div>`).join('')}</div>
+          <div class="sec"><h3>3 · Money out</h3>${bud.spend.map(x => `<div class="rline"><span>${x.label}</span><span class="amt neg">${money(-x.amt)}</span>${x.how ? `<span class="how">${x.how}</span>` : ''}</div>`).join('')}
+            ${r.evCost ? `<div class="rline"><span>Losses from events</span><span class="amt neg">${money(-r.evCost)}</span><span class="how">${r.events.filter(e => e.cost).map(e => `${e.name} ${money(e.cost)}`).join(', ')}</span></div>` : ''}</div>
+          <div class="bigline"><span>Treasury at year’s end</span><span class="num">${money(S.specie)}</span></div>
+          <div class="sec"><h3>4 · Debt and money</h3>
+            ${bud.bonds.map(x => `<p>New debt (${x.label}): <b class="num">${money(x.amt)}</b>.</p>`).join('')}
+            ${r.ious ? `<div class="callout bad">The treasury ran dry. The state paid ${money(r.ious)} of bills in IOUs.</div>` : ''}
+            ${r.notes.map(n => `<p class="small">${n}</p>`).join('')}
+            <div class="rline"><span>State debt</span><span class="amt">${money(b.debt)} → <b>${money(a.debt)}</b></span></div>
+            ${S.paperOut ? `<div class="rline"><span>Paper money value</span><span class="amt">${Math.round(b.paperV * 100)}¢ → <b class="${a.paperV < b.paperV ? 'neg' : ''}">${Math.round(a.paperV * 100)}¢</b></span></div>` : ''}</div>
+          <div class="sec"><h3>5 · The people</h3>
+            <div class="rline"><span>Hard times</span><span class="amt">${Math.round(b.D)} → <b class="${a.D > b.D ? 'neg' : 'pos'}">${Math.round(a.D)}</b></span></div>
+            <div class="rline"><span>Trade</span><span class="amt">${Math.round(b.T)} → <b class="${a.T < b.T ? 'neg' : 'pos'}">${Math.round(a.T)}</b></span></div>
+            <div class="rline"><span>Unrest</span><span class="amt">${Math.round(b.unrest)} → <b class="${a.unrest > b.unrest ? 'neg' : 'pos'}">${Math.round(a.unrest)}</b></span></div>
+            ${a.unrest >= 55 ? '<div class="callout bad small">Unrest is dangerously high. Angry farmers are talking about closing the courts.</div>' : ''}</div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="panel"><h2>What happened this year</h2>
+          ${r.events.length ? r.events.map(e => `<div class="callout ${['goodHarvest'].includes(e.id) ? 'good' : 'bad'} small"><b>${e.name}.</b> ${e.note} ${e.lines.join(' ')}</div>`).join('') : '<p class="small muted">No disasters this year.</p>'}
+          <p class="small muted"><b>What really happened:</b> ${yr.hist}</p></div>
+        <div class="panel"><h2>The Union</h2>
+          <div class="row"><span class="small">Union strength</span><span class="spacer"></span><b class="num">${Math.round(G.Nbefore)} → ${Math.round(G.N.U)}</b></div>
+          <div class="unionbar"><i style="width:${G.N.U}%"></i></div>
+          ${r.yi === 0 ? `<div class="callout ${G.N.impost ? 'good' : 'bad'} small"><b>The Impost ${G.N.impost ? 'passed' : 'failed'}.</b> ${G.N.impost ? 'All five states agreed. Congress now has its own income, and its requests to the states shrink by 40%.' : `It needed every state. ${IDS.filter(id => O[id].choices.impost === 'reject').map(id => STATES[id].name).join(' and ')} said no, so Congress still depends on the states for every dollar.`}</div>` : ''}
+          <p class="small">The states paid Congress about <b>${Math.round(G.N.paidShare[G.N.paidShare.length - 1] * 100)}%</b> of what it asked this round.</p>
+          ${otherStates(O)}</div>
+        <div class="panel"><h2>Voices of ${S.name}</h2>${voices(S)}</div>
+        <div class="panel"><div class="row"><h2>The election</h2><span class="spacer"></span><span class="pill ${r.won ? 'good' : 'bad'}">${Math.round(r.support)}% support</span></div>
+          ${FK.map(f => { const ap = r.approvals[f]; const parts = ap.parts.slice().sort((x, y) => Math.abs(y[1]) - Math.abs(x[1]));
+            return `<details class="facd c-${f}"><summary class="fac"><span class="nm">${fname(f, S)}</span><span class="bar"><i style="width:${ap.after}%"></i></span><b class="num" style="text-align:right">${ap.after}</b></summary>
+            <span class="why">${ap.before} → ${ap.after}. ${Math.round(STATES[S.id].voters[f] * 100)}% of voters. ${parts.slice(0, 7).map(p => `${p[0]} <b class="${cls(p[1])}">${signed(p[1])}</b>`).join(' · ')}${Math.abs(ap.drift) >= 0.5 ? ` · Memories fade <b>${signed(ap.drift)}</b>` : ''}</span></details>`; }).join('')}
+          <p class="small muted">Tap a group to see why its approval moved.</p></div>
+      </div>
+    </div>
+    <div class="footer-actions"><button class="btn" id="nextBtn">${G.yi < LAST ? `On to ${YEARS[G.yi + 1].year}` : 'See how it turned out'}</button></div>
+  </div>`;
+}
+function otherStates(O) {
+  return `<div class="tblwrap"><table><thead><tr><th>State</th><th>Big decision</th><th class="r">Paid Congress</th><th class="r">Debt</th><th class="r">Unrest</th><th class="r">Elections won</th></tr></thead><tbody>
+    ${IDS.map(id => { const S = G.states[id]; const o = O[id]; const iid = Object.keys(o.choices)[0];
+      return `<tr class="${id === G.mine ? 'me' : ''}"><td>${S.name}</td><td class="small">${CF.opt(iid, o.choices[iid]).label}</td><td class="r num">${Math.round(o.B.req * 100)}%</td><td class="r num">${money(S.debt)}</td><td class="r num ${S.unrest >= 55 ? 'neg' : ''}">${Math.round(S.unrest)}</td><td class="r num">${S.wins} of ${G.history.length}</td></tr>`; }).join('')}
+  </tbody></table></div>`;
+}
+function nextRound() {
+  if (G.yi >= LAST) G.stage = 'end';
+  else { G.yi++; G.stage = 'plan'; G.choices = {}; G.budget = defaultBudget(); }
+  save(); render(); window.scrollTo(0, 0);
+}
+
+// ---------- end ----------
+function lineChart(series, labels, fmtY, aria) {
+  const Wd = 560, Ht = 230, L = 64, R = 14, T = 12, Bm = 28;
+  const all = series.flatMap(s => s.v); let lo = Math.min(0, ...all), hi = Math.max(...all, 1);
+  const span = hi - lo; const step = Math.pow(10, Math.floor(Math.log10(span / 3))); const nice = [1, 2, 2.5, 5, 10].map(m => m * step).find(s => span / s <= 5) || step * 10;
+  lo = Math.floor(lo / nice) * nice; hi = Math.ceil(hi / nice) * nice;
+  const X = i => L + i * (Wd - L - R) / (labels.length - 1); const Y = v => T + (hi - v) / (hi - lo) * (Ht - T - Bm);
+  let g = '';
+  for (let v = lo; v <= hi + 1e-9; v += nice) g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${fmtY(v)}</text>`;
+  labels.forEach((l, i) => g += `<text x="${X(i)}" y="${Ht - 8}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${l}</text>`);
+  series.forEach(s => { g += `<polyline fill="none" stroke="${s.color}" stroke-width="${s.w || 2}" stroke-dasharray="${s.dash || ''}" points="${s.v.map((v, i) => X(i) + ',' + Y(v)).join(' ')}"/>`; s.v.forEach((v, i) => g += `<circle cx="${X(i)}" cy="${Y(v)}" r="${s.w > 2 ? 3.5 : 2.5}" fill="${s.color}"/>`); });
+  return `<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${aria}">${g}</svg>`;
+}
+const COLORS = { MA: 'var(--f-merchants)', RI: 'var(--f-veterans)', NY: 'var(--f-gentry)', NJ: 'var(--f-farmers)', VA: 'var(--muted)' };
+function legend() { return `<div class="legend">${IDS.map(id => `<span style="--c:${COLORS[id]}">${STATES[id].name}${id === G.mine ? ' (you)' : ''}</span>`).join('')}</div>`; }
+function grade(v, cuts) { return v >= cuts[0] ? 'A' : v >= cuts[1] ? 'B' : v >= cuts[2] ? 'C' : v >= cuts[3] ? 'D' : 'F'; }
+function renderEnd() {
+  const S = me(); const H = G.history; const N = G.N;
+  const labels = ['Start', ...H.map(h => String(h.year))];
+  const paidAvg = H.reduce((s, h) => s + h.B.req, 0) / H.length;
+  const ratified = S.flags.ratify !== 'no';
+  const debtStart = STATES[S.id].debt; const debtRatio = S.debt / debtStart;
+  const grades = [
+    ['Finances', grade(-debtRatio, [-1.0, -1.15, -1.3, -1.5]), `Debt went from ${money(debtStart)} to ${money(S.debt)}`],
+    ['Loyalty to the Union', grade(paidAvg * 100 + (ratified ? 25 : -25), [75, 60, 45, 30]), `Paid Congress ${Math.round(paidAvg * 100)}% on average; ${ratified ? 'ratified' : 'rejected'} the Constitution`],
+    ['Fairness to farmers', grade(S.approval.farmers, [65, 55, 45, 35]), `Farmers’ approval ${S.approval.farmers}; hard times ${Math.round(S.D)}`],
+    ['Keeping order', grade(100 - S.unrest, [65, 55, 45, 35]), `Unrest ended at ${Math.round(S.unrest)}${S.flags.rebellion ? '; your state saw a rebellion' : ''}`],
+    ['Trust in your money', grade(S.paperOut ? S.paperV * 100 : 95, [90, 75, 55, 35]), S.paperOut ? `Paper money worth ${Math.round(S.paperV * 100)}¢ on the dollar` : 'No paper money printed'],
+    ['Politics', grade(S.wins, [6, 5, 4, 3]), `Won ${S.wins} of ${H.length} elections`],
+  ];
+  const remaining = S.debt;
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">1781–1788 · Final report</span><h1>${S.name} ${ratified ? 'joins the new Union' : 'stands alone'}</h1></div>
+    <p class="intro">You led ${S.name} through seven years under the Articles of Confederation. You won <b>${S.wins} of ${H.length}</b> elections, and your state ended with <b>${money(S.debt)}</b> in debt and <b>${money(S.specie)}</b> in its treasury. Union strength ended at <b>${Math.round(N.U)}</b>.</p>
+    <div class="panel"><h2>Report card</h2>
+      <div class="grades">${grades.map(([k, g, why]) => `<div class="grade"><span class="lbl">${k}</span><b class="g-${g}">${g}</b><span class="small muted">${why}</span></div>`).join('')}</div>
+      <p class="small muted">No state could earn straight A’s under the Articles. That was part of the problem.</p></div>
+    <div class="grid even">
+      <div class="panel chart"><h2>State debt</h2>${lineChart(IDS.map(id => ({ v: G.track[id].map(t => t.debt), color: COLORS[id], w: id === G.mine ? 3 : 1.6, dash: id === G.mine ? '' : '4 3' })), labels, v => v >= 1e6 ? '$' + (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'M' : '$' + Math.round(v / 1000) + 'k', 'State debt by year')}${legend()}</div>
+      <div class="panel chart"><h2>Unrest</h2>${lineChart(IDS.map(id => ({ v: G.track[id].map(t => t.unrest), color: COLORS[id], w: id === G.mine ? 3 : 1.6, dash: id === G.mine ? '' : '4 3' })), labels, v => Math.round(v), 'Unrest by year')}${legend()}</div>
+    </div>
+    <div class="panel"><h2>Your decisions</h2><div class="tblwrap"><table><thead><tr><th>Year</th><th>Laws</th><th class="r">Tax</th><th class="r">Paid Congress</th><th>Events</th><th class="r">Support</th></tr></thead><tbody>
+      ${H.map(h => `<tr><td class="num">${h.year}</td><td class="small">${h.ids.map(id => `${ISSUES[id].short}: <b>${CF.opt(id, h.choices[id]).label}</b>`).join('<br>')}</td><td class="r num">${h.B.tax}</td><td class="r num">${Math.round(h.B.req * 100)}%</td><td class="small">${h.events.map(e => e.name).join(', ') || '–'}</td><td class="r num ${h.won ? 'pos' : 'neg'}">${Math.round(h.support)}%</td></tr>`).join('')}
+    </tbody></table></div></div>
+    <div class="panel"><h2>Epilogue: 1789–1790</h2>
+      ${ratified ? `<p class="intro"><b>April 1789.</b> George Washington took the oath of office in New York City. Congress could now tax, and its first law put a tariff on imports. ${S.port ? `${S.name} lost its own import duties to the national government.` : `${S.name} no longer paid other states’ import taxes.`}</p>
+      <p class="intro"><b>1790.</b> Treasury Secretary Alexander Hamilton had the national government take over the states’ war debts, called “assumption.” ${remaining > debtStart ? `${S.name}’s debt had grown to ${money(remaining)}, so assumption lifted a heavy load from your taxpayers.` : `${S.name} had kept its debt down to ${money(remaining)}. Like Virginia, which had paid off much of its debt, your taxpayers grumbled that they would now help pay other states’ debts.`} Southern leaders agreed to assumption in exchange for putting the new capital on the Potomac River. This deal is known as the Compromise of 1790.</p>`
+      : `<p class="intro"><b>1789–1790.</b> The Constitution took effect without ${S.name}. The new government treated your state like a foreign country: your ships and goods paid the same duties as Britain’s. In 1790 the Senate voted to cut off all trade with Rhode Island and demand money unless it joined. Rhode Island’s convention gave in that May, by just 34 votes to 32. ${S.name} would face the same pressure.</p>`}
+      <p class="intro"><b>The West.</b> In 1787 Congress passed the Northwest Ordinance, which banned slavery north of the Ohio River and promised that new states would be equal to the original thirteen. The first, Ohio, entered the Union in 1803. Virginia’s Military District and Connecticut’s Western Reserve are still remembered in Ohio place names.</p>
+    </div>
+    <div class="panel"><h2>Think it over</h2>
+      <ol class="qs">
+        <li>Why couldn’t Congress pay its debts under the Articles? What would have to change to fix that?</li>
+        <li>When did your state choose its own interests over the Union’s? Did it make sense for your state at the time?</li>
+        <li>Look at the Impost vote. Why was requiring every state to agree such a problem?</li>
+        <li>Who benefited when your state paid its bondholders in full? Who paid the taxes? Was that fair to veterans who had sold their IOUs cheap?</li>
+        <li>Were the Regulators rebels or patriots? How did your choices make rebellion more or less likely?</li>
+        <li>Most people in your state could not vote. How might your decisions have been different if they could?</li>
+        <li>Find one problem from this game that the Constitution was written to solve. Which part of the Constitution solves it?</li>
+      </ol></div>
+    <div class="footer-actions"><button class="btn" id="restartBtn2">Play again</button></div>
+  </div>`;
+}
+
+// ---------- router ----------
+function render() {
+  renderChrome();
+  if (!G) return renderSetup();
+  if (G.stage === 'intro') return renderIntro();
+  if (G.stage === 'plan') return renderPlan();
+  if (G.stage === 'desk') return renderDesk();
+  if (G.stage === 'results') return renderResults();
+  if (G.stage === 'end') return renderEnd();
+}
+let confirmArmed = 0;
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.state) { setup.state = b.dataset.state; setup.desk = $('#desk').checked; renderSetup(); return; }
+  if (b.dataset.issue) { G.choices[b.dataset.issue] = b.dataset.opt; b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); updateForecast(); return; }
+  switch (b.id) {
+    case 'startBtn': setup.desk = $('#desk').checked; startGame(); break;
+    case 'introBtn': G.stage = 'plan'; save(); render(); window.scrollTo(0, 0); break;
+    case 'adoptBtn': adopt(); break;
+    case 'histEvBtn': G.cond = { events: CF.suggestEvents(me(), G.yi, Math.random, 'history') }; save(); renderDesk(); break;
+    case 'redrawBtn': G.cond = { events: CF.suggestEvents(me(), G.yi) }; save(); renderDesk(); break;
+    case 'revealBtn': reveal(); break;
+    case 'nextBtn': nextRound(); break;
+    case 'restartBtn2': G = null; try { localStorage.removeItem(KEY); } catch (e) {} render(); window.scrollTo(0, 0); break;
+    case 'restartBtn':
+      if (Date.now() - confirmArmed < 4000) { G = null; try { localStorage.removeItem(KEY); } catch (e) {} render(); }
+      else { confirmArmed = Date.now(); b.textContent = 'Click again to restart'; setTimeout(() => { if (b.isConnected) b.textContent = 'Restart game'; }, 4000); }
+      break;
+  }
+});
+document.addEventListener('input', e => {
+  if (!G || G.stage !== 'plan') return;
+  const k = e.target.id; if (['tax', 'duty', 'int', 'req'].includes(k)) { G.budget[k] = +e.target.value; save(); updateForecast(); }
+});
+document.addEventListener('change', e => {
+  if (G && G.stage === 'desk' && e.target.dataset.ev) { const id = e.target.dataset.ev; G.cond.events = e.target.checked ? [...new Set([...G.cond.events, id])] : G.cond.events.filter(x => x !== id); save(); updateDeskPreview(); }
+});
+render();
+})();
+</script>
+</body>
+</html>
