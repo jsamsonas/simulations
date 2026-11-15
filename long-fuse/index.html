@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A classroom simulation of the Great Powers from 1890 to the July Crisis of 1914.">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>The Long Fuse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: field-gray header band over a two-column "cabinet dispatch box" workspace; one column on phones. */
+:root {
+  --bg: #ECECE8; --surface: #FAFAF7; --sunk: #E0E0DA; --ink: #1D1F21; --muted: #5C6064; --line: #C9CAC4;
+  --accent: #3E4A3F; --accent-ink: #FFFFFF; --red: #A3312B; --gold: #96690F;
+  --good: #2E7547; --bad: #B03A2A; --warn: #96690F;
+  --f-military: #4A5A3C; --f-nationalists: #A3312B; --f-business: #2F4A6E; --f-socialists: #B0507A;
+  --p-GBR: #B23A3A; --p-FRA: #3156A8; --p-GER: #3B3B3B; --p-AUT: #C9A227; --p-RUS: #2E7D5B;
+  --map: #E3E2DA; --sea: #C9D5DC;
+  --f-display: "Playfair Display", "Iowan Old Style", Georgia, serif;
+  --f-body: "Libre Franklin", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #131514; --surface: #1B1E1C; --sunk: #252826; --ink: #E5E7E4; --muted: #9EA39F; --line: #333834;
+  --accent: #C9D3C4; --accent-ink: #161A16; --red: #E77A70; --gold: #DDAE4E;
+  --good: #79BE8D; --bad: #EC7B67; --warn: #DDAE4E;
+  --f-military: #A9BE93; --f-nationalists: #E77A70; --f-business: #9FB6DA; --f-socialists: #E39BBC;
+  --p-GBR: #E57B7B; --p-FRA: #8FAAE8; --p-GER: #C9C9C9; --p-AUT: #E6C65A; --p-RUS: #7CC6A3;
+  --map: #252824; --sea: #22303A;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #131514; --surface: #1B1E1C; --sunk: #252826; --ink: #E5E7E4; --muted: #9EA39F; --line: #333834;
+  --accent: #C9D3C4; --accent-ink: #161A16; --red: #E77A70; --gold: #DDAE4E;
+  --good: #79BE8D; --bad: #EC7B67; --warn: #DDAE4E;
+  --f-military: #A9BE93; --f-nationalists: #E77A70; --f-business: #9FB6DA; --f-socialists: #E39BBC;
+  --p-GBR: #E57B7B; --p-FRA: #8FAAE8; --p-GER: #C9C9C9; --p-AUT: #E6C65A; --p-RUS: #7CC6A3;
+  --map: #252824; --sea: #22303A;
+  color-scheme: dark; }
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.band{background:var(--accent);color:var(--accent-ink);border-bottom:4px solid var(--red)}
+header.band .wrap{padding-block:14px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{font-family:var(--f-display);font-size:31px;line-height:1.05;font-weight:700}
+.brand small{display:block;font-family:var(--f-body);font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:2px}
+.timeline{display:flex;gap:4px;flex-wrap:wrap}
+.timeline span{font-family:var(--f-mono);font-size:13px;padding:3px 9px;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);opacity:.6}
+.timeline span.done{opacity:.85}
+.timeline span.now{opacity:1;background:var(--accent-ink);color:var(--accent);font-weight:500}
+.statusbar{border-bottom:1px solid var(--line);background:var(--surface)}
+.statusbar .wrap{display:flex;flex-wrap:wrap;gap:6px 26px;padding-block:10px;align-items:baseline}
+.stat{display:flex;gap:8px;align-items:baseline}
+.stat b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;font-size:16px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.meter{display:inline-block;width:64px;height:7px;border-radius:4px;background:var(--sunk);vertical-align:middle;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--good)}
+.meter i.mid{background:var(--warn)} .meter i.low{background:var(--bad)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--sunk);color:var(--ink);white-space:nowrap}
+.pill.bad{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.pill.good{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+main{padding-block:22px 60px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-family:var(--f-display);font-weight:500;font-size:clamp(32px,5vw,48px);line-height:1.05}
+h2{font-size:19px;font-weight:700}
+h3{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start}
+.grid.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:880px){.grid,.grid.even{grid-template-columns:minmax(0,1fr)}}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--r);padding:11px 20px;font-weight:700;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn:focus-visible,input:focus-visible,.opt:focus-visible,.seg button:focus-visible,.choice:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+.yearhead{display:flex;flex-direction:column;gap:4px}
+.era{font-family:var(--f-mono);font-size:13px;color:var(--red);letter-spacing:.03em}
+.intro{max-width:66ch}
+.callout{border-left:4px solid var(--gold);background:color-mix(in srgb,var(--gold) 9%,transparent);padding:10px 14px;border-radius:0 var(--r) var(--r) 0;font-size:14px}
+.callout.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.callout.good{border-color:var(--good);background:color-mix(in srgb,var(--good) 8%,transparent)}
+.issue .who{font-size:12.5px;color:var(--muted);font-style:italic}
+.role{font-size:13.5px;font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.opt{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--bg);text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:5px}
+.opt b{font-size:14.5px}
+.opt .d{font-size:13px;color:var(--muted)}
+.opt[aria-pressed="true"]{border:2px solid var(--red);padding:9px 11px;background:color-mix(in srgb,var(--red) 6%,var(--surface))}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:4px;background:var(--sunk);white-space:nowrap}
+.tag.up{color:var(--good)} .tag.dn{color:var(--bad)}
+.hint{font-size:12.5px;border-top:1px dashed var(--line);padding-top:5px}
+.seg{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;width:fit-content;max-width:100%}
+.seg button{border:none;background:var(--surface);color:var(--ink);padding:7px 13px;font-size:13.5px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:none}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right}
+tr.me td{background:color-mix(in srgb,var(--gold) 14%,transparent);font-weight:600}
+.fac{display:grid;grid-template-columns:minmax(0,1fr) 110px 44px;gap:4px 10px;align-items:center}
+.fac .nm{font-weight:700;display:flex;align-items:center;gap:7px}
+.fac .nm::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.fac .bar{height:9px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.fac .bar i{display:block;height:100%;background:var(--c)}
+.why{display:block;font-size:12.5px;color:var(--muted);margin:2px 0 6px}
+.facd summary{list-style:none;cursor:pointer}
+.facd summary::-webkit-details-marker{display:none}
+.facd[open] summary .nm{text-decoration:underline}
+.c-military{--c:var(--f-military)} .c-nationalists{--c:var(--f-nationalists)} .c-business{--c:var(--f-business)} .c-socialists{--c:var(--f-socialists)}
+.quote{border-left:3px solid var(--c);padding:2px 0 2px 12px;display:flex;flex-direction:column;gap:2px}
+.quote q{font-family:var(--f-display);font-size:18px;line-height:1.3;quotes:"“" "”"}
+.quote span{font-size:12.5px;color:var(--muted)}
+.facgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.facgrid{grid-template-columns:minmax(0,1fr)}}
+.faccard{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.faccard p{font-size:13.5px}
+.votebar{display:flex;height:18px;border-radius:4px;overflow:hidden;background:var(--sunk)}
+.votebar i{display:block;height:100%;background:var(--c)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend span::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--c)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.kv div{display:flex;flex-direction:column;gap:1px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:7px 10px}
+.kv b{font-family:var(--f-mono);font-weight:500;font-size:16px;font-variant-numeric:tabular-nums}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.choice{border:1px solid var(--line);border-left:6px solid var(--pc);border-radius:var(--r);padding:10px 12px;background:var(--surface);text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:3px}
+.choice[aria-pressed="true"]{border:2px solid var(--accent);border-left:6px solid var(--pc);padding:9px 11px}
+.choice span{font-size:12.5px;color:var(--muted)}
+label.chk{display:flex;gap:9px;align-items:flex-start;font-size:14px}
+label.chk input{margin-top:3px}
+.map{margin:0;display:flex;flex-direction:column;gap:6px}
+.map svg{width:100%;height:auto;display:block;border-radius:4px}
+.map figcaption{font-size:12.5px;color:var(--muted)}
+.fuse{height:16px;border-radius:8px;background:linear-gradient(to right,var(--good),var(--warn) 50%,var(--bad));position:relative}
+.fuse i{position:absolute;top:-5px;width:4px;height:26px;background:var(--ink);border-radius:2px;transform:translateX(-2px)}
+.fuselabels{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+.log{display:flex;flex-direction:column;gap:8px}
+.log .ent{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.log .ent b{color:var(--pc)}
+.chart svg{width:100%;height:auto;display:block}
+.qs{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.grade{border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--bg)}
+.grade b{font-family:var(--f-display);font-size:36px;line-height:1}
+.g-A,.g-B{color:var(--good)} .g-C{color:var(--warn)} .g-D,.g-F{color:var(--bad)}
+.footer-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;align-items:center}
+@media (prefers-reduced-motion:no-preference){.fade{animation:fade .35s ease-out}@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="brand"><small>The Great Powers, 1890–1914 · You + 4 rivals</small>The Long Fuse</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</header>
+<div class="statusbar" id="statusbar" hidden><div class="wrap" id="statusInner"></div></div>
+<main><div class="wrap" id="app"></div></main>
+
+<script>
+// ===== The Long Fuse engine =====
+const LF = (() => {
+  const IDS = ['GBR', 'FRA', 'GER', 'AUT', 'RUS'];
+  const FK = ['military', 'nationalists', 'business', 'socialists'];
+  const P = {
+    GBR: { name: 'Britain', adj: 'British', army: 2, navy: 9, seaF: 1.0, nat: 35, w: { military: 0.10, nationalists: 0.25, business: 0.35, socialists: 0.30 },
+      fn: { military: 'Admiralty & War Office', nationalists: 'Imperialist press & Unionists', business: 'City of London & trade', socialists: 'Radical Liberals & Labour' },
+      blurb: 'The world’s greatest navy and empire, and the banker of the world. Your tiny army can’t fight a continental war, and you’ve avoided alliances for decades.' },
+    FRA: { name: 'France', adj: 'French', army: 6, navy: 4, seaF: 0.3, nat: 55, w: { military: 0.20, nationalists: 0.30, business: 0.25, socialists: 0.25 },
+      fn: { military: 'Army & General Staff', nationalists: 'Revanchists', business: 'Bankers & investors', socialists: 'Socialists' },
+      blurb: 'A republic still bitter over losing Alsace-Lorraine to Germany in 1871, and alone in Europe. Your banks are rich and your population is smaller than Germany’s.' },
+    GER: { name: 'Germany', adj: 'German', army: 7, navy: 2, seaF: 0.4, nat: 40, w: { military: 0.35, nationalists: 0.25, business: 0.20, socialists: 0.20 },
+      fn: { military: 'Kaiser & General Staff', nationalists: 'Pan-German nationalists', business: 'Industrialists & bankers', socialists: 'Social Democrats' },
+      blurb: 'Europe’s strongest army and fastest-growing economy, in the middle of the continent between France and Russia. Young Kaiser Wilhelm II has just dismissed Bismarck.' },
+    AUT: { name: 'Austria-Hungary', adj: 'Austro-Hungarian', army: 4, navy: 1, seaF: 0.2, nat: 45, w: { military: 0.35, nationalists: 0.25, business: 0.20, socialists: 0.20 },
+      fn: { military: 'Emperor’s court & generals', nationalists: 'Hawks & Magyar elites', business: 'Bankers & industry', socialists: 'Socialists & subject nationalities' },
+      blurb: 'An old empire of a dozen nationalities ruled from Vienna and Budapest. Serb, Czech, and other nationalists threaten to pull it apart, and Russia backs the Balkan Slavs.' },
+    RUS: { name: 'Russia', adj: 'Russian', army: 7, navy: 3, seaF: 0.2, nat: 40, w: { military: 0.40, nationalists: 0.30, business: 0.20, socialists: 0.10 },
+      fn: { military: 'Tsar’s court & generals', nationalists: 'Pan-Slavists', business: 'Industrialists & landowners', socialists: 'Duma liberals & workers' },
+      blurb: 'A vast autocracy with the largest army in Europe, slow to mobilize and short of money. Pan-Slavists want Russia to protect the Balkan Slavs, especially Serbia.' },
+  };
+  const FACTION = {
+    military: 'Generals and admirals, and in the monarchies the ruler’s court. They want a strong military, firm diplomacy, and war plans that guarantee victory.',
+    nationalists: 'Patriotic leagues, the popular press, and parties that see foreign policy as a contest of national honor. A diplomatic defeat enrages them.',
+    business: 'Bankers, traders, and industrialists. They profit from world trade and fear the taxes and chaos of war, though some build warships and guns.',
+    socialists: 'Socialist and labor parties and liberal reformers. They oppose arms spending and talk of a general strike against war.',
+  };
+  const pk = (a, b) => [a, b].sort().join('-');
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const clone = o => JSON.parse(JSON.stringify(o));
+
+  const CRISES = {
+    colonies: { title: 'The scramble for empire', who: 'A memorandum from the Colonial Office', type: 'colonial',
+      text: 'Europe’s powers are racing to claim Africa and Asia. Colonies bring prestige, markets, and naval bases, but every new claim brushes against a rival’s.',
+      rivals: { GBR: ['FRA', 'RUS'], FRA: ['GBR'], GER: ['GBR', 'FRA'], AUT: ['RUS'], RUS: ['GBR'] } },
+    fashoda: { title: 'Showdown at Fashoda', who: 'Telegrams from the upper Nile, September 1898', type: 'crisis', A: 'FRA', D: 'GBR',
+      text: 'A small French expedition has raised the tricolor at Fashoda on the upper Nile, cutting across Britain’s plans for a Cape-to-Cairo empire. A British army fresh from victory in Sudan has arrived. Newspapers in both countries call for war.' },
+    morocco: { title: 'The Moroccan Crisis', who: 'Reports from Tangier, March 1905', type: 'crisis', A: 'GER', D: 'FRA',
+      text: 'France is moving to take control of Morocco. Kaiser Wilhelm II has landed at Tangier and declared support for the Sultan’s independence, hoping to test, and break, the new friendship between Britain and France.' },
+    bosnia: { title: 'The Bosnian Annexation', who: 'Dispatches from Vienna and Belgrade, October 1908', type: 'crisis', A: 'AUT', D: 'RUS',
+      text: 'Austria-Hungary has annexed Bosnia-Herzegovina, which it had occupied since 1878. Serbia, which wanted the province’s Serbs, is furious, and calls on Russia to protect fellow Slavs. Russia’s army is still weak after its defeat by Japan.' },
+    balkans: { title: 'The Balkan Wars', who: 'News from the front, 1912–1913', type: 'crisis', A: 'AUT', D: 'RUS',
+      text: 'Serbia, Bulgaria, Greece, and Montenegro have driven the Ottoman Turks almost out of Europe. Victorious Serbia demands a port on the Adriatic. Austria-Hungary refuses to let Serbia grow stronger and moves troops to the border. Russia backs Serbia.' },
+  };
+
+  // Second issue each round: options per power
+  const ISSUES = [
+    { title: 'Partners after Bismarck', who: 'A cabinet discussion, 1890', text: 'Bismarck kept France isolated and Russia friendly with a web of treaties. Now he is gone, and the web is coming loose. Every power is rethinking its friendships.',
+      opts: {
+        GER: [{ k: 'renew', label: 'Renew the Reinsurance Treaty', desc: 'Keep the secret pact with Russia that Bismarck built.', fx: { military: -3, seek: { Q: 'RUS', want: ['germany'], commit: 0.6, host: -10, name: 'Reinsurance Treaty renewed' } } },
+              { k: 'lapse', label: 'Let it lapse', desc: 'Your new advisers say it contradicts the alliance with Austria-Hungary.', fx: { military: 3, commitSet: { RUS: 0 }, host: { RUS: 5 } }, hist: true },
+              { k: 'britain', label: 'Court Britain instead', desc: 'Trade colonial claims for British friendship.', fx: { host: { GBR: -6 }, seek: { Q: 'GBR', want: ['germany'], commit: 0.3, host: -6, name: 'Anglo-German colonial understanding' } } }],
+        FRA: [{ k: 'russia', label: 'Seek an alliance with Russia', desc: 'Offer French loans to the Tsar in return for a military alliance.', fx: { nationalists: 3, business: 2, seek: { Q: 'RUS', want: ['france'], commit: 1, host: -15, name: 'Franco-Russian Alliance' } }, hist: true },
+              { k: 'alone', label: 'Stand alone', desc: 'Keep a free hand.', fx: { nationalists: -2 } },
+              { k: 'germany', label: 'Seek reconciliation with Germany', desc: 'Accept the loss of Alsace-Lorraine and mend relations.', fx: { host: { GER: -15 }, nationalists: -20, socialists: 6, nat: -8 } }],
+        RUS: [{ k: 'france', label: 'Take French loans and an alliance', desc: 'French money will build your railways and army.', fx: { business: 4, seek: { Q: 'FRA', want: ['russia'], commit: 1, host: -15, name: 'Franco-Russian Alliance' } }, hist: true },
+              { k: 'germany', label: 'Stay close to Germany', desc: 'Ask Berlin to renew the Reinsurance Treaty.', fx: { seek: { Q: 'GER', want: ['renew'], commit: 0.6, host: -10, name: 'Reinsurance Treaty renewed' } } },
+              { k: 'free', label: 'Keep a free hand', desc: 'Commit to no one.', fx: {} }],
+        GBR: [{ k: 'isolation', label: 'Splendid isolation', desc: 'The Royal Navy is all the friend Britain needs.', fx: { nationalists: 2 }, hist: true },
+              { k: 'germany', label: 'Make a colonial deal with Germany', desc: 'Trade the island of Heligoland for Zanzibar, as Britain did in 1890.', fx: { host: { GER: -8 }, seek: { Q: 'GER', want: ['britain'], commit: 0.2, host: -4, name: 'Anglo-German colonial understanding' } } },
+              { k: 'france', label: 'Settle colonial quarrels with France', desc: 'Swap claims in Africa and Asia.', fx: { host: { FRA: -8 }, nationalists: -3 } }],
+        AUT: [{ k: 'tighten', label: 'Tighten the alliance with Germany', desc: 'Make the Dual Alliance of 1879 the center of everything.', fx: { commit: { GER: 0.1 }, host: { RUS: 3 }, military: 3 }, hist: true },
+              { k: 'russia', label: 'Make a Balkan deal with Russia', desc: 'Agree to keep the Balkans “on ice,” as the two empires did in 1897.', fx: { host: { RUS: -15 }, nationalists: -4, business: 2 } },
+              { k: 'britain', label: 'Court Britain in the Mediterranean', desc: 'Join agreements to keep the Russians out of the Straits.', fx: { host: { GBR: -5, RUS: 3 } } }],
+      } },
+    { title: 'Choosing friends', who: 'Secret talks, 1898–1902', text: 'Britain is starting to worry that splendid isolation has become dangerous isolation. Germany has just passed its first Navy Law. Everyone is shopping for partners.',
+      opts: {
+        GBR: [{ k: 'germany', label: 'Explore an alliance with Germany', desc: 'Colonial Secretary Joseph Chamberlain sounded out Berlin from 1898 to 1901.', fx: { seek: { Q: 'GER', want: ['britain'], commit: 0.5, host: -20, name: 'Anglo-German understanding' } }, hist: true },
+              { k: 'france', label: 'Settle with France', desc: 'Begin the talks that could lead to an entente.', fx: { seek: { Q: 'FRA', want: ['britain'], commit: 0.3, host: -15, name: 'Anglo-French rapprochement' } } },
+              { k: 'japan', label: 'Ally with Japan', desc: 'A Pacific partner to watch Russia, as Britain did in 1902.', fx: { host: { RUS: 8 }, prestige: 3 } }],
+        GER: [{ k: 'britain', label: 'Accept alliance talks with Britain', desc: 'Partnership with the world’s greatest navy, at the price of slowing your own fleet.', fx: { military: -3, nationalists: -4, seek: { Q: 'GBR', want: ['germany'], commit: 0.5, host: -20, name: 'Anglo-German understanding' } } },
+              { k: 'refuse', label: 'Hold out for better terms', desc: 'Your advisers are sure Britain can never reach terms with France or Russia, so time is on your side.', fx: { nationalists: 3, prestige: 2, host: { GBR: 5 } }, hist: true },
+              { k: 'russia', label: 'Revive friendship with Russia', desc: 'Encourage Russia’s ambitions in Asia.', fx: { seek: { Q: 'RUS', want: ['germany'], commit: 0.3, host: -8, name: 'Russo-German understanding' } } }],
+        FRA: [{ k: 'britain', label: 'Seek British friendship', desc: 'Foreign Minister Delcassé wants to end colonial rivalry with Britain.', fx: { seek: { Q: 'GBR', want: ['france'], commit: 0.3, host: -15, name: 'Anglo-French rapprochement' } }, hist: true },
+              { k: 'russia', label: 'Deepen the Russian alliance', desc: 'More loans, more railways toward Germany.', fx: { commit: { RUS: 0.1 }, business: 2 } },
+              { k: 'germany', label: 'Seek a deal with Germany', desc: 'Cooperate in Africa.', fx: { host: { GER: -8 }, nationalists: -10 } }],
+        RUS: [{ k: 'asia', label: 'Expand in Manchuria and Korea', desc: 'Build the Trans-Siberian Railway and push into East Asia.', fx: { prestige: 4, host: { GBR: 6 }, flags: { asia: true } }, hist: true },
+              { k: 'balkans', label: 'Focus on the Balkans', desc: 'Champion the Slavs and the Straits.', fx: { host: { AUT: 5 }, nationalists: 5 } },
+              { k: 'germany', label: 'Revive friendship with Germany', desc: 'Germany might back you in Asia.', fx: { seek: { Q: 'GER', want: ['russia'], commit: 0.3, host: -8, name: 'Russo-German understanding' } } }],
+        AUT: [{ k: 'freeze', label: 'Keep the Balkans “on ice”', desc: 'Stick to the 1897 deal with Russia.', fx: { host: { RUS: -6 }, business: 2 }, hist: true },
+              { k: 'tighten', label: 'Lean harder on Germany', desc: 'Germany is your only true friend.', fx: { commit: { GER: 0.1 }, host: { RUS: 3 } } },
+              { k: 'serbia', label: 'Squeeze Serbia', desc: 'Use trade bans to bring Serbia to heel.', fx: { host: { RUS: 6 }, nationalists: 4 } }],
+      } },
+    { title: 'Ententes and secret treaties', who: 'Diplomatic dispatches, 1904–1905', text: 'In 1904 Britain and France settled their colonial quarrels in the Entente Cordiale, a friendship but not an alliance. Russia is losing a war to Japan. The Kaiser and the Tsar are planning a private meeting on the Tsar’s yacht.',
+      opts: {
+        GBR: [{ k: 'entente', label: 'Build up the Entente with France', desc: 'Back France diplomatically and begin quiet cooperation.', fx: { seek: { Q: 'FRA', want: ['britain'], commit: 0.5, host: -10, name: 'Entente Cordiale strengthened' } }, hist: true },
+              { k: 'germany', label: 'Try again with Germany', desc: 'Offer Berlin a colonial and naval understanding.', fx: { seek: { Q: 'GER', want: ['britain'], commit: 0.3, host: -15, name: 'Anglo-German understanding' } } },
+              { k: 'aloof', label: 'Keep the Entente loose', desc: 'Friendship, not commitments.', fx: { socialists: 2 } }],
+        GER: [{ k: 'bjorko', label: 'Sign a treaty with the Tsar', desc: 'At Björkö in July 1905 the Kaiser and Tsar secretly signed a defensive alliance.', fx: { seek: { Q: 'RUS', want: ['bjorko'], commit: 0.5, host: -20, name: 'Treaty of Björkö' }, host: { FRA: 5 } }, hist: true },
+              { k: 'tighten', label: 'Tighten the alliance with Austria', desc: 'Make sure Vienna can always count on you.', fx: { commit: { AUT: 0.1 } } },
+              { k: 'britain', label: 'Approach Britain', desc: 'Offer to slow the naval program for a British understanding.', fx: { military: -3, seek: { Q: 'GBR', want: ['germany'], commit: 0.3, host: -15, name: 'Anglo-German understanding' } } }],
+        RUS: [{ k: 'bjorko', label: 'Honor the Björkö treaty', desc: 'Join Germany, even though it contradicts the French alliance.', fx: { seek: { Q: 'GER', want: ['bjorko'], commit: 0.5, host: -20, name: 'Treaty of Björkö' }, commit: { FRA: -0.3 } } },
+              { k: 'france', label: 'Stay loyal to France', desc: 'The Tsar’s ministers quietly killed the Björkö treaty.', fx: { commit: { FRA: 0.1 }, host: { GER: 3 } }, hist: true },
+              { k: 'britain', label: 'Settle the Great Game with Britain', desc: 'Divide Persia, Afghanistan, and Tibet into spheres of influence.', fx: { host: { GBR: -12 } } }],
+        FRA: [{ k: 'britain', label: 'Lean on the Entente', desc: 'Make Britain a real partner.', fx: { seek: { Q: 'GBR', want: ['entente'], commit: 0.5, host: -10, name: 'Entente Cordiale strengthened' } }, hist: true },
+              { k: 'russia', label: 'Prop up Russia', desc: 'Lend Russia the money to recover from its war.', fx: { commit: { RUS: 0.1 }, business: -2 } },
+              { k: 'germany', label: 'Seek a deal with Germany', desc: 'Defuse the rivalry.', fx: { host: { GER: -10 }, nationalists: -12 } }],
+        AUT: [{ k: 'tighten', label: 'Stand by Germany', desc: 'Back Berlin in every dispute.', fx: { commit: { GER: 0.1 } }, hist: true },
+              { k: 'russia', label: 'Talk to Russia', desc: 'Russia is weak; a deal might hold.', fx: { host: { RUS: -8 } } }],
+      } },
+    { title: 'War plans', who: 'Top secret: the General Staff', text: 'Every army is drawing up a plan for the next war. Plans that strike first and fast promise victory, but they leave statesmen little time to talk once mobilization starts.',
+      opts: {
+        GER: [{ k: 'schlieffen', label: 'Adopt the Schlieffen Plan', desc: 'If war comes, knock out France in six weeks by marching through neutral Belgium, then turn on Russia.', fx: { rigid: 30, military: 6, strength: 1.5, flags: { schlieffen: true } }, hint: 'Any Russian mobilization means immediate war with France and Belgium.', hist: true },
+              { k: 'east', label: 'Keep an eastern option', desc: 'Prepare to defend in the west and fight Russia first.', fx: { military: -8, nationalists: -2, strength: -0.5 } }],
+        RUS: [{ k: 'general', label: 'Plan only for general mobilization', desc: 'Russia is huge; once the army moves, it must all move at once.', fx: { rigid: 20, military: 5, flags: { generalOnly: true } }, hist: true },
+              { k: 'partial', label: 'Prepare a partial mobilization', desc: 'Be able to mobilize against Austria-Hungary alone.', fx: { military: -6 } }],
+        FRA: [{ k: 'plan17', label: 'Adopt Plan XVII', desc: 'All-out attack into Alsace-Lorraine. The French soldier’s fighting spirit will win.', fx: { rigid: 10, military: 5, nationalists: 3 }, hist: true },
+              { k: 'defensive', label: 'Plan a defensive war', desc: 'Fortify the border and wait.', fx: { military: -4, socialists: 3 } }],
+        GBR: [{ k: 'staffTalks', label: 'Allow secret staff talks with France', desc: 'British and French officers plan to send an army to France, without Parliament knowing.', fx: { commit: { FRA: 0.25 }, rigid: 10, socialists: -3, flags: { staffTalks: true } }, hist: true },
+              { k: 'freeHand', label: 'Keep a free hand', desc: 'No promises, no plans.', fx: { military: -3, socialists: 3 } }],
+        AUT: [{ k: 'conrad', label: 'Plan a preventive war on Serbia', desc: 'Chief of Staff Conrad urges crushing Serbia before it grows stronger.', fx: { rigid: 10, military: 6, host: { RUS: 5 }, flags: { conrad: true } }, hist: true },
+              { k: 'restraint', label: 'Plan for defense only', desc: 'Avoid adventures in the Balkans.', fx: { military: -6, business: 2 } }],
+      } },
+    { title: 'The arms race', who: 'A budget debate, 1912–1913', text: 'In 1912 Britain sent Lord Haldane to Berlin to discuss slowing the naval race. Meanwhile, every continental army is growing. Each power says it is only responding to the others.',
+      opts: {
+        GBR: [{ k: 'holiday', label: 'Offer a naval holiday', desc: 'Both sides pause battleship building.', fx: { seek: { Q: 'GER', want: ['accept'], commit: 0.2, host: -20, name: 'Naval agreement' } }, hist: true },
+              { k: 'neutrality', label: 'Promise neutrality in a continental war', desc: 'What Germany really wants. It would shake the Entente.', fx: { commit: { FRA: -0.3, RUS: -0.2 }, nationalists: -8, seek: { Q: 'GER', want: ['accept', 'demand'], commit: 0.3, host: -20, name: 'Anglo-German agreement' } } },
+              { k: 'outbuild', label: 'Outbuild them', desc: 'Two keels for every German one.', fx: { navy: 1, nationalists: 3 } }],
+        GER: [{ k: 'accept', label: 'Accept limits on your fleet', desc: 'Slow the navy in return for better relations.', fx: { military: -6, nationalists: -6, navyCap: true, seek: { Q: 'GBR', want: ['holiday', 'neutrality'], commit: 0.2, host: -20, name: 'Naval agreement' } } },
+              { k: 'demand', label: 'Demand a neutrality pledge first', desc: 'No naval deal unless Britain promises to stay out of a continental war.', fx: { seek: { Q: 'GBR', want: ['neutrality'], commit: 0.3, host: -20, name: 'Anglo-German agreement' } }, hist: true },
+              { k: 'armyBill', label: 'Pass a huge army bill', desc: 'Forget the navy race; build the army.', fx: { army: 2, host: { FRA: 6, RUS: 6 }, military: 6, socialists: -6 } }],
+        FRA: [{ k: 'threeYear', label: 'Pass the Three-Year Law', desc: 'Extend military service from two years to three.', fx: { army: 2, socialists: -8, nationalists: 6, host: { GER: 4 } }, hist: true },
+              { k: 'no', label: 'Keep two-year service', desc: 'Socialists and taxpayers will thank you.', fx: { socialists: 4, military: -5 } }],
+        RUS: [{ k: 'great', label: 'Launch the Great Program', desc: 'Expand the army enormously by 1917, with new strategic railways.', fx: { army: 2, host: { GER: 8, AUT: 6 }, military: 5 }, hist: true },
+              { k: 'no', label: 'Spend on industry instead', desc: 'Build factories, not divisions.', fx: { military: -5, business: 3 } }],
+        AUT: [{ k: 'armyBill', label: 'Expand the army', desc: 'Your army is the smallest of the powers.', fx: { army: 1, military: 4, socialists: -4 }, hist: true },
+              { k: 'no', label: 'Hold the line', desc: 'Hungary’s parliament won’t pay anyway.', fx: { military: -3 } }],
+      } },
+  ];
+
+  const EVENTS = {
+    pressWar:   { name: 'Press war', kind: 'local', p: 0.2, note: 'Newspapers whip up hatred of your chief rival with stories of insults and spies.', rumor: ['Angry headlines', 'Mass-circulation papers sell more copies when they attack foreigners.'] },
+    strikes:    { name: 'Strike wave', kind: 'local', p: 0.2, note: 'Miners, dockers, and railwaymen strike. Socialists grow stronger, and conservatives grow nervous.', rumor: ['Labor unrest', 'Union membership is soaring.'] },
+    boer:       { name: 'The Boer War', kind: 'world', note: 'Britain’s war against the Boer republics in South Africa (1899–1902) goes badly at first. Most of Europe cheers for the Boers.', rumor: ['Trouble in South Africa', 'British miners and Boer farmers are on a collision course.'] },
+    russoJap:   { name: 'Russia defeated by Japan', kind: 'world', note: 'Japan destroys Russia’s fleet at Tsushima (1905), and revolution breaks out across Russia. The Tsar is forced to accept a parliament, the Duma.', rumor: ['War in Manchuria', 'Russia and Japan both claim Korea and Manchuria.'] },
+    dreadnought:{ name: 'HMS Dreadnought', kind: 'world', note: 'Britain launches an all-big-gun battleship that makes every older warship obsolete, restarting the naval race from zero.', rumor: ['A new kind of battleship?', 'Rumors from Portsmouth of a revolutionary warship.'] },
+    angloRus:   { name: 'Anglo-Russian Convention', kind: 'world', note: 'In 1907 Britain and Russia settled their rivalry over Persia, Afghanistan, and Tibet. With the Franco-Russian alliance and the Entente Cordiale, this completed the “Triple Entente.”', rumor: ['Britain and Russia talking?', 'Old rivals seem to be patching things up.'] },
+    agadir:     { name: 'The Agadir Crisis', kind: 'world', note: 'In 1911 Germany sent a gunboat to Agadir in Morocco. Britain warned publicly that it would stand by France. Germany backed down, angry and humiliated.', rumor: ['Gunboats off Morocco?', 'Germany wants compensation for French gains in Morocco.'] },
+  };
+  const ROUNDS = [
+    { year: 1890, title: 'Dropping the Pilot', crisis: 'colonies', events: [['pressWar', false], ['strikes', false]],
+      intro: 'Kaiser Wilhelm II has dismissed Otto von Bismarck, the chancellor who unified Germany and kept the peace for twenty years by keeping France isolated. A cartoon in Punch shows the young Kaiser watching “the pilot” leave the ship. Europe is at peace, but its alliances are about to shift.',
+      hist: 'Germany let the Reinsurance Treaty with Russia lapse in 1890. France and Russia signed a military alliance in 1894. Europe now had two armed camps: the Triple Alliance (Germany, Austria-Hungary, Italy) and the Franco-Russian Alliance.' },
+    { year: 1898, title: 'Fleets and Fashoda', crisis: 'fashoda', events: [['boer', true], ['pressWar', false], ['strikes', false]],
+      intro: 'Germany has passed its first Navy Law. Admiral Tirpitz plans a fleet big enough that Britain would never dare fight it. In Africa, British and French expeditions are converging on the same spot on the Nile.',
+      hist: 'At Fashoda, France backed down in November 1898. Britain and Germany talked about an alliance from 1898 to 1901, but nothing came of it. Britain allied with Japan in 1902 and signed the Entente Cordiale with France in 1904.' },
+    { year: 1905, title: 'Morocco and Dreadnoughts', crisis: 'morocco', events: [['russoJap', true], ['dreadnought', true], ['pressWar', false]],
+      intro: 'The Entente Cordiale has ended a century of Anglo-French rivalry, at least on paper. Russia’s army has been destroyed in Manchuria. Germany sees a chance to split the new friends while Russia is weak.',
+      hist: 'At the Algeciras Conference (1906), only Austria-Hungary backed Germany. Britain stood firmly with France, and the Entente grew stronger. The Tsar’s ministers refused to honor the Björkö treaty.' },
+    { year: 1908, title: 'The Bosnian Crisis', crisis: 'bosnia', events: [['angloRus', true], ['pressWar', false], ['strikes', false]],
+      intro: 'Britain and Russia have settled their old rivalry in Asia, and Europe is now divided into the Triple Alliance and the Triple Entente. A revolution in the Ottoman Empire has given Austria-Hungary an opening in the Balkans.',
+      hist: 'Germany backed Austria-Hungary “in shining armor,” and in March 1909 Russia, not ready for war, backed down. Russians and Serbs never forgot the humiliation. Meanwhile, every General Staff refined its war plans.' },
+    { year: 1912, title: 'The Balkan Wars', crisis: 'balkans', events: [['agadir', true], ['pressWar', false], ['strikes', false]],
+      intro: 'After the Agadir crisis of 1911, Britain and Germany are further apart than ever. Now the Balkan states are at war with the Ottoman Empire, and with each other. Britain’s foreign secretary, Sir Edward Grey, calls the ambassadors of the powers to London.',
+      hist: 'Grey’s Conference of Ambassadors in London created an independent Albania, keeping Serbia from the sea, and the powers kept the Balkan Wars from spreading. It seemed to prove that diplomacy still worked. Meanwhile, France, Russia, Germany, and Austria-Hungary all passed huge army bills.' },
+    { year: 1914, title: 'The July Crisis', july: true, events: [],
+      intro: 'On 28 June 1914, a young Bosnian Serb named Gavrilo Princip shot and killed Archduke Franz Ferdinand, heir to the Austro-Hungarian throne, and his wife Sophie in Sarajevo. The assassins had been armed by a secret Serbian nationalist society linked to Serbian army officers. What happens next is up to you, and to the other four powers.',
+      hist: 'Austria-Hungary, with Germany’s “blank check,” sent Serbia an ultimatum on 23 July and declared war on 28 July. Russia mobilized, Germany declared war on Russia and France and invaded Belgium, and Britain declared war on Germany on 4 August.' },
+  ];
+
+  const JULY = [
+    { title: 'After Sarajevo', dates: '28 June – 6 July', text: 'Vienna wants revenge. Everyone is waiting to see whether Germany will back its ally, and what Russia will do.',
+      opts: {
+        AUT: [{ k: 'harsh', label: 'Punish Serbia, even if it means war', desc: 'Prepare an ultimatum Serbia cannot accept.', w: 12, fx: { military: 6, nationalists: 6, socialists: -4 }, hist: true },
+              { k: 'quick', label: 'Strike at once', desc: 'Attack before Europe has time to react, so it’s over before Russia can respond.', w: 6, fx: { military: 8, business: -4 } },
+              { k: 'investigate', label: 'Demand an investigation', desc: 'Make firm but reasonable demands, and let Europe see Serbia’s guilt.', w: -10, fx: { military: -6, nationalists: -6, business: 4 } }],
+        GER: [{ k: 'blank', label: 'Give Vienna a blank check', desc: 'Promise full support, whatever Austria decides. Urge it to act fast.', w: 12, fx: { military: 6, nationalists: 4, socialists: -4 }, hist: true },
+              { k: 'conditional', label: 'Support only limited demands', desc: 'Back Austria, but warn against a war that drags in Russia.', w: 2, fx: { business: 2 } },
+              { k: 'restrain', label: 'Hold Austria back', desc: 'Tell Vienna you won’t back a war with Serbia.', w: -12, fx: { military: -8, nationalists: -6, socialists: 4, business: 4 } }],
+        RUS: [{ k: 'warn', label: 'Warn Austria publicly', desc: 'Make clear Russia will protect Serbia.', w: 5, fx: { nationalists: 6, military: 3 }, hist: true },
+              { k: 'prepare', label: 'Begin secret military preparations', desc: 'Start the “Period Preparatory to War” quietly.', w: 8, fx: { military: 6 } },
+              { k: 'calm', label: 'Urge Serbia to give way', desc: 'Tell Belgrade to accept whatever it can.', w: -6, fx: { nationalists: -8, business: 3 } }],
+        FRA: [{ k: 'reaffirm', label: 'Pledge full support to Russia', desc: 'President Poincaré visits St. Petersburg and promises France will stand by its ally.', w: 5, fx: { nationalists: 5, military: 3 }, hist: true },
+              { k: 'caution', label: 'Urge Russia to be careful', desc: 'Remind the Tsar that France wants no Balkan war.', w: -5, fx: { nationalists: -4, socialists: 4 } }],
+        GBR: [{ k: 'aloof', label: 'Focus on Ireland', desc: 'Home Rule has Ireland near civil war. The Balkans can wait.', w: 3, fx: { socialists: 2 }, hist: true },
+              { k: 'warnGer', label: 'Warn Berlin early', desc: 'Tell Germany privately that Britain will not stay out of a war with France.', w: -6, fx: { socialists: -3, nationalists: 2 } },
+              { k: 'conference', label: 'Propose a conference now', desc: 'Offer to mediate before anyone acts.', w: -4, fx: { business: 3, socialists: 3 } }],
+      } },
+    { title: 'The ultimatum', dates: '23 – 28 July', text: 'Austria-Hungary has sent Serbia a 48-hour ultimatum. Serbia’s reply accepts almost everything, but not quite. The world now knows a crisis is underway.',
+      opts: {
+        AUT: [{ k: 'war', label: 'Declare war on Serbia', desc: 'Reject the reply and declare war.', w: 14, fx: { military: 6, nationalists: 6 }, hist: true },
+              { k: 'halt', label: 'Take Belgrade, then negotiate', desc: 'Occupy Serbia’s capital as a pledge and stop there: the “halt in Belgrade.”', w: -6, fx: { military: 2 } },
+              { k: 'accept', label: 'Accept Serbia’s reply', desc: 'Take the diplomatic victory.', w: -20, fx: { military: -10, nationalists: -10, business: 6 } }],
+        GER: [{ k: 'support', label: 'Back Austria to the hilt', desc: 'Reject outside mediation.', w: 8, fx: { military: 5, nationalists: 3 }, hist: true },
+              { k: 'halt', label: 'Press for a “halt in Belgrade”', desc: 'The Kaiser thinks Serbia’s reply removes any reason for war.', w: -10, fx: { military: -6, business: 4 } },
+              { k: 'conference', label: 'Accept Britain’s conference', desc: 'Let the powers settle it together.', w: -8, fx: { military: -8, nationalists: -4, business: 4, socialists: 4 } }],
+        RUS: [{ k: 'partial', label: 'Mobilize against Austria only', desc: 'A partial mobilization, to warn Vienna without threatening Germany.', w: 6, fx: { military: 2, nationalists: 4 }, hist: true },
+              { k: 'general', label: 'Order general mobilization', desc: 'Mobilize everything, including against Germany.', w: 14, fx: { military: 8, nationalists: 6 } },
+              { k: 'diplomacy', label: 'Rely on diplomacy', desc: 'Protest, and work through the other powers.', w: -8, fx: { nationalists: -8, military: -6 } }],
+        FRA: [{ k: 'backRussia', label: 'Stand by Russia', desc: 'Confirm that France will honor the alliance.', w: 5, fx: { nationalists: 4 }, hist: true },
+              { k: 'restrain', label: 'Hold Russia back', desc: 'Urge St. Petersburg not to mobilize.', w: -6, fx: { nationalists: -6, socialists: 4 } }],
+        GBR: [{ k: 'conference', label: 'Propose a four-power conference', desc: 'Sir Edward Grey’s plan: Britain, France, Germany, and Italy mediate.', w: -5, fx: { business: 3, socialists: 3 }, hist: true },
+              { k: 'commit', label: 'Declare solidarity with France and Russia', desc: 'Make Britain’s position clear, now.', w: -2, fx: { socialists: -6, nationalists: 4 } },
+              { k: 'neutral', label: 'Declare neutrality', desc: 'Britain will not fight over Serbia.', w: 6, fx: { socialists: 6, nationalists: -8 } }],
+      } },
+    { title: 'Mobilization', dates: '29 July – 4 August', text: 'Armies need weeks to mobilize, and every General Staff fears being caught behind. Once the trains start rolling, the war plans take over.',
+      opts: {
+        AUT: [{ k: 'mobilize', label: 'Order general mobilization', desc: 'Prepare for war with Russia as well as Serbia.', w: 6, fx: { military: 4 }, hist: true },
+              { k: 'negotiate', label: 'Hold back and negotiate', desc: 'Keep the war small, if you can.', w: -8, fx: { military: -6, business: 4 } }],
+        GER: [{ k: 'schlieffen', label: 'Mobilize and execute the war plan', desc: 'Ultimatums to Russia and France, then march through Belgium.', w: 16, fx: { military: 8, nationalists: 6 }, hist: true, needs: 'schlieffen' },
+              { k: 'east', label: 'Mobilize against Russia only', desc: 'Stand on the defensive in the west.', w: 8, fx: { military: 2 } },
+              { k: 'wait', label: 'Mobilize but don’t attack', desc: 'Prepare, and give diplomacy one more chance.', w: -6, fx: { military: -4 } },
+              { k: 'standDown', label: 'Stand down', desc: 'Refuse to mobilize and press Austria to stop.', w: -14, fx: { military: -12, nationalists: -10, socialists: 8, business: 6 } }],
+        RUS: [{ k: 'general', label: 'Order general mobilization', desc: 'The generals insist partial mobilization is impossible.', w: 12, fx: { military: 6, nationalists: 4 }, hist: true },
+              { k: 'hold', label: 'Hold back', desc: 'The Tsar briefly canceled general mobilization on 29 July. Make it stick.', w: -12, fx: { military: -10, nationalists: -8 } }],
+        FRA: [{ k: 'mobilize', label: 'Mobilize', desc: 'France cannot be caught unprepared.', w: 4, fx: { military: 4, nationalists: 4 }, hist: true },
+              { k: 'tenkm', label: 'Pull back 10 kilometers and wait', desc: 'Prove to the world that France is not the aggressor.', w: -3, fx: { military: -4 } }],
+        GBR: [{ k: 'war', label: 'Go to war for Belgium and France', desc: 'Britain guaranteed Belgian neutrality in 1839.', w: 0, fx: { nationalists: 6, socialists: -6 }, hist: true },
+              { k: 'mediate', label: 'Keep mediating', desc: 'Try once more to stop it.', w: -2, fx: { business: 2 } },
+              { k: 'neutral', label: 'Stay out', desc: 'Let the continent fight its own war.', w: 2, fx: { socialists: 4, nationalists: -6, business: 2 } }],
+      } },
+  ];
+
+  function newWorld() {
+    const W = { host: {}, commit: {}, P: {}, rigid: 0, Ttrack: [] };
+    const H = { 'FRA-GER': 70, 'GER-RUS': 30, 'GBR-GER': 20, 'AUT-GER': 5, 'AUT-RUS': 55, 'AUT-FRA': 30, 'AUT-GBR': 15, 'FRA-RUS': 25, 'FRA-GBR': 45, 'GBR-RUS': 55 };
+    W.host = H;
+    for (let i = 0; i < IDS.length; i++) for (let j = i + 1; j < IDS.length; j++) W.commit[pk(IDS[i], IDS[j])] = 0;
+    W.commit['AUT-GER'] = 1; W.commit['GER-RUS'] = 0.4;
+    for (const id of IDS) W.P[id] = { army: P[id].army, navy: P[id].navy, bonus: 0, prestige: 50, nat: P[id].nat, rigid: 0, approval: { military: 55, nationalists: 55, business: 55, socialists: 55 }, wins: 0, flags: {}, humiliated: 0 };
+    return W;
+  }
+  const H = (W, a, b) => W.host[pk(a, b)];
+  const C = (W, a, b) => W.commit[pk(a, b)];
+  function strength(W, id) { const p = W.P[id]; return p.army + p.navy * P[id].seaF + p.bonus; }
+  function threatOf(W, q, id) { const p = W.P[q]; return id === 'GBR' ? p.navy * 1.2 + p.army * 0.25 : p.army + p.navy * 0.2; }
+  function security(W, id) {
+    let own = strength(W, id), threat = 0;
+    for (const q of IDS) if (q !== id) { own += C(W, id, q) * strength(W, q) * 0.6; threat += threatOf(W, q, id) * H(W, id, q) / 100; }
+    return clamp(50 + (own - threat) * 4, 0, 100);
+  }
+  function tension(W) { const v = Object.values(W.host); return v.reduce((s, x) => s + x, 0) / v.length; }
+  function blocTight(W) { return (C(W, 'AUT', 'GER') + C(W, 'FRA', 'RUS') + C(W, 'FRA', 'GBR') * 0.8) / 2.8; }
+  function fuseBase(W) {
+    const nat = IDS.reduce((s, id) => s + W.P[id].nat, 0) / IDS.length;
+    const hum = IDS.reduce((s, id) => s + W.P[id].humiliated, 0);
+    return clamp(0.35 * tension(W) + 0.12 * W.rigid + 0.15 * nat + 10 * blocTight(W) + 4 * hum - 6, 0, 100);
+  }
+  function roleIn(cr, id) { return cr.A === id ? 'A' : cr.D === id ? 'D' : 'O'; }
+  function crisisOpts(key, id) {
+    const cr = CRISES[key];
+    if (cr.type === 'colonial') return [
+      { k: 'grab', label: 'Grab colonies aggressively', desc: `Plant flags first and argue later. Collides with ${cr.rivals[id].map(q => P[q].name).join(' and ')}.`, fx: { prestige: 8, nationalists: 6, business: 4, socialists: -4, nat: 4 } },
+      { k: 'deal', label: 'Negotiate spheres of influence', desc: 'Draw lines on the map with your rivals.', fx: { prestige: 2, business: 2, nationalists: -2 } },
+      { k: 'abstain', label: 'Focus on Europe', desc: 'Colonies are expensive distractions.', fx: { prestige: -4, nationalists: -5, socialists: 4 } }];
+    const r = roleIn(cr, id), A = P[cr.A].name, D = P[cr.D].name;
+    if (r === 'A') return [
+      { k: 'push', label: 'Press your demands', desc: 'Even at the risk of war.', fx: { military: 4, nationalists: 5, socialists: -4, business: -2 } },
+      { k: 'compromise', label: 'Seek a negotiated deal', desc: 'Take what you can get without a showdown.', fx: { business: 2, socialists: 2, nationalists: -3 } },
+      { k: 'back', label: 'Back down quietly', desc: 'Avoid the risk entirely.', fx: { nationalists: -8, military: -6, socialists: 4 } }];
+    if (r === 'D') return [
+      { k: 'stand', label: 'Stand firm', desc: `Refuse ${A}’s demands.`, fx: { military: 4, nationalists: 5, socialists: -4, business: -2 } },
+      { k: 'compromise', label: 'Offer a compromise', desc: 'Give a little to keep the peace.', fx: { business: 2, socialists: 2, nationalists: -3 } },
+      { k: 'yield', label: 'Give way', desc: 'You are not ready to fight.', fx: { nationalists: -8, military: -6, socialists: 4 } }];
+    return [
+      { k: 'backA', label: `Back ${A}`, desc: `Stand with ${A} in public.`, fx: { military: 2, nationalists: 3, socialists: -2 } },
+      { k: 'backD', label: `Back ${D}`, desc: `Stand with ${D} in public.`, fx: { military: 2, nationalists: 3, socialists: -2 } },
+      { k: 'mediate', label: 'Call for a conference', desc: 'Offer to mediate between them.', fx: { business: 3, socialists: 3, nationalists: -2 } },
+      { k: 'aloof', label: 'Stay out of it', desc: 'Not your quarrel.', fx: { socialists: 1, nationalists: -1 } }];
+  }
+
+  // Historical behavior of the computer-run powers
+  const AI_CRISIS = [
+    { GBR: 'grab', FRA: 'grab', GER: 'deal', AUT: 'deal', RUS: 'grab' },
+    { GBR: 'stand', FRA: 'back', GER: 'aloof', AUT: 'aloof', RUS: 'aloof' },
+    { GBR: 'backD', FRA: 'stand', GER: 'push', AUT: 'backA', RUS: 'backD' },
+    { GBR: 'mediate', FRA: 'aloof', GER: 'backA', AUT: 'push', RUS: 'yield' },
+    { GBR: 'mediate', FRA: 'backD', GER: 'mediate', AUT: 'compromise', RUS: 'compromise' },
+  ];
+  const AI_ARMS = [
+    { GBR: [0, 1], FRA: [1, 0], GER: [0, 0], AUT: [0, 0], RUS: [0, 0] },
+    { GBR: [0, 1], FRA: [0, 0], GER: [0, 1], AUT: [0, 0], RUS: [0, 0] },
+    { GBR: [0, 1], FRA: [0, 0], GER: [0, 1], AUT: [0, 0], RUS: [0, 0] },
+    { GBR: [0, 2], FRA: [0, 0], GER: [0, 1], AUT: [0, 0], RUS: [1, 0] },
+    { GBR: [0, 1], FRA: [0, 0], GER: [1, 0], AUT: [0, 0], RUS: [0, 0] },
+  ];
+  function aiPlan(W, yi, id, others) {
+    const crisis = AI_CRISIS[yi][id];
+    let issue = ISSUES[yi].opts[id].find(o => o.hist).k;
+    if (yi === 0 && id === 'RUS' && others.GER === 'renew') issue = 'germany';
+    if (yi === 1 && id === 'GER' && others.GBR === 'germany' && W.P.GER.flags.friendGB) issue = 'britain';
+    if (yi === 4 && id === 'GER' && others.GBR === 'neutrality') issue = 'accept';
+    let [a, n] = AI_ARMS[yi][id];
+    const s = security(W, id);
+    if (s < 45 && a < 2) a++;
+    if (s > 75 && a > 0) a--;
+    return { crisis, issue, B: { army: a, navy: n } };
+  }
+
+  // Resolve a normal round for all five powers.
+  function resolveRound(W0, yi, plans, events) {
+    const W = clone(W0); const R = ROUNDS[yi];
+    const parts = {}; for (const id of IDS) parts[id] = { military: [], nationalists: [], business: [], socialists: [] };
+    const add = (id, f, label, v) => { if (Math.abs(v) >= 0.5) parts[id][f].push([label, v]); };
+    const dHost = (a, b, v) => { const k = pk(a, b); W.host[k] = clamp(W.host[k] + v, 0, 100); };
+    const dCommit = (a, b, v) => { const k = pk(a, b); W.commit[k] = clamp(W.commit[k] + v, 0, 1); };
+    const news = []; const before = {}; for (const id of IDS) before[id] = { sec: security(W0, id), prestige: W0.P[id].prestige, nat: W0.P[id].nat, army: W0.P[id].army, navy: W0.P[id].navy };
+    const T0 = tension(W0);
+    // 1. arms
+    for (const id of IDS) {
+      let { army: a, navy: n } = plans[id].B;
+      const opt = ISSUES[yi].opts[id].find(o => o.k === plans[id].issue);
+      if (opt && opt.fx.navyCap && n > 0) n = 0;
+      const p = W.P[id]; p.army = clamp(p.army + a, 0, 18); p.navy = clamp(p.navy + n, 0, 18);
+      const lab = `Defense: army ${a >= 0 ? '+' : ''}${a}, navy ${n >= 0 ? '+' : ''}${n}`;
+      const up = Math.max(0, a) + Math.max(0, n), down = Math.min(0, a) + Math.min(0, n);
+      add(id, 'military', lab, up * 3 + down * 4); add(id, 'nationalists', lab, up * 2 + down * 3);
+      add(id, 'business', 'Taxes for armaments', -up * 1.5 - down * 1); add(id, 'socialists', 'Spending on armaments', -up * 3 - down * 3);
+      p.nat = clamp(p.nat + up * 2, 0, 100);
+      for (const q of IDS) if (q !== id) {
+        const rival = H(W, id, q) >= 35 || IDS.some(r => r !== id && r !== q && C(W, id, r) >= 0.5 && H(W, q, r) >= 50);
+        if (!rival) continue;
+        dHost(id, q, Math.max(0, a) * 3 + Math.max(0, n) * (q === 'GBR' ? 6 : 1.5));
+      }
+    }
+    // 2. second issue (alliances, plans, arms programs)
+    const chose = {}; for (const id of IDS) chose[id] = plans[id].issue;
+    const formed = new Set();
+    for (const id of IDS) {
+      const o = ISSUES[yi].opts[id].find(x => x.k === chose[id]); const fx = o.fx;
+      for (const f of FK) if (fx[f]) add(id, f, `${ISSUES[yi].title}: ${o.label}`, fx[f]);
+      if (fx.host) for (const q in fx.host) dHost(id, q, fx.host[q]);
+      if (fx.commit) for (const q in fx.commit) dCommit(id, q, fx.commit[q]);
+      if (fx.commitSet) for (const q in fx.commitSet) W.commit[pk(id, q)] = fx.commitSet[q];
+      if (fx.nat) W.P[id].nat = clamp(W.P[id].nat + fx.nat, 0, 100);
+      if (fx.prestige) W.P[id].prestige = clamp(W.P[id].prestige + fx.prestige, 0, 100);
+      if (fx.rigid) { W.P[id].rigid += fx.rigid; W.rigid += fx.rigid; }
+      if (fx.army) W.P[id].army += fx.army;
+      if (fx.navy) W.P[id].navy += fx.navy;
+      if (fx.strength) W.P[id].bonus += fx.strength;
+      if (fx.flags) Object.assign(W.P[id].flags, fx.flags);
+      if (fx.army || fx.navy) for (const q of IDS) if (q !== id && H(W, id, q) >= 35) dHost(id, q, (fx.army || 0) * 3);
+      if (fx.seek) {
+        const s = fx.seek; const key = [pk(id, s.Q), s.name].join('|');
+        if (s.want.includes(chose[s.Q])) {
+          if (!formed.has(key)) { formed.add(key); W.commit[pk(id, s.Q)] = Math.max(W.commit[pk(id, s.Q)], s.commit); dHost(id, s.Q, s.host); news.push({ good: true, text: `<b>${s.name}.</b> ${P[id].name} and ${P[s.Q].name} reached an agreement.` }); }
+          add(id, 'business', `${s.name}`, 2);
+          if (s.Q === 'GBR' || id === 'GBR') W.P[id].flags.friendGB = true;
+        } else { add(id, 'nationalists', `Rebuffed by ${P[s.Q].name}`, -3); W.P[id].prestige = clamp(W.P[id].prestige - 3, 0, 100); news.push({ text: `${P[id].name} approached ${P[s.Q].name}, but was rebuffed.` }); }
+      }
+    }
+    // 3. the crisis
+    const cr = CRISES[R.crisis];
+    let crisisResult = null;
+    if (cr.type === 'colonial') {
+      for (const id of IDS) {
+        const k = plans[id].crisis; const o = crisisOpts(R.crisis, id).find(x => x.k === k);
+        for (const f of FK) if (o.fx[f]) add(id, f, `Empire: ${o.label}`, o.fx[f]);
+        if (o.fx.prestige) W.P[id].prestige = clamp(W.P[id].prestige + o.fx.prestige, 0, 100);
+        if (o.fx.nat) W.P[id].nat = clamp(W.P[id].nat + o.fx.nat, 0, 100);
+        for (const q of cr.rivals[id]) dHost(id, q, k === 'grab' ? 8 : k === 'deal' ? -6 : 0);
+      }
+      crisisResult = { text: `Colonial rivalry: ${IDS.filter(id => plans[id].crisis === 'grab').map(id => P[id].name).join(', ') || 'no one'} grabbed aggressively.` };
+    } else {
+      const A = cr.A, D = cr.D; const ch = id => plans[id].crisis;
+      for (const id of IDS) { const o = crisisOpts(R.crisis, id).find(x => x.k === ch(id)); for (const f of FK) if (o.fx[f]) add(id, f, `${cr.title}: ${o.label}`, o.fx[f]); }
+      const lvA = { push: 2, compromise: 1, back: 0 }[ch(A)], lvD = { stand: 2, compromise: 1, yield: 0 }[ch(D)];
+      const others = IDS.filter(id => id !== A && id !== D);
+      let supA = strength(W, A) + (lvA === 2 ? 2 : 0), supD = strength(W, D) + (lvD === 2 ? 2 : 0); const med = [];
+      for (const id of others) {
+        const k = ch(id);
+        if (k === 'backA') { supA += strength(W, id); dCommit(id, A, 0.1); dHost(id, D, 6); }
+        else if (k === 'backD') { supD += strength(W, id); dCommit(id, D, 0.1); dHost(id, A, 6); }
+        else if (k === 'mediate') { med.push(id); dHost(id, A, -3); dHost(id, D, -3); }
+        else { if (C(W, id, A) >= 0.5) { dCommit(id, A, -0.15); news.push({ text: `${P[A].name} felt abandoned by its ally ${P[id].name}.` }); } if (C(W, id, D) >= 0.5) { dCommit(id, D, -0.15); news.push({ text: `${P[D].name} felt abandoned by its ally ${P[id].name}.` }); } }
+      }
+      const win = (w, l) => {
+        W.P[w].prestige = clamp(W.P[w].prestige + 10, 0, 100); add(w, 'nationalists', `Victory in the ${cr.title.replace(/^The /, '')}`, 6); add(w, 'military', 'Diplomatic victory', 4);
+        W.P[l].prestige = clamp(W.P[l].prestige - 15, 0, 100); W.P[l].nat = clamp(W.P[l].nat + 15, 0, 100); W.P[l].humiliated++;
+        add(l, 'nationalists', 'National humiliation', -10); add(l, 'military', 'National humiliation', -8);
+        dHost(l, w, 15);
+        for (const id of others) if (ch(id) === (w === A ? 'backA' : 'backD')) dHost(l, id, 8);
+        return { winner: w, loser: l };
+      };
+      if (lvA === 0 && lvD === 0) { crisisResult = { text: 'Both sides backed away. The crisis fizzled out.' }; dHost(A, D, -4); }
+      else if (lvA === 0) crisisResult = { ...win(D, A), text: `${P[A].name} backed down. ${P[D].name} won a diplomatic victory, and ${P[A].name} was humiliated.` };
+      else if (lvD === 0) crisisResult = { ...win(A, D), text: `${P[D].name} gave way. ${P[A].name} won, and ${P[D].name} was humiliated.` };
+      else if (lvA === 1 && lvD === 1 || (med.length >= 2 && (lvA < 2 || lvD < 2))) {
+        dHost(A, D, -8); for (const id of med) { W.P[id].prestige = clamp(W.P[id].prestige + 3, 0, 100); add(id, 'business', 'A successful conference', 2); }
+        crisisResult = { settled: true, text: `${med.length ? `A conference brought in by ${med.map(id => P[id].name).join(' and ')}` : 'Direct talks'} produced a compromise. Tension eased, at least for now.` };
+      } else {
+        const res = supA >= supD ? win(A, D) : win(D, A);
+        for (const k of Object.keys(W.host)) W.host[k] = clamp(W.host[k] + 3, 0, 100);
+        crisisResult = { ...res, text: `A war scare! Neither side would yield. With more support (${Math.round(Math.max(supA, supD))} to ${Math.round(Math.min(supA, supD))}), ${P[res.winner].name} forced ${P[res.loser].name} to back down. Europe came close to war.` };
+      }
+    }
+    // 4. events
+    const ev = [];
+    for (const e of events) {
+      const E = EVENTS[e]; const r = { id: e.id || e, name: E.name, note: E.note, who: null };
+      const id = typeof e === 'string' ? e : e.id;
+      if (id === 'boer') { W.P.GBR.prestige -= 5; dHost('GBR', 'GER', 6); add('GBR', 'nationalists', 'Setbacks in South Africa', -4); }
+      if (id === 'russoJap') { W.P.RUS.army = Math.max(2, W.P.RUS.army - 3); W.P.RUS.prestige -= 10; add('RUS', 'military', 'Defeat by Japan', -8); add('RUS', 'socialists', 'Revolution of 1905', -10); W.P.RUS.nat += 5; }
+      if (id === 'dreadnought') { dHost('GBR', 'GER', 8); W.P.GBR.nat += 4; W.P.GER.nat += 4; }
+      if (id === 'angloRus') { dHost('GBR', 'RUS', -25); dCommit('GBR', 'RUS', 0.3); }
+      if (id === 'agadir') { dHost('GER', 'FRA', 8); dHost('GER', 'GBR', 8); W.P.FRA.nat += 6; W.P.GER.nat += 6; add('GER', 'nationalists', 'Backing down at Agadir', -4); }
+      ev.push(r);
+    }
+    // local events for each power
+    for (const id of IDS) for (const le of (plans[id].local || [])) {
+      if (le === 'pressWar') { W.P[id].nat += 8; add(id, 'nationalists', 'Press war', 4); const top = IDS.filter(q => q !== id).sort((x, y) => H(W, id, y) - H(W, id, x))[0]; dHost(id, top, 5); }
+      if (le === 'strikes') { add(id, 'socialists', 'Strike wave', -6); add(id, 'business', 'Strike wave', -4); }
+      if (id === plans.__me) ev.push({ id: le, name: EVENTS[le].name, note: EVENTS[le].note });
+    }
+    // 5. drift and standing reactions
+    for (const k of Object.keys(W.host)) W.host[k] = clamp(W.host[k] + (30 - W.host[k]) * 0.05, 0, 100);
+    for (const id of IDS) W.P[id].nat = clamp(W.P[id].nat + (40 - W.P[id].nat) * 0.08, 0, 100);
+    const T = tension(W);
+    const reports = {};
+    for (const id of IDS) {
+      const s = security(W, id), p = W.P[id];
+      add(id, 'military', `Security (${Math.round(s)})`, (s - 50) / 6);
+      add(id, 'nationalists', `Security (${Math.round(s)})`, (s - 50) / 8);
+      const dp = p.prestige - before[id].prestige; add(id, 'nationalists', `Prestige ${dp >= 0 ? 'up' : 'down'}`, dp / 2);
+      add(id, 'business', `Europe’s tension (${Math.round(T)})`, -(T - 40) / 8);
+      add(id, 'socialists', `Europe’s tension (${Math.round(T)})`, -(T - 40) / 8);
+      const approvals = {};
+      for (const f of FK) {
+        const start = p.approval[f]; const drift = 50 + (start - 50) * 0.75;
+        const sum = parts[id][f].reduce((t, x) => t + x[1], 0);
+        p.approval[f] = Math.round(clamp(drift + sum, 0, 100));
+        approvals[f] = { before: start, after: p.approval[f], drift: drift - start, parts: parts[id][f] };
+      }
+      const support = FK.reduce((t, f) => t + P[id].w[f] * p.approval[f], 0); const won = support >= 50; if (won) p.wins++;
+      reports[id] = { yi, year: R.year, approvals, support, won, before: before[id], after: { sec: s, prestige: p.prestige, nat: p.nat, army: p.army, navy: p.navy }, crisis: plans[id].crisis, issue: plans[id].issue, B: plans[id].B };
+    }
+    W.Ttrack.push(T);
+    return { W, reports, news, crisisResult, events: ev, T0, T };
+  }
+
+  // ---- July 1914 ----
+  function julyAI(W, step, id, J, cur) {
+    const p = W.P[id], T = tension(W);
+    const prev = s => (J[s] || {});
+    if (step === 0) {
+      if (id === 'AUT') return p.nat >= 40 || p.humiliated || p.flags.conrad || T >= 50 ? 'harsh' : 'investigate';
+      if (id === 'GER') return security(W, 'GER') < 60 || T >= 50 ? 'blank' : 'conditional';
+      if (id === 'RUS') return p.humiliated ? 'warn' : T >= 55 ? 'warn' : 'calm';
+      if (id === 'FRA') return C(W, 'FRA', 'RUS') >= 0.8 ? 'reaffirm' : 'caution';
+      if (id === 'GBR') return T < 45 ? 'conference' : 'aloof';
+    }
+    if (step === 1) {
+      const g = prev(0).GER, a = prev(0).AUT;
+      if (id === 'AUT') return g === 'blank' ? 'war' : g === 'conditional' ? (a === 'investigate' ? 'accept' : 'halt') : 'accept';
+      if (id === 'GER') return g === 'restrain' ? 'conference' : prev(0).GBR === 'warnGer' && T < 60 ? 'halt' : g === 'blank' ? 'support' : 'halt';
+      if (id === 'RUS') return a === 'investigate' || p.army < 6 ? 'diplomacy' : prev(0).FRA === 'reaffirm' ? 'partial' : (p.humiliated ? 'partial' : 'diplomacy');
+      if (id === 'FRA') return p.nat >= 50 || C(W, 'FRA', 'RUS') >= 0.8 ? 'backRussia' : 'restrain';
+      if (id === 'GBR') return C(W, 'FRA', 'GBR') >= 0.75 ? 'commit' : 'conference';
+    }
+    if (step === 2) {
+      const b = prev(1);
+      if (id === 'AUT') return b.AUT === 'war' ? 'mobilize' : 'negotiate';
+      if (id === 'RUS') return b.AUT === 'accept' ? 'hold' : b.AUT === 'war' ? 'general' : (b.AUT === 'halt' && b.GER === 'support' && W.P.RUS.nat >= 60 ? 'general' : 'hold');
+      if (id === 'GER') {
+        if (b.AUT === 'accept') return 'standDown';
+        const rus = cur.RUS || (b.AUT === 'war' ? 'general' : 'hold');
+        if (rus === 'general' || b.RUS === 'general') return W.P.GER.flags.schlieffen ? 'schlieffen' : 'east';
+        if (b.RUS === 'partial' && rus !== 'hold') return W.P.GER.flags.schlieffen ? 'schlieffen' : 'wait';
+        return b.GER === 'support' ? 'wait' : 'standDown';
+      }
+      if (id === 'FRA') return (cur.GER === 'schlieffen' || b.RUS === 'partial' || b.RUS === 'general' || cur.RUS === 'general') ? 'mobilize' : 'tenkm';
+      if (id === 'GBR') return cur.GER === 'schlieffen' ? 'war' : (C(W, 'FRA', 'GBR') >= 0.7 && (cur.FRA === 'mobilize') ? 'war' : 'neutral');
+    }
+  }
+  const JORDER = [['AUT', 'GER', 'RUS', 'FRA', 'GBR'], ['GER', 'AUT', 'RUS', 'FRA', 'GBR'], ['AUT', 'RUS', 'GER', 'FRA', 'GBR']];
+  function julyStep(W, step, J, me, myChoice) {
+    const cur = {};
+    for (const id of JORDER[step]) cur[id] = id === me ? myChoice : julyAI(W, step, id, J, cur);
+    return cur;
+  }
+  function julyOpts(step, id, W) { return JULY[step].opts[id].filter(o => !o.needs || W.P[id].flags[o.needs]); }
+  function fuse(W, J) {
+    let w = 0; J.forEach((c, s) => { for (const id of IDS) if (c[id]) { const o = JULY[s].opts[id].find(x => x.k === c[id]); w += o ? o.w : 0; } });
+    return clamp(fuseBase(W) + 0.35 * w, 0, 100);
+  }
+  function julyOutcome(W, J) {
+    const f = fuse(W, J); const c = J[2] || {};
+    const britain = c.GBR === 'war';
+    const belgium = c.GER === 'schlieffen';
+    let kind;
+    if (f < 40) kind = 'peace';
+    else if (f < 58 || !(c.RUS === 'general' || c.GER === 'schlieffen' || c.GER === 'east')) kind = 'local';
+    else if (britain) kind = 'world';
+    else kind = 'continental';
+    return { fuse: f, kind, britain, belgium };
+  }
+  function resolveJuly(W0, J, me) {
+    const W = clone(W0); const out = julyOutcome(W0, J); const reports = {};
+    for (const id of IDS) {
+      const parts = { military: [], nationalists: [], business: [], socialists: [] };
+      J.forEach((c, s) => { const o = JULY[s].opts[id].find(x => x.k === c[id]); if (o) for (const f of FK) if (o.fx[f]) parts[f].push([`${JULY[s].title}: ${o.label}`, o.fx[f]]); });
+      const war = out.kind === 'world' || out.kind === 'continental';
+      const atWar = war && (id !== 'GBR' || out.britain);
+      if (atWar) { parts.nationalists.push(['War fever', 12]); parts.military.push(['Mobilization', 10]); parts.socialists.push(['The nation rallies (even most socialists)', 4]); parts.business.push(['Markets collapse', -8]); }
+      else if (out.kind === 'peace') { parts.business.push(['Peace preserved', 8]); parts.socialists.push(['Peace preserved', 8]); parts.nationalists.push(['“A rotten compromise”', -4]); }
+      const p = W.P[id]; const approvals = {};
+      for (const f of FK) { const start = p.approval[f]; const drift = 50 + (start - 50) * 0.75; const sum = parts[f].reduce((t, x) => t + x[1], 0); p.approval[f] = Math.round(clamp(drift + sum, 0, 100)); approvals[f] = { before: start, after: p.approval[f], drift: drift - start, parts: parts[f] }; }
+      const support = FK.reduce((t, f) => t + P[id].w[f] * p.approval[f], 0); const won = support >= 50; if (won) p.wins++;
+      reports[id] = { yi: 5, year: 1914, approvals, support, won, july: J.map(c => c[id]) };
+    }
+    W.Ttrack.push(out.fuse);
+    return { W, reports, out };
+  }
+
+  return { IDS, FK, P, FACTION, CRISES, ISSUES, EVENTS, ROUNDS, JULY, pk, clamp, clone, newWorld, security, tension, strength, fuseBase, fuse, crisisOpts, roleIn, aiPlan, resolveRound, julyStep, julyOpts, julyAI, julyOutcome, resolveJuly, H, C };
+})();
+</script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const KEY = 'longFuse.v1';
+const { IDS, FK, P, FACTION, CRISES, ISSUES, EVENTS, ROUNDS, JULY } = LF;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cls = v => v >= 0 ? 'pos' : 'neg';
+const signed = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v));
+const R = Math.round;
+let G = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+const fn = (f, id) => P[id].fn[f];
+
+// ---------- diplomatic map ----------
+const POS = { GBR: [150, 95], FRA: [150, 285], GER: [330, 175], AUT: [430, 300], RUS: [540, 150] };
+function drawMap(W, me) {
+  let g = `<rect x="0" y="0" width="640" height="380" fill="var(--sea)"/><path d="M60 330 L120 200 L250 150 L250 60 L420 40 L640 40 L640 380 L60 380 Z" fill="var(--map)"/>`;
+  const pairs = [];
+  for (let i = 0; i < IDS.length; i++) for (let j = i + 1; j < IDS.length; j++) pairs.push([IDS[i], IDS[j]]);
+  for (const [a, b] of pairs) {
+    const h = LF.H(W, a, b), c = LF.C(W, a, b); const [x1, y1] = POS[a], [x2, y2] = POS[b];
+    if (h >= 35 && (c < 0.25 || h >= 50)) g += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--bad)" stroke-width="${1 + (h - 35) / 9}" stroke-dasharray="6 5" opacity="${0.35 + h / 200}"/>`;
+    if (c >= 0.25) g += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--good)" stroke-width="${2 + c * 6}" opacity=".75"/>`;
+  }
+  for (const id of IDS) {
+    const [x, y] = POS[id]; const s = LF.strength(W, id); const r = 16 + s * 1.3;
+    g += `<circle cx="${x}" cy="${y}" r="${r}" fill="var(--p-${id})" ${id === me ? 'stroke="var(--gold)" stroke-width="4"' : 'stroke="var(--surface)" stroke-width="2"'}/>`;
+    g += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--surface)" font-family="Libre Franklin, sans-serif">${id}</text>`;
+    g += `<text x="${x}" y="${y + r + 15}" text-anchor="middle" font-size="12" fill="var(--ink)" font-family="Libre Franklin, sans-serif">${P[id].name}</text>`;
+  }
+  return `<svg viewBox="0 0 640 380" role="img" aria-label="Diplomatic map of the Great Powers">${g}</svg>`;
+}
+const mapLegend = `<div class="legend"><span style="--c:var(--good)">Alliance or entente (thicker = stronger)</span><span style="--c:var(--bad)">Hostility (thicker = worse)</span><span style="--c:var(--muted)">Circle size = military strength</span></div>`;
+
+// ---------- chrome ----------
+function renderChrome() {
+  $('#timeline').innerHTML = ROUNDS.map((r, i) => `<span class="${G && (i < G.yi || G.stage === 'end') ? 'done' : ''} ${G && i === G.yi && G.stage !== 'end' ? 'now' : ''}">${r.year}</span>`).join('');
+  const sb = $('#statusbar'); if (!G) { sb.hidden = true; return; }
+  sb.hidden = false; const id = G.me; const p = G.W.P[id]; const s = LF.security(G.W, id); const T = LF.tension(G.W);
+  const last = G.history.length ? G.history[G.history.length - 1].support : null;
+  $('#statusInner').innerHTML = `
+    <div class="stat"><span class="lbl">Power</span><b style="font-family:var(--f-body);font-weight:700;color:var(--p-${id})">${P[id].name}</b></div>
+    <div class="stat"><span class="lbl">Security</span><b>${R(s)}</b></div>
+    <div class="stat"><span class="lbl">Prestige</span><b>${R(p.prestige)}</b></div>
+    <div class="stat"><span class="lbl">Army / Navy</span><b>${p.army} / ${p.navy}</b></div>
+    <div class="stat"><span class="lbl">Europe’s tension</span><span class="meter"><i class="${T < 40 ? '' : T < 55 ? 'mid' : 'low'}" style="width:${T}%"></i></span><b>${R(T)}</b></div>
+    ${last != null ? `<div class="stat"><span class="lbl">Cabinet support</span><b class="${last >= 50 ? 'pos' : 'neg'}">${R(last)}%</b></div>` : ''}
+    <span class="spacer"></span><button class="btn ghost small" id="restartBtn">Restart game</button>`;
+}
+
+// ---------- setup / intro ----------
+let setup = { me: 'GER', desk: false };
+function renderSetup() {
+  app.innerHTML = `<div class="stack fade" style="max-width:900px">
+    <h1>Europe at Peace, 1890</h1>
+    <p class="intro">No Great Power wanted a world war. Yet in August 1914 they all went to war, and nine or ten million soldiers would die. In this game you become the foreign minister of one Great Power, from Bismarck’s fall in 1890 to the July Crisis of 1914. You will make alliances, build armies and fleets, face down rivals or compromise with them, and try to keep your government in office. The other four powers are run by the computer and behave as they really did, unless your choices give them reason to act differently.</p>
+    <div class="panel"><span class="lbl">Choose your power</span>
+      <div class="choices">${IDS.map(id => `<button class="choice" style="--pc:var(--p-${id})" data-power="${id}" aria-pressed="${setup.me === id}"><b>${P[id].name}</b><span>${P[id].blurb}</span></button>`).join('')}</div>
+      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events. Leave this off when playing on your own.</span></span></label>
+      <div class="row"><button class="btn" id="startBtn">Take office</button><span class="muted small">Your progress saves in this browser.</span></div>
+    </div></div>`;
+}
+function startGame() {
+  G = { stage: 'intro', yi: 0, me: setup.me, desk: setup.desk, W: LF.newWorld(), history: [], rounds: [], choice: {}, B: { army: 0, navy: 0 }, cond: null, J: [], jstep: 0, secTrack: {} };
+  for (const id of IDS) G.secTrack[id] = [LF.security(G.W, id)];
+  G.W.Ttrack = [LF.tension(G.W)];
+  save(); render();
+}
+function voteBar(id) {
+  const w = P[id].w;
+  return `<div class="votebar">${FK.map(f => `<i class="c-${f}" style="width:${w[f] * 100}%"></i>`).join('')}</div><div class="legend">${FK.map(f => `<span class="c-${f}">${fn(f, id)} ${R(w[f] * 100)}%</span>`).join('')}</div>`;
+}
+function renderIntro() {
+  const id = G.me;
+  app.innerHTML = `<div class="stack fade">
+    <h1>${P[id].name}, 1890</h1>
+    <p class="intro">${P[id].blurb}</p>
+    <div class="grid even">
+      <div class="panel"><h2>The diplomatic map</h2><figure class="map">${drawMap(G.W, id)}<figcaption>${mapLegend}</figcaption></figure></div>
+      <div class="panel"><h2>How it works</h2>
+        <ul class="qs" style="list-style:disc">
+          <li><b>Security</b> (0–100) is how safe your power feels: your own army and navy, plus your allies, minus the strength of powers hostile to you.</li>
+          <li><b>Hostility</b> between two powers rises with arms buildups, colonial clashes, and humiliations, and falls with agreements and conferences.</li>
+          <li><b>The security dilemma:</b> when you arm to feel safer, your rivals feel less safe and arm too.</li>
+          <li><b>Crises</b> end in compromise, or in one side’s humiliation. Humiliated powers grow more nationalistic and less willing to back down next time.</li>
+          <li><b>War plans</b> you adopt make you feel safer, but they leave less time for diplomacy once mobilization begins.</li>
+          <li>In <b>July 1914</b> you’ll make three decisions in a row as the crisis unfolds. A <b>fuse</b> meter shows how close Europe is to war.</li>
+        </ul></div>
+    </div>
+    <div class="panel"><h2>Who keeps you in office</h2>
+      <p class="small">You don’t face elections. You stay in office as long as the people who matter in ${P[id].name} support you. Their influence differs from power to power: generals and the court dominate in Berlin, Vienna, and St. Petersburg, while Parliament and the City matter most in London. If support falls below 50%, your government falls. In the game you stay on, but the fall goes on your record.</p>
+      <div class="facgrid">${FK.map(f => `<div class="faccard c-${f}"><b>${fn(f, id)}</b><p>${FACTION[f]}</p></div>`).join('')}</div>
+      ${voteBar(id)}</div>
+    <div class="footer-actions"><button class="btn" id="introBtn">Begin in 1890</button></div>
+  </div>`;
+}
+
+// ---------- planning ----------
+function tagsFor(fx) {
+  const t = []; const arrows = v => (Math.abs(v) < 6 ? 1 : Math.abs(v) < 13 ? 2 : 3);
+  for (const f of FK) if (fx[f]) t.push(`<span class="tag ${fx[f] > 0 ? 'up' : 'dn'}">${fn(f, G.me).split(' ')[0]} ${(fx[f] > 0 ? '▲' : '▼').repeat(arrows(fx[f]))}</span>`);
+  if (fx.prestige) t.push(`<span class="tag ${fx.prestige > 0 ? 'up' : 'dn'}">Prestige ${fx.prestige > 0 ? '▲' : '▼'}</span>`);
+  if (fx.seek) t.push(`<span class="tag">Needs ${P[fx.seek.Q].name} to agree</span>`);
+  if (fx.host) for (const q in fx.host) t.push(`<span class="tag ${fx.host[q] < 0 ? 'up' : 'dn'}">${P[q].name} ${fx.host[q] < 0 ? 'friendlier' : 'angrier'}</span>`);
+  if (fx.rigid) t.push(`<span class="tag dn">Rigid plans ▲</span>`);
+  if (fx.army) t.push(`<span class="tag">Army +${fx.army}</span>`);
+  if (fx.navy) t.push(`<span class="tag">Navy +${fx.navy}</span>`);
+  if (fx.nat) t.push(`<span class="tag ${fx.nat < 0 ? 'up' : 'dn'}">Nationalism ${fx.nat < 0 ? '▼' : '▲'}</span>`);
+  return t.join('');
+}
+function approvalBars(id, label) {
+  const a = G.W.P[id].approval;
+  return `<div class="stack" style="gap:6px">${label ? `<h3>${label}</h3>` : ''}${FK.map(f => `<div class="fac c-${f}"><span class="nm">${fn(f, id)}</span><span class="bar"><i style="width:${a[f]}%"></i></span><b class="num" style="text-align:right">${R(a[f])}</b></div>`).join('')}</div>`;
+}
+function powersTable() {
+  return `<div class="tblwrap"><table><thead><tr><th>Power</th><th class="r">Army</th><th class="r">Navy</th><th class="r">Security</th><th class="r">Prestige</th><th class="r">Nationalism</th><th>Partners</th></tr></thead><tbody>
+    ${IDS.map(id => { const p = G.W.P[id]; const partners = IDS.filter(q => q !== id && LF.C(G.W, id, q) >= 0.25).map(q => P[q].name).join(', ') || '–';
+      return `<tr class="${id === G.me ? 'me' : ''}"><td style="color:var(--p-${id});font-weight:700">${P[id].name}</td><td class="r num">${p.army}</td><td class="r num">${p.navy}</td><td class="r num">${R(LF.security(G.W, id))}</td><td class="r num">${R(p.prestige)}</td><td class="r num ${p.nat > 65 ? 'neg' : ''}">${R(p.nat)}</td><td class="small">${partners}</td></tr>`; }).join('')}
+  </tbody></table></div>`;
+}
+function renderPlan() {
+  const r = ROUNDS[G.yi]; const id = G.me;
+  if (r.july) return renderJuly();
+  const cr = CRISES[r.crisis]; const iss = ISSUES[G.yi];
+  const role = cr.type === 'colonial' ? '' : LF.roleIn(cr, id) === 'A' ? `${P[id].name} is the challenger in this crisis.` : LF.roleIn(cr, id) === 'D' ? `${P[id].name} is the defender in this crisis.` : `${P[id].name} is not directly involved.${LF.C(G.W, id, cr.A) >= 0.5 ? ` But ${P[cr.A].name} is your ally.` : LF.C(G.W, id, cr.D) >= 0.5 ? ` But ${P[cr.D].name} is your ally.` : ''}`;
+  app.innerHTML = `<div class="grid fade">
+    <div class="stack">
+      <div class="yearhead"><span class="era">Round ${G.yi + 1} of 6 · ${P[id].name}</span><h1>${r.year}: ${r.title}</h1></div>
+      <p class="intro">${r.intro}</p>
+      <figure class="map">${drawMap(G.W, id)}<figcaption>${mapLegend}</figcaption></figure>
+      <div class="panel"><h3>The Great Powers</h3>${powersTable()}<p class="small muted">Nationalism above 65 makes a power’s public demand toughness in every crisis.</p></div>
+      <div class="panel"><h3>In the newspapers</h3>
+        ${r.events.map(([e, hist]) => `<p class="small"><b>${EVENTS[e].rumor[0]}</b> ${EVENTS[e].rumor[1]} ${hist ? '' : `<span class="muted">(About ${R(EVENTS[e].p * 100)}% chance.)</span>`}</p>`).join('')}</div>
+      <div class="panel"><h3>Who keeps you in office</h3>${approvalBars(id)}${voteBar(id)}</div>
+    </div>
+    <div class="stack">
+      <div class="panel issue"><h2>${cr.title}</h2><span class="who">${cr.who}</span><p class="small">${cr.text}</p>${role ? `<p class="role">${role}</p>` : ''}
+        <div class="opts">${LF.crisisOpts(r.crisis, id).map(o => `<button class="opt" data-slot="crisis" data-opt="${o.k}" aria-pressed="${G.choice.crisis === o.k}"><b>${o.label}</b><span class="d">${o.desc}</span><span class="tags">${tagsFor(o.fx)}</span></button>`).join('')}</div></div>
+      <div class="panel issue"><h2>${iss.title}</h2><span class="who">${iss.who}</span><p class="small">${iss.text}</p>
+        <div class="opts">${iss.opts[id].map(o => `<button class="opt" data-slot="issue" data-opt="${o.k}" aria-pressed="${G.choice.issue === o.k}"><b>${o.label}</b><span class="d">${o.desc}</span><span class="tags">${tagsFor(o.fx)}</span>${o.hint ? `<span class="hint">${o.hint}</span>` : ''}</button>`).join('')}</div></div>
+      <div class="panel"><h2>Defense budget</h2>
+        <p class="small muted">Change the size of your army and navy. Every increase pleases the generals and nationalists, costs taxes, angers socialists, and alarms your rivals.</p>
+        ${['army', 'navy'].map(k => `<div class="stack" style="gap:6px"><span class="lbl">${k === 'army' ? 'Army' : 'Navy'} (now ${G.W.P[id][k]})</span><div class="seg" role="group" aria-label="${k}">${[-1, 0, 1, 2].map(v => `<button data-arm="${k}" data-v="${v}" aria-pressed="${G.B[k] === v}">${v > 0 ? '+' : ''}${v}</button>`).join('')}</div></div>`).join('')}
+        <p class="small" id="armHint"></p></div>
+      <div class="footer-actions" id="adoptRow"></div>
+    </div>
+  </div>`;
+  updateAdopt();
+}
+function updateAdopt() {
+  const ready = G.choice.crisis && G.choice.issue;
+  const W = G.W, id = G.me; const up = Math.max(0, G.B.army) + Math.max(0, G.B.navy);
+  const alarmed = IDS.filter(q => q !== id && LF.H(W, id, q) >= 35).map(q => P[q].name);
+  $('#armHint').textContent = up ? `Raising your forces will alarm ${alarmed.join(', ') || 'no one yet'}${G.B.navy > 0 && id !== 'GBR' ? ', and Britain watches every new warship' : ''}.` : G.B.army < 0 || G.B.navy < 0 ? 'Cutting forces saves taxes and may calm your rivals, but your generals will protest.' : 'Holding steady.';
+  $('#adoptRow').innerHTML = `${ready ? '' : '<span class="small muted">Decide both issues first.</span>'}<button class="btn" id="adoptBtn" ${ready ? '' : 'disabled'}>Send your instructions</button>`;
+}
+function plansFor(events) {
+  const plans = {}; const mine = { crisis: G.choice.crisis, issue: G.choice.issue, B: { ...G.B } };
+  const others = {}; others[G.me] = mine.issue;
+  for (const id of IDS) if (id !== G.me) plans[id] = LF.aiPlan(G.W, G.yi, id, others);
+  for (const id of IDS) if (id !== G.me) others[id] = plans[id].issue;
+  for (const id of IDS) if (id !== G.me) plans[id] = LF.aiPlan(G.W, G.yi, id, others);
+  plans[G.me] = mine;
+  const r = ROUNDS[G.yi]; const world = events.filter(e => EVENTS[e].kind === 'world');
+  for (const id of IDS) {
+    if (id === G.me) plans[id].local = events.filter(e => EVENTS[e].kind === 'local');
+    else { let h = 0; const s = id + G.yi + G.me; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; plans[id].local = r.events.filter(([e, hist]) => EVENTS[e].kind === 'local' && ((h = (h * 1103515245 + 12345) >>> 0) / 4294967296) < EVENTS[e].p).map(([e]) => e); }
+  }
+  plans.__me = G.me;
+  return { plans, world };
+}
+function drawEvents() { return ROUNDS[G.yi].events.filter(([e, hist]) => hist || Math.random() < EVENTS[e].p).map(([e]) => e); }
+function adopt() {
+  G.cond = { events: drawEvents() };
+  if (G.desk) { G.stage = 'desk'; save(); render(); window.scrollTo(0, 0); } else reveal();
+}
+function renderDesk() {
+  const r = ROUNDS[G.yi];
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">Teacher’s desk · ${r.year}</span><h1>Set the round’s events</h1></div>
+    <p class="intro muted">Events marked “happened” really occurred and affect everyone. Local events affect only ${P[G.me].name}. Accept the draw, change it, or draw again.</p>
+    <div class="grid even"><div class="panel"><h2>Events</h2>
+      ${r.events.map(([e, hist]) => `<label class="chk"><input type="checkbox" data-ev="${e}" ${G.cond.events.includes(e) ? 'checked' : ''}><span><b>${EVENTS[e].name}</b> <span class="muted small">(${hist ? 'happened' : R(EVENTS[e].p * 100) + '% chance'})</span><br><span class="small">${EVENTS[e].note}</span></span></label>`).join('')}
+      <div class="row"><button class="btn ghost small" id="histEvBtn">Historical events only</button><button class="btn ghost small" id="redrawBtn">Draw again</button></div>
+      <p class="small muted"><b>What really happened:</b> ${r.hist}</p></div>
+      <div class="panel" id="deskPreview" aria-live="polite"></div></div>
+    <div class="footer-actions"><button class="btn" id="revealBtn">Reveal the results</button></div></div>`;
+  updateDeskPreview();
+}
+function updateDeskPreview() {
+  const el = $('#deskPreview'); if (!el) return;
+  const { plans, world } = plansFor(G.cond.events); const res = LF.resolveRound(G.W, G.yi, plans, world); const rp = res.reports[G.me];
+  el.innerHTML = `<h2>Preview for ${P[G.me].name}</h2><div class="kv"><div><span class="lbl">Security</span><b>${R(rp.after.sec)}</b></div><div><span class="lbl">Prestige</span><b>${R(rp.after.prestige)}</b></div><div><span class="lbl">Tension</span><b>${R(res.T)}</b></div><div><span class="lbl">Support</span><b class="${rp.won ? 'pos' : 'neg'}">${R(rp.support)}%</b></div></div><p class="small">${res.crisisResult.text}</p>`;
+}
+function reveal() {
+  const { plans, world } = plansFor(G.cond.events);
+  const res = LF.resolveRound(G.W, G.yi, plans, world);
+  G.W = res.W; G.history.push(res.reports[G.me]);
+  G.rounds.push({ news: res.news, crisis: res.crisisResult, events: res.events, T0: res.T0, T: res.T, plans: Object.fromEntries(IDS.map(id => [id, { crisis: plans[id].crisis, issue: plans[id].issue, B: plans[id].B }])), wins: Object.fromEntries(IDS.map(id => [id, res.reports[id].won])) });
+  for (const id of IDS) G.secTrack[id].push(LF.security(G.W, id));
+  G.stage = 'results'; save(); render(); window.scrollTo(0, 0);
+}
+
+// ---------- results ----------
+function whyBox(r, prev, voters, nameOf, word) {
+  const pts = v => `${R(Math.abs(v))} point${R(Math.abs(v)) === 1 ? '' : 's'}`;
+  const fks = Object.keys(r.approvals).filter(f => voters[f] > 0);
+  const base = prev != null ? prev : fks.reduce((s, f) => s + voters[f] * r.approvals[f].before, 0);
+  const diff = r.support - base;
+  const moves = fks.map(f => { const a = r.approvals[f]; const d = a.after - a.before; return { f, a, d, w: voters[f], impact: voters[f] * d }; });
+  const up = moves.filter(m => m.impact >= 0.5).sort((x, y) => y.impact - x.impact)[0];
+  const dn = moves.filter(m => m.impact <= -0.5).sort((x, y) => x.impact - y.impact)[0];
+  const reasons = m => { const ps = m.a.parts.filter(p => Math.sign(p[1]) === Math.sign(m.d)).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])).slice(0, 2);
+    return ps.length ? `, mostly because of ${ps.map(p => `<b>${p[0]}</b> (${signed(p[1])})`).join(' and ')}` : ', as old feelings faded'; };
+  const who = m => `<b>${nameOf(m.f)}</b> (${R(m.w * 100)}% of influence)`;
+  const big = moves.slice().sort((x, y) => y.w - x.w)[0];
+  const s = [];
+  s.push(r.won ? `Your government survived with <b>${R(r.support)}%</b> support. You needed 50%, so you had ${pts(r.support - 50)} to spare.` : `Your government fell with only <b>${R(r.support)}%</b> support. You needed 50%, so you fell ${pts(50 - r.support)} short.`);
+  if (prev != null) s.push(Math.abs(diff) < 1 ? `That is about the same as last round (${R(prev)}%).` : `That is <b>${diff > 0 ? 'up' : 'down'} ${pts(diff)}</b> from last round (${R(prev)}%).`);
+  else s.push(Math.abs(diff) < 1 ? `That is about the same support you had when you took office (${R(base)}%).` : `When you took office your support was about ${R(base)}%, so it went <b>${diff > 0 ? 'up' : 'down'} ${pts(diff)}</b>.`);
+  const lines = [];
+  if (dn) lines.push(`${who(dn)} turned against you, dropping from ${dn.a.before} to ${dn.a.after}${reasons(dn)}.`);
+  if (up) lines.push(`${who(up)} backed you more, rising from ${up.a.before} to ${up.a.after}${reasons(up)}.`);
+  if (!up && !dn) lines.push('No group changed its mind very much.');
+  return `<div class="callout ${r.won ? 'good' : 'bad'}" style="max-width:76ch"><b style="font-size:16px">${r.won ? 'Why your government survived' : 'Why your government fell'}</b><p style="margin-top:4px">${s.join(' ')}</p><ul style="margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px">${lines.map(l => `<li>${l}</li>`).join('')}</ul><p class="small" style="margin-top:6px">Remember: ${nameOf(big.f)} have the most influence in ${P[G.me].name} (${R(big.w * 100)}%).</p></div>`;
+}
+const QUOTES = {
+  military: { lo: 'The diplomats are throwing away what the army would win. We cannot plan for war with a government like this.', mid: 'We are ready, more or less. But the others are arming faster.', hi: 'At last, a government that understands strength is the only language Europe respects.', who: 'a senior general' },
+  nationalists: { lo: 'Another humiliation! The nation’s honor is being sold at the conference table.', mid: 'The nation stands firm, but our rivals grow bolder every year.', hi: 'The whole world now respects our flag.', who: 'a nationalist newspaper editor' },
+  business: { lo: 'Every war scare wipes millions off the stock exchange. Who will pay for all these warships?', mid: 'Trade is good, but the newspapers talk too much of war.', hi: 'Peace and commerce: the foundation of national greatness.', who: 'a banker' },
+  socialists: { lo: 'Workers of every nation have nothing to gain from the generals’ games. The arms race is robbing our children.', mid: 'We watch the arms budgets closely. The working class will not march for the kings.', hi: 'This government, at least, prefers conferences to cannons.', who: 'a socialist deputy' },
+};
+function voices(id) { const a = G.W.P[id].approval; return FK.map(f => { const Q = QUOTES[f]; const q = a[f] < 40 ? Q.lo : a[f] < 62 ? Q.mid : Q.hi; return `<div class="quote c-${f}"><q>${q}</q><span>${Q.who} · ${fn(f, id)} ${a[f]}</span></div>`; }).join(''); }
+function labelOf(yi, id, plan) {
+  const cr = ROUNDS[yi].crisis; const co = LF.crisisOpts(cr, id).find(o => o.k === plan.crisis); const io = ISSUES[yi].opts[id].find(o => o.k === plan.issue);
+  return { crisis: co ? co.label : plan.crisis, issue: io ? io.label : plan.issue };
+}
+function renderResults() {
+  const r = G.history[G.history.length - 1]; const rd = G.rounds[G.rounds.length - 1]; const yr = ROUNDS[r.yi]; const id = G.me;
+  const prev = G.history.length > 1 ? G.history[G.history.length - 2].support : null;
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">Results of ${yr.year}</span><h1>${r.won ? 'Your government survives' : 'Your government falls'}</h1></div>
+    ${whyBox(r, prev, P[id].w, f => fn(f, id))}
+    <div class="grid">
+      <div class="stack">
+        <div class="panel"><h2>Dispatches</h2>
+          <div class="callout ${rd.crisis.loser === id ? 'bad' : rd.crisis.winner === id || rd.crisis.settled ? 'good' : ''}"><b>${CRISES[yr.crisis].title}.</b> ${rd.crisis.text}</div>
+          ${rd.news.map(n => `<p class="small">${n.text}</p>`).join('')}
+          ${rd.events.map(e => `<div class="callout small"><b>${e.name}.</b> ${e.note}</div>`).join('')}
+          <p class="small muted"><b>What really happened:</b> ${yr.hist}</p></div>
+        <div class="panel"><h2>What each power did</h2><div class="tblwrap"><table><thead><tr><th>Power</th><th>Crisis</th><th>${ISSUES[r.yi].title}</th><th class="r">Arms</th><th class="r">Gov’t</th></tr></thead><tbody>
+          ${IDS.map(q => { const pl = rd.plans[q]; const L = labelOf(r.yi, q, pl); return `<tr class="${q === id ? 'me' : ''}"><td style="color:var(--p-${q});font-weight:700">${P[q].name}</td><td class="small">${L.crisis}</td><td class="small">${L.issue}</td><td class="r num">${signed(pl.B.army) || 0}/${signed(pl.B.navy) || 0}</td><td class="r">${rd.wins[q] ? '<span class="pill good">held</span>' : '<span class="pill bad">fell</span>'}</td></tr>`; }).join('')}
+        </tbody></table></div></div>
+        <div class="panel"><h2>${P[id].name} this round</h2>
+          <div class="kv">
+            <div><span class="lbl">Security</span><b>${R(r.before.sec)} → <span class="${r.after.sec >= r.before.sec ? 'pos' : 'neg'}">${R(r.after.sec)}</span></b></div>
+            <div><span class="lbl">Prestige</span><b>${R(r.before.prestige)} → <span class="${r.after.prestige >= r.before.prestige ? 'pos' : 'neg'}">${R(r.after.prestige)}</span></b></div>
+            <div><span class="lbl">Nationalism</span><b>${R(r.before.nat)} → ${R(r.after.nat)}</b></div>
+            <div><span class="lbl">Europe’s tension</span><b>${R(rd.T0)} → <span class="${rd.T <= rd.T0 ? 'pos' : 'neg'}">${R(rd.T)}</span></b></div>
+          </div></div>
+      </div>
+      <div class="stack">
+        <figure class="map">${drawMap(G.W, id)}<figcaption>${mapLegend}</figcaption></figure>
+        <div class="panel"><h2>Voices in ${P[id].name}</h2>${voices(id)}</div>
+        <div class="panel"><div class="row"><h2>Support for your government</h2><span class="spacer"></span><span class="pill ${r.won ? 'good' : 'bad'}">${R(r.support)}%</span></div>
+          ${FK.map(f => { const a = r.approvals[f]; const parts = a.parts.slice().sort((x, y) => Math.abs(y[1]) - Math.abs(x[1]));
+            return `<details class="facd c-${f}"><summary class="fac"><span class="nm">${fn(f, id)}</span><span class="bar"><i style="width:${a.after}%"></i></span><b class="num" style="text-align:right">${a.after}</b></summary><span class="why">${a.before} → ${a.after}. ${R(P[id].w[f] * 100)}% of influence. ${parts.slice(0, 6).map(p => `${p[0]} <b class="${cls(p[1])}">${signed(p[1])}</b>`).join(' · ')}${Math.abs(a.drift) >= 0.5 ? ` · Memories fade <b>${signed(a.drift)}</b>` : ''}</span></details>`; }).join('')}
+          <p class="small muted">Tap a group to see why its support moved.</p></div>
+        <div class="panel"><h3>The Great Powers now</h3>${powersTable()}</div>
+      </div>
+    </div>
+    <div class="footer-actions"><button class="btn" id="nextBtn">On to ${ROUNDS[G.yi + 1].year}</button></div>
+  </div>`;
+}
+function nextRound() { G.yi++; G.choice = {}; G.B = { army: 0, navy: 0 }; G.stage = ROUNDS[G.yi].july ? 'july' : 'plan'; G.J = []; G.jstep = 0; save(); render(); window.scrollTo(0, 0); }
+
+// ---------- July 1914 ----------
+function fuseBar(v) { return `<div class="fuse" role="img" aria-label="War fuse at ${R(v)} of 100"><i style="left:${v}%"></i></div><div class="fuselabels"><span>Peace</span><span>Local war</span><span>Continental war</span><span>World war</span></div>`; }
+function renderJuly() {
+  const id = G.me; const step = G.jstep; const S = JULY[step]; const f = LF.fuse(G.W, G.J);
+  const log = G.J.map((c, s) => `<div class="stack" style="gap:6px"><h3>${JULY[s].title} · ${JULY[s].dates}</h3><div class="log">${IDS.map(q => { const o = JULY[s].opts[q].find(x => x.k === c[q]); return `<div class="ent" style="--pc:var(--p-${q})"><b>${P[q].name}</b><span>${o.label}${q === id ? ' <span class="pill">you</span>' : ''}</span></div>`; }).join('')}</div></div>`).join('');
+  app.innerHTML = `<div class="grid fade">
+    <div class="stack">
+      <div class="yearhead"><span class="era">Round 6 of 6 · ${P[id].name} · Step ${step + 1} of 3</span><h1>1914: The July Crisis</h1></div>
+      ${step === 0 ? `<p class="intro">${ROUNDS[5].intro}</p>` : ''}
+      <div class="panel"><h3>The fuse</h3>${fuseBar(f)}<p class="small">Europe starts the crisis at <b>${R(LF.fuseBase(G.W))}</b> out of 100, because of tension (${R(LF.tension(G.W))}), rigid war plans, nationalism, and tight alliances built up since 1890. Every decision now moves the marker.</p></div>
+      <figure class="map">${drawMap(G.W, id)}<figcaption>${mapLegend}</figcaption></figure>
+      ${log ? `<div class="panel">${log}</div>` : ''}
+    </div>
+    <div class="stack">
+      <div class="panel issue"><h2>${S.title}</h2><span class="who">${S.dates}</span><p class="small">${S.text}</p>
+        <div class="opts">${LF.julyOpts(step, id, G.W).map(o => `<button class="opt" data-slot="july" data-opt="${o.k}" aria-pressed="${G.choice.july === o.k}"><b>${o.label}</b><span class="d">${o.desc}</span><span class="tags">${tagsFor(o.fx)}<span class="tag ${o.w > 0 ? 'dn' : o.w < 0 ? 'up' : ''}">Fuse ${o.w > 0 ? '▲' : o.w < 0 ? '▼' : '–'}</span></span></button>`).join('')}</div></div>
+      <div class="panel"><h3>Who keeps you in office</h3>${approvalBars(id)}</div>
+      <div class="footer-actions"><button class="btn" id="julyBtn" ${G.choice.july ? '' : 'disabled'}>${step < 2 ? 'Send instructions and see what happens' : 'Make the final decision'}</button></div>
+    </div></div>`;
+}
+function julyNext() {
+  const cur = LF.julyStep(G.W, G.jstep, G.J, G.me, G.choice.july);
+  G.J.push(cur); G.choice = {};
+  if (G.jstep < 2) { G.jstep++; save(); render(); window.scrollTo(0, 0); return; }
+  const res = LF.resolveJuly(G.W, G.J, G.me);
+  G.W = res.W; G.out = res.out; G.history.push(res.reports[G.me]); G.julyWins = Object.fromEntries(IDS.map(q => [q, res.reports[q].won]));
+  G.stage = 'end'; save(); render(); window.scrollTo(0, 0);
+}
+
+// ---------- end ----------
+function lineChart(series, labels, fmtY, aria, maxY) {
+  const Wd = 560, Ht = 230, L = 46, Rr = 14, T = 12, Bm = 28; let lo = 0, hi = maxY || 100;
+  const X = i => L + i * (Wd - L - Rr) / (labels.length - 1); const Y = v => T + (hi - v) / (hi - lo) * (Ht - T - Bm);
+  let g = '';
+  for (let v = 0; v <= hi; v += 25) g += `<line x1="${L}" x2="${Wd - Rr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${fmtY(v)}</text>`;
+  labels.forEach((l, i) => g += `<text x="${X(i)}" y="${Ht - 8}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${l}</text>`);
+  series.forEach(s => { g += `<polyline fill="none" stroke="${s.color}" stroke-width="${s.w || 2}" stroke-dasharray="${s.dash || ''}" points="${s.v.map((v, i) => X(i) + ',' + Y(v)).join(' ')}"/>`; s.v.forEach((v, i) => g += `<circle cx="${X(i)}" cy="${Y(v)}" r="${s.w > 2 ? 3.5 : 2.5}" fill="${s.color}"/>`); });
+  return `<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${aria}">${g}</svg>`;
+}
+const OUTCOME = {
+  world: { h: 'The lamps are going out', grade: 'F', text: 'Europe went to war, and so did Britain and its empire. As Sir Edward Grey watched the lamps being lit in London on 3 August, he is said to have remarked, “The lamps are going out all over Europe.”' },
+  continental: { h: 'War on the continent', grade: 'D', text: 'The continental powers went to war, but Britain stayed out, at least for now. This is an alternate history. Some historians argue that without Britain, Germany might have won a shorter war; others think Britain would have been drawn in eventually.' },
+  local: { h: 'A third Balkan war', grade: 'B', text: 'Austria-Hungary fought Serbia, but the other powers held back, as they had during the Balkan Wars of 1912–13. This is an alternate history. The alliances, war plans, and arms race all remained. Would the next crisis end the same way?' },
+  peace: { h: 'Peace, for now', grade: 'A', text: 'The powers settled the crisis at the conference table. This is an alternate history, and a rare one: in this game, keeping the peace usually takes restraint from several powers at once, built up over many years.' },
+};
+function renderEnd() {
+  const id = G.me; const out = G.out; const O = OUTCOME[out.kind]; const H = G.history; const p = G.W.P[id];
+  const wins = H.filter(h => h.won).length; const avgT = G.W.Ttrack.slice(0, -1).reduce((s, x) => s + x, 0) / (G.W.Ttrack.length - 1);
+  const gr = (v, c) => v >= c[0] ? 'A' : v >= c[1] ? 'B' : v >= c[2] ? 'C' : v >= c[3] ? 'D' : 'F';
+  const grades = [
+    ['Keeping the peace', O.grade, `July 1914 ended in ${out.kind === 'world' ? 'world war' : out.kind === 'continental' ? 'continental war' : out.kind === 'local' ? 'a local war' : 'peace'} (fuse ${R(out.fuse)})`],
+    ['Security', gr(LF.security(G.W, id), [75, 62, 50, 38]), `${P[id].name}’s security ended at ${R(LF.security(G.W, id))}`],
+    ['Prestige', gr(p.prestige, [70, 58, 46, 34]), `Prestige ${R(p.prestige)}${p.humiliated ? `; humiliated ${p.humiliated} time${p.humiliated > 1 ? 's' : ''}` : ''}`],
+    ['Calming Europe', gr(100 - avgT, [65, 58, 50, 42]), `Average tension ${R(avgT)} from 1890 to 1912`],
+    ['Staying in office', gr(wins, [6, 5, 4, 3]), `Government survived ${wins} of ${H.length} rounds`],
+  ];
+  const labels = ['1890', '1898', '1905', '1908', '1912', '1914', 'July'];
+  const T = G.W.Ttrack;
+  const log = G.J.map((c, s) => `<div class="stack" style="gap:6px"><h3>${JULY[s].title} · ${JULY[s].dates}</h3><div class="log">${IDS.map(q => { const o = JULY[s].opts[q].find(x => x.k === c[q]); return `<div class="ent" style="--pc:var(--p-${q})"><b>${P[q].name}</b><span>${o.label}${q === id ? ' <span class="pill">you</span>' : ''}</span></div>`; }).join('')}</div></div>`).join('');
+  app.innerHTML = `<div class="stack fade">
+    <div class="yearhead"><span class="era">August 1914 · Final report</span><h1>${O.h}</h1></div>
+    <p class="intro">${O.text}</p>
+    ${whyBox(H[H.length - 1], H.length > 1 ? H[H.length - 2].support : null, P[id].w, f => fn(f, id))}
+    <div class="grid even">
+      <div class="panel"><h2>How July unfolded</h2>${fuseBar(out.fuse)}<p class="small">The crisis began with the fuse at <b>${R(LF.fuseBase(G.W))}</b> and ended at <b>${R(out.fuse)}</b>.${out.belgium ? ' Germany’s war plan sent its armies through neutral Belgium.' : ''}</p>${log}</div>
+      <div class="stack">
+        <div class="panel"><h2>Report card</h2><div class="grades">${grades.map(([k, g, why]) => `<div class="grade"><span class="lbl">${k}</span><b class="g-${g}">${g}</b><span class="small muted">${why}</span></div>`).join('')}</div></div>
+        <div class="panel chart"><h2>Europe’s tension, and the fuse</h2>${lineChart([{ v: T, color: 'var(--red)', w: 3 }], labels.slice(0, T.length), v => v, 'Tension by round')}<p class="small muted">The last point is the July fuse.</p></div>
+      </div>
+    </div>
+    <div class="panel chart"><h2>Security of each power</h2>${lineChart(IDS.map(q => ({ v: G.secTrack[q], color: `var(--p-${q})`, w: q === id ? 3 : 1.6, dash: q === id ? '' : '4 3' })), labels.slice(0, G.secTrack[id].length), v => v, 'Security by round')}<div class="legend">${IDS.map(q => `<span style="--c:var(--p-${q})">${P[q].name}${q === id ? ' (you)' : ''}</span>`).join('')}</div><p class="small muted">Notice how one power’s gain in security is usually another’s loss.</p></div>
+    <div class="panel"><h2>Your decisions</h2><div class="tblwrap"><table><thead><tr><th>Year</th><th>Crisis</th><th>Second decision</th><th class="r">Army / navy</th><th class="r">Support</th></tr></thead><tbody>
+      ${G.rounds.map((rd, i) => { const pl = rd.plans[id]; const L = labelOf(i, id, pl); return `<tr><td class="num">${ROUNDS[i].year}</td><td class="small">${L.crisis}</td><td class="small">${L.issue}</td><td class="r num">${signed(pl.B.army) || 0} / ${signed(pl.B.navy) || 0}</td><td class="r num ${H[i].won ? 'pos' : 'neg'}">${R(H[i].support)}%</td></tr>`; }).join('')}
+    </tbody></table></div></div>
+    <div class="panel"><h2>What really happened</h2>
+      <p class="intro">Germany declared war on Russia on 1 August and on France on 3 August, and invaded Belgium. Britain declared war on Germany on 4 August. The war lasted more than four years and killed about 9 to 10 million soldiers and millions of civilians. It destroyed four empires (the German, Austro-Hungarian, Russian, and Ottoman), helped bring the Bolsheviks to power in Russia, and ended with the Treaty of Versailles, whose Article 231 blamed Germany and its allies for the war.</p>
+      <p class="intro">Historians still argue about why it happened. In the 1960s Fritz Fischer argued that Germany’s leaders deliberately pursued a war of conquest. Christopher Clark’s <i>The Sleepwalkers</i> (2012) describes leaders across Europe stumbling into a war none fully intended. Margaret MacMillan’s <i>The War That Ended Peace</i> (2013) stresses the many earlier chances to change course that were missed.</p></div>
+    <div class="panel"><h2>Think it over</h2><ol class="qs">
+      <li>Historians often list four long-term causes: militarism, alliances, imperialism, and nationalism. Which one did the most to raise the fuse in your game? Use your numbers.</li>
+      <li>Find a moment when your power armed to feel safer. What did your rivals do next? Explain the “security dilemma.”</li>
+      <li>Every crisis before 1914 was resolved without war. How did those “successes” make 1914 more dangerous?</li>
+      <li>How did war plans like the Schlieffen Plan or Russia’s general-mobilization-only plan limit the choices of statesmen in July 1914?</li>
+      <li>Was war in 1914 inevitable? Identify the single decision, by any power, that you think could most have changed the outcome.</li>
+      <li>Who keeps a government in office shaped its choices. Compare how generals, nationalists, bankers, and socialists pushed your power, and contrast it with another power.</li>
+      <li>Article 231 blamed Germany. Based on your game, how should responsibility for the war be divided?</li>
+    </ol></div>
+    <div class="footer-actions"><button class="btn" id="restartBtn2">Play again as another power</button></div>
+  </div>`;
+}
+
+function render() {
+  renderChrome();
+  if (!G) return renderSetup();
+  if (G.stage === 'intro') return renderIntro();
+  if (G.stage === 'plan') return renderPlan();
+  if (G.stage === 'desk') return renderDesk();
+  if (G.stage === 'results') return renderResults();
+  if (G.stage === 'july') return renderJuly();
+  if (G.stage === 'end') return renderEnd();
+}
+let confirmArmed = 0;
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.power) { setup.me = b.dataset.power; setup.desk = $('#desk').checked; renderSetup(); return; }
+  if (b.dataset.slot) { G.choice[b.dataset.slot] = b.dataset.opt; b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); if (b.dataset.slot === 'july') { const jb = $('#julyBtn'); if (jb) jb.disabled = false; } else updateAdopt(); return; }
+  if (b.dataset.arm) { G.B[b.dataset.arm] = +b.dataset.v; b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); updateAdopt(); return; }
+  switch (b.id) {
+    case 'startBtn': setup.desk = $('#desk').checked; startGame(); break;
+    case 'introBtn': G.stage = 'plan'; save(); render(); window.scrollTo(0, 0); break;
+    case 'adoptBtn': adopt(); break;
+    case 'histEvBtn': G.cond = { events: ROUNDS[G.yi].events.filter(([, h]) => h).map(([e]) => e) }; save(); renderDesk(); break;
+    case 'redrawBtn': G.cond = { events: drawEvents() }; save(); renderDesk(); break;
+    case 'revealBtn': reveal(); break;
+    case 'nextBtn': nextRound(); break;
+    case 'julyBtn': julyNext(); break;
+    case 'restartBtn2': G = null; try { localStorage.removeItem(KEY); } catch (e) {} render(); window.scrollTo(0, 0); break;
+    case 'restartBtn':
+      if (Date.now() - confirmArmed < 4000) { G = null; try { localStorage.removeItem(KEY); } catch (e) {} render(); }
+      else { confirmArmed = Date.now(); b.textContent = 'Click again to restart'; setTimeout(() => { if (b.isConnected) b.textContent = 'Restart game'; }, 4000); }
+      break;
+  }
+});
+document.addEventListener('change', e => {
+  if (G && G.stage === 'desk' && e.target.dataset.ev) { const id = e.target.dataset.ev; G.cond.events = e.target.checked ? [...new Set([...G.cond.events, id])] : G.cond.events.filter(x => x !== id); save(); updateDeskPreview(); }
+});
+render();
+})();
+</script>
+</body>
+</html>
