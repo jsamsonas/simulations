@@ -42,6 +42,12 @@
     .st { display: block; font-size: .78rem; color: var(--muted); }
     .empty { color: var(--muted); font-style: italic; }
     .msg { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+    .count { font: .8rem system-ui, sans-serif; color: var(--muted); font-weight: normal; }
+    .period h3 .count { display: block; }
+    .ticker { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: -12px 0 24px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+    .ticker .lbl { font: 600 .75rem system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .ticker span.n { white-space: nowrap; }
+    .ticker span.n.new { color: var(--accent); font-weight: bold; }
     footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
   </style>
 </head>
