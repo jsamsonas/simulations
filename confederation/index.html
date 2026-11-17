@@ -571,23 +571,48 @@ function renderChrome() {
 }
 
 // ---------- setup ----------
-let setup = { state: 'MA', desk: false };
+let setup = { state: 'MA', desk: false, teacher: '', period: '', first: '', initial: '', err: '' };
+const TEACHERS = { sam: 'Mr. Sam', sondej: 'Mrs. Sondej' };
 function renderSetup() {
   app.innerHTML = `<div class="stack fade" style="max-width:860px">
     <h1>Thirteen States, One Rope of Sand</h1>
     <p class="intro">It is 1781. The United States is a league of thirteen states under the Articles of Confederation. Congress can declare war and make treaties, but it cannot tax, cannot regulate trade, and cannot make the states do anything. Critics called it a “rope of sand.” You will lead one state’s government for the next seven years, balancing your own people’s needs against the Union’s.</p>
     <div class="panel">
+      <span class="lbl">Who is playing?</span>
+      <div class="choices">${Object.entries(TEACHERS).map(([k, n]) => `<button class="choice" data-teacher="${k}" aria-pressed="${setup.teacher === k}"><b>${n}</b><span>My history teacher</span></button>`).join('')}</div>
+      <div class="row" style="flex-wrap:wrap;gap:12px;align-items:flex-end">
+        <label class="small">Class period<br><select id="pPeriod" style="font:inherit;padding:6px 8px">
+          <option value="">Choose…</option>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}" ${String(setup.period) === String(n) ? 'selected' : ''}>Period ${n}</option>`).join('')}</select></label>
+        <label class="small">First name<br><input id="pFirst" maxlength="15" autocomplete="off" value="${esc(setup.first)}" style="font:inherit;padding:6px 8px;width:11em"></label>
+        <label class="small">Last initial<br><input id="pInitial" maxlength="1" autocomplete="off" value="${esc(setup.initial)}" style="font:inherit;padding:6px 8px;width:3em;text-transform:uppercase"></label>
+      </div>
+      <p class="small muted">Your first name, last initial, and score appear on the <a href="leaderboard/" target="_blank">class leaderboard</a>. Only your first finished game counts.</p>
+      ${setup.err ? `<p class="small neg" role="alert"><b>${esc(setup.err)}</b></p>` : ''}
+    </div>
+    <div class="panel">
       <span class="lbl">Choose your state</span>
       <div class="choices">${IDS.map(id => `<button class="choice" data-state="${id}" aria-pressed="${setup.state === id}"><b>${STATES[id].name}</b><span>${STATES[id].blurb}</span></button>`).join('')}</div>
       <p class="small muted">The computer runs the other four states, following what those states really did.</p>
-      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events (crop failures, tax revolts, pirates). Leave this off when playing on your own.</span></span></label>
+      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events (crop failures, tax revolts, pirates). Leave this off when playing on your own. Games played with the teacher’s desk don’t count for the leaderboard.</span></span></label>
       <div class="row"><button class="btn" id="startBtn">Take office</button><span class="muted small">Your progress saves in this browser.</span></div>
     </div>
   </div>`;
 }
+function readPlayer() {
+  const first = setup.first.trim().replace(/\s+/g, '');
+  const initial = setup.initial.trim().toUpperCase();
+  if (!setup.teacher) return 'Choose your teacher.';
+  if (!setup.period) return 'Choose your class period.';
+  if (!/^[A-Za-z][A-Za-z'-]{0,14}$/.test(first)) return 'Type your first name using letters only.';
+  if (!/^[A-Z]$/.test(initial)) return 'Type the first letter of your last name.';
+  return { teacher: setup.teacher, period: +setup.period, first: first[0].toUpperCase() + first.slice(1).toLowerCase(), initial };
+}
 function startGame() {
+  const player = readPlayer();
+  if (typeof player === 'string') { setup.err = player; renderSetup(); return; }
+  setup.err = '';
   const states = {}; for (const id of IDS) states[id] = CF.newState(id);
-  G = { stage: 'intro', yi: 0, mine: setup.state, desk: setup.desk, states, N: CF.newNation(), history: [], others: [], choices: {}, budget: null, cond: null, lastB: null, track: {} };
+  G = { stage: 'intro', yi: 0, mine: setup.state, desk: setup.desk, player, posted: null, states, N: CF.newNation(), history: [], others: [], choices: {}, budget: null, cond: null, lastB: null, track: {} };
   for (const id of IDS) G.track[id] = [{ debt: states[id].debt, unrest: states[id].unrest, U: G.N.U }];
   G.budget = defaultBudget();
   save(); render();
@@ -903,6 +928,57 @@ function lineChart(series, labels, fmtY, aria) {
 const COLORS = { MA: 'var(--f-merchants)', RI: 'var(--f-veterans)', NY: 'var(--f-gentry)', NJ: 'var(--f-farmers)', VA: 'var(--muted)' };
 function legend() { return `<div class="legend">${IDS.map(id => `<span style="--c:${COLORS[id]}">${STATES[id].name}${id === G.mine ? ' (you)' : ''}</span>`).join('')}</div>`; }
 function grade(v, cuts) { return v >= cuts[0] ? 'A' : v >= cuts[1] ? 'B' : v >= cuts[2] ? 'C' : v >= cuts[3] ? 'D' : 'F'; }
+// Leaderboard score: each report-card category becomes 0-100 points that line up with its letter
+// (A = 90s, B = 80s, C = 70s, D = 60s, F below 60), so close games don't tie. Union counts double.
+function interp(v, pts) {
+  if (v <= pts[0][0]) return pts[0][1];
+  for (let i = 1; i < pts.length; i++) if (v <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (v - x0) / (x1 - x0); }
+  return pts[pts.length - 1][1];
+}
+function leaderboardScore() {
+  const S = me(); const H = G.history;
+  const paidAvg = H.reduce((s, h) => s + h.B.req, 0) / H.length;
+  const ratified = S.flags.ratify !== 'no';
+  const parts = [
+    ['Finances', 1, interp(-S.debt / STATES[S.id].debt, [[-2, 0], [-1.5, 60], [-1.3, 70], [-1.15, 80], [-1, 90], [-0.7, 100]])],
+    ['Loyalty to the Union', 2, interp(paidAvg * 100 + (ratified ? 25 : -25), [[0, 0], [30, 60], [45, 70], [60, 80], [75, 90], [115, 100]])],
+    ['Fairness to farmers', 1, interp(S.approval.farmers, [[15, 0], [35, 60], [45, 70], [55, 80], [65, 90], [85, 100]])],
+    ['Keeping order', 1, interp(100 - S.unrest, [[15, 0], [35, 60], [45, 70], [55, 80], [65, 90], [85, 100]])],
+    ['Trust in your money', 1, interp(S.paperOut ? S.paperV * 100 : 95, [[0, 0], [35, 60], [55, 70], [75, 80], [90, 90], [95, 100]])],
+    ['Politics', 1, interp(S.wins, [[0, 0], [2, 45], [3, 65], [4, 75], [5, 85], [6, 100]])],
+  ].map(([k, w, v]) => [k, w, Math.round(v * 10) / 10]);
+  const score = Math.round(parts.reduce((s, [, w, v]) => s + w * v, 0) / parts.reduce((s, [, w]) => s + w, 0) * 10) / 10;
+  return { score, parts };
+}
+function leaderboardPanel() {
+  const { score, parts } = leaderboardScore(); const p = G.player; const st = G.posted;
+  let status;
+  if (!p) status = 'This game was started before the leaderboard existed, so it can’t be posted. Start a new game to get on the board.';
+  else if (G.desk) status = 'Games played with the teacher’s desk don’t count for the leaderboard.';
+  else if (!st || st.status === 'sending') status = 'Posting your score…';
+  else if (st.status === 'posted') status = `Posted for <b>${esc(p.first)} ${esc(p.initial)}.</b>, ${TEACHERS[p.teacher]}, period ${p.period}.`;
+  else if (st.status === 'already') status = `${esc(p.first)} ${esc(p.initial)}. already has a score on the board (${st.score}). Only your first finished game counts.`;
+  else status = `Your score couldn’t be posted: ${esc(st.msg)} <button class="btn ghost small" id="retryPost">Try again</button>`;
+  return `<div class="panel"><h2>Leaderboard score: ${score}</h2>
+    <div class="tblwrap"><table><thead><tr><th>Category</th><th class="r">Points</th></tr></thead><tbody>
+      ${parts.map(([k, w, v]) => `<tr><td>${k}${w > 1 ? ' <span class="muted small">(counts twice)</span>' : ''}</td><td class="r num">${v}</td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="small" id="postStatus">${status}</p>
+    <p class="small"><a href="leaderboard/" target="_blank">See the leaderboard</a></p></div>`;
+}
+async function postScore() {
+  if (!G.player || G.desk || (G.posted && ['posted', 'already'].includes(G.posted.status))) return;
+  G.posted = { status: 'sending' };
+  try {
+    const lb = await import('./lb.js');
+    const { score, parts } = leaderboardScore();
+    G.posted = await lb.postScore(G.player, { state: G.mine, score, parts: parts.map(([, , v]) => v) });
+  } catch (e) {
+    G.posted = { status: 'error', msg: e && e.message ? e.message : 'no connection' };
+  }
+  save();
+  if (G.stage === 'end') { const box = document.getElementById('lbPanel'); if (box) box.innerHTML = leaderboardPanel(); }
+}
 function renderEnd() {
   const S = me(); const H = G.history; const N = G.N;
   const labels = ['Start', ...H.map(h => String(h.year))];
@@ -921,6 +997,7 @@ function renderEnd() {
   app.innerHTML = `<div class="stack fade">
     <div class="yearhead"><span class="era">1781–1788 · Final report</span><h1>${S.name} ${ratified ? 'joins the new Union' : 'stands alone'}</h1></div>
     <p class="intro">You led ${S.name} through seven years under the Articles of Confederation. You won <b>${S.wins} of ${H.length}</b> elections, and your state ended with <b>${money(S.debt)}</b> in debt and <b>${money(S.specie)}</b> in its treasury. Union strength ended at <b>${Math.round(N.U)}</b>.</p>
+    <div id="lbPanel">${leaderboardPanel()}</div>
     <div class="panel"><h2>Report card</h2>
       <div class="grades">${grades.map(([k, g, why]) => `<div class="grade"><span class="lbl">${k}</span><b class="g-${g}">${g}</b><span class="small muted">${why}</span></div>`).join('')}</div>
       <p class="small muted">No state could earn straight A’s under the Articles. That was part of the problem.</p></div>
@@ -959,12 +1036,14 @@ function render() {
   if (G.stage === 'plan') return renderPlan();
   if (G.stage === 'desk') return renderDesk();
   if (G.stage === 'results') return renderResults();
-  if (G.stage === 'end') return renderEnd();
+  if (G.stage === 'end') { renderEnd(); postScore(); return; }
 }
 let confirmArmed = 0;
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.state) { setup.state = b.dataset.state; setup.desk = $('#desk').checked; renderSetup(); return; }
+  if (b.dataset.teacher) { setup.teacher = b.dataset.teacher; setup.err = ''; setup.desk = $('#desk').checked; renderSetup(); return; }
+  if (b.id === 'retryPost') { G.posted = null; postScore(); return; }
   if (b.dataset.issue) { G.choices[b.dataset.issue] = b.dataset.opt; b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); updateForecast(); return; }
   switch (b.id) {
     case 'startBtn': setup.desk = $('#desk').checked; startGame(); break;
@@ -982,6 +1061,8 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('input', e => {
+  const pk = { pPeriod: 'period', pFirst: 'first', pInitial: 'initial' }[e.target.id];
+  if (pk) { setup[pk] = e.target.value; return; }
   if (!G || G.stage !== 'plan') return;
   const k = e.target.id; if (['tax', 'duty', 'int', 'req'].includes(k)) { G.budget[k] = +e.target.value; save(); updateForecast(); }
 });
