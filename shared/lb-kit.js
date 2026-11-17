@@ -9,7 +9,7 @@ window.LBKit = (() => {
   function playerPanel() {
     return `<div class="panel" style="display:flex;flex-direction:column;gap:10px">
       <span class="lbl">Who is playing?</span>
-      ${keys.length > 1 ? `<div class="row" style="flex-wrap:wrap;gap:8px">${keys.map(k => `<button class="btn ${p.teacher === k ? '' : 'ghost'} small" data-lbteacher="${k}" aria-pressed="${p.teacher === k}">${esc(cfg.teachers[k])}</button>`).join('')}</div>` : ''}
+      ${keys.length > 1 ? `<div class="opts">${keys.map(k => `<button class="opt" data-lbteacher="${k}" aria-pressed="${p.teacher === k}"><b>${esc(cfg.teachers[k])}</b><span class="d">My history teacher</span></button>`).join('')}</div>` : ''}
       <div class="row" style="flex-wrap:wrap;gap:12px;align-items:flex-end">
         <label class="small">Class period<br><select id="lbPeriod" style="font:inherit;padding:6px 8px"><option value="">Choose…</option>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}" ${String(p.period) === String(n) ? 'selected' : ''}>Period ${n}</option>`).join('')}</select></label>
         <label class="small">First name<br><input type="text" id="lbFirst" maxlength="15" autocomplete="off" value="${esc(p.first)}" style="width:11em"></label>
