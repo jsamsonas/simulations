@@ -36,6 +36,10 @@
       background: var(--tag); color: var(--muted); padding: 2px 8px; border-radius: 99px; }
     footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
   </style>
+  <script>
+    // The old GitHub Pages address can't save leaderboard scores; send visitors to the Firebase site.
+    if (/github\.io$/.test(location.hostname)) location.replace('https://sams-history.web.app/');
+  </script>
 </head>
 <body>
 <main>
