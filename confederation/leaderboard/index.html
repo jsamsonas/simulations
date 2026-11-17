@@ -42,6 +42,12 @@
     .st { display: block; font-size: .78rem; color: var(--muted); }
     .empty { color: var(--muted); font-style: italic; }
     .msg { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+    .count { font: .8rem system-ui, sans-serif; color: var(--muted); font-weight: normal; }
+    .period h3 .count { display: block; }
+    .ticker { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: -12px 0 24px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+    .ticker .lbl { font: 600 .75rem system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .ticker span.n { white-space: nowrap; }
+    .ticker span.n.new { color: var(--accent); font-weight: bold; }
     footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
   </style>
 </head>
@@ -62,23 +68,29 @@ const live = document.getElementById('live');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const name = r => `${esc(r.first)} ${esc(r.initial)}.`;
 const fmt = n => (Math.round(n * 10) / 10).toFixed(1);
+const finished = n => `${n} finished`;
+function ticker(rows) {
+  const recent = [...rows].sort((a, b) => b.t - a.t).slice(0, 6);
+  const fresh = Date.now() - 10 * 60 * 1000;
+  return `<div class="ticker"><span class="lbl">Just finished</span>${recent.map(r => `<span class="n${r.t > fresh ? ' new' : ''}">${name(r)} <span class="count">${TEACHERS[r.teacher]}, P${r.period}</span></span>`).join('')}</div>`;
+}
 
 function render(rows) {
   if (!rows.length) { board.innerHTML = '<p class="msg">No finished games yet. Scores appear here the moment a student finishes.</p>'; return; }
   const all = rank(rows); const top = all[0];
-  let html = `<section class="champ"><div class="lbl">Overall champion · all history classes</div>
+  let html = `<section class="champ"><div class="lbl">Overall champion · all history classes · ${finished(all.length)}</div>
     <div class="who">${name(top)}</div>
     <div class="meta">${TEACHERS[top.teacher]}, period ${top.period} · ${STATE_NAMES[top.state] || ''} · <span class="score">${fmt(top.score)}</span></div></section>
-    <div class="teachers">`;
+    ${ticker(all)}<div class="teachers">`;
   for (const [tk, tname] of Object.entries(TEACHERS)) {
     const mine = all.filter(r => r.teacher === tk);
-    html += `<section><h2>${tname}</h2>`;
+    html += `<section><h2>${tname} <span class="count">· ${finished(mine.length)}</span></h2>`;
     if (!mine.length) { html += `<p class="empty">No finished games yet.</p></section>`; continue; }
     html += `<div class="tchamp"><div class="lbl">Top in ${tname}’s classes</div><div class="who">${name(mine[0])} <span class="score">${fmt(mine[0].score)}</span></div><div class="st">Period ${mine[0].period} · ${STATE_NAMES[mine[0].state] || ''}</div></div><div class="periods">`;
     const periods = [...new Set(mine.map(r => r.period))].sort((a, b) => a - b);
     for (const p of periods) {
       const t3 = mine.filter(r => r.period === p).slice(0, 3);
-      html += `<div class="period"><h3>Period ${p}</h3><ol>${t3.map((r, i) => `<li><span class="m m${i + 1}">${i + 1}</span><span>${name(r)}<span class="st">${STATE_NAMES[r.state] || ''}</span></span><span class="score">${fmt(r.score)}</span></li>`).join('')}</ol></div>`;
+      html += `<div class="period"><h3>Period ${p} <span class="count">${finished(mine.filter(r => r.period === p).length)}</span></h3><ol>${t3.map((r, i) => `<li><span class="m m${i + 1}">${i + 1}</span><span>${name(r)}<span class="st">${STATE_NAMES[r.state] || ''}</span></span><span class="score">${fmt(r.score)}</span></li>`).join('')}</ol></div>`;
     }
     html += `</div></section>`;
   }
