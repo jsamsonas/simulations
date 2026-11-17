@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Mill Town Game Leaderboard</title>
+  <style>
+    :root {
+      --bg: #f6f1e7; --card: #fffdf8; --ink: #2a2520; --muted: #6b6258; --line: #ddd2bf;
+      --accent: #7a2e1f; --gold: #b8860b; --silver: #8a8f96; --bronze: #a0623a; --soft: #efe6d4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #1c1a17; --card: #26231f; --ink: #ece6dc; --muted: #a89f92; --line: #3a352e;
+        --accent: #e09a7a; --gold: #e2b73e; --silver: #b9bec5; --bronze: #d08a5c; --soft: #332e27; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, "Times New Roman", serif; line-height: 1.4; }
+    main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 48px; }
+    header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+    h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); }
+    .live { font: .85rem system-ui, sans-serif; color: var(--muted); }
+    .live::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3a9a5b; margin-right: 6px; vertical-align: 1px; }
+    .live.off::before { background: var(--muted); }
+    .sub { color: var(--muted); margin: 4px 0 24px; }
+    .champ { background: var(--card); border: 2px solid var(--gold); border-radius: 12px; padding: 18px 20px; text-align: center; margin-bottom: 28px; }
+    .champ .lbl { font: 600 .8rem system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+    .champ .who { font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: bold; margin: 4px 0; }
+    .champ .meta { color: var(--muted); }
+    .score { font-variant-numeric: tabular-nums; font-weight: bold; }
+    .teachers { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    h2 { margin: 0 0 10px; font-size: 1.3rem; color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .tchamp { background: var(--soft); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+    .tchamp .lbl { font: 600 .75rem system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .tchamp .who { font-size: 1.35rem; font-weight: bold; }
+    .periods { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .period { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+    .period h3 { margin: 0 0 6px; font-size: 1rem; }
+    ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    li { display: grid; grid-template-columns: 1.4em 1fr auto; gap: 6px; align-items: baseline; }
+    .m { font: bold .8rem system-ui, sans-serif; width: 1.4em; height: 1.4em; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; }
+    .m1 { background: var(--gold); } .m2 { background: var(--silver); } .m3 { background: var(--bronze); }
+    .st { display: block; font-size: .78rem; color: var(--muted); }
+    .empty { color: var(--muted); font-style: italic; }
+    .msg { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+    footer { margin-top: 32px; color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>The Mill Town Game Leaderboard</h1>
+    <span class="live off" id="live">Connecting…</span>
+  </header>
+  <p class="sub">Highest scores from finished games. Ties go to whoever finished first.</p>
+  <div id="board"><p class="msg">Loading scores…</p></div>
+  <footer>Each student’s first finished game counts. Score = average of the six report-card categories: Prosperity, Public health, Town finances, Fairness, The river, and Politics.</footer>
+</main>
+<script type="module">
+import { startBoard } from '../../shared/lb.js';
+startBoard({ collection: 'millTown', teachers: { sam: 'Mr. Sam', sondej: 'Mrs. Sondej' }, scope: 'all history classes' });
+</script>
+</body>
+</html>

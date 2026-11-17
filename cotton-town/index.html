@@ -180,6 +180,8 @@ label.chk input{margin-top:3px}
 <div class="statusbar" id="statusbar" hidden><div class="wrap" id="statusInner"></div></div>
 <main><div class="wrap" id="app"></div></main>
 
+<script>window.LB_GAME = { collection: 'cottonTown', teachers: { sam: 'Mr. Sam' } };</script>
+<script src="../shared/lb-kit.js"></script>
 <script>
 // ===== Cotton Town engine (money in pounds sterling) =====
 const MT = (() => {
@@ -675,9 +677,10 @@ function renderSetup() {
   app.innerHTML = `<div class="setup fade"><div class="stack">
     <h1>A Town on the Moors, 1786</h1>
     <p class="intro">You govern a small Lancashire town at the foot of the Pennine moors, in the region that will become the workshop of the world. Over six rounds, from 1786 to 1842, you will decide who owns the land, who pays the rates, how to answer machine-breakers and reformers, and whether to fight filth and disease or leave them to the market. Four neighboring towns will make the same decisions their own way.</p>
+    ${LBKit.playerPanel()}
     <div class="panel">
       <label class="stack" style="gap:6px" for="nm"><span class="lbl">Name your town</span><input type="text" id="nm" maxlength="28" placeholder="e.g. Calderbrook" value="${esc(setup.name)}"></label>
-      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events (fires, riots, fever, slumps). Leave this off when playing on your own.</span></span></label>
+      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Show the teacher’s desk each round.</b> <span class="muted">Before each round’s results, choose or accept the events (fires, riots, fever, slumps). Leave this off when playing on your own. Games played with the teacher’s desk don’t count for the leaderboard.</span></span></label>
       <div class="row"><button class="btn" id="startBtn">Take office</button><span class="muted small">Your progress saves in this browser.</span></div>
     </div>
   </div>
@@ -685,8 +688,10 @@ function renderSetup() {
   </div>`;
 }
 function startGame() {
+  const player = LBKit.readPlayer();
+  if (typeof player === 'string') { renderSetup(); return; }
   const name = ($('#nm').value.trim() || 'Calderbrook').slice(0, 28);
-  G = { stage: 'intro', yi: 0, desk: setup.desk, town: MT.newTown(name), rivals: RIVALS.map(R => ({ id: R.id, S: MT.newTown(R.name), track: [] })), history: [], choices: {}, budget: null, cond: null, lastRate: 12 };
+  G = { stage: 'intro', yi: 0, desk: setup.desk, player, posted: null, town: MT.newTown(name), rivals: RIVALS.map(R => ({ id: R.id, S: MT.newTown(R.name), track: [] })), history: [], choices: {}, budget: null, cond: null, lastRate: 12 };
   G.budget = defaultBudget();
   save(); render();
 }
@@ -1011,6 +1016,21 @@ function lineChart(series, labels, fmtY, aria) {
   return `<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${aria}">${g}</svg>`;
 }
 function grade(v, cuts) { return v >= cuts[0] ? 'A' : v >= cuts[1] ? 'B' : v >= cuts[2] ? 'C' : v >= cuts[3] ? 'D' : 'F'; }
+// Leaderboard score: the six report-card categories as 0-100 points, averaged equally.
+function lbScore() {
+  const S = me(); const H = G.history; const d = MT.derive(S); const P = LBKit.points;
+  const won = H.filter(h => h.won).length;
+  const fair = ((S.approval.workers + S.approval.irish) / 2 + S.cohesion) / 2;
+  return LBKit.score([
+    ['Prosperity', P(d.RV, [180000, 140000, 100000, 60000], 0, 240000)],
+    ['Public health', P(d.health, [75, 65, 55, 45], 15, 90)],
+    ['Town finances', P(-S.debt / d.V, [-0.01, -0.03, -0.05, -0.07], -0.15, 0)],
+    ['Fairness', P(fair, [70, 60, 50, 40], 10, 90)],
+    ['The river', P(d.river, [70, 55, 40, 25], 0, 90)],
+    ['Politics', LBKit.electionPoints(won)],
+  ]);
+}
+function lbRefresh() { const el = document.getElementById('lbPanel'); if (el && G && G.stage === 'end') el.innerHTML = LBKit.endPanel(G, lbScore()); }
 function renderEnd() {
   const S = me(); const H = G.history; const d = MT.derive(S);
   const labels = ['Start', ...H.map(h => String(h.year))];
@@ -1032,6 +1052,7 @@ function renderEnd() {
   app.innerHTML = `<div class="stack fade">
     <div class="yearhead"><span class="era">1786–1842 · Final report</span><h1>${esc(S.name)}, ${d.feel.toLowerCase()}</h1></div>
     <p class="intro">In 1786 your town had about 3,000 people and no mills. It now has <b>${fmtN(d.pop)}</b> people and <b>${S.mills}</b> mills. Ratepayers’ households are ${Math.round(S.pop.old / d.pop * 100)}% of the town, factory workers and their families ${Math.round(S.pop.ops / d.pop * 100)}%, and Irish migrants ${Math.round(S.pop.irish / d.pop * 100)}%.</p>
+    <div id="lbPanel">${LBKit.endPanel(G, lbScore())}</div>
     <div class="panel"><h2>Report card</h2>
       <div class="grades">${grades.map(([k, g, why]) => `<div class="grade"><span class="lbl">${k}</span><b class="g-${g}">${g}</b><span class="small muted">${why}</span></div>`).join('')}</div>
       <p class="small muted">There is no single score. Historians still argue over whether early industrialization raised or lowered working people’s standard of living. Which grades matter most is a question for discussion.</p></div>
@@ -1071,11 +1092,13 @@ function render() {
   if (G.stage === 'plan') return renderPlan();
   if (G.stage === 'desk') return renderDesk();
   if (G.stage === 'results') return renderResults();
-  if (G.stage === 'end') return renderEnd();
+  if (G.stage === 'end') { renderEnd(); LBKit.post(G, lbScore(), save, lbRefresh); return; }
 }
 let confirmArmed = 0;
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
+  if (LBKit.handleClick(b, renderSetup)) return;
+  if (b.id === 'lbRetry') { G.posted = null; LBKit.post(G, lbScore(), save, lbRefresh); return; }
   if (b.dataset.issue) { G.choices[b.dataset.issue] = b.dataset.opt; b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); updateForecast(); return; }
   if (b.dataset.up) { G.budget.ups[b.dataset.up] = !G.budget.ups[b.dataset.up]; b.setAttribute('aria-pressed', !!G.budget.ups[b.dataset.up]); save(); updateForecast(); return; }
   if (b.dataset.relief) { G.budget.relief = b.dataset.relief; b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); save(); updateForecast(); return; }
@@ -1095,6 +1118,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('input', e => {
+  if (LBKit.handleInput(e.target)) return;
   if (!G) { if (e.target.id === 'nm') setup.name = e.target.value; return; }
   if (G.stage !== 'plan') return;
   if (e.target.id === 'rate') { G.budget.rate = +e.target.value; save(); updateForecast(); }
