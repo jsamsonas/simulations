@@ -171,6 +171,27 @@ details summary{cursor:pointer}
 <main><div class="wrap" id="app"></div></main>
 
 <script>
+// The leaderboard only works on the Firebase site. Visitors to the old GitHub Pages address are sent
+// there automatically, bringing their saved game with them so a finished score can still be posted.
+(function () {
+  var KEY = 'ropeOfSand.v1';
+  if (/github\.io$/.test(location.hostname)) {
+    var saved = null; try { saved = localStorage.getItem(KEY); } catch (e) {}
+    location.replace('https://sams-history.web.app/confederation/' + (saved ? '#import=' + encodeURIComponent(saved) : ''));
+    return;
+  }
+  var m = location.hash.match(/^#import=(.*)$/);
+  if (!m) return;
+  try {
+    var inc = JSON.parse(decodeURIComponent(m[1]));
+    var cur = null; try { cur = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    // Keep whichever game is further along, and never replace a finished game with an unfinished one.
+    if (inc && (!cur || (cur.stage !== 'end' && (inc.stage === 'end' || (inc.yi || 0) > (cur.yi || 0))))) localStorage.setItem(KEY, JSON.stringify(inc));
+  } catch (e) {}
+  history.replaceState(null, '', location.pathname);
+})();
+</script>
+<script>
 // ===== Confederation engine =====
 const CF = (() => {
   const FK = ['merchants', 'farmers', 'veterans', 'gentry'];
