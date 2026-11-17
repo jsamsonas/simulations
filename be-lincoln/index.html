@@ -1,37 +1,1068 @@
-<!DOCTYPE html>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Be Lincoln Simulation</title>
-  <!-- mini-coi must load first: it lets input() work on GitHub Pages -->
-  <script src="./mini-coi.js" scope="./"></script>
-  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
-  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
-  <style>
-    body { margin: 0; background: #1e1e1e; color: #ddd; font-family: Georgia, serif; }
-    header { padding: 16px; text-align: center; }
-    h1 { margin: 0; font-size: 1.6rem; }
-    #loading { margin: 8px 0 0; font-style: italic; color: #aaa; }
-    main { max-width: 900px; margin: 0 auto; padding: 0 16px 24px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be Lincoln: A Wartime President</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --leaf:#5C7A48;
+  --wood:#8A5A34;
+  --snow:#FBFCF8;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+.m-nation{fill:color-mix(in srgb,var(--brass-fill) 26%,transparent);stroke:var(--brass);stroke-width:1;stroke-dasharray:4 3}
+.m-nlabel{fill:var(--brass);font-family:var(--display);font-style:italic;font-size:12.5px}
+.m-land{fill:var(--map);stroke:var(--ink-soft);stroke-width:.9}
+.m-water{fill:var(--sea)}
+.m-us{fill:var(--river);stroke:var(--paper);stroke-width:1}
+.m-csa{fill:var(--seal);stroke:var(--paper);stroke-width:1}
+.m-fire{fill:none;stroke:var(--seal);stroke-width:1.8;stroke-dasharray:4 3}
+.m-ship{fill:var(--ink)}
+.m-sea-route{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 3}
+.m-rail{fill:none;stroke:var(--ink);stroke-width:1.6}
+.m-ties{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 6}
+.m-x{fill:none;stroke:var(--seal);stroke-width:2}
+.m-border{fill:none;stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:6 4}
+.fadein{opacity:0;animation:fade .9s ease .6s forwards}
+@keyframes fade{to{opacity:1}}
+/* pictures (drawn in SVG) */
+.visuals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.visuals{grid-template-columns:minmax(0,1fr)}}
+.scene{margin:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--paper-2)}
+.scene.wide{margin:0 0 6px}
+.scene svg{display:block;width:100%;height:auto}
+svg .ink{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .thin{stroke-width:1.3}
+svg .dash{stroke-dasharray:5 5}
+svg .red{stroke:var(--seal)}
+svg .f-none{fill:none} svg .f-paper{fill:var(--paper)} svg .f-wood{fill:var(--wood)} svg .f-gold{fill:var(--brass-fill)}
+svg .f-green{fill:var(--leaf)} svg .f-blue{fill:var(--river)} svg .f-red{fill:var(--seal)} svg .f-ink{fill:var(--ink)}
+svg .f-snow{fill:var(--snow)} svg .f-sky{fill:var(--paper-2);stroke:none}
+svg .f-soft{fill:color-mix(in srgb,var(--ink) 15%,var(--paper-2))}
+svg .f-water{fill:color-mix(in srgb,var(--river) 26%,var(--paper-2))}
+svg .f-clear{fill:color-mix(in srgb,var(--river) 48%,var(--paper-2))}
+svg .f-mud{fill:color-mix(in srgb,var(--wood) 48%,var(--paper-2))}
+svg .f-ground{fill:color-mix(in srgb,var(--leaf) 26%,var(--paper-2))}
+svg .f-sand{fill:color-mix(in srgb,var(--brass-fill) 34%,var(--paper-2))}
+svg .f-brick{fill:color-mix(in srgb,var(--seal) 50%,var(--paper-2))}
+.sv-label{font-family:var(--text);font-weight:700;fill:var(--ink)}
+.sv-tag{font-size:13px}
+.sv-tiny{font-size:8px}
+.sv-quote,.sv-hand{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px}
+.sv-poster-sm{font-family:var(--display);font-weight:400;font-size:14px}
+.sv-poster{font-family:var(--display);font-weight:400;font-size:24px}
+.sv-poster-lg{font-family:var(--display);font-weight:400;font-size:42px;fill:var(--seal)}
+
+/* advisors */
+.advisors{margin:22px 0 4px;padding:16px 18px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px}
+.adv-h{font-size:1.35rem;margin:0 0 .15em}
+.adv-hint{margin:0 0 12px;color:var(--ink-soft);font-size:1rem}
+.adv-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.adv{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--river);border-radius:3px}
+.adv strong{font-family:var(--display);font-weight:400;font-size:1.15rem;line-height:1.15}
+.adv span{font-size:.92rem;color:var(--ink-soft);line-height:1.3}
+.adv:hover{border-color:var(--ink-soft);border-top-color:var(--river)}
+.adv[aria-pressed="true"]{border-color:var(--river);background:color-mix(in srgb,var(--river) 10%,var(--paper))}
+.quote{margin:14px 0 0;padding:12px 16px;border-left:4px solid var(--river);background:var(--paper)}
+.quote p{margin:0;font-family:var(--display);font-style:italic;font-size:1.2rem;line-height:1.35}
+.quote footer{margin-top:6px;font-size:.95rem;color:var(--ink-soft)}
+.m-lake{fill:var(--sea);stroke:var(--ink-soft);stroke-width:.7}
+.m-nlabel.csa{fill:var(--seal)}
+
+@media (prefers-reduced-motion: reduce){
+  .fadein{opacity:1}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Be Lincoln Simulation</h1>
-    <p id="loading">Loading the simulation... this can take up to 30 seconds the first time.</p>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
   </header>
-  <main>
-    <script type="py" terminal worker src="./main.py"></script>
-  </main>
-  <script>
-    // hide the loading message once the terminal appears
-    new MutationObserver((_, obs) => {
-      if (document.querySelector(".xterm")) {
-        document.getElementById("loading").style.display = "none";
-        obs.disconnect();
-      }
-    }).observe(document.body, { childList: true, subtree: true });
-  </script>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be Lincoln",
+  subtitle: "A Wartime President, 1861–1865",
+  reportTitle: "BE LINCOLN: A Wartime President",
+  blurb: "Face seven real crises Abraham Lincoln faced during the Civil War. Hear from your advisors, make the call, then find out what really happened. There are no right answers. You don’t know how the story ends.",
+  leader: "Lincoln",
+  leaderPoss: "Lincoln’s",
+  leaderLabel: "Lincoln",
+  storageKey: "beLincolnWar.v1",
+  titleMap: {pins:[{at:"dc", here:true}], caption:"The United States at war, 1861–1865"}
+};
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A nation at war",
+  paras: [
+    "In April 1861, Confederate guns fired on Fort Sumter, and the Civil War began. Eleven slave states have left the Union to form the Confederate States of America.",
+    "Everyone expected a short war. They were wrong. By late 1861, hundreds of thousands of men are in uniform, and the Union army has already lost badly at Bull Run in Virginia."
+  ],
+  listHeading: "Who wants what?",
+  list: [
+    {name:"The Confederacy", text:"Wants independence and the protection of slavery. Its best hope is to make the war too costly for the North, or to win help from Britain or France."},
+    {name:"Lincoln", text:"Wants to restore the Union. At first he says the war is not about ending slavery. As the war goes on, that changes."},
+    {name:"The border states", text:"Delaware, Maryland, Kentucky, and Missouri allow slavery but stayed in the Union. Losing them could lose the war."}
+  ],
+  after: "As president, you’ll face more than battles. You’ll face foreign threats, angry generals, a divided cabinet, critics at home, and hard questions about justice. Each crisis forces a choice.",
+  map: {pins:[{at:"dc", here:true}], regions:true, caption:"The Union and the Confederacy, divided roughly along the Ohio River and the Potomac"}
+};
+
+const START = {
+  heading: "You are Abraham Lincoln",
+  paras: [
+    "It is November 1861. You have been president for eight months, and the war is not going well. Your generals are cautious, Congress is impatient, and newspapers attack you every day.",
+    "In the next three and a half years, you’ll face seven crises. Before each decision, you can call in your advisors. Then the choice is yours."
+  ],
+  factsHeading: "The situation",
+  facts: [
+    ["President", "Abraham Lincoln, age 52"],
+    ["Confederate states", "11"],
+    ["Union army", "More than 500,000 soldiers, most with no experience"],
+    ["Biggest fear abroad", "Britain or France helping the Confederacy"],
+    ["Biggest fear at home", "Losing the border states, or losing the public’s will to fight"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"The Trent Affair", when:"November 1861", where:"Washington, D.C.",
+    setup:[
+      "A U.S. Navy captain, Charles Wilkes, has stopped a British mail ship, the Trent, near Cuba. He arrested two Confederate diplomats, James Mason and John Slidell, who were sailing to Europe to ask Britain and France for help.",
+      "Northerners are thrilled, and Wilkes is a hero. But Britain is furious. It says the U.S. broke international law, demands the men’s release, and is sending thousands of soldiers to Canada."
+    ],
+    question:"What do you do with the two diplomats?",
+    advisors:[
+      {name:"Gideon Welles", role:"Secretary of the Navy", advice:"Captain Wilkes acted boldly, and the whole North is cheering him. Releasing those men now would look like surrender to Britain."},
+      {name:"William Seward", role:"Secretary of State", advice:"We cannot fight the Confederacy and the British Empire at the same time. If we lose Britain’s goodwill, the South gets the ally it’s been praying for."},
+      {name:"Charles Sumner", role:"Senator, Massachusetts", advice:"By international law, Britain is right. Captain Wilkes had no right to pull passengers off a neutral ship. We should admit it."}
+    ],
+    options:[
+      {text:"Keep the diplomats in prison. The Navy acted bravely, and the Confederacy can’t be allowed to make alliances.", short:"Keep them in prison", style:"bold", historical:false,
+       outcome:"Northerners cheer you. But British troops keep pouring into Canada, and Britain’s navy, the strongest in the world, could break the Union blockade of Southern ports."},
+      {text:"Release them quietly. Say Wilkes acted without orders, but don’t apologize.", short:"Release them, no apology", style:"diplomatic", historical:true,
+       outcome:"Some Northerners call it a humiliation. But Britain has what it wanted, and the war fever cools."},
+      {text:"Stall. Hold the men while you negotiate, and hope Britain’s anger fades.", short:"Stall for time", style:"cautious", historical:false,
+       outcome:"Weeks pass, and Britain grows angrier. Every day you wait, war with the world’s greatest power gets closer."}
+    ],
+    history:[
+      "Lincoln and Seward released Mason and Slidell on January 1, 1862. Seward wrote that Wilkes had acted without orders, but the U.S. never formally apologized.",
+      "Many Northerners were disappointed, but the crisis ended. Britain never entered the war. Lincoln reportedly summed up his thinking in four words: “One war at a time.”"
+    ],
+    think:"Why was keeping Britain out of the war worth disappointing the Northern public?",
+    map:{pins:[{at:"trent", here:true}, {at:"dc"}], route:"trent", caption:"Where the Trent was stopped, in the channel north of Cuba"}
+  },
+  {
+    title:"General Hunter’s Order", when:"May 1862", where:"Washington, D.C.",
+    setup:[
+      "General David Hunter commands Union troops along the coast of South Carolina, Georgia, and Florida. Without asking you, he has issued an order declaring every enslaved person in those three states “forever free.”",
+      "Abolitionists are cheering. But leaders in the border states, slave states that stayed loyal to the Union, are alarmed. If they think the war has become a war to end slavery, they may turn against you."
+    ],
+    question:"What do you do about Hunter’s order?",
+    advisors:[
+      {name:"Salmon P. Chase", role:"Secretary of the Treasury", advice:"Let it stand. Freeing the enslaved people of the South weakens the Confederacy, and it is right. Nearly the whole North will support it."},
+      {name:"Border-state congressmen", role:"Kentucky, Maryland, and Missouri", advice:"If you let a general free the slaves, our people will believe this is an abolition war. You could lose our states, and the war with them."},
+      {name:"Abolitionist newspapers", role:"Northern press", advice:"At last, a general with courage! Don’t you dare stop him. Slavery is the cause of this war."}
+    ],
+    options:[
+      {text:"Let the order stand. It weakens the Confederacy, and it frees people.", short:"Let it stand", style:"bold", historical:false,
+       outcome:"Abolitionists celebrate. But in Kentucky and Maryland, Union support starts to crack, and recruiting there slows."},
+      {text:"Cancel the order. Say that only the president can make a decision this big.", short:"Cancel the order", style:"cautious", historical:true,
+       outcome:"Abolitionists are bitterly disappointed. The border states are relieved, for now."},
+      {text:"Narrow it: free only enslaved people who are being forced to work for the Confederate army.", short:"Narrow the order", style:"diplomatic", historical:false,
+       outcome:"No one is fully satisfied. Abolitionists call it too little, and border-state leaders still don’t trust you."}
+    ],
+    history:[
+      "On May 19, 1862, Lincoln canceled Hunter’s order. He said no general could free enslaved people on his own. Only the president, as commander in chief, could decide that.",
+      "But Lincoln was already moving toward emancipation himself. Two months later he showed his cabinet a draft of the Emancipation Proclamation. He issued it on January 1, 1863."
+    ],
+    think:"Lincoln canceled Hunter’s order, then freed enslaved people in Confederate areas himself seven months later. Why might the timing and the source of the order have mattered?",
+    map:{pins:[{at:"hunter", here:true}, {at:"dc"}], border:true, caption:"Hunter’s Department of the South, and the border states Lincoln feared losing"}
+  },
+  {
+    title:"The Dakota Trials", when:"November 1862", where:"Washington, D.C.",
+    setup:[
+      "In Minnesota, the U.S. government broke its treaty promises to the Dakota people. Payments came late, and families went hungry. In August, some Dakota went to war. Hundreds of white settlers and soldiers were killed before the army ended the fighting.",
+      "A military commission has now sentenced 303 Dakota men to death. Some trials lasted only a few minutes. Many Minnesotans are demanding that every man be hanged, and the governor warns of mob violence if you refuse."
+    ],
+    question:"What do you do with the death sentences?",
+    advisors:[
+      {name:"Alexander Ramsey", role:"Governor of Minnesota", advice:"Approve every sentence. If you don’t, the settlers on our border will take revenge themselves, and no one will be able to stop them."},
+      {name:"Henry Whipple", role:"Episcopal bishop of Minnesota", advice:"Our own government’s broken promises and corrupt agents caused this war. Show mercy, and fix the system that starved these people."},
+      {name:"Your legal team", role:"White House lawyers", advice:"Many of these trials took minutes. Some men were condemned only for fighting in battles. If we review the records, we can find who was actually proven to have killed civilians."}
+    ],
+    options:[
+      {text:"Approve all 303 executions to satisfy Minnesotans and prevent mob violence.", short:"Approve all 303", style:"bold", historical:false,
+       outcome:"Minnesota’s leaders are satisfied. But many of the men condemned had only fought in battles, after trials that lasted minutes."},
+      {text:"Pardon all 303 men. The trials were unfair, and the government caused the war.", short:"Pardon all 303", style:"diplomatic", historical:false,
+       outcome:"Reformers praise you. But Minnesota explodes in anger, and the danger of mob attacks grows."},
+      {text:"Study the trial records yourself, and approve only the cases of men proven to have killed civilians.", short:"Review the records", style:"cautious", historical:true,
+       outcome:"For weeks, you and two lawyers read the trial records, case by case."}
+    ],
+    history:[
+      "Lincoln reviewed the records and approved the death sentences of 39 men he judged proven to have taken part in killing civilians. He later spared one more. On December 26, 1862, 38 Dakota men were hanged at Mankato, Minnesota. It remains the largest mass execution in U.S. history.",
+      "Lincoln spared more than 260 men, which angered many Minnesotans. When a senator said more hangings would have won Republicans more votes, Lincoln reportedly answered that he “could not afford to hang men for votes.” The Dakota were later forced out of Minnesota."
+    ],
+    think:"Lincoln saved more than 260 lives, and he also approved the largest mass execution in U.S. history. How should we judge a decision like that?",
+    map:{pins:[{at:"mankato", here:true}, {at:"dc"}], caption:"Mankato, Minnesota, far from the main battlefields of the war"}
+  },
+  {
+    title:"The Cabinet Crisis", when:"December 1862", where:"The White House",
+    setup:[
+      "The Union army has just suffered a terrible defeat at Fredericksburg, Virginia. Republican senators are furious, and they blame your secretary of state, William Seward. They demand that you fire him.",
+      "You learn that your treasury secretary, Salmon Chase, has been secretly complaining to the senators about Seward and about you. Seward has already handed you his resignation."
+    ],
+    question:"How do you handle the senators?",
+    advisors:[
+      {name:"William Fessenden", role:"Senator, Maine", advice:"The country has lost confidence in this cabinet. Seward has too much influence over you. A change at the top would restore faith in the war."},
+      {name:"William Seward", role:"Secretary of State", advice:"I have given you my resignation. If my leaving ends this crisis, accept it. I won’t stand in the way of the Union."},
+      {name:"Salmon P. Chase", role:"Secretary of the Treasury", advice:"I serve the Union, Mr. President, and I support whatever you decide. (What Chase doesn’t say: he has been telling the senators that you are weak.)"}
+    ],
+    options:[
+      {text:"Accept Seward’s resignation. It will please the senators and calm your party.", short:"Let Seward go", style:"cautious", historical:false,
+       outcome:"The senators are pleased. But now they know they can pick your cabinet for you. What will they demand next?"},
+      {text:"Call the senators to a meeting with your cabinet, Chase included, and make Chase defend the cabinet to their faces.", short:"Bring everyone together", style:"diplomatic", historical:true,
+       outcome:"The meeting is awkward. Chase, caught between the senators and the cabinet, squirms. The next day, he brings you his own resignation."},
+      {text:"Fire Chase for disloyalty and publicly stand by Seward.", short:"Fire Chase", style:"bold", historical:false,
+       outcome:"You show who’s in charge. But Chase has powerful friends among the Radical Republicans, and your party splits further."}
+    ],
+    history:[
+      "Lincoln called the senators to a meeting with his cabinet, without Seward. In front of everyone, Chase could not repeat his complaints, and the next day he offered to resign.",
+      "With resignations from both Seward and Chase in hand, Lincoln refused to accept either one. He kept both men, and both rivals, in his cabinet. He had shown that he, not the Senate, ran the government."
+    ],
+    think:"Why might Lincoln have wanted to keep a disloyal rival like Chase in his cabinet?",
+    map:{pins:[{at:"fred", here:false}, {at:"dc", here:true}], caption:"Fredericksburg, Virginia, where the Union lost badly on December 13, 1862"}
+  },
+  {
+    title:"A Critic Arrested", when:"May 1863", where:"Washington, D.C.",
+    setup:[
+      "Clement Vallandigham is a former Ohio congressman and the most famous “Copperhead,” a Northern Democrat who wants peace with the Confederacy. In a speech in Mount Vernon, Ohio, he called the war “wicked and cruel.”",
+      "General Ambrose Burnside had ordered that anyone expressing sympathy for the enemy would be arrested. Soldiers seized Vallandigham at his home in the night. A military court, not a regular court, sentenced him to prison. Democrats say you are a tyrant destroying free speech."
+    ],
+    question:"What do you do about Vallandigham?",
+    advisors:[
+      {name:"Ambrose Burnside", role:"Commander, Department of the Ohio", advice:"Speeches like his discourage enlistment and encourage desertion while our men are dying. He belongs in prison until the war is over."},
+      {name:"Northern Democrats", role:"Party leaders in New York and Ohio", advice:"Arresting a man for a speech is tyranny! The Constitution protects free speech, even in wartime. Release him, or no one is safe."},
+      {name:"Your cabinet", role:"Several members", advice:"The arrest was a mistake, but releasing him now makes you look weak. Keeping him in prison makes him a martyr. Find a way out of this."}
+    ],
+    options:[
+      {text:"Keep him in military prison. Free speech has limits during a rebellion.", short:"Keep him in prison", style:"bold", historical:false,
+       outcome:"Your supporters agree. But Democrats now have a martyr, and Ohio Democrats nominate Vallandigham for governor while he sits in a cell."},
+      {text:"Release him. Arresting a critic for a speech violates the First Amendment.", short:"Release him", style:"diplomatic", historical:false,
+       outcome:"Free-speech defenders are relieved. But Burnside is furious, and generals wonder whether you’ll back them up."},
+      {text:"Change his sentence: instead of prison, send him across the lines to the Confederacy.", short:"Send him to the Confederacy", style:"cautious", historical:true,
+       outcome:"Vallandigham is escorted to Confederate lines in Tennessee and handed over. Many Northerners laugh: if he likes the South so much, let him live there."}
+    ],
+    history:[
+      "Lincoln changed Vallandigham’s prison sentence to banishment, and in late May 1863 the army sent him into Confederate territory. He soon left for Canada.",
+      "Lincoln defended his policy in a public letter. He asked, “Must I shoot a simple-minded soldier boy who deserts, while I must not touch a hair of a wily agitator who induces him to desert?” Vallandigham ran for governor of Ohio from Canada and lost badly."
+    ],
+    think:"Was arresting Vallandigham for a speech a reasonable step during a war, or a violation of the First Amendment? Explain.",
+    map:{pins:[{at:"mtvernon", here:true}, {at:"dc"}], caption:"Mount Vernon, Ohio, where Vallandigham gave his speech on May 1, 1863"}
+  },
+  {
+    title:"The News from Fort Pillow", when:"April 1864", where:"Washington, D.C.",
+    setup:[
+      "By 1864, tens of thousands of Black soldiers serve in the Union army. Now terrible news arrives from Fort Pillow, on the Mississippi River in Tennessee.",
+      "Confederate troops under General Nathan Bedford Forrest captured the fort. Survivors say many Black soldiers were killed after they tried to surrender. Northerners are outraged. Black soldiers and their families want to know: will the government protect them?"
+    ],
+    question:"How do you respond?",
+    advisors:[
+      {name:"Edwin Stanton", role:"Secretary of War", advice:"Choose Confederate officers we hold prisoner as hostages. If the South won’t promise to treat Black soldiers as prisoners of war, those officers answer for it."},
+      {name:"Montgomery Blair", role:"Postmaster General", advice:"Don’t punish prisoners who had nothing to do with Fort Pillow. Find the men who did it, and punish them."},
+      {name:"Frederick Douglass", role:"Abolitionist leader", advice:"(From his 1863 meeting with you.) Black soldiers will not trust a government that will not protect them. The Confederacy must learn that every Union soldier will be defended."}
+    ],
+    options:[
+      {text:"Order the execution of Confederate prisoners, one for each murdered soldier.", short:"Execute prisoners in return", style:"bold", historical:false,
+       outcome:"The South answers with executions of its own. Prisoners on both sides become targets, and the killing spreads."},
+      {text:"Investigate, demand answers from the Confederacy, and threaten retaliation, but hold off on carrying it out.", short:"Investigate and warn", style:"cautious", historical:true,
+       outcome:"Congress begins hearings, and the testimony shocks the North. Your cabinet debates for days. Then the great battles of 1864 begin."},
+      {text:"Say nothing publicly, and work quietly to improve the treatment of captured Black soldiers.", short:"Work quietly", style:"diplomatic", historical:false,
+       outcome:"Black soldiers and abolitionists hear only silence. Many conclude their government does not value their lives."}
+    ],
+    history:[
+      "In a speech in Baltimore days later, Lincoln said Black soldiers deserved the same protection as white soldiers, and that if the massacre was proven, “the retribution shall as surely come.” Congress investigated, and Lincoln asked each cabinet member for written advice.",
+      "In the end, Lincoln never ordered retaliation. He drafted a warning to the Confederacy but did not finish it. He had told Frederick Douglass that once retaliation began, “there was no telling where it would end.”"
+    ],
+    think:"Lincoln promised retribution but never carried it out. Was that wise, or did it break a promise to Black soldiers? Explain.",
+    map:{pins:[{at:"pillow", here:true}, {at:"dc"}], caption:"Fort Pillow, on the Mississippi River in Tennessee"}
+  },
+  {
+    title:"Peace Talks at Hampton Roads", when:"February 1865", where:"Hampton Roads, Virginia",
+    setup:[
+      "The Confederacy is losing. General Sherman has marched through Georgia, and General Grant has Lee’s army trapped near Petersburg, Virginia. Congress has just passed the 13th Amendment to abolish slavery, and the states are voting on it.",
+      "Three Confederate leaders, including Vice President Alexander Stephens, have asked to talk about peace. Many Northerners are exhausted by four years of war. Others fear you’ll give away too much."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Francis Preston Blair", role:"Elder statesman", advice:"Meet them. Every week of war costs thousands of lives. Even a small chance at peace is worth a conversation."},
+      {name:"Radical Republicans", role:"Members of Congress", advice:"Don’t negotiate with traitors. If you compromise on slavery now, every soldier who died will have died for nothing."},
+      {name:"William Seward", role:"Secretary of State", advice:"Hear them out, but remember: we are winning. Whatever happens, don’t give up what this war has been fought for."}
+    ],
+    options:[
+      {text:"Agree to a ceasefire right away, and let the Southern states keep slavery if they rejoin the Union.", short:"Peace, with slavery", style:"diplomatic", historical:false,
+       outcome:"The shooting stops. But slavery survives, the 13th Amendment stalls, and nearly 200,000 Black soldiers and sailors have fought for a Union that leaves their families enslaved."},
+      {text:"Refuse to meet them. Accept only unconditional surrender.", short:"Refuse to meet", style:"cautious", historical:false,
+       outcome:"Radicals approve. But war-weary Northerners ask whether you threw away a chance for peace."},
+      {text:"Meet them yourself, but insist on two conditions: the Confederacy must rejoin the Union, and slavery must end.", short:"Meet, but hold firm", style:"bold", historical:true,
+       outcome:"For four hours, aboard a steamboat, you talk. You are friendly, but you don’t budge."}
+    ],
+    history:[
+      "On February 3, 1865, Lincoln and Seward met the three Confederate commissioners aboard the steamboat River Queen at Hampton Roads, Virginia. Lincoln said the war would end only when the Confederacy rejoined the Union, and he would not back down on emancipation.",
+      "The Confederates would not accept. The war went on for two more months, until Lee surrendered to Grant at Appomattox Court House on April 9, 1865."
+    ],
+    think:"Why didn’t Lincoln accept a quick peace that would have saved lives? Do you agree with his choice?",
+    map:{pins:[{at:"hampton", here:true}, {at:"dc"}, {at:"petersburg"}], caption:"Hampton Roads, Virginia, where the River Queen anchored"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "Lee surrendered to Grant at Appomattox Court House on April 9, 1865. Five days later, on April 14, Lincoln was shot by John Wilkes Booth at Ford’s Theatre in Washington. He died the next morning.",
+    "The war killed more than 600,000 Americans. It saved the Union, and it ended slavery: the 13th Amendment, which Lincoln had pushed through Congress, was ratified in December 1865.",
+    "Lincoln’s choices were not all wise, and historians still argue about many of them. But he kept the Union together through its worst crisis, often by choosing the path that kept the most people on his side."
+  ],
+  map: {pins:[{at:"dc", here:true}, {at:"appomattox"}], caption:"Appomattox Court House, where Lee surrendered, and Washington, where Lincoln was killed"}
+};
+
+const PROFILES = {
+  bold:["The Commander","You act decisively and don’t mind a fight. Lincoln could be bold too, as at Hampton Roads, but he usually chose his fights carefully."],
+  cautious:["The Strategist","You look before you leap and avoid moves that could backfire. Lincoln often did the same, studying a problem for weeks before acting."],
+  diplomatic:["The Peacemaker","You look for ways to keep people on your side. Lincoln was a master at this, especially with his own quarreling cabinet."],
+  balanced:["The Balanced Leader","You mix boldness, caution, and diplomacy depending on the problem. So did Lincoln: his choices in these crises were spread across all three."]
+};
+
+
+/* ======================================================================
+   MAP: the eastern United States, 1861–1865 (simplified)
+   ====================================================================== */
+function makeProj(B){ return ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)]; }
+const UB = {lonMin:-98, lonMax:-66, latMin:19.9, latMax:49.3, kx:15, ky:19};
+const UP = makeProj(UB);
+const UW = Math.round((UB.lonMax - UB.lonMin) * UB.kx), UH = Math.round((UB.latMax - UB.latMin) * UB.ky);
+const path = (lls, close) => `M${lls.map(UP).map(q => q.join(" ")).join(" L")}${close ? " Z" : ""}`;
+
+const COAST = [[-66,44.6],[-67,44.65],[-68.2,44.3],[-69,44],[-70.2,43.6],[-70.7,43],[-70.6,42.65],[-71,42.35],[-70.65,41.95],[-70.5,41.78],
+  [-70.2,41.85],[-70.18,42.06],[-70.02,41.95],[-69.95,41.68],[-70.3,41.62],[-70.67,41.53],[-71.1,41.5],[-71.35,41.45],[-71.9,41.3],[-72.9,41.25],
+  [-73.6,41],[-74,40.7],[-74,40.45],[-74.1,40],[-74.4,39.36],[-74.95,38.93],[-75.5,39.45],[-75.3,38.95],[-75.09,38.78],[-75.08,38.33],[-75.25,38],
+  [-75.6,37.5],[-75.97,37.12],[-76,37.5],[-76.1,38],[-76.3,38.5],[-76.4,39.2],[-76.1,39.55],[-76.5,39],[-76.4,38.3],[-76.3,37.6],[-76.4,37],
+  [-76.3,36.95],[-76,36.93],[-75.75,36.2],[-75.53,35.25],[-76.53,34.6],[-77.4,34.5],[-77.95,33.85],[-78.9,33.6],[-79.9,32.75],[-80.7,32.15],
+  [-81,31.95],[-81.3,31],[-81.4,30.4],[-81.3,29.9],[-80.9,29.2],[-80.6,28.45],[-80.4,27.5],[-80.05,26.7],[-80.15,25.8],[-80.4,25.2],[-80.9,25.13],
+  [-81.2,25.4],[-81.8,26.1],[-82.1,26.9],[-82.7,27.7],[-82.8,28.2],[-83,29.1],[-83.6,29.9],[-84.2,30.05],[-84.9,29.7],[-85.7,30.1],[-86.5,30.4],
+  [-87.2,30.33],[-88.05,30.25],[-88.6,30.35],[-89.3,30.3],[-89.6,30.15],[-89.4,29.9],[-89.25,29.3],[-89.4,29],[-89.7,29.3],[-90.2,29.1],
+  [-91.2,29.25],[-92,29.6],[-93.3,29.75],[-93.85,29.7],[-94.8,29.3],[-95.4,28.9],[-96.4,28.4],[-97.2,27.7],[-97.4,27],[-97.2,26],[-97.6,24.5],
+  [-97.8,22.6],[-97.4,21],[-97.2,19.9]];
+const SEA = [...COAST, [-66,19.9]];
+const CUBA = [[-84.95,21.86],[-84.3,22.4],[-83.2,22.95],[-82.36,23.14],[-81.6,23.1],[-80.6,23],[-79.6,22.7],[-78.5,22.4],[-77.4,21.75],[-76,21.1],[-75,20.7],
+  [-74.2,20.25],[-74.5,20.05],[-75.6,19.9],[-77.7,19.85],[-77.2,20.6],[-78,20.8],[-78.6,21.5],[-79.5,21.7],[-80.8,22.05],[-81.8,22.2],[-82.9,22.1],[-84.2,21.8]];
+const YUCATAN = [[-90.4,21],[-90.2,21.15],[-89.2,21.35],[-87.6,21.5],[-86.8,21.25],[-86.8,21]];
+const LAKES = [
+  [[-92.1,46.75],[-91,46.95],[-90.4,46.6],[-89,46.85],[-87.8,47.45],[-87.5,46.9],[-86.5,46.45],[-85,46.75],[-84.6,46.5],[-84.9,47],[-85.6,47.9],[-86.5,48.7],[-88.3,48.8],[-89.3,48.4],[-90.5,47.9],[-91.6,47.3]],
+  [[-87.6,41.7],[-87.85,42.6],[-87.9,43.4],[-87.6,44.4],[-87.4,44.9],[-86.9,45.5],[-85.8,45.9],[-84.9,45.85],[-85.2,45.4],[-85.6,45],[-86.2,44.6],[-86.4,43.9],[-86.5,43.1],[-86.3,42.4],[-86.6,41.9],[-87.2,41.6]],
+  [[-84.7,45.9],[-83.4,45.95],[-82,45.8],[-81.7,45.3],[-81.7,44.4],[-81.6,43.5],[-82.4,43],[-82.5,43.6],[-82.9,44],[-83.4,43.9],[-83.4,44.4],[-83.3,45],[-84,45.5],[-84.7,45.75]],
+  [[-83.45,41.7],[-82.7,41.45],[-81.7,41.5],[-80.5,41.95],[-79.8,42.2],[-78.9,42.85],[-79.6,42.85],[-80.5,42.6],[-81.5,42.65],[-82.5,42],[-83.1,42]],
+  [[-79.8,43.25],[-79,43.25],[-77.6,43.3],[-76.5,43.5],[-76.2,43.95],[-76.4,44.2],[-77.2,44],[-78.5,43.95],[-79.4,43.65]]
+];
+const CANADA_LINE = [[-99,49],[-95.15,49],[-95.15,49.38],[-94.8,48.7],[-93,48.6],[-91.4,48.05],[-89.6,48],[-87,47.6],[-84.8,46.8],[-84.1,46.3],
+  [-83.5,45.9],[-82.4,45.3],[-82.5,44],[-82.4,43],[-83,42.3],[-82.5,41.8],[-81,42.2],[-79,42.9],[-79.05,43.25],[-77.5,43.6],[-76.4,44.1],
+  [-75,44.9],[-74.7,45],[-71.5,45],[-70.9,45.3],[-70.3,45.9],[-70,46.7],[-69.2,47.45],[-68.3,47.35],[-67.8,47.1],[-67.8,45.7],[-67.4,45.15],[-67,44.8]];
+const MEXICO_LINE = [[-97.2,25.95],[-98,26.06],[-99,26.5]];
+const MISSISSIPPI = [[-93.2,45],[-91.2,43.5],[-90.6,41.5],[-91.4,40.4],[-90.2,38.6],[-89.2,37],[-89.6,36],[-90.1,35.1],[-91.1,33.4],[-90.9,32.3],[-91.6,31],[-91.2,30.4],[-90.1,29.95],[-89.3,29.2]];
+const OHIO = [[-89.2,37],[-88,37.8],[-86.7,37.9],[-85.8,38.25],[-84.5,39.1],[-82.6,38.6],[-81.7,39.3],[-80,40.45]];
+const POTOMAC = [[-76.3,38.05],[-77,38.4],[-77.05,38.85],[-77.5,39.25],[-78.3,39.45]];
+
+const PLACES = {
+  dc:{at:[-77.04,38.9], name:"Washington", dx:8, dy:-6, anchor:"start"},
+  trent:{at:[-78.4,22.75], name:"Trent stopped here", dx:-14, dy:-10, anchor:"end"},
+  hunter:{at:[-80.75,32.2], name:"Hilton Head", dx:-8, dy:4, anchor:"end"},
+  mankato:{at:[-94,44.16], name:"Mankato", dx:8, dy:4, anchor:"start"},
+  fred:{at:[-77.46,38.3], name:"Fredericksburg", dx:-8, dy:12, anchor:"end"},
+  mtvernon:{at:[-82.49,40.39], name:"Mount Vernon", dx:-8, dy:4, anchor:"end"},
+  pillow:{at:[-89.84,35.63], name:"Fort Pillow", dx:-8, dy:4, anchor:"end"},
+  hampton:{at:[-76.33,36.97], name:"Hampton Roads", dx:8, dy:12, anchor:"start"},
+  petersburg:{at:[-77.4,37.23], name:"Petersburg", dx:-8, dy:10, anchor:"end"},
+  appomattox:{at:[-78.8,37.38], name:"Appomattox", dx:-8, dy:4, anchor:"end"}
+};
+
+function usSVG(cfg, animate){
+  const T = (ll, txt, cls, anchor = "middle", dx = 0, dy = 0) => { const [x, y] = UP(ll); return `<text x="${x + dx}" y="${y + dy}" text-anchor="${anchor}" class="${cls}">${txt}</text>`; };
+  let s = `<svg viewBox="0 0 ${UW} ${UH}" role="img" aria-label="Map of the eastern United States${cfg.caption ? ": " + cfg.caption : ""}">`;
+  s += `<rect class="m-sea" x="0" y="0" width="${UW}" height="${UH}"/>`;
+  s += `<path class="m-land" d="M0 0 L${UW} 0 L${UW} ${UH} L0 ${UH} Z"/>`;
+  s += `<path class="m-sea" d="${path(SEA, true)}"/><path class="m-coast" d="${path(COAST)}"/>`;
+  s += `<path class="m-land" d="${path(CUBA, true)}"/><path class="m-land" d="${path(YUCATAN, true)}"/>`;
+  s += LAKES.map(l => `<path class="m-lake" d="${path(l, true)}"/>`).join("");
+  s += `<path class="m-border" d="${path(CANADA_LINE)}"/><path class="m-border" d="${path(MEXICO_LINE)}"/>`;
+  s += `<path class="m-river" stroke-width="1.6" d="${path(MISSISSIPPI)}"/><path class="m-river" stroke-width="1.4" d="${path(OHIO)}"/><path class="m-river" stroke-width="1.2" d="${path(POTOMAC)}"/>`;
+  s += T([-90.6,41.2], "Mississippi R.", "m-rlabel", "end", -6) + T([-86.2,37.4], "Ohio R.", "m-rlabel");
+  s += T([-80,47.6], "CANADA", "m-region") + T([-96.6,23.4], "MEXICO", "m-region", "start");
+  s += T([-71,33], "Atlantic Ocean", "m-region") + T([-90,25.6], "Gulf of Mexico", "m-region") + T([-78.4,21.0], "Cuba", "m-note");
+  if (cfg.regions) s += T([-80.5,43.0], "THE UNION", "m-nlabel") + T([-86.5,32.6], "THE CONFEDERACY", "m-nlabel csa");
+  if (cfg.border) s += T([-85.6,37.25], "Kentucky", "m-note") + T([-92.4,38.4], "Missouri", "m-note") + T([-76.8,39.55], "Maryland", "m-note", "end", -4) + T([-84,36.3], "border states", "m-nlabel");
+  if (cfg.route === "trent") {
+    const pts = [[-82.36,23.14],[-80.2,22.95],[-78.4,22.75],[-75.5,23.8],[-72,26.5],[-67.5,29]].map(UP);
+    s += `<path class="m-sea-route${animate ? " draw" : ""}" pathLength="1" d="M${pts.map(q => q.join(" ")).join(" L")}"/>`;
+    s += T([-71.5,25.3], "Trent’s route", "m-note", "start", 6, 0) + T([-71.5,25.3], "toward Britain", "m-note", "start", 6, 12);
+  }
+  (cfg.pins || []).forEach(p => {
+    const pl = PLACES[p.at]; const [x, y] = UP(pl.at);
+    if (p.here) s += `<circle class="m-ring${animate ? " pulse" : ""}" cx="${x}" cy="${y}" r="9"/><circle class="m-here" cx="${x}" cy="${y}" r="4.5"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="3.2"/>`;
+    const k = p.here && Math.abs(pl.dx) < 12 && pl.dx !== 0 ? 12 / Math.abs(pl.dx) : 1;
+    s += `<text x="${x + pl.dx * k}" y="${y + pl.dy}" text-anchor="${pl.anchor}" class="m-label">${pl.name}</text>`;
+  });
+  s += `<rect class="m-frame" x=".5" y=".5" width="${UW - 1}" height="${UH - 1}"/></svg>`;
+  return s;
+}
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  return `<figure class="map">${usSVG(cfg, animate)}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   PICTURES: shared drawing helpers (SVG, theme-aware, no downloads)
+   ====================================================================== */
+const DRAW = (() => {
+  const P = (c, d) => `<path class="ink ${c}" d="${d}"/>`;
+  const R = (c, x, y, w, h, rx = 0) => `<rect class="ink ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C = (c, x, y, r) => `<circle class="ink ${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const E = (c, x, y, rx, ry) => `<ellipse class="ink ${c}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const L = (d, extra = "") => `<path class="ink f-none${extra}" d="${d}"/>`;
+  const T = (x, y, txt, cls = "", anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="sv-label ${cls}">${txt}</text>`;
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const sun = (x, y, r) => C("f-gold", x, y, r) + L(Array.from({length:8}, (_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `M${(x + c*(r+5)).toFixed(1)} ${(y + s*(r+5)).toFixed(1)} L${(x + c*(r+12)).toFixed(1)} ${(y + s*(r+12)).toFixed(1)}`; }).join(" "));
+  const waves = (x0, x1, y) => { let d = `M${x0} ${y}`; for (let x = x0; x < x1; x += 24) d += ` q6 -5 12 0 t12 0`; return L(d); };
+  const pine = (x, y, s = 1, snow = false) => g(x, y, s, R("f-wood", -3, -10, 6, 10) + P("f-green", "M0 -58 L16 -30 L8 -30 L20 -10 L-20 -10 L-8 -30 L-16 -30 Z") + (snow ? P("f-snow", "M0 -58 L7 -46 L2 -44 L-3 -47 L-7 -46 Z") : ""));
+  const tree = (x, y, s = 1) => g(x, y, s, R("f-wood", -3, -18, 6, 18) + C("f-green", 0, -30, 16) + C("f-green", -9, -22, 10) + C("f-green", 9, -22, 10));
+  const mtn = (x, y, w, h, snow = true) => P("f-soft", `M${x - w/2} ${y} L${x} ${y - h} L${x + w/2} ${y} Z`) +
+    (snow ? P("f-snow", `M${x - w*0.15} ${y - h*0.7} L${x} ${y - h} L${x + w*0.15} ${y - h*0.7} L${x + w*0.06} ${y - h*0.64} L${x} ${y - h*0.72} L${x - w*0.07} ${y - h*0.63} Z`) : "");
+  const flakes = (pts) => L(pts.map(([x, y]) => `M${x-3} ${y} L${x+3} ${y} M${x} ${y-3} L${x} ${y+3}`).join(" "), " thin");
+  const puff = (x, y, s = 1) => g(x, y, s, C("f-soft", 0, 0, 12) + C("f-soft", 14, -8, 10) + C("f-soft", 22, 4, 9));
+  const usFlag = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-red", 0, -70, 36, 22) +
+    `<path d="M0 -63.7 L36 -63.7 M0 -57.4 L36 -57.4 M0 -51.1 L36 -51.1" stroke="var(--paper)" stroke-width="3.1" fill="none"/>` +
+    R("f-blue", 0, -70, 15, 12) + R("f-none", 0, -70, 36, 22));
+  const canoe = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-38 -6 Q0 14 38 -6 Q0 4 -38 -6 Z"));
+  const barrel = (x, y, s = 1) => g(x, y, s, R("f-wood", -10, -26, 20, 26, 5) + L("M-10 -19 L10 -19 M-10 -7 L10 -7"));
+  const quill = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 Q30 -70 62 -96 Q30 -50 0 0 Z") + L("M0 0 L50 -82"));
+  const frame = (w, h, inner, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${R("f-sky", -2, -2, w + 4, h + 4)}${inner}</svg>`;
+  return {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame};
+})();
+
+const ART = (() => {
+  const {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame} = DRAW;
+  const W = 520, H = 380;
+  const capitol = (x, y, s = 1) => g(x, y, s,
+    L("M0 -122 L0 -190 M-34 -184 L44 -184 M38 -184 L38 -164", " thin") + R("f-ink", 33, -164, 10, 8) +
+    L("M-27 -122 Q0 -172 27 -122 M-14 -122 L-14 -152 M0 -122 L0 -158 M14 -122 L14 -152", " dash") +
+    R("f-paper", -30, -124, 60, 34) + L("M-20 -120 L-20 -96 M-10 -120 L-10 -96 M0 -120 L0 -96 M10 -120 L10 -96 M20 -120 L20 -96", " thin") +
+    R("f-paper", -150, -52, 110, 52) + R("f-paper", 40, -52, 110, 52) +
+    L("M-150 -44 L-40 -44 M40 -44 L150 -44") +
+    [-136, -116, -96, -76, -56, 54, 74, 94, 114, 134].map(xx => R("f-soft", xx, -36, 8, 14)).join("") +
+    R("f-paper", -44, -72, 88, 72) + P("f-paper", "M-48 -72 L0 -94 L48 -72 Z") +
+    L("M-34 -68 L-34 -8 M-22 -68 L-22 -8 M-10 -68 L-10 -8 M2 -68 L2 -8 M14 -68 L14 -8 M26 -68 L26 -8 M36 -68 L36 -8", " thin") +
+    R("f-soft", -54, -8, 108, 8));
+  // a British ensign: red field, white canton with a red cross
+  const redEnsign = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -60") + R("f-red", 0, -60, 34, 20) + R("f-paper", 0, -60, 14, 10) +
+    `<path d="M7 -60 L7 -50 M0 -55 L14 -55" stroke="var(--seal)" stroke-width="2.4" fill="none"/>`);
+  const steamer = (x, y, s = 1) => g(x, y, s, puff(-20, -110, 1) + puff(0, -132, 1.1) + R("f-ink", -16, -96, 14, 50) +
+    P("f-paper", "M-60 -46 L60 -46 L52 -30 L-56 -30 Z") + R("f-paper", -46, -62, 50, 16) + C("f-wood", 20, -44, 18) +
+    L("M20 -62 L20 -26 M2 -44 L38 -44") + P("f-ink", "M-80 -30 L80 -30 L66 0 L-70 0 Z") + L("M-56 -46 L-56 -96") + redEnsign(-56, -46, .9));
+  const warship = (x, y, s = 1) => g(x, y, s, L("M0 -4 L0 -100 M30 -4 L30 -86") +
+    P("f-paper", "M-20 -94 Q0 -86 18 -94 L18 -40 Q0 -32 -20 -40 Z") + P("f-paper", "M14 -80 Q30 -74 46 -80 L46 -36 Q30 -30 14 -36 Z") +
+    R("f-ink", -8, -30, 12, 14) + puff(4, -42, .5) + P("f-ink", "M-50 -4 L74 -4 L62 16 L-40 16 Z") + usFlag(0, -100, .4));
+  const person = (x, y, s = 1, coat = "f-ink") => g(x, y, s, C("f-paper", 0, -38, 8) + P(coat, "M-11 0 L-9 -26 Q0 -32 9 -26 L11 0 Z"));
+  const hat = (x, y) => R("f-ink", x - 6, y - 58, 12, 12) + R("f-ink", x - 10, y - 47, 20, 3);
+  const window_ = (x, y, w, h) => R("f-water", x, y, w, h) + L(`M${x + w/2} ${y} L${x + w/2} ${y + h} M${x} ${y + h/2} L${x + w} ${y + h/2}`) + R("f-none", x, y, w, h);
+  const lamp = (x, y) => R("f-gold", x, y, 50, 14, 3) + P("f-paper", `M${x + 12} ${y} Q${x + 6} ${y - 34} ${x + 18} ${y - 54} L${x + 34} ${y - 54} Q${x + 46} ${y - 34} ${x + 40} ${y} Z`) +
+    P("f-gold", `M${x + 24} ${y - 14} q-6 -12 2 -24 q6 12 -2 24 Z`);
+  const palmetto = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-4 0 L-2 -110 L4 -110 L5 0 Z") +
+    [-70, -40, -10, 20, 50, 80, 110].map(a => `<path class="ink f-green" transform="rotate(${a} 0 -112)" d="M0 -112 Q24 -128 52 -112 Q24 -118 0 -112 Z"/>`).join(""));
+  const chair = (x, y, s = 1) => g(x, y, s, R("f-wood", -12, -60, 24, 34, 3) + R("f-wood", -14, -28, 28, 6) + L("M-12 -22 L-12 0 M12 -22 L12 0"));
+
+  const start = frame(640, 220,
+    P("f-ground", "M-2 188 L642 188 L642 222 L-2 222 Z") + tree(60, 190, 1) + tree(110, 192, .8) + tree(580, 190, 1) + tree(530, 192, .8) +
+    capitol(320, 190, 1) + usFlag(146, 190, .8) + usFlag(484, 190, .8),
+    "The U.S. Capitol in 1861, its new dome still unfinished, with a construction crane on top");
+
+  const scenes = [
+    // 1. The Trent Affair
+    frame(W, H,
+      R("f-water", -2, 200, 524, 182) + waves(0, 520, 236) + waves(20, 520, 300) + waves(0, 520, 350) +
+      L("M60 60 q8 -8 16 0 q8 -8 16 0 M440 70 q8 -8 16 0 q8 -8 16 0") +
+      steamer(150, 262, 1.15) + warship(410, 262, 1.1) + T(150, 328, "R.M.S. Trent", "sv-tag") + T(420, 328, "U.S.S. San Jacinto", "sv-tag") +
+      g(285, 300, 1, P("f-wood", "M-34 -4 Q0 14 34 -4 Z") + C("f-paper", -14, -14, 6) + C("f-paper", 2, -14, 6) + C("f-paper", 18, -14, 6) + L("M-30 -6 L-48 8 M30 -6 L48 8")) +
+      T(260, 368, "November 8, 1861: Union sailors board a British ship", "sv-tag"),
+      "A British mail steamer stopped at sea by a Union warship, with a rowboat carrying sailors between them"),
+    // 2. General Hunter's order
+    frame(W, H,
+      P("f-sand", "M-2 280 L522 280 L522 382 L-2 382 Z") + R("f-water", -2, 250, 524, 32) + waves(0, 520, 262) +
+      palmetto(70, 282, 1.25) + palmetto(470, 282, 1.05) +
+      P("f-paper", "M110 280 L190 170 L270 280 Z") + P("f-soft", "M190 280 L190 196 L214 280 Z") + L("M190 170 L190 150") + usFlag(190, 152, .55) +
+      R("f-wood", 240, 300, 220, 12) + L("M252 312 L252 362 M448 312 L448 362") +
+      `<g transform="rotate(-3 350 260)">${R("f-paper", 246, 190, 208, 112)}` +
+      T(350, 218, "GENERAL ORDERS No. 11", "sv-poster-sm") + L("M262 228 L438 228") +
+      T(350, 248, "…are therefore declared", "sv-hand") + T(350, 268, "forever free.", "sv-hand") + T(410, 292, "D. Hunter", "sv-hand") + `</g>` +
+      R("f-ink", 420, 288, 22, 14, 4) + quill(430, 290, .6),
+      "General Hunter's order declaring enslaved people forever free, on a camp table under palmetto trees on the Carolina coast"),
+    // 3. The Dakota trials
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 240) + window_(330, 40, 120, 130) + flakes([[350, 70], [380, 100], [420, 60], [430, 140], [360, 150]]) +
+      R("f-wood", -2, 230, 524, 152) +
+      [0, 1, 2, 3, 4, 5].map(k => R("f-paper", 70 + (k % 2) * 4, 212 - k * 12, 120, 12)).join("") +
+      [0, 1, 2, 3].map(k => R("f-paper", 210 + (k % 2) * 3, 212 - k * 12, 110, 12)).join("") +
+      T(130, 252, "Trial records", "sv-tag") + T(265, 252, "303 cases", "sv-tag") +
+      `<g transform="rotate(-4 300 320)">${R("f-paper", 210, 280, 170, 70)}` + L("M224 300 L366 300 M224 314 L366 314 M224 328 L330 328") + `</g>` +
+      lamp(420, 300) + R("f-ink", 160, 300, 30, 22, 5) + quill(172, 302, .7),
+      "A desk piled with the trial records of 303 Dakota men, an oil lamp, and a winter window"),
+    // 4. The cabinet crisis
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 230) + window_(40, 40, 90, 120) + window_(390, 40, 90, 120) +
+      R("f-wood", 205, 40, 110, 130) + R("f-paper", 215, 50, 90, 110) + C("f-soft", 260, 92, 22) + P("f-ink", "M228 160 Q260 116 292 160 Z") +
+      chair(110, 286, 1.2) + chair(190, 280, 1.1) + chair(330, 280, 1.1) + chair(410, 286, 1.2) +
+      P("f-wood", "M60 300 L460 300 L500 350 L20 350 Z") + L("M40 350 L40 380 M480 350 L480 380") +
+      `<g transform="rotate(4 280 320)">${R("f-paper", 200, 302, 170, 38)}` + T(285, 326, "My resignation… W.H.S.", "sv-hand") + `</g>`,
+      "An empty cabinet room with chairs around a table and Seward's resignation letter lying on it"),
+    // 5. A critic arrested
+    frame(W, H,
+      R("f-brick", 10, 60, 120, 180) + R("f-paper", 140, 90, 100, 150) + R("f-brick", 390, 70, 130, 170) +
+      [30, 70, 100].map(x => R("f-water", x, 90, 18, 24)).join("") + [410, 450, 490].map(x => R("f-water", x, 100, 18, 24)).join("") +
+      P("f-ground", "M-2 240 L522 240 L522 382 L-2 382 Z") +
+      R("f-wood", 250, 170, 160, 70) + L("M250 184 q20 14 40 0 q20 14 40 0 q20 14 40 0 q20 14 40 0", " red") +
+      person(330, 170, 1.5) +
+      T(315, 28, "MASS MEETING", "sv-poster-sm") + T(315, 48, "Mount Vernon, Ohio · May 1, 1863", "sv-tag") +
+      (() => { let s = ""; for (let r = 0; r < 4; r++) for (let x = 16 + (r % 2) * 10; x < 520; x += 20) s += C(r % 2 ? "f-soft" : "f-wood", x, 274 + r * 26, 8); return s; })(),
+      "A crowd gathered in a town square around a speaker's platform decorated with bunting"),
+    // 6. The news from Fort Pillow
+    frame(W, H,
+      R("f-wood", -2, -2, 524, 384) +
+      `<g transform="rotate(-3 260 190)">${R("f-paper", 70, 30, 380, 300)}` +
+      T(260, 70, "THE DAILY NEWS", "sv-poster") + L("M90 82 L430 82 M90 86 L430 86") +
+      T(260, 120, "FORT PILLOW CAPTURED", "sv-poster") + T(260, 146, "Reports that Union troops were killed after surrendering", "sv-tag") +
+      L("M90 164 L250 164 M90 180 L250 180 M90 196 L250 196 M90 212 L230 212 M90 228 L250 228 M90 244 L250 244 M90 260 L210 260 M90 276 L250 276 M90 292 L240 292", " thin") +
+      R("f-soft", 270, 160, 160, 110) + T(350, 290, "Fort Pillow, Tennessee", "sv-hand") + `</g>` +
+      `<g transform="rotate(-3 260 190)">` + R("f-water", 270, 230, 160, 40) + P("f-ground", "M270 230 L300 196 L330 204 L360 186 L430 196 L430 232 Z") + usFlag(350, 196, .45) + `</g>` +
+      C("f-none", 120, 352, 16) + C("f-none", 160, 352, 16) + L("M136 350 q4 -6 8 0 M104 348 L84 340 M176 348 L196 340"),
+      "A newspaper reporting the capture of Fort Pillow, on a desk beside Lincoln's spectacles"),
+    // 7. Peace talks at Hampton Roads
+    frame(W, H,
+      L("M60 60 q8 -8 16 0 q8 -8 16 0 M420 50 q8 -8 16 0 q8 -8 16 0") +
+      P("f-ground", "M-2 190 Q120 176 240 188 L240 204 L-2 206 Z") + tree(40, 192, .7) + tree(90, 190, .6) +
+      R("f-water", -2, 200, 524, 182) + waves(0, 520, 236) + waves(20, 520, 330) +
+      g(290, 300, 1.25,
+        puff(-30, -150, 1) + R("f-ink", -40, -138, 12, 52) + R("f-ink", 20, -138, 12, 52) +
+        R("f-paper", -110, -86, 220, 26) + R("f-paper", -90, -112, 170, 26) + R("f-paper", -60, -128, 100, 16) +
+        [-80, -60, -40, -20, 0, 20, 40, 60].map(x => R("f-water", x, -106, 10, 14)).join("") +
+        [-100, -76, -52, 52, 76].map(x => R("f-water", x, -80, 10, 14)).join("") +
+        C("f-wood", 10, -60, 34) + L("M10 -94 L10 -26 M-24 -60 L44 -60 M-14 -84 L34 -36 M-14 -36 L34 -84") +
+        P("f-ink", "M-130 -60 L130 -60 L116 -30 L-120 -30 Z") + usFlag(-100, -112, .4)),
+      T(290, 368, "The River Queen, February 3, 1865", "sv-tag"),
+      "The paddle-wheel steamboat River Queen anchored at Hampton Roads")
+  ];
+  return {start, scenes};
+})();
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, adv:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG(GAME.titleMap, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(INTRO.map, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <figure class="scene wide">${ART.start}</figure>
+    <div class="content">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>${START.factsHeading}</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null, adv:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    <div class="visuals"><figure class="scene">${ART.scenes[i]}</figure>${mapSVG(d.map, fresh)}</div>
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where.replace(/\.$/, "")}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <div class="advisors">
+        <h3 class="adv-h">Consult your advisors</h3>
+        <p class="adv-hint">Click an advisor to hear their advice. You don’t have to follow it.</p>
+        <div class="adv-row" role="group" aria-label="Advisors">${d.advisors.map((a, k) => `
+          <button class="adv" data-a="${k}" aria-pressed="${state.adv === k}"><strong>${a.name}</strong><span>${a.role}</span></button>`).join("")}
+        </div>
+        <div class="advice" id="advice" aria-live="polite">${state.adv != null ? adviceHTML(d.advisors[state.adv]) : ""}</div>
+      </div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".adv").forEach(b => b.onclick = () => {
+    state.adv = +b.dataset.a; persist();
+    app.querySelectorAll(".adv").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.a === state.adv)));
+    document.getElementById("advice").innerHTML = adviceHTML(d.advisors[state.adv]);
+  });
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null, adv:null});
+}
+
+function adviceHTML(a){
+  return `<blockquote class="quote"><p>“${a.advice}”</p><footer>${a.name}, ${a.role}</footer></blockquote>`;
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {bold:0, cautious:0, diplomatic:0}; list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(c.bold, c.cautious, c.diplomatic); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:DECISIONS.length}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${c.bold} bold, ${c.cautious} cautious, ${c.diplomatic} diplomatic)`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${GAME.leaderPoss} choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leaderPoss}">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${["bold","cautious","diplomatic"].map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
 </body>
 </html>
+
+</body></html>
