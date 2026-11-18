@@ -45,9 +45,16 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 const nm = r => `${esc(r.first)} ${esc(r.initial)}.`;
 const fmt = n => (Math.round(n * 10) / 10).toFixed(1);
 
+const finished = n => `${n} finished`;
+// The last few students to finish, newest first (names only, no scores).
+function ticker(rows, teachers, one) {
+  const recent = [...rows].sort((a, b) => b.t - a.t).slice(0, 6);
+  const fresh = Date.now() - 10 * 60 * 1000;
+  return `<div class="ticker"><span class="lbl">Just finished</span>${recent.map(r => `<span class="n${r.t > fresh ? ' new' : ''}">${nm(r)} <span class="count">${one ? '' : esc(teachers[r.teacher]) + ', '}P${r.period}</span></span>`).join('')}</div>`;
+}
 function periodCards(rows) {
   const periods = [...new Set(rows.map(r => r.period))].sort((a, b) => a - b);
-  return `<div class="periods">${periods.map(p => `<div class="period"><h3>Period ${p}</h3><ol>${rows.filter(r => r.period === p).slice(0, 3)
+  return `<div class="periods">${periods.map(p => `<div class="period"><h3>Period ${p} <span class="count">${finished(rows.filter(r => r.period === p).length)}</span></h3><ol>${rows.filter(r => r.period === p).slice(0, 3)
     .map((r, i) => `<li><span class="m m${i + 1}">${i + 1}</span><span>${nm(r)}</span><span class="score">${fmt(r.score)}</span></li>`).join('')}</ol></div>`).join('')}</div>`;
 }
 
@@ -58,13 +65,13 @@ export function startBoard(cfg) {
   const render = rows => {
     if (!rows.length) { board.innerHTML = '<p class="msg">No finished games yet. Scores appear here the moment a student finishes.</p>'; return; }
     const all = rank(rows); const top = all[0];
-    let html = `<section class="champ"><div class="lbl">Overall champion · ${esc(cfg.scope)}</div><div class="who">${nm(top)}</div>
-      <div class="meta">${one ? '' : esc(cfg.teachers[top.teacher]) + ', '}period ${top.period} · <span class="score">${fmt(top.score)}</span></div></section>`;
+    let html = `<section class="champ"><div class="lbl">Overall champion · ${esc(cfg.scope)} · ${finished(all.length)}</div><div class="who">${nm(top)}</div>
+      <div class="meta">${one ? '' : esc(cfg.teachers[top.teacher]) + ', '}period ${top.period} · <span class="score">${fmt(top.score)}</span></div></section>` + ticker(all, cfg.teachers, one);
     if (one) { board.innerHTML = html + periodCards(all); return; }
     html += '<div class="teachers">';
     for (const [tk, tname] of Object.entries(cfg.teachers)) {
       const mine = all.filter(r => r.teacher === tk);
-      html += `<section><h2>${esc(tname)}</h2>`;
+      html += `<section><h2>${esc(tname)} <span class="count">· ${finished(mine.length)}</span></h2>`;
       html += mine.length ? `<div class="tchamp"><div class="lbl">Top in ${esc(tname)}’s classes</div><div class="who">${nm(mine[0])} <span class="score">${fmt(mine[0].score)}</span></div><div class="st">Period ${mine[0].period}</div></div>${periodCards(mine)}` : '<p class="empty">No finished games yet.</p>';
       html += '</section>';
     }
