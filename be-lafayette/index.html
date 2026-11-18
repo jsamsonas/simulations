@@ -1,0 +1,1051 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be Lafayette: The Revolution in France</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --leaf:#5C7A48;
+  --wood:#8A5A34;
+  --snow:#FBFCF8;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+.m-nation{fill:color-mix(in srgb,var(--brass-fill) 26%,transparent);stroke:var(--brass);stroke-width:1;stroke-dasharray:4 3}
+.m-nlabel{fill:var(--brass);font-family:var(--display);font-style:italic;font-size:12.5px}
+.m-land{fill:var(--map);stroke:var(--ink-soft);stroke-width:.9}
+.m-water{fill:var(--sea)}
+.m-us{fill:var(--river);stroke:var(--paper);stroke-width:1}
+.m-csa{fill:var(--seal);stroke:var(--paper);stroke-width:1}
+.m-fire{fill:none;stroke:var(--seal);stroke-width:1.8;stroke-dasharray:4 3}
+.m-ship{fill:var(--ink)}
+.m-sea-route{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 3}
+.m-rail{fill:none;stroke:var(--ink);stroke-width:1.6}
+.m-ties{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 6}
+.m-x{fill:none;stroke:var(--seal);stroke-width:2}
+.m-border{fill:none;stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:6 4}
+.fadein{opacity:0;animation:fade .9s ease .6s forwards}
+@keyframes fade{to{opacity:1}}
+/* pictures (drawn in SVG) */
+.visuals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.visuals{grid-template-columns:minmax(0,1fr)}}
+.scene{margin:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--paper-2)}
+.scene.wide{margin:0 0 6px}
+.scene svg{display:block;width:100%;height:auto}
+svg .ink{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .thin{stroke-width:1.3}
+svg .dash{stroke-dasharray:5 5}
+svg .red{stroke:var(--seal)}
+svg .f-none{fill:none} svg .f-paper{fill:var(--paper)} svg .f-wood{fill:var(--wood)} svg .f-gold{fill:var(--brass-fill)}
+svg .f-green{fill:var(--leaf)} svg .f-blue{fill:var(--river)} svg .f-red{fill:var(--seal)} svg .f-ink{fill:var(--ink)}
+svg .f-snow{fill:var(--snow)} svg .f-sky{fill:var(--paper-2);stroke:none}
+svg .f-soft{fill:color-mix(in srgb,var(--ink) 15%,var(--paper-2))}
+svg .f-water{fill:color-mix(in srgb,var(--river) 26%,var(--paper-2))}
+svg .f-clear{fill:color-mix(in srgb,var(--river) 48%,var(--paper-2))}
+svg .f-mud{fill:color-mix(in srgb,var(--wood) 48%,var(--paper-2))}
+svg .f-ground{fill:color-mix(in srgb,var(--leaf) 26%,var(--paper-2))}
+svg .f-sand{fill:color-mix(in srgb,var(--brass-fill) 34%,var(--paper-2))}
+svg .f-brick{fill:color-mix(in srgb,var(--seal) 50%,var(--paper-2))}
+.sv-label{font-family:var(--text);font-weight:700;fill:var(--ink)}
+.sv-tag{font-size:13px}
+.sv-tiny{font-size:8px}
+.sv-quote,.sv-hand{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px}
+.sv-poster-sm{font-family:var(--display);font-weight:400;font-size:14px}
+.sv-poster{font-family:var(--display);font-weight:400;font-size:24px}
+.sv-poster-lg{font-family:var(--display);font-weight:400;font-size:42px;fill:var(--seal)}
+
+/* advisors */
+.advisors{margin:22px 0 4px;padding:16px 18px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px}
+.adv-h{font-size:1.35rem;margin:0 0 .15em}
+.adv-hint{margin:0 0 12px;color:var(--ink-soft);font-size:1rem}
+.adv-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.adv{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--river);border-radius:3px}
+.adv strong{font-family:var(--display);font-weight:400;font-size:1.15rem;line-height:1.15}
+.adv span{font-size:.92rem;color:var(--ink-soft);line-height:1.3}
+.adv:hover{border-color:var(--ink-soft);border-top-color:var(--river)}
+.adv[aria-pressed="true"]{border-color:var(--river);background:color-mix(in srgb,var(--river) 10%,var(--paper))}
+.quote{margin:14px 0 0;padding:12px 16px;border-left:4px solid var(--river);background:var(--paper)}
+.quote p{margin:0;font-family:var(--display);font-style:italic;font-size:1.2rem;line-height:1.35}
+.quote footer{margin-top:6px;font-size:.95rem;color:var(--ink-soft)}
+.m-lake{fill:var(--sea);stroke:var(--ink-soft);stroke-width:.7}
+.m-nlabel.csa{fill:var(--seal)}
+
+.m-france{fill:color-mix(in srgb,var(--brass-fill) 20%,var(--map));stroke:none}
+.m-city{fill:color-mix(in srgb,var(--ink) 9%,var(--map));stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:4 3}
+@media (prefers-reduced-motion: reduce){
+  .fadein{opacity:1}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
+  </header>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be Lafayette",
+  subtitle: "The Revolution in France, 1789–1802",
+  reportTitle: "BE LAFAYETTE: The Revolution in France",
+  blurb: "Face seven real decisions the Marquis de Lafayette made as France tore itself apart. Hear from the people around you, make the call, then find out what really happened. There are no right answers. You don’t know how the story ends.",
+  leader: "Lafayette",
+  leaderPoss: "Lafayette’s",
+  leaderLabel: "Lafayette",
+  storageKey: "beLafayette.v1",
+  titleMap: {kind:"france", pins:[{at:"paris", here:true}], caption:"The Kingdom of France in 1789"}
+};
+
+const STYLES = ["liberty", "order", "compromise"];
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A kingdom in crisis",
+  paras: [
+    "In 1789, France is the richest and most powerful kingdom in Europe, and it is broke. Wars, including the American Revolution, have drained the treasury. Bread prices are soaring, and Paris is hungry.",
+    "French society is divided into three “estates”: the clergy, the nobility, and everyone else. The first two pay almost no taxes. The Third Estate, about 97 percent of the people, pays nearly all of them. To raise money, King Louis XVI has called the Estates-General, an assembly that has not met in 175 years."
+  ],
+  listHeading: "Who wants what?",
+  list: [
+    {name:"The king and court", text:"Want to save the monarchy’s power and the nobles’ privileges, giving up as little as possible."},
+    {name:"Moderate reformers", text:"Want a constitutional monarchy like Britain’s: a king, but one limited by an elected assembly and written rights."},
+    {name:"Radicals and the Paris crowds", text:"Want bread, equality, and an end to noble privilege. Some, in time, want no king at all."}
+  ],
+  after: "You are a nobleman who fought for liberty in America. Now you’ll try to bring liberty to France without letting the revolution destroy itself. Each crisis forces you to choose between liberty, order, and compromise.",
+  map: {kind:"france", pins:[{at:"paris", here:true}, {at:"versailles"}], caption:"Paris and Versailles, the two centers of the Revolution"}
+};
+
+const START = {
+  heading: "You are the Marquis de Lafayette",
+  paras: [
+    "It is July 1789. You are 31 years old, one of the richest nobles in France, and famous on two continents as the young general who fought beside George Washington.",
+    "You have been elected to the Estates-General as a member of the nobility. But your heart is with the reformers. In the next thirteen years, you’ll face seven decisions. Before each one, you can hear from the people around you. Then the choice is yours."
+  ],
+  factsHeading: "Your situation",
+  facts: [
+    ["Born", "1757, into an old noble family"],
+    ["Fame", "Major general in the American Revolution; hero of Yorktown"],
+    ["Friends", "George Washington and Thomas Jefferson, now the U.S. minister in Paris"],
+    ["Family", "Your wife, Adrienne, and three children"],
+    ["Biggest goal", "A France with a king, a constitution, and guaranteed rights"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"A Declaration of Rights", when:"July 1789", where:"Versailles",
+    setup:[
+      "The Third Estate has declared itself the National Assembly and sworn not to go home until France has a constitution. Many nobles have joined it, including you. The king is gathering troops around Paris and Versailles.",
+      "You have been working on a document with help from your friend Thomas Jefferson: a declaration of the natural rights of every person. Presenting it would make you a leader of the reformers. It would also make you a traitor to your own class in the eyes of the court."
+    ],
+    question:"What do you do with your declaration?",
+    advisors:[
+      {name:"Thomas Jefferson", role:"U.S. minister to France", advice:"America began with a declaration of rights. Put the principles first, plainly, so that every law that follows has to answer to them."},
+      {name:"Jean-Joseph Mounier", role:"Deputy for the Third Estate", advice:"Rights are fine, but the people need to hear about their duties too. Let’s write the constitution first and add a declaration when things are calmer."},
+      {name:"Your noble relatives", role:"The court at Versailles", advice:"You are a marquis. Talk of equal rights will end with the nobility stripped of everything, including your own family."}
+    ],
+    options:[
+      {text:"Present it to the Assembly now. Every person is born free and equal in rights, and France should say so first.", short:"Present it now", style:"liberty", historical:true,
+       outcome:"You read your declaration aloud to the Assembly. The deputies applaud. The court is horrified that a marquis would say such things."},
+      {text:"Hold it back until the king agrees to a constitution. Don’t give the court a reason to send in the troops.", short:"Wait for the king", style:"order", historical:false,
+       outcome:"The court is relieved. But the reformers wonder whose side you are on, and other men step forward to lead."},
+      {text:"Rewrite it to protect property and the nobles’ titles, so both sides can accept it.", short:"Soften it", style:"compromise", historical:false,
+       outcome:"The nobles are calmer. But reformers say your declaration of equal rights now protects inequality."}
+    ],
+    history:[
+      "Lafayette presented his draft declaration to the Assembly on July 11, 1789. Three days later, crowds stormed the Bastille, and the next day Lafayette was named commander of the new citizen militia of Paris, the National Guard.",
+      "On August 26, the Assembly adopted the Declaration of the Rights of Man and of the Citizen, based in part on his draft. Its first article reads: “Men are born and remain free and equal in rights.”"
+    ],
+    think:"Why was it unusual, and risky, for a nobleman to propose a declaration of equal rights?",
+    map:{kind:"paris", pins:[{at:"versailles", here:true}, {at:"bastille"}], caption:"Versailles, where the Assembly met, and the Bastille in Paris"}
+  },
+  {
+    title:"The March on Versailles", when:"October 1789", where:"Paris",
+    setup:[
+      "You now command the National Guard of Paris. Bread is scarce, and rumors say the king’s officers insulted the revolution at a banquet. On October 5, thousands of women march to Versailles to demand bread from the king.",
+      "Your own guardsmen are shouting that they will follow the women, with you or without you. If you go, you may be able to protect the royal family. If you don’t, the crowd and your soldiers may act on their own."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Your guardsmen", role:"National Guard of Paris", advice:"To Versailles! The king must come to Paris and feed his people. Lead us, General, or we go without you."},
+      {name:"Jean-Sylvain Bailly", role:"Mayor of Paris", advice:"You can’t stop them, so lead them. If you stay behind, there will be no one at Versailles to keep order."},
+      {name:"The king’s ministers", role:"Versailles", advice:"(A message from the palace.) The king should leave for safety now. Keep your Paris rabble away from the royal family."}
+    ],
+    options:[
+      {text:"Refuse to go, and order your guardsmen to stay in Paris.", short:"Stay in Paris", style:"order", historical:false,
+       outcome:"Thousands of your men march anyway. You have lost control of your own army, and there is no one at Versailles to protect anyone."},
+      {text:"Lead the Guard to Versailles. Protect the royal family, and persuade the king to move to Paris as the crowd demands.", short:"Lead them, protect the king", style:"compromise", historical:true,
+       outcome:"You reach Versailles near midnight and set guards. At dawn, part of the crowd breaks into the palace. You rush in, restore order, and step onto the balcony with the royal family."},
+      {text:"Lead the Guard to Versailles and demand that the king accept the Declaration of Rights before you protect him.", short:"Make the king give in first", style:"liberty", historical:false,
+       outcome:"The king gives in. But you have shown everyone that the king obeys whoever has the most soldiers, including you."}
+    ],
+    history:[
+      "Lafayette reluctantly led the National Guard to Versailles. At dawn on October 6, rioters broke into the palace and killed two royal guards. Lafayette restored order and brought the royal family onto the balcony. When the angry crowd faced Marie Antoinette, he bowed and kissed her hand, and the crowd cheered.",
+      "The crowd demanded that the king move to Paris, and he did, escorted by Lafayette. From then on, the royal family lived in the Tuileries Palace, watched over by Lafayette’s National Guard."
+    ],
+    think:"Lafayette protected the king, but he also brought him to Paris as the crowd demanded. Was he the king’s protector, or his jailer?",
+    map:{kind:"paris", pins:[{at:"versailles", here:true}, {at:"tuileries"}], route:"versailles", caption:"The road from Paris to Versailles, about 12 miles"}
+  },
+  {
+    title:"The King Escapes", when:"June 1791", where:"Paris",
+    setup:[
+      "Early on the morning of June 21, 1791, you are woken with terrible news. The king and his family have escaped from the Tuileries in disguise and are racing toward the eastern border. You were responsible for guarding them.",
+      "France is working on a new constitution that keeps the king as head of a limited monarchy. If the king has fled to join France’s enemies, that plan collapses, and so might you. Crowds are already gathering, and some are blaming you."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Jean-Sylvain Bailly", role:"Mayor of Paris", advice:"Act now, before the crowd decides you helped him escape. Send riders in every direction."},
+      {name:"Georges Danton", role:"Cordeliers Club", advice:"Either Lafayette is a traitor who let the king go, or he is a fool. Either way, he must answer to the people."},
+      {name:"Antoine Barnave", role:"Deputy in the Assembly", advice:"If France decides the king fled on purpose, the constitution is finished and the radicals win. Tell the country he was carried off by enemies."}
+    ],
+    options:[
+      {text:"Let him go. If the king doesn’t want a constitution, France should become a republic.", short:"Let him go", style:"liberty", historical:false,
+       outcome:"Radicals cheer. But the king may now lead foreign armies against France, and moderates like you have no plan for a republic."},
+      {text:"Send riders to stop him, and announce that the king was carried off by enemies of the Revolution.", short:"Bring him back, save the king", style:"compromise", historical:true,
+       outcome:"Your riders spread the alarm. In the small town of Varennes, the king is recognized and stopped. He returns to Paris under guard."},
+      {text:"Send riders to stop him, and announce that he betrayed France and must be put on trial.", short:"Bring him back for trial", style:"order", historical:false,
+       outcome:"The king is caught and brought back, but the constitutional monarchy you worked for is dead. Calls for a republic grow louder."}
+    ],
+    history:[
+      "Lafayette sent the National Guard and messengers in every direction. The royal family was stopped at Varennes, about 30 miles short of Montmédy, where loyal troops were waiting. Lafayette led the carriage back into Paris through silent, hostile crowds.",
+      "Lafayette and the moderates backed the story that the king had been carried off. The Assembly kept Louis XVI as king under the new constitution. But Danton and Robespierre blamed Lafayette for the escape, and many Parisians stopped trusting the king and the general who guarded him."
+    ],
+    think:"Lafayette and the moderates claimed the king had been kidnapped, though almost no one believed it. Why might they have chosen this story?",
+    map:{kind:"france", pins:[{at:"varennes", here:true}, {at:"paris"}, {at:"montmedy"}], route:"varennes", caption:"The king’s route east, stopped at Varennes short of the border fortress at Montmédy"}
+  },
+  {
+    title:"The Champ de Mars", when:"July 1791", where:"Paris",
+    setup:[
+      "The Assembly has decided to keep Louis XVI as king. On July 17, a huge crowd gathers at the Champ de Mars, a parade ground in Paris, to sign a petition demanding his removal. That morning, two men found hiding under the altar in the middle of the field were lynched by the crowd.",
+      "The mayor has declared martial law and raised the red flag that warns the crowd to break up. You arrive with the National Guard. The crowd throws stones at your men, and someone aims a pistol at you. It misfires."
+    ],
+    question:"What do you order your troops to do?",
+    advisors:[
+      {name:"Jean-Sylvain Bailly", role:"Mayor of Paris", advice:"The law is the law. Martial law has been declared. If the crowd will not disperse, the Guard must disperse it."},
+      {name:"A National Guard captain", role:"Your officer", advice:"The men are being stoned, General. Two of ours are already dead. I can’t hold them back much longer."},
+      {name:"The petitioners", role:"Crowd at the Champ de Mars", advice:"We are citizens signing a petition. Since when is that a crime? Is this the liberty you promised us?"}
+    ],
+    options:[
+      {text:"Pull your troops back. Don’t risk firing on the people you swore to protect.", short:"Pull back", style:"liberty", historical:false,
+       outcome:"The crowd cheers and grows. The Assembly and the mayor are furious, and radicals learn that martial law can be ignored."},
+      {text:"Enforce martial law: order the crowd to disperse, and use force if they refuse.", short:"Enforce martial law", style:"order", historical:true,
+       outcome:"Your troops fire warning shots. When stones keep coming, they fire into the crowd. People fall. The rest run."},
+      {text:"Ride into the crowd yourself and try to negotiate, while your troops hold their fire.", short:"Negotiate", style:"compromise", historical:false,
+       outcome:"Some petitioners listen. Others shout you down. You are in danger, and your troops are angry and unsure what to do."}
+    ],
+    history:[
+      "After warning shots failed, the National Guard fired into the crowd. Estimates of the dead range from about a dozen to fifty or more. Radical leaders went into hiding, and some radical newspapers were shut down for a time.",
+      "The Champ de Mars destroyed Lafayette’s popularity in Paris. To radicals, the hero of 1789 was now the general who shot down the people. Bailly was later executed during the Terror, partly for his role that day."
+    ],
+    think:"Was Lafayette protecting the Revolution at the Champ de Mars, or betraying it? Use evidence from this decision.",
+    map:{kind:"paris", pins:[{at:"champ", here:true}, {at:"tuileries"}], caption:"The Champ de Mars, the parade ground on the Left Bank"}
+  },
+  {
+    title:"Confronting the Jacobins", when:"June 1792", where:"With the army, near the border",
+    setup:[
+      "France is now at war with Austria, and you command an army on the northern border. In Paris, the radical Jacobin Club grows more powerful every week. On June 20, an armed crowd invades the Tuileries and forces the king to wear a red “liberty cap.”",
+      "You believe the radicals are destroying the constitution. But your place is with your army, and leaving the front during a war could look like desertion."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Your officers", role:"Army of the Center", advice:"The enemy is in front of us. If you leave for Paris, the Jacobins will say you abandoned your post."},
+      {name:"Gouverneur Morris", role:"U.S. minister to France", advice:"You have never understood how weak your position is. The radicals have the crowds, and you have only your reputation. Be careful how you spend it."},
+      {name:"Moderate deputies", role:"Your allies in the Assembly", advice:"Come to Paris. If the hero of 1789 stands up in the Assembly, honest men will rally to you. It may be our last chance."}
+    ],
+    options:[
+      {text:"Go to Paris yourself and demand that the Assembly shut down the Jacobin clubs.", short:"Confront them in Paris", style:"order", historical:true,
+       outcome:"You appear before the Assembly in uniform and denounce the Jacobins. Some deputies applaud. But when you call for supporters, few answer."},
+      {text:"Stay with your army, and send a letter urging the Assembly to protect the constitution.", short:"Stay and write", style:"compromise", historical:false,
+       outcome:"Your letter is read aloud and mocked. Without you there, the moderates have no leader."},
+      {text:"Accept the change. If the people want a more radical revolution, it isn’t your place to stop them.", short:"Accept the change", style:"liberty", historical:false,
+       outcome:"The Jacobins welcome you, but they don’t trust you. Your old friends call you a coward."}
+    ],
+    history:[
+      "Lafayette wrote to the Assembly demanding action against the Jacobins, then on June 28, 1792, appeared before it in person. He was accused of abandoning his army, and when few people answered his call, he returned to the front. Robespierre called him a traitor, and crowds burned him in effigy.",
+      "Lafayette also offered to help the royal family escape Paris under the protection of his troops. The court refused. The queen reportedly said she would rather perish than be saved by Lafayette."
+    ],
+    think:"By June 1792, Lafayette was hated by both the court and the radicals. What does that tell you about the position of moderates during a revolution?",
+    map:{kind:"france", pins:[{at:"sedan", here:true}, {at:"paris"}], border:true, caption:"Lafayette’s army on the northern border, and the capital"}
+  },
+  {
+    title:"Declared a Traitor", when:"August 1792", where:"Sedan, near the border",
+    setup:[
+      "On August 10, 1792, crowds and armed volunteers storm the Tuileries. The king is overthrown and imprisoned. The Assembly sends commissioners to your army to make your troops swear loyalty to the new government.",
+      "To you, the new government was created by force and breaks the constitution you swore to defend. You know that radicals in Paris want your head."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Latour-Maubourg", role:"Your friend and fellow officer", advice:"If you go to Paris, you will be arrested and executed. There is no fair trial waiting for you there."},
+      {name:"The Assembly’s commissioners", role:"From Paris", advice:"The king has betrayed the nation. Your duty is to France now, not to Louis XVI. Swear the oath, General."},
+      {name:"Your soldiers", role:"Army of the Center", advice:"(Muttering in the ranks.) We fight for France, not for kings, and not for generals either."}
+    ],
+    options:[
+      {text:"Swear loyalty to the new government, and keep fighting the Austrians.", short:"Swear the oath", style:"compromise", historical:false,
+       outcome:"You keep your command, for now. But the radicals have not forgotten the Champ de Mars."},
+      {text:"Detain the commissioners and try to rally your army to defend the constitution. If they won’t follow, leave France.", short:"Resist, then escape", style:"order", historical:true,
+       outcome:"Your soldiers will not march against Paris. On August 19, with a few officers, you ride across the border into the Austrian Netherlands."},
+      {text:"Go to Paris and face the Assembly. A defender of liberty should not run.", short:"Face them in Paris", style:"liberty", historical:false,
+       outcome:"You are arrested as soon as you arrive. In the prisons of Paris, men are being killed in the streets."}
+    ],
+    history:[
+      "Lafayette had the commissioners detained, but his troops would not follow him against Paris. The Assembly declared him a traitor. On August 19, 1792, he crossed into the Austrian Netherlands with several officers, hoping to reach America.",
+      "The Austrians recognized him and arrested him. Austria and Prussia saw him as a dangerous revolutionary. He spent five years in their prisons, including the fortress of Olmütz. In France, the Terror began, and his wife Adrienne was imprisoned. Her grandmother, mother, and sister were guillotined in 1794. Adrienne was freed and, with their daughters, chose to join Lafayette in his prison cell."
+    ],
+    think:"Both the revolutionaries and the kings of Europe imprisoned Lafayette or wanted to. Why was he seen as dangerous by both sides?",
+    map:{kind:"france", pins:[{at:"sedan", here:true}, {at:"rochefortb"}, {at:"paris"}], border:true, route:"escape", caption:"Lafayette’s escape from Sedan into the Austrian Netherlands, where he was arrested"}
+  },
+  {
+    title:"Napoleon’s Offer", when:"1802", where:"La Grange, his country estate",
+    setup:[
+      "In 1797, General Napoleon Bonaparte won your release from prison. Now Napoleon rules France as First Consul. He has restored order and made peace, and he is very popular.",
+      "In 1802, Napoleon asks the French people to vote on making him First Consul for life. He has also offered you a seat in the Senate and France’s highest honor. You owe him your freedom, and your family needs the money. But a ruler for life sounds a lot like a king."
+    ],
+    question:"How do you vote?",
+    advisors:[
+      {name:"Joseph Bonaparte", role:"Napoleon’s brother and your friend", advice:"My brother admires you. Accept the Senate seat and vote yes. France needs order, and you need a future."},
+      {name:"Adrienne Lafayette", role:"Your wife", advice:"We have lost so much already. But you have never voted against your conscience. I won’t ask you to start now."},
+      {name:"An old friend from 1789", role:"Retired deputy", advice:"Everyone is voting yes. A no vote changes nothing, except that Napoleon will never forgive you."}
+    ],
+    options:[
+      {text:"Vote yes, and accept the Senate seat. Napoleon has brought peace and order after years of chaos.", short:"Vote yes", style:"order", historical:false,
+       outcome:"Napoleon is pleased, and you join the government. But you have helped make a new king in all but name."},
+      {text:"Vote yes, but publicly ask Napoleon to guarantee freedom of the press and elections.", short:"Yes, with conditions", style:"compromise", historical:false,
+       outcome:"Napoleon thanks you for your vote and ignores your conditions."},
+      {text:"Vote no: you won’t support rule for life without guarantees of political liberty. Turn down his offers.", short:"Vote no", style:"liberty", historical:true,
+       outcome:"You are one of a tiny handful of voters who say no. Napoleon is furious. You return to farming at La Grange."}
+    ],
+    history:[
+      "Lafayette voted no, saying he could not support a lifetime ruler until political liberty was guaranteed. He also refused Napoleon’s offers of a Senate seat and the Legion of Honor. The French voted overwhelmingly yes, and two years later Napoleon crowned himself emperor.",
+      "Lafayette lived quietly at La Grange throughout Napoleon’s rule. When Napoleon returned from exile in 1815 and then lost at Waterloo, Lafayette was the one who called on him to abdicate."
+    ],
+    think:"Most of France voted for order under Napoleon. Why do you think Lafayette, who had once fired on a crowd to keep order, refused?",
+    map:{kind:"france", pins:[{at:"lagrange", here:true}, {at:"paris"}], caption:"La Grange, Lafayette’s country home east of Paris"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "After Napoleon’s fall, Lafayette served in the French legislature and kept defending free speech and elections. In 1824 and 1825, he toured all 24 American states and was greeted by enormous crowds as “the Nation’s Guest.”",
+    "In 1830, when Parisians overthrew King Charles X, Lafayette again commanded the National Guard. Many wanted him to lead a republic. Instead, he backed a new constitutional king, Louis-Philippe, hoping the king would protect liberty. He soon broke with Louis-Philippe when those hopes failed.",
+    "Lafayette died in 1834. He was buried in Paris beside Adrienne, and his son sprinkled soil from Bunker Hill on his grave. To his admirers he was the “Hero of Two Worlds.” To his critics on both sides, he was a man who tried to stand in the middle of a revolution and was crushed by it."
+  ],
+  map: {kind:"france", pins:[{at:"paris", here:true}, {at:"lagrange"}], caption:"Paris, where Lafayette is buried at Picpus Cemetery"}
+};
+
+const PROFILES = {
+  liberty:["The Champion of Liberty","You stand by your principles even when they cost you. Lafayette did too, as when he presented his declaration and when he refused Napoleon."],
+  order:["The Guardian of Order","You believe freedom can’t survive chaos, so you act to keep control. Lafayette made the same bet at the Champ de Mars, and paid for it."],
+  compromise:["The Bridge Builder","You look for the path that keeps both sides on board. Lafayette spent his life trying to do this, between king and people."],
+  balanced:["The Moderate","You balance liberty, order, and compromise depending on the crisis, just as Lafayette tried to. Revolutions are hard on moderates."]
+};
+
+
+/* ======================================================================
+   MAPS: France in 1789, and Paris with the road to Versailles (simplified)
+   ====================================================================== */
+function makeProj(B){ return ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)]; }
+const FB = {lonMin:-5, lonMax:10, latMin:41.6, latMax:51.6, kx:34, ky:50};
+const PB = {lonMin:2.08, lonMax:2.44, latMin:48.785, latMax:48.905, kx:1420, ky:2090};
+const MAPS = {france: FB, paris: PB};
+
+// France's coast, clockwise from Dunkirk to the Spanish border
+const FR_ATL = [[2.37,51.05],[1.85,50.95],[1.6,50.73],[1.55,50.2],[1.08,49.93],[0.1,49.49],[-0.2,49.3],[-1.1,49.36],[-1.26,49.67],[-1.62,49.65],
+  [-1.94,49.72],[-1.6,49.2],[-1.6,48.84],[-1.51,48.64],[-2.02,48.65],[-2.7,48.5],[-3.5,48.8],[-4.5,48.6],[-4.75,48.35],[-4.4,48.1],[-4.5,47.95],
+  [-3.4,47.73],[-2.8,47.5],[-2.2,47.27],[-2.0,47.0],[-1.9,46.7],[-1.15,46.15],[-1.1,45.6],[-1.2,44.8],[-1.45,44.0],[-1.5,43.5],[-1.78,43.37]];
+const FR_PYR = [[-1.78,43.37],[-1.4,43.05],[0.0,42.8],[0.7,42.85],[1.5,42.6],[2.5,42.45],[3.17,42.43]];
+const FR_MED = [[3.17,42.43],[3.04,42.7],[3.2,43.2],[3.6,43.4],[4.1,43.55],[4.6,43.35],[5.35,43.3],[5.93,43.1],[6.6,43.2],[7.2,43.65]];
+// The land border of 1789: Savoy and Nice belonged to the King of Sardinia; Lorraine and Alsace to France
+const FR_EAST = [[7.2,43.65],[6.95,44.3],[6.65,44.9],[6.1,45.3],[5.8,45.7],[6.15,46.2],[6.1,46.6],[7.0,47.4],[7.6,47.6],[7.8,48.6],[8.2,48.97],
+  [7.6,49.15],[6.7,49.2],[6.4,49.47],[5.8,49.55],[5.0,49.8],[4.8,50.15],[4.15,50.0],[3.6,50.4],[2.9,50.7],[2.55,51.08],[2.37,51.05]];
+const FRANCE = [...FR_ATL, ...FR_PYR.slice(1), ...FR_MED.slice(1), ...FR_EAST.slice(1)];
+const SEA_N = [...FR_ATL, [-3.8,43.45],[-5,43.5],[-5,50.0],[-3.5,50.35],[-2.0,50.6],[-1.0,50.78],[0.3,50.78],[1.35,51.15],[1.4,51.38],[1.45,51.6],[3.5,51.6],[3.4,51.4],[2.55,51.08]];
+const SEA_S = [...FR_MED, [7.27,43.7],[8.0,43.9],[8.9,44.4],[10,44.0],[10,41.6],[2.5,41.6],[2.8,41.65],[3.2,41.9],[3.2,42.3]];
+const CORSICA = [[9.4,43.0],[9.55,42.6],[9.5,42.0],[9.25,41.6],[8.8,41.65],[8.6,42.0],[8.6,42.4],[9.2,42.75]];
+const SEINE_F = [[0.1,49.49],[0.9,49.4],[1.5,49.1],[2.3,48.85],[3.0,48.5],[3.6,48.5],[4.1,48.3]];
+const LOIRE = [[-2.2,47.27],[-1.5,47.2],[0.0,47.3],[0.7,47.4],[1.9,47.9],[2.9,47.4],[3.0,46.5],[4.0,45.5]];
+const RHONE = [[4.7,43.35],[4.8,44.0],[4.85,45.0],[4.83,45.76],[5.8,46.1],[6.15,46.2]];
+const RHINE = [[7.6,47.6],[7.8,48.6],[8.2,48.97],[8.45,49.5],[8.3,50.0],[7.6,50.35],[7.1,50.75],[6.8,51.3],[6.3,51.6]];
+
+// Paris: the Seine, the city wall of 1789, and the road west to Versailles
+const SEINE_P = [[2.44,48.815],[2.41,48.83],[2.38,48.842],[2.36,48.851],[2.345,48.855],[2.33,48.859],[2.315,48.863],[2.3,48.861],[2.285,48.853],
+  [2.27,48.842],[2.255,48.835],[2.24,48.845],[2.235,48.865],[2.245,48.885],[2.26,48.9],[2.27,48.905]];
+const WALL = (() => { const pts = []; for (let a = 0; a < 360; a += 15) { const r = a * Math.PI / 180; pts.push([2.345 + 0.052 * Math.cos(r), 48.861 + 0.026 * Math.sin(r)]); } return pts; })();
+const ROAD = [[2.297,48.848],[2.25,48.833],[2.2,48.82],[2.16,48.81],[2.13,48.805]];
+
+const PLACES = {
+  paris:{at:[2.35,48.86], name:"Paris", dx:8, dy:-6, anchor:"start"},
+  versailles:{at:[2.13,48.805], name:"Versailles", dx:-8, dy:12, anchor:"end"},
+  bastille:{at:[2.369,48.853], name:"Bastille", dx:8, dy:12, anchor:"start"},
+  tuileries:{at:[2.329,48.862], name:"Tuileries Palace", dx:4, dy:-12, anchor:"middle"},
+  champ:{at:[2.299,48.849], name:"Champ de Mars", dx:-8, dy:14, anchor:"end"},
+  varennes:{at:[5.03,49.23], name:"Varennes", dx:-10, dy:4, anchor:"end"},
+  montmedy:{at:[5.37,49.52], name:"Montmédy", dx:10, dy:4, anchor:"start"},
+  sedan:{at:[4.94,49.7], name:"Sedan", dx:-10, dy:4, anchor:"end"},
+  rochefortb:{at:[5.22,50.16], name:"Rochefort (arrested)", dx:10, dy:4, anchor:"start"},
+  lagrange:{at:[2.95,48.65], name:"La Grange", dx:10, dy:10, anchor:"start"}
+};
+
+function mapCore(cfg, animate){
+  const B = MAPS[cfg.kind || "france"], P = makeProj(B);
+  const W = Math.round((B.lonMax - B.lonMin) * B.kx), H = Math.round((B.latMax - B.latMin) * B.ky);
+  const path = (lls, close) => `M${lls.map(P).map(q => q.join(" ")).join(" L")}${close ? " Z" : ""}`;
+  const T = (ll, txt, cls, anchor = "middle", dx = 0, dy = 0) => { const [x, y] = P(ll); return `<text x="${x + dx}" y="${y + dy}" text-anchor="${anchor}" class="${cls}">${txt}</text>`; };
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Map${cfg.caption ? ": " + cfg.caption : ""}">`;
+  if ((cfg.kind || "france") === "france") {
+    s += `<rect class="m-land" x="0" y="0" width="${W}" height="${H}"/>`;
+    s += `<path class="m-france" d="${path(FRANCE, true)}"/>`;
+    s += `<path class="m-sea" d="${path(SEA_N, true)}"/><path class="m-sea" d="${path(SEA_S, true)}"/>`;
+    s += `<path class="m-coast" d="${path(FR_ATL)}"/><path class="m-coast" d="${path(FR_MED)}"/><path class="m-land" d="${path(CORSICA, true)}"/>`;
+    s += `<path class="m-border" d="${path(FR_PYR)}"/><path class="m-border" d="${path(FR_EAST)}"/>`;
+    s += [SEINE_F, LOIRE, RHONE, RHINE].map(r => `<path class="m-river" stroke-width="1.3" d="${path(r)}"/>`).join("");
+    s += T([0.6,47.1], "Loire R.", "m-rlabel") + T([1.2,49.0], "Seine R.", "m-rlabel");
+    s += T([2.4,47.0], "FRANCE", "m-nlabel") + T([-3.6,46.2], "Bay of Biscay", "m-region") + T([-1.5,50.25], "English Channel", "m-region");
+    s += T([-1.6,51.2], "ENGLAND", "m-region") + T([-3.3,42.6], "SPAIN", "m-region") + T([5.6,42.5], "Mediterranean Sea", "m-region");
+    s += T([4.4,50.9], "Austrian Netherlands", "m-region") + T([9.0,49.9], "Holy Roman", "m-region") + T([9.0,49.6], "Empire", "m-region");
+    s += T([7.6,45.3], "Savoy", "m-note");
+    if (cfg.route === "varennes") s += `<path class="m-sea-route${animate ? " draw" : ""}" pathLength="1" d="${path([[2.35,48.86],[3.0,48.95],[3.95,48.96],[4.4,49.0],[5.03,49.23]])}"/>`;
+    if (cfg.route === "escape") s += `<path class="m-sea-route${animate ? " draw" : ""}" pathLength="1" d="${path([[4.94,49.7],[5.07,49.8],[5.07,49.95],[5.22,50.16]])}"/>`;
+  } else {
+    s += `<rect class="m-land" x="0" y="0" width="${W}" height="${H}"/>`;
+    s += `<path class="m-city" d="${path(WALL, true)}"/>`;
+    s += `<path class="m-river" stroke-width="7" d="${path(SEINE_P)}"/>`;
+    s += `<path class="m-road" d="${path(ROAD)}"/>`;
+    s += T([2.392,48.886], "PARIS in 1789", "m-nlabel") + T([2.36,48.874], "Right Bank", "m-note") + T([2.33,48.838], "Left Bank", "m-note");
+    s += T([2.39,48.833], "Seine R.", "m-rlabel") + T([2.205,48.828], "road to Versailles", "m-note", "middle", 0, -6);
+    if (cfg.route === "versailles") s += `<path class="m-sea-route${animate ? " draw" : ""}" pathLength="1" d="${path(ROAD)}"/>`;
+  }
+  (cfg.pins || []).forEach(p => {
+    const pl = PLACES[p.at]; const [x, y] = P(pl.at);
+    if (p.here) s += `<circle class="m-ring${animate ? " pulse" : ""}" cx="${x}" cy="${y}" r="9"/><circle class="m-here" cx="${x}" cy="${y}" r="4.5"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="3.2"/>`;
+    const k = p.here && Math.abs(pl.dx) < 12 && pl.dx !== 0 ? 12 / Math.abs(pl.dx) : 1;
+    s += `<text x="${x + pl.dx * k}" y="${y + pl.dy}" text-anchor="${pl.anchor}" class="m-label">${pl.name}</text>`;
+  });
+  s += `<rect class="m-frame" x=".5" y=".5" width="${W - 1}" height="${H - 1}"/></svg>`;
+  return s;
+}
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  return `<figure class="map">${mapCore(cfg, animate)}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   PICTURES: shared drawing helpers (SVG, theme-aware, no downloads)
+   ====================================================================== */
+const DRAW = (() => {
+  const P = (c, d) => `<path class="ink ${c}" d="${d}"/>`;
+  const R = (c, x, y, w, h, rx = 0) => `<rect class="ink ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C = (c, x, y, r) => `<circle class="ink ${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const E = (c, x, y, rx, ry) => `<ellipse class="ink ${c}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const L = (d, extra = "") => `<path class="ink f-none${extra}" d="${d}"/>`;
+  const T = (x, y, txt, cls = "", anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="sv-label ${cls}">${txt}</text>`;
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const sun = (x, y, r) => C("f-gold", x, y, r) + L(Array.from({length:8}, (_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `M${(x + c*(r+5)).toFixed(1)} ${(y + s*(r+5)).toFixed(1)} L${(x + c*(r+12)).toFixed(1)} ${(y + s*(r+12)).toFixed(1)}`; }).join(" "));
+  const waves = (x0, x1, y) => { let d = `M${x0} ${y}`; for (let x = x0; x < x1; x += 24) d += ` q6 -5 12 0 t12 0`; return L(d); };
+  const pine = (x, y, s = 1, snow = false) => g(x, y, s, R("f-wood", -3, -10, 6, 10) + P("f-green", "M0 -58 L16 -30 L8 -30 L20 -10 L-20 -10 L-8 -30 L-16 -30 Z") + (snow ? P("f-snow", "M0 -58 L7 -46 L2 -44 L-3 -47 L-7 -46 Z") : ""));
+  const tree = (x, y, s = 1) => g(x, y, s, R("f-wood", -3, -18, 6, 18) + C("f-green", 0, -30, 16) + C("f-green", -9, -22, 10) + C("f-green", 9, -22, 10));
+  const mtn = (x, y, w, h, snow = true) => P("f-soft", `M${x - w/2} ${y} L${x} ${y - h} L${x + w/2} ${y} Z`) +
+    (snow ? P("f-snow", `M${x - w*0.15} ${y - h*0.7} L${x} ${y - h} L${x + w*0.15} ${y - h*0.7} L${x + w*0.06} ${y - h*0.64} L${x} ${y - h*0.72} L${x - w*0.07} ${y - h*0.63} Z`) : "");
+  const flakes = (pts) => L(pts.map(([x, y]) => `M${x-3} ${y} L${x+3} ${y} M${x} ${y-3} L${x} ${y+3}`).join(" "), " thin");
+  const puff = (x, y, s = 1) => g(x, y, s, C("f-soft", 0, 0, 12) + C("f-soft", 14, -8, 10) + C("f-soft", 22, 4, 9));
+  const usFlag = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-red", 0, -70, 36, 22) +
+    `<path d="M0 -63.7 L36 -63.7 M0 -57.4 L36 -57.4 M0 -51.1 L36 -51.1" stroke="var(--paper)" stroke-width="3.1" fill="none"/>` +
+    R("f-blue", 0, -70, 15, 12) + R("f-none", 0, -70, 36, 22));
+  const canoe = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-38 -6 Q0 14 38 -6 Q0 4 -38 -6 Z"));
+  const barrel = (x, y, s = 1) => g(x, y, s, R("f-wood", -10, -26, 20, 26, 5) + L("M-10 -19 L10 -19 M-10 -7 L10 -7"));
+  const quill = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 Q30 -70 62 -96 Q30 -50 0 0 Z") + L("M0 0 L50 -82"));
+  const frame = (w, h, inner, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${R("f-sky", -2, -2, w + 4, h + 4)}${inner}</svg>`;
+  return {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame};
+})();
+
+const ART = (() => {
+  const {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame} = DRAW;
+  const W = 520, H = 380;
+  const cockade = (x, y, s = 1) => g(x, y, s, P("f-red", "M-10 10 L-22 46 L-12 40 L-6 50 Z") + P("f-blue", "M10 10 L22 46 L12 40 L6 50 Z") +
+    C("f-red", 0, 0, 30) + C("f-paper", 0, 0, 21) + C("f-blue", 0, 0, 12));
+  const tricolor = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-blue", 0, -70, 14, 30) + R("f-paper", 14, -70, 14, 30) + R("f-red", 28, -70, 14, 30));
+  const person = (x, y, s = 1, coat = "f-ink") => g(x, y, s, C("f-paper", 0, -38, 8) + P(coat, "M-11 0 L-9 -26 Q0 -32 9 -26 L11 0 Z"));
+  const guard = (x, y, s = 1) => g(x, y, s, person(0, 0, 1, "f-blue") + R("f-ink", -9, -54, 18, 8, 2) + L("M10 -2 L14 -64"));
+  const crowd = (y0, rows, x0 = 10, x1 = 510, gap = 20) => { let s = ""; for (let r = 0; r < rows; r++) for (let x = x0 + (r % 2) * (gap / 2); x < x1; x += gap) s += C(r % 2 ? "f-soft" : "f-wood", x, y0 + r * 24, 8); return s; };
+  const lamp = (x, y) => R("f-gold", x, y, 50, 14, 3) + P("f-paper", `M${x + 12} ${y} Q${x + 6} ${y - 34} ${x + 18} ${y - 54} L${x + 34} ${y - 54} Q${x + 46} ${y - 34} ${x + 40} ${y} Z`) +
+    P("f-gold", `M${x + 24} ${y - 14} q-6 -12 2 -24 q6 12 -2 24 Z`);
+  const towers = (x, y, s = 1) => g(x, y, s, R("f-paper", -70, -120, 46, 120) + R("f-paper", 24, -120, 46, 120) + R("f-paper", -24, -84, 48, 84) +
+    C("f-soft", 0, -56, 16) + L("M0 -72 L0 -40 M-16 -56 L16 -56") + [-58, -40, 36, 54].map(xx => R("f-soft", xx, -104, 10, 30, 5)).join("") +
+    P("f-ink", "M-24 0 L-24 -26 Q0 -44 24 -26 L24 0 Z") + L("M-70 -120 L-24 -120 M24 -120 L70 -120"));
+
+  const start = frame(640, 220,
+    P("f-ground", "M-2 188 L642 188 L642 222 L-2 222 Z") + R("f-water", -2, 196, 644, 26) + waves(0, 640, 208) +
+    tree(60, 190, 1) + tree(580, 190, 1) + towers(250, 190, .95) + cockade(440, 100, 1.6) + tricolor(130, 190, .9),
+    "The towers of Notre-Dame above the Seine, with the blue, white, and red cockade of the Revolution");
+
+  const scenes = [
+    // 1. Declaration of Rights
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 230) + R("f-wood", -2, 230, 524, 152) +
+      `<g transform="rotate(-3 250 210)">${R("f-paper", 120, 70, 260, 230)}` +
+      T(250, 104, "DÉCLARATION", "sv-poster-sm") + T(250, 126, "des droits de l’homme", "sv-hand") +
+      L("M140 136 L360 136") + T(250, 166, "Art. 1. Nature has made", "sv-hand") + T(250, 188, "men free and equal…", "sv-hand") +
+      L("M144 210 L356 210 M144 228 L356 228 M144 246 L330 246 M144 264 L356 264", " thin") + T(320, 290, "La Fayette", "sv-hand") + `</g>` +
+      lamp(420, 330) + R("f-ink", 60, 300, 30, 22, 5) + quill(72, 302, .7) + cockade(470, 110, .9),
+      "Lafayette's handwritten declaration of rights on a desk beside a quill, an oil lamp, and a cockade"),
+    // 2. The march on Versailles
+    frame(W, H,
+      R("f-paper", 40, 70, 440, 160) + P("f-soft", "M30 70 L490 70 L470 50 L50 50 Z") +
+      [70, 120, 170, 330, 380, 430].map(x => R("f-water", x, 100, 22, 40) + R("f-water", x, 168, 22, 40)).join("") +
+      R("f-paper", 220, 80, 80, 150) + [228, 248, 268, 288].map(x => L(`M${x} 90 L${x} 140`, " thin")).join("") +
+      R("f-wood", 214, 140, 92, 8) + person(244, 140, .9) + person(276, 140, .9, "f-blue") +
+      P("f-ground", "M-2 230 L522 230 L522 382 L-2 382 Z") + crowd(256, 5) +
+      T(260, 30, "Palace of Versailles, October 6, 1789", "sv-tag"),
+      "The palace of Versailles with figures on the central balcony above a huge crowd in the courtyard"),
+    // 3. The king escapes
+    frame(W, H,
+      R("f-ink", -2, -2, 524, 240) + flakes([[60, 40], [140, 70], [300, 30], [420, 60], [480, 110], [220, 90]]) + C("f-paper", 440, 50, 18) +
+      P("f-ground", "M-2 236 L522 236 L522 382 L-2 382 Z") + P("f-sand", "M120 382 L240 236 L300 236 L430 382 Z") +
+      pine(50, 240, .9) + pine(90, 246, 1) + pine(470, 240, .9) +
+      g(250, 300, 1, R("f-wood", -80, -70, 150, 56, 6) + R("f-water", -66, -60, 30, 24) + R("f-water", -26, -60, 30, 24) + R("f-water", 14, -60, 30, 24) +
+        C("f-ink", -50, -6, 18) + C("f-ink", 46, -6, 18) + C("f-paper", -50, -6, 6) + C("f-paper", 46, -6, 6) + R("f-ink", -90, -82, 170, 12, 3)) +
+      R("f-wood", 150, 300, 220, 10) + L("M160 310 L150 340 M360 310 L370 340") + lamp(380, 300) +
+      T(260, 368, "Varennes, near midnight, June 21, 1791", "sv-tag"),
+      "A large carriage stopped at night by a barricade across the road, under the moon"),
+    // 4. The Champ de Mars
+    frame(W, H,
+      P("f-ground", "M-2 200 L522 200 L522 382 L-2 382 Z") + tree(30, 200, .7) + tree(490, 200, .7) +
+      g(260, 200, 1, R("f-paper", -70, -20, 140, 20) + R("f-paper", -50, -40, 100, 20) + R("f-paper", -30, -60, 60, 20) + R("f-soft", -14, -84, 28, 24)) +
+      crowd(222, 3, 120, 400, 18) +
+      L("M90 200 L90 80") + R("f-red", 90, 80, 56, 36) + T(118, 72, "martial law", "sv-tag") +
+      [60, 100, 140, 180, 220, 260, 300, 340, 380, 420, 460].map(x => guard(x, 352, .9)).join(""),
+      "A stepped altar in an open parade ground surrounded by a crowd, with a line of guardsmen in front and a red flag flying"),
+    // 5. Confronting the Jacobins
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 384) +
+      [0, 1, 2, 3].map(k => P("f-wood", `M${40 + k * 22} ${120 + k * 50} Q260 ${70 + k * 50} ${480 - k * 22} ${120 + k * 50} L${480 - k * 22} ${136 + k * 50} Q260 ${86 + k * 50} ${40 + k * 22} ${136 + k * 50} Z`)).join("") +
+      [0, 1, 2].map(k => { let s = ""; for (let x = 60 + k * 22; x < 460 - k * 22; x += 26) s += C("f-paper", x, 106 + k * 50 - 34 * Math.sin(Math.PI * (x - 40) / 440) + 6, 7); return s; }).join("") +
+      R("f-wood", 220, 290, 80, 70) + person(260, 290, 1.2, "f-blue") + R("f-ink", 249, 222, 22, 8, 2) +
+      tricolor(380, 360, .9) + T(260, 34, "The Legislative Assembly, June 28, 1792", "sv-tag"),
+      "A general in blue uniform speaking from the rostrum to curved rows of seated deputies"),
+    // 6. Declared a traitor
+    frame(W, H,
+      R("f-sky", -2, -2, 524, 230) + sun(420, 80, 24) +
+      P("f-ground", "M-2 226 L522 226 L522 382 L-2 382 Z") + P("f-sand", "M180 382 L250 226 L290 226 L360 382 Z") +
+      pine(60, 236, 1) + pine(110, 244, 1.1) + pine(150, 232, .8) + pine(400, 236, .9) + pine(450, 244, 1.1) +
+      L("M330 300 L330 200") + P("f-paper", "M330 210 L410 210 L424 222 L410 234 L330 234 Z") + T(372, 227, "Bouillon", "sv-tag") +
+      P("f-paper", "M330 244 L250 244 L236 256 L250 268 L330 268 Z") + T(286, 261, "Sedan", "sv-tag") +
+      g(230, 340, 1, E("f-wood", 0, -30, 34, 16) + R("f-wood", -26, -24, 8, 30) + R("f-wood", 18, -24, 8, 30) + C("f-wood", 36, -42, 10) + person(0, -40, .9, "f-blue")) +
+      T(260, 30, "The road out of France, August 19, 1792", "sv-tag"),
+      "A rider on horseback at a forest crossroads, with a signpost pointing back to Sedan and ahead into the Austrian Netherlands"),
+    // 7. Napoleon's offer
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 230) + R("f-water", 380, 40, 100, 120) + L("M430 40 L430 160 M380 100 L480 100") + R("f-none", 380, 40, 100, 120) +
+      R("f-wood", -2, 230, 524, 152) +
+      `<g transform="rotate(-2 230 250)">${R("f-paper", 70, 120, 150, 200)}${R("f-paper", 220, 120, 150, 200)}` +
+      T(145, 150, "REGISTER", "sv-poster-sm") + T(145, 176, "Shall Napoleon", "sv-hand") + T(145, 196, "Bonaparte be", "sv-hand") + T(145, 216, "Consul for life?", "sv-hand") +
+      T(270, 150, "YES", "sv-poster-sm") + T(340, 150, "NO", "sv-poster-sm") + L("M305 136 L305 310 M232 160 L360 160", " thin") +
+      L("M240 180 L290 180 M240 196 L295 196 M240 212 L285 212 M240 228 L292 228 M240 244 L288 244 M240 260 L294 260 M240 276 L286 276", " thin") +
+      `</g>` + quill(350, 330, .8) + R("f-ink", 420, 320, 30, 22, 5) + cockade(470, 260, .6),
+      "An open voting register with columns for yes and no, many names under yes and none yet under no")
+  ];
+  return {start, scenes};
+})();
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, adv:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG(GAME.titleMap, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(INTRO.map, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <figure class="scene wide">${ART.start}</figure>
+    <div class="content">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>${START.factsHeading}</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null, adv:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    <div class="visuals"><figure class="scene">${ART.scenes[i]}</figure>${mapSVG(d.map, fresh)}</div>
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where.replace(/\.$/, "")}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <div class="advisors">
+        <h3 class="adv-h">Consult your advisors</h3>
+        <p class="adv-hint">Click an advisor to hear their advice. You don’t have to follow it.</p>
+        <div class="adv-row" role="group" aria-label="Advisors">${d.advisors.map((a, k) => `
+          <button class="adv" data-a="${k}" aria-pressed="${state.adv === k}"><strong>${a.name}</strong><span>${a.role}</span></button>`).join("")}
+        </div>
+        <div class="advice" id="advice" aria-live="polite">${state.adv != null ? adviceHTML(d.advisors[state.adv]) : ""}</div>
+      </div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".adv").forEach(b => b.onclick = () => {
+    state.adv = +b.dataset.a; persist();
+    app.querySelectorAll(".adv").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.a === state.adv)));
+    document.getElementById("advice").innerHTML = adviceHTML(d.advisors[state.adv]);
+  });
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null, adv:null});
+}
+
+function adviceHTML(a){
+  return `<blockquote class="quote"><p>“${a.advice}”</p><footer>${a.name}, ${a.role}</footer></blockquote>`;
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {}; STYLES.forEach(k => c[k] = 0); list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(...STYLES.map(k => c[k])); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:DECISIONS.length}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${STYLES.map(k => `${c[k]} ${k}`).join(", ")})`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${GAME.leaderPoss} choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leaderPoss}">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${STYLES.map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
+</body>
+</html>
+
+</body></html>
