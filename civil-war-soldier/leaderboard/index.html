@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casualty Board · The Soldier's Odds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0; --paper:#EFF2E9; --paper-2:#E4E8DC; --ink:#22251E; --ink-soft:#565B4F; --rule:#B5BBA9;
+  --river:#3B6987; --seal:#952A2A; --brass-fill:#C9A04A; --sick:#5E7A3A; --home:#5E6E52; --union:#2F4E7A; --conf:#6E6A5E;
+  --display:"IM Fell English",Georgia,serif; --text:"Alegreya Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root{ color-scheme: dark; --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D; --rule:#3A4537;
+  --river:#8BB5CF; --seal:#DB7261; --brass-fill:#BE9641; --sick:#9DBB76; --home:#A6B394; --union:#8FB0DE; --conf:#B9B4A5; } }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.05rem;line-height:1.45}
+main{max-width:1200px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px}
+h1{font-family:var(--display);font-weight:400;margin:0;font-size:clamp(2rem,5vw,3.2rem);line-height:1}
+h2{font-family:var(--display);font-weight:400;font-size:1.8rem;margin:28px 0 10px}
+h3{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0 0 6px}
+.sub{color:var(--ink-soft);margin:6px 0 16px}
+.live{font-size:.9rem;color:var(--ink-soft)}
+.live::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#3a9a5b;margin-right:6px;vertical-align:1px}
+.live.off::before{background:var(--ink-soft)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:6px 0 18px}
+.filters label{font-size:.9rem;font-weight:700;display:grid;gap:4px}
+select{font:inherit;padding:6px 10px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper);color:var(--ink)}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:16px 18px}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tot{background:var(--paper);border:1px solid var(--rule);border-top:5px solid var(--c);border-radius:4px;padding:12px 14px}
+.tot .n{font-family:var(--display);font-size:2.6rem;line-height:1}
+.tot .l{font-weight:700}
+.tot .p{color:var(--ink-soft);font-size:.95rem}
+.sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media (max-width:700px){.sides{grid-template-columns:minmax(0,1fr)}}
+.bar{display:flex;height:22px;border-radius:3px;overflow:hidden;background:var(--paper-2);margin:6px 0}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.92rem;color:var(--ink-soft)}
+.legend span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--c);margin-right:5px;vertical-align:-1px}
+.tblwrap{overflow-x:auto;background:var(--paper);border:1px solid var(--rule);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:1rem}
+th{font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);text-align:right;padding:8px;border-bottom:1px solid var(--rule);vertical-align:bottom}
+th:first-child,th:nth-child(2),td:first-child,td:nth-child(2){text-align:left}
+td{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td small{color:var(--ink-soft);margin-left:4px}
+tr.per td{border-top:2px solid var(--rule)}
+td.u{color:var(--union);font-weight:700} td.c{color:var(--conf);font-weight:700}
+td.death{color:var(--seal)}
+.lists{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.list{background:var(--paper);border:1px solid var(--rule);border-top:5px solid var(--c);border-radius:4px;padding:12px 14px}
+.list ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:3px}
+.list li{display:grid;gap:0;line-height:1.25;padding:2px 0}
+.list li b{white-space:nowrap}
+.list li span{color:var(--ink-soft);font-size:.88rem}
+.list .empty{color:var(--ink-soft);font-style:italic}
+.msg{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:16px}
+.k{--c:var(--seal)} .w{--c:var(--brass-fill)} .cap{--c:var(--river)} .dis{--c:var(--sick)} .home{--c:var(--home)} .all{--c:var(--ink)}
+footer{margin-top:28px;color:var(--ink-soft);font-size:.92rem;max-width:80ch}
+</style>
+</head>
+<body>
+<main>
+  <header><h1>The Casualty Board</h1><span class="live off" id="live">Connecting…</span></header>
+  <p class="sub">The Soldier’s Odds · who came home from the war, and who didn’t</p>
+  <div class="filters">
+    <label>Teacher<select id="fTeacher"><option value="">All teachers</option></select></label>
+    <label>Class period<select id="fPeriod"><option value="">All periods</option></select></label>
+  </div>
+  <div id="board"><p class="msg">Loading results…</p></div>
+  <footer>Each student’s first war counts. A soldier can appear in more than one column: someone wounded at Antietam who later died of disease counts as both wounded and died of disease. “Wounded” and “Captured” include everyone who was ever wounded or captured.</footer>
+</main>
+<script type="module">
+import { TEACHERS, watchResults } from '../lb.js';
+const board = document.getElementById('board'), live = document.getElementById('live');
+const fT = document.getElementById('fTeacher'), fP = document.getElementById('fPeriod');
+fT.innerHTML += Object.entries(TEACHERS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+fP.innerHTML = '<option value="">All periods</option>' + [1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}">Period ${n}</option>`).join('');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nm = r => `${esc(r.first)} ${esc(r.initial)}.`;
+let ROWS = [];
+
+const DEATHS = [['killed', 'Killed in battle', 'k'], ['wounds', 'Died of wounds', 'k'], ['disease', 'Died of disease', 'dis'], ['prison', 'Died in prison', 'k']];
+function tally(rows) {
+  const t = { n: rows.length, died: 0, wounded: 0, captured: 0, home: 0 };
+  for (const [k] of DEATHS) t[k] = 0;
+  for (const r of rows) { if (r.fate === 'home') t.home++; else { t.died++; t[r.fate] = (t[r.fate] || 0) + 1; } if ((r.wounded || []).length) t.wounded++; if ((r.captured || []).length) t.captured++; }
+  return t;
+}
+const pc = (a, n) => n ? Math.round(a / n * 100) : 0;
+const cellv = (a, n, cls = '') => n ? `<td class="${cls}">${a}<small>${pc(a, n)}%</small></td>` : '<td class="small">–</td>';
+
+function totalsHTML(rows, label) {
+  const t = tally(rows);
+  const box = (cls, n, l, p) => `<div class="tot ${cls}"><div class="n">${n}</div><div class="l">${l}</div><div class="p">${p}</div></div>`;
+  return `<div class="totals">
+    ${box('all', t.n, 'Soldiers enlisted', label)}
+    ${box('k', t.died, 'Died', `${pc(t.died, t.n)}%: ${t.killed} in battle, ${t.wounds} of wounds, ${t.disease} of disease, ${t.prison} in prison`)}
+    ${box('w', t.wounded, 'Wounded', `${pc(t.wounded, t.n)}% were wounded at least once`)}
+    ${box('cap', t.captured, 'Captured', `${pc(t.captured, t.n)}% were taken prisoner`)}
+    ${box('home', t.home, 'Came home', `${pc(t.home, t.n)}% survived the war`)}
+  </div>
+  <div class="sides">${['Union', 'Confederate'].map(s => { const x = tally(rows.filter(r => r.side === s)); const seg = (v, c) => x.n ? `<i style="width:${v / x.n * 100}%;background:var(${c})"></i>` : '';
+    return `<div class="card"><h3>${s}: ${x.n} soldier${x.n === 1 ? '' : 's'}</h3>
+      <div class="bar">${seg(x.killed + x.wounds + x.prison, '--seal')}${seg(x.disease, '--sick')}${seg(x.home, '--home')}</div>
+      <div class="legend"><span class="k">Died in battle, of wounds, or in prison ${x.killed + x.wounds + x.prison}</span><span class="dis">Died of disease ${x.disease}</span><span class="home">Came home ${x.home}</span></div>
+      <p style="margin:8px 0 0">${x.n ? `<b>${pc(x.died, x.n)}%</b> died. In the real war, about ${s === 'Union' ? '1 in 6 Union soldiers (17%)' : '1 in 4 Confederate soldiers (25% or more)'} died.` : 'No soldiers yet.'}</p></div>`; }).join('')}</div>`;
+}
+function periodTable(rows) {
+  const teachers = fT.value ? [fT.value] : Object.keys(TEACHERS);
+  let html = '';
+  for (const tk of teachers) {
+    const mine = rows.filter(r => r.teacher === tk); if (!mine.length) continue;
+    const periods = [...new Set(mine.map(r => r.period))].sort((a, b) => a - b);
+    html += `<h2>${esc(TEACHERS[tk])}’s classes by period</h2><div class="tblwrap"><table><thead><tr><th>Period</th><th>Side</th><th>Enlisted</th><th>Killed in battle</th><th>Died of wounds</th><th>Died of disease</th><th>Died in prison</th><th>All deaths</th><th>Wounded</th><th>Captured</th><th>Came home</th></tr></thead><tbody>
+      ${periods.map(p => ['Union', 'Confederate'].map((s, i) => { const x = tally(mine.filter(r => r.period === p && r.side === s));
+        return `<tr class="${i === 0 ? 'per' : ''}"><td>${i === 0 ? `<b>${p}${['', 'st', 'nd', 'rd'][p] || 'th'} period</b>` : ''}</td><td class="${s === 'Union' ? 'u' : 'c'}">${s}</td><td>${x.n || '–'}</td>${cellv(x.killed, x.n)}${cellv(x.wounds, x.n)}${cellv(x.disease, x.n)}${cellv(x.prison, x.n)}${cellv(x.died, x.n, 'death')}${cellv(x.wounded, x.n)}${cellv(x.captured, x.n)}${cellv(x.home, x.n)}</tr>`; }).join('')).join('')}
+    </tbody></table></div>`;
+  }
+  return html;
+}
+function listsHTML(rows) {
+  const one = !!fT.value && !!fP.value;
+  const tag = r => `${one ? '' : `P${r.period}${fT.value ? '' : ', ' + esc(TEACHERS[r.teacher] || '')}, `}${r.side === 'Union' ? 'U' : 'C'}`;
+  const by = (a, b) => (a.period - b.period) || a.first.localeCompare(b.first);
+  const groups = [
+    ['k', 'Killed in battle', rows.filter(r => r.fate === 'killed'), r => r.where],
+    ['k', 'Died of wounds', rows.filter(r => r.fate === 'wounds'), r => r.where],
+    ['dis', 'Died of disease', rows.filter(r => r.fate === 'disease'), r => 'in camp'],
+    ['k', 'Died in prison', rows.filter(r => r.fate === 'prison'), r => 'captured at ' + r.where],
+    ['w', 'Wounded and survived', rows.filter(r => r.fate === 'home' && (r.wounded || []).length), r => (r.wounded || []).join(', ') + (r.discharged ? ' · discharged' : '')],
+    ['cap', 'Captured and survived', rows.filter(r => r.fate === 'home' && (r.captured || []).length), r => (r.captured || []).join(', ')],
+    ['home', 'Came home unhurt', rows.filter(r => r.fate === 'home' && !(r.wounded || []).length && !(r.captured || []).length), r => ''],
+  ];
+  return `<h2>The roll</h2><div class="lists">${groups.map(([c, title, list, det]) => `<div class="list ${c}"><h3>${title} · ${list.length}</h3>${list.length ? `<ul>${list.sort(by).map(r => `<li><b>${nm(r)}</b><span>${esc(det(r))}${det(r) ? ' · ' : ''}${tag(r)}</span></li>`).join('')}</ul>` : '<p class="empty">No one yet.</p>'}</div>`).join('')}</div>`;
+}
+function render() {
+  let rows = ROWS;
+  if (fT.value) rows = rows.filter(r => r.teacher === fT.value);
+  if (fP.value) rows = rows.filter(r => String(r.period) === fP.value);
+  if (!rows.length) { board.innerHTML = '<p class="msg">No finished wars yet for this selection. Results appear here the moment a soldier’s war ends.</p>'; return; }
+  const label = `${fT.value ? TEACHERS[fT.value] : 'All teachers'}${fP.value ? ', period ' + fP.value : ''}`;
+  board.innerHTML = totalsHTML(rows, label) + (fP.value ? '' : periodTable(rows)) + listsHTML(rows);
+}
+fT.onchange = render; fP.onchange = render;
+const fail = e => { live.textContent = 'Not connected'; live.classList.add('off'); board.innerHTML = `<p class="msg">The casualty board couldn’t load. ${esc(e && e.message ? e.message : '')}</p>`; };
+watchResults(rows => { ROWS = rows; live.textContent = 'Live'; live.classList.remove('off'); render(); }, fail).catch(fail);
+</script>
+</body>
+</html>
