@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Soldier's Odds</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: one parchment card per moment of the war, Be Lincoln style; a 10×10 regiment grid decides each fate. */
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0; --paper:#EFF2E9; --paper-2:#E4E8DC; --ink:#22251E; --ink-soft:#565B4F; --rule:#B5BBA9;
+  --river:#3B6987; --seal:#952A2A; --on-seal:#FBF7F2; --brass:#7E5D1C; --brass-fill:#C9A04A;
+  --union:#2F4E7A; --conf:#6E6A5E; --sick:#5E7A3A; --home:#7E8C70; --gone:#2B2B2B;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme: dark; --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D; --rule:#3A4537;
+  --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B; --brass-fill:#BE9641;
+  --union:#8FB0DE; --conf:#B9B4A5; --sick:#9DBB76; --home:#A6B394; --gone:#D9D9D9;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8); } }
+:root[data-theme="dark"]{
+  color-scheme: dark; --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D; --rule:#3A4537;
+  --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B; --brass-fill:#BE9641;
+  --union:#8FB0DE; --conf:#B9B4A5; --sick:#9DBB76; --home:#A6B394; --gone:#D9D9D9;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8); }
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+.shell{max-width:1080px;margin:0 auto;padding-block:18px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.tally{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.tally li{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.tally li.done{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+.tally li.now{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:760px;margin:clamp(18px,3vw,28px) auto 0}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em;text-wrap:balance}
+h1{font-size:clamp(2.8rem,8vw,5.2rem);line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.5rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.15rem,2.4vw,1.45rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:66ch}
+.prose p:last-child{margin-bottom:0}
+figure.photo{margin:0}
+figure.photo .frame{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;overflow:hidden;display:grid;place-items:center;aspect-ratio:16/9}
+figure.photo.tall .frame{aspect-ratio:4/5}
+figure.photo img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.18)}
+figure.photo .missing{padding:20px;text-align:center;font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+figure.photo figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1rem;margin-top:8px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,3vw,28px)}
+@media (max-width:680px){.pair{grid-template-columns:minmax(0,1fr)}}
+.field{display:grid;gap:6px}
+.field label{font-weight:700;font-size:1rem}
+.field input,.field select{font:inherit;padding:10px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 6px;max-width:640px}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:6px 0 0}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:6px}
+.choice{appearance:none;font:inherit;text-align:left;border:1.5px solid var(--rule);background:var(--paper-2);color:var(--ink);border-radius:3px;padding:12px 14px;cursor:pointer;display:grid;gap:2px}
+.choice[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.choice b{font-family:var(--display);font-weight:400;font-size:1.25rem}
+.choice span{font-size:.95rem;color:var(--ink-soft)}
+.side{appearance:none;font:inherit;text-align:left;border:1.5px solid var(--rule);background:var(--paper-2);color:var(--ink);border-radius:3px;padding:12px;cursor:pointer;display:grid;gap:10px}
+.side:hover{border-color:var(--ink)}
+.side h3{margin:0}
+.side.u h3{color:var(--union)} .side.c h3{color:var(--conf)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+a{color:var(--river)}
+.campaign{display:grid;gap:8px;margin-top:10px}
+.bt{appearance:none;font:inherit;text-align:left;display:grid;grid-template-columns:7.5rem minmax(0,1fr) auto;gap:12px;align-items:center;border:1.5px solid var(--rule);background:var(--paper-2);color:var(--ink);border-radius:3px;padding:10px 14px}
+.bt b{font-family:var(--display);font-weight:400;font-size:1.25rem}
+.bt .d{font-size:.95rem;color:var(--ink-soft)}
+.bt .st{font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.bt.open{cursor:pointer}
+.bt.open:hover{border-color:var(--ink)}
+.bt.past,.bt.gone{opacity:.55}
+.bt.fought{border-style:solid;border-color:var(--ink-soft)}
+@media (max-width:560px){.bt{grid-template-columns:minmax(0,1fr)}}
+.facts{margin:20px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:16px 18px;border-radius:2px}
+.facts h3{font-size:1.3rem;margin-bottom:.4em}
+.facts dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:0}
+.facts dt{color:var(--ink-soft)} .facts dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+.facts .note{font-size:.9rem;color:var(--ink-soft);margin:.6em 0 0}
+.result{font-family:var(--display);font-size:1.3rem;margin:.4em 0 0}
+.grid100{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;max-width:440px;margin:14px 0 10px}
+.cell{appearance:none;border:1.5px solid var(--rule);background:var(--paper-2);border-radius:3px;aspect-ratio:1;padding:2px;display:grid;place-items:center;color:var(--ink-soft);cursor:default}
+.cell svg{width:72%;height:72%;fill:currentColor}
+.pick .cell{cursor:pointer}
+.pick .cell:hover{border-color:var(--ink);color:var(--ink)}
+.cell.k{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.cell.w{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.cell.c{background:var(--river);border-color:var(--river);color:var(--paper)}
+.cell.dis{background:var(--sick);border-color:var(--sick);color:var(--paper)}
+.cell.dh{background:var(--home);border-color:var(--home);color:var(--paper)}
+.cell.ok{opacity:.75}
+.cell.me{outline:3px solid var(--ink);outline-offset:2px;opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:1rem;margin:0 0 6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:2px;display:inline-block;border:1.5px solid var(--rule)}
+.legend i.k{background:var(--seal);border-color:var(--seal)} .legend i.w{background:var(--brass-fill);border-color:var(--brass-fill)}
+.legend i.c{background:var(--river);border-color:var(--river)} .legend i.dis{background:var(--sick);border-color:var(--sick)} .legend i.dh{background:var(--home);border-color:var(--home)}
+.verdict{border-left:5px solid var(--ink-soft);background:var(--paper-2);padding:12px 16px;border-radius:0 3px 3px 0;margin-top:12px}
+.verdict.bad{border-color:var(--seal)} .verdict.good{border-color:var(--home)} .verdict.mid{border-color:var(--brass-fill)}
+.verdict b{font-family:var(--display);font-weight:400;font-size:1.45rem;display:block}
+.record{width:100%;border-collapse:collapse;font-size:1rem;margin-top:8px}
+.record th{text-align:left;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--rule);padding:6px 8px}
+.record td{border-bottom:1px solid var(--rule);padding:6px 8px;vertical-align:top}
+.tblwrap{overflow-x:auto}
+ol.qs{padding-left:22px;display:grid;gap:8px}
+.small{font-size:.95rem;color:var(--ink-soft)}
+@media (prefers-reduced-motion:no-preference){.fade{animation:fade .35s ease-out}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="man" viewBox="0 0 20 20"><circle cx="10" cy="3.6" r="2.6"/><path d="M6.2 7.2h7.6l1 6.2h-2.2l-.4 5.6H7.8l-.4-5.6H5.2z"/><path d="M14.6 1.5l.9.2-1.7 11-.9-.2z"/></symbol></svg>
+<div class="shell">
+  <div class="topbar"><span class="brand" id="brand">The Soldier’s Odds</span><ol class="tally" id="tally" aria-label="Battles"></ol></div>
+  <main id="app" aria-live="polite"></main>
+</div>
+<script>
+(() => {
+const KEY = 'soldiersOdds.v2';
+const TEACHERS = { sam: 'Mr. Sam', sondej: 'Mrs. Sondej' };
+const IMG = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=1100`;
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const when = m => `${MONTHS[m % 12]} ${1861 + Math.floor(m / 12)}`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const pct = (a, b) => (a / b * 100);
+const p1 = v => v < 1 ? v.toFixed(1) : Math.round(v);
+
+// ---- Real numbers ----
+// Casualties: killed (k), wounded (w), captured or missing (c), out of men engaged (e).
+const SIDES = {
+  U: { name: 'Union', army: 'Union army', term: 2, disease: 0.0042, dow: 0.156, disch: 0.20, prison: 0.155,
+       img: 'Unidentified young soldier in Union uniform and Hardee hat with bayoneted musket LOC 5229148432.jpg',
+       cap: 'An unidentified Union soldier. Like thousands of soldiers’ portraits in the Library of Congress, his name has been lost.' },
+  C: { name: 'Confederate', army: 'Confederate army', term: 3, disease: 0.0055, dow: 0.18, disch: 0.12, prison: 0.12,
+       img: 'Private Edwin Francis Jemison.jpg',
+       cap: 'Private Edwin Francis Jemison, 2nd Louisiana Infantry. He was killed at Malvern Hill, near Richmond, in July 1862. He was 17.' },
+};
+const BATTLES = [
+  { id: 'bullrun', name: 'First Battle of Bull Run', short: 'Bull Run', date: 'July 21, 1861', m: 6, end: 6, cap: 'held',
+    img: 'Bull run bridge 1862.jpg', imgCap: 'The wrecked Stone Bridge over Bull Run, photographed in 1862.',
+    U: { e: 18000, k: 481, w: 1011, c: 1216, win: false, text: ['You and the men of your regiment are excited. Everyone expects the war to be over by Christmas, and no one wants to miss the action.', 'On a hot Sunday, General McDowell’s army attacks the Confederates along a creek called Bull Run. By late afternoon the Union line breaks, and soldiers run all the way back toward Washington, past civilians who had come out to watch.'] },
+    C: { e: 18000, k: 387, w: 1582, c: 13, win: true, text: ['You and your comrades are eager to prove that one Southerner can whip ten Yankees.', 'When the Union attack nearly breaks your line, General Thomas Jackson’s brigade holds firm on Henry Hill, earning him the nickname “Stonewall.” Fresh troops arrive by train, and the Union army flees.'] } },
+  { id: 'donelson', name: 'Battle of Fort Donelson', short: 'Fort Donelson', date: 'February 12–16, 1862', m: 13, end: 13, cap: 'held',
+    img: 'Fort Donelson river battery (1).jpg', imgCap: 'Cannons of the river battery at Fort Donelson, Tennessee, which drove back the Union gunboats (modern photograph).',
+    U: { e: 24531, k: 507, w: 1976, c: 208, win: true, text: ['It is February 1862. A little-known general named Ulysses S. Grant has marched your army through Tennessee mud and freezing rain to Fort Donelson, which guards the Cumberland River.', 'The Confederates attack and nearly break out, but your army closes the gap. When the Confederate commander asks for terms, Grant answers: “No terms except an unconditional and immediate surrender.” Almost the whole garrison surrenders, and the North has a new hero.'] },
+    C: { e: 16171, k: 327, w: 1127, c: 12392, win: false, text: ['You are part of the garrison of Fort Donelson on the Cumberland River in Tennessee. Union gunboats and Grant’s army have you surrounded, and the winter is bitter.', 'On February 15 your army attacks and opens an escape route, but your generals hesitate and order you back into the trenches. The next day the fort surrenders, and thousands of you march off to prison camps in the North.'] } },
+  { id: 'shiloh', name: 'Battle of Shiloh', short: 'Shiloh', date: 'April 6–7, 1862', m: 15, end: 15, cap: 'held',
+    img: "The Battle of Pittsburg Landing (Shiloh, Tenn., April 1862)- ...The left wing, Gen. Hurlbut's Div., Apr. 6th; Charge & repulse of rebels at Peach Orchard LCCN2005694846.jpg", imgCap: 'Fighting at the Peach Orchard on the first day at Shiloh, in a print made during the war.',
+    U: { e: 66812, k: 1754, w: 8408, c: 2885, win: true, text: ['It is April 1862. Your army is camped near a little log church called Shiloh, beside the Tennessee River in Tennessee. No one has bothered to dig trenches.', 'At dawn on April 6 the Confederates burst out of the woods and catch your army by surprise. You are driven back to the river. But reinforcements arrive overnight, and on the second day the Union army drives the Confederates away. Shiloh is the bloodiest battle in American history so far.'] },
+    C: { e: 44699, k: 1728, w: 8012, c: 959, win: false, text: ['General Albert Sidney Johnston leads your army on a surprise attack against Grant’s camps near Shiloh Church in Tennessee.', 'At first the attack goes well, and you drive the Yankees back toward the river. Then Johnston is shot and bleeds to death. Union reinforcements arrive overnight, and on the second day you are forced to retreat to Mississippi.'] } },
+  { id: 'antietam', name: 'Battle of Antietam', short: 'Antietam', date: 'September 17, 1862', m: 20, end: 20, cap: 'parole',
+    img: 'DunkerChurchAntietam1862.jpg', imgCap: 'Confederate dead near the Dunker Church at Antietam, photographed by Alexander Gardner two days after the battle.',
+    U: { e: 53632, k: 2108, w: 9549, c: 753, win: true, text: ['General Lee has invaded Maryland. At dawn on September 17, 1862, your army attacks him along Antietam Creek near Sharpsburg. It will be the bloodiest single day in American history.', 'Lee’s battered army retreats to Virginia. Five days later, President Lincoln announces the Emancipation Proclamation.'] },
+    C: { e: 30646, k: 1546, w: 7752, c: 1018, win: false, text: ['General Lee has carried the war north into Maryland, hoping a victory will win the Confederacy recognition from Britain and France.', 'Outnumbered nearly two to one, you hold your ground along Antietam Creek through twelve hours of slaughter. But Lee must retreat to Virginia.'] } },
+  { id: 'fredericksburg', name: 'Battle of Fredericksburg', short: 'Fredericksburg', date: 'December 13, 1862', m: 23, end: 23, cap: 'parole',
+    img: "Fredericksburg Marye's Heights sunken road.jpg", imgCap: 'The stone wall and Sunken Road below Marye’s Heights, Fredericksburg, Virginia.',
+    U: { e: 114000, k: 1284, w: 9600, c: 1769, win: false, text: ['It is December 1862. Instead of getting ready for Christmas, you are crossing the Rappahannock River under yet another new commander, General Ambrose Burnside.', 'Your regiment is ordered to charge up an open slope toward Confederates behind a stone wall on Marye’s Heights. Wave after wave is cut down. It is a massacre.'] },
+    C: { e: 72500, k: 608, w: 4116, c: 653, win: true, text: ['The Union army is trying for Richmond again. You wait behind a stone wall at the foot of Marye’s Heights as Union brigades charge across open ground.', 'None of them reach the wall. That night, the northern lights shimmer over the battlefield, and you think you might make it home for Christmas after all.'] } },
+  { id: 'chancellorsville', name: 'Battle of Chancellorsville', short: 'Chancellorsville', date: 'April 30 – May 6, 1863', m: 28, end: 28, cap: 'parole',
+    img: "Chancellor's house.jpg", imgCap: 'The Chancellor house, which gave the crossroads and the battle their name.',
+    U: { e: 133868, k: 1606, w: 9672, c: 5919, win: false, text: ['It is May 1863. General Joseph Hooker has a brilliant plan to trap Lee’s army near a crossroads called Chancellorsville.', 'But Lee splits his smaller army and sends Stonewall Jackson around your flank. Jackson’s surprise attack crushes the Union right. It is another crushing defeat.'] },
+    C: { e: 60298, k: 1665, w: 9081, c: 2018, win: true, text: ['Outnumbered more than two to one, General Lee divides his army and sends Stonewall Jackson on a secret march around the Union flank.', 'The attack is a stunning success, Lee’s greatest victory. But that night Jackson is shot by mistake by his own men. He dies a week later.'] } },
+  { id: 'vicksburg', name: 'Siege of Vicksburg', short: 'Vicksburg', date: 'May 18 – July 4, 1863', m: 28, end: 30, cap: 'parole',
+    img: 'Siege of Vicksburg by Kurz & Allison.jpg', imgCap: 'The Siege of Vicksburg, in a print by Kurz & Allison made after the war.',
+    note: 'Confederate killed and wounded are our estimate, split from a total of 3,202 killed, wounded, and missing. Captured includes the 29,495 men who surrendered on July 4 and were paroled.',
+    U: { e: 77000, k: 766, w: 3793, c: 276, win: true, text: ['Vicksburg, Mississippi, sits on high bluffs above the Mississippi River. As long as the Confederates hold it, the river is closed to the North. Lincoln calls it “the key.”', 'After two failed attacks, Grant’s army lays siege. For six weeks you dig trenches closer and closer to the Confederate lines while artillery pounds the city. On July 4, 1863, the starving garrison surrenders. The Mississippi River belongs to the Union.'] },
+    C: { e: 33000, k: 900, w: 1900, c: 29897, win: false, text: ['You are part of the army defending Vicksburg, the fortress city that keeps the Mississippi River in Confederate hands.', 'Grant’s army surrounds the city. For six weeks Union guns shell you day and night, and food runs so short that soldiers and townspeople eat mule meat. On July 4, 1863, the garrison surrenders. Instead of shipping 30,000 prisoners north, Grant paroles you.'] } },
+  { id: 'gettysburg', name: 'Battle of Gettysburg', short: 'Gettysburg', date: 'July 1–3, 1863', m: 30, end: 30, cap: 'prison',
+    img: "A harvest of death, Gettysburg, Pennsylvania - negative by T.H. O'Sullivan; positive by A Gardner. LCCN2006685384.jpg", imgCap: '“A Harvest of Death,” Gettysburg, July 1863, by Timothy O’Sullivan.',
+    U: { e: 104256, k: 3155, w: 14531, c: 5369, win: true, text: ['Lee has invaded Pennsylvania. General George Meade leads your army to a small crossroads town called Gettysburg.', 'For three days the armies fight over the hills south of town. On the third day, about 12,500 Confederates charge across an open field toward your line in Pickett’s Charge. About half of them fall. The battle is a major Union victory.'] },
+    C: { e: 75000, k: 4708, w: 12693, c: 5830, win: false, text: ['Encouraged by Chancellorsville, General Lee has invaded Pennsylvania, hoping one more victory will convince the North to give up.', 'For three days you attack the Union army on the hills around Gettysburg. On July 3, about 12,500 men charge across an open field in Pickett’s Charge. About half of them are killed, wounded, or captured. Lee retreats to Virginia.'] } },
+  { id: 'chattanooga', name: 'Battles for Chattanooga', short: 'Chattanooga', date: 'November 23–25, 1863', m: 34, end: 34, cap: 'prison',
+    img: 'The Battle of Lookout Mountain by James Walker (first version).jpg', imgCap: 'The Battle of Lookout Mountain, November 24, 1863, painted by James Walker.',
+    U: { e: 56359, k: 753, w: 4722, c: 349, win: true, text: ['After a defeat at Chickamauga, the Union army is trapped in Chattanooga, Tennessee, and nearly starving. Grant arrives, opens a supply line, and brings reinforcements.', 'On November 24 Union troops take Lookout Mountain in the “Battle Above the Clouds.” The next day, soldiers ordered only to take the rifle pits at the foot of Missionary Ridge keep charging up the steep slope without orders and break the Confederate line.'] },
+    C: { e: 44010, k: 361, w: 2160, c: 4146, win: false, text: ['Your army holds the heights around Chattanooga, Lookout Mountain and Missionary Ridge, and has the Union army nearly starved out.', 'But Grant arrives with reinforcements. On November 25 Union soldiers storm up Missionary Ridge, and your line collapses. Thousands of your comrades are captured as the army flees into Georgia.'] } },
+  { id: 'wilderness', name: 'Battle of the Wilderness', short: 'Wilderness', date: 'May 5–7, 1864', m: 40, end: 40, cap: 'prison',
+    img: "General view of the Battle of the Wilderness, from a point north of the tavern, looking toward Parker's store LCCN2004661870.jpg", imgCap: 'The Battle of the Wilderness, sketched on the spot in May 1864.',
+    U: { e: 118700, k: 2246, w: 12037, c: 3383, win: false, text: ['It is May 1864. The army has a new commander again: Ulysses S. Grant, who has promised President Lincoln he will not turn back.', 'You fight in woods so thick you can barely see the enemy. The brush catches fire, and some wounded men burn to death. Grant loses the battle, but instead of retreating, he marches south.'] },
+    C: { e: 66140, k: 1477, w: 7866, c: 1690, win: true, text: ['General Grant has crossed the Rapidan River with a much larger army. Lee strikes him in the tangled woods of the Wilderness, where Union numbers count for less.', 'You fight blindly through smoke and burning brush. Grant loses more men, but unlike every general before him, he does not retreat. He keeps marching south.'] } },
+  { id: 'petersburg', name: 'Siege of Petersburg', short: 'Petersburg', date: 'June 1864 – April 1865', m: 41, end: 50, cap: 'prison',
+    img: 'Trenches petersburg.jpg', imgCap: 'Trenches at Petersburg, Virginia.',
+    note: 'Totals are historians’ estimates for the whole ten-month siege. The split into killed, wounded, and captured is our estimate.',
+    U: { e: 125000, k: 5880, w: 27720, c: 8400, win: true, text: ['Grant has moved the army south of Richmond to Petersburg, the railroad hub that feeds the Confederate capital.', 'Instead of one battle, you spend nearly ten months in the trenches: snipers, mortar shells, mud, and the disaster at the Crater. In April 1865 your army breaks through at last, and Richmond falls.'] },
+    C: { e: 60000, k: 3360, w: 14000, c: 10640, win: false, text: ['If Petersburg falls, Richmond falls. For nearly ten months you hold the trenches against a much larger army, hungry, ragged, and under constant fire.', 'On April 2, 1865, the Union army breaks through. Lee’s army abandons Petersburg and Richmond and flees west.'] } },
+  { id: 'nashville', name: 'Battle of Nashville', short: 'Nashville', date: 'December 15–16, 1864', m: 47, end: 47, cap: 'prison',
+    img: 'Battle of Nashville Kurz & Allison.jpg', imgCap: 'The Battle of Nashville, in a print by Kurz & Allison made after the war.',
+    note: 'Confederate numbers are estimates. About 1,500 were killed or wounded; the split between them is our estimate.',
+    U: { e: 55000, k: 387, w: 2558, c: 112, win: true, text: ['It is December 1864. While Sherman marches through Georgia, Confederate General John Bell Hood has invaded Tennessee to retake Nashville. Two weeks ago his army was shattered attacking Union lines at Franklin.', 'General George Thomas waits for the ice to melt, then attacks. In two days the Union army crushes Hood’s army, which never again fights as a real army.'] },
+    C: { e: 26000, k: 500, w: 1000, c: 4500, win: false, text: ['General Hood leads your army into Tennessee to retake Nashville. Two weeks ago at Franklin, your army lost more than 6,000 men, including six generals, in a single afternoon.', 'Now, cold and hungry, many of you barefoot, you dig in outside Nashville. On December 15 and 16 the Union army smashes your lines. The survivors retreat through freezing rain toward Mississippi.'] } },
+  { id: 'sailorscreek', name: 'Battle of Sailor’s Creek', short: 'Sailor’s Creek', date: 'April 6, 1865', m: 51, end: 51, cap: 'end',
+    img: 'Appomattox Court House, Va. McLean house LOC cwpb.03957.jpg', imgCap: 'The McLean house at Appomattox Court House, where Lee surrendered to Grant three days after Sailor’s Creek.',
+    note: 'Union total from official reports; the split is estimated. Confederate captured from official counts; killed and wounded are estimated.',
+    U: { e: 25000, k: 172, w: 976, c: 0, win: true, text: ['Lee’s starving army is fleeing west, and Grant is right behind it.', 'At a stream called Sailor’s Creek, you catch about a quarter of Lee’s army. Thousands of Confederates surrender, including eight generals. Three days later, Lee surrenders at Appomattox Court House.'] },
+    C: { e: 18500, k: 100, w: 250, c: 7700, win: false, text: ['Since the breakthrough at Petersburg you have been retreating west, hungry and exhausted.', 'At Sailor’s Creek, Union troops surround a large part of the army. Watching from a hill, Lee cries out, “My God! Has the army been dissolved?” Three days later he surrenders at Appomattox.'] } },
+];
+const PHOTOS = {
+  camp: ['Abandoned Winter Camp - NARA - 525184.jpg', 'Log huts of a Union winter camp in Virginia.'],
+  hospital: ['A ward in hospital at convalescent camp near Alexandria, Va LCCN2012650251.jpg', 'A hospital ward at the convalescent camp near Alexandria, Virginia.'],
+  wounded: ['Wounded soldiers in hospital - NARA - 524705.jpg', 'Wounded soldiers recovering in a Union hospital.'],
+  andersonville: ['Photo of Andersonville Prison, Georgia. View from the main gate Issuing rations to thirty-three thousand prisoners - - Photographed by A.J. Riddle. LCCN2017650850 (cropped).jpg', 'Andersonville Prison, Georgia, August 1864: rations being issued to some 33,000 Union prisoners.'],
+  rebprisoners: ['Gettysburg, Pa. Three Confederate prisoners.jpg', 'Three Confederate prisoners at Gettysburg, July 1863.'],
+  grave: ['A Lonely Grave, Antietam 1862.jpg', 'A soldier’s grave at Antietam, 1862.'],
+  homeU: ['Grand Review of the Armies - Washington, D.C. - May 1865.jpg', 'The Grand Review of the Armies in Washington, May 1865.'],
+  homeC: ['Robt E Lee & Staff by Brady, 1865.jpg', 'General Lee and members of his staff in Richmond after the surrender, April 1865.'],
+};
+
+// ---- State ----
+const blank = () => ({ screen: 'title', enlisted: null, final: false, player: { teacher: '', period: '', first: '', initial: '' }, side: null, plan: [], lastEnd: null,
+  fought: 0, record: [], wounded: [], captured: [], fate: null, discharged: false, released: false, roll: null, cur: null, posted: null });
+let S = load() || blank();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } }
+const app = document.getElementById('app');
+const side = () => SIDES[S.side];
+const B = id => BATTLES.find(b => b.id === id);
+
+function photo(file, cap, tall) {
+  return `<figure class="photo${tall ? ' tall' : ''}"><div class="frame"><img src="${IMG(file)}" alt="${esc(cap)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'Photograph: ' + this.alt}))"></div><figcaption>${cap}</figcaption></figure>`;
+}
+function tally() {
+  const el = document.getElementById('tally');
+  if (!S.side || S.screen === 'title' || S.screen === 'side') { el.innerHTML = ''; return; }
+  const n = side().term;
+  el.innerHTML = Array.from({ length: n }, (_, i) => `<li class="${i < S.fought ? 'done' : i === S.fought && !S.fate ? 'now' : ''}" aria-label="Battle ${i + 1}">${i + 1}</li>`).join('');
+  document.getElementById('brand').textContent = `Private ${S.player.first} ${S.player.initial}. · ${side().name}`;
+}
+function go(screen, extra) { Object.assign(S, extra || {}, { screen }); save(); render(true); }
+function render(fresh) {
+  tally();
+  ({ title: renderTitle, side: renderSide, choose: renderChoose, camp: renderCamp, battle: renderBattle, wound: renderWound, capture: renderCapture, end: renderEnd })[S.screen]();
+  if (fresh) { window.scrollTo(0, 0); const h = app.querySelector('h1, h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+}
+
+// ---- The 100-soldier grid ----
+// groups: [[key, label, probability], ...] for every outcome. The roll uses the exact
+// probabilities; the grid shows the same odds rounded to whole soldiers out of 100.
+function makeRoll(kind, groups) {
+  let r = Math.random(), fate = groups[groups.length - 1][0];
+  for (const [k, , p] of groups) { if (r < p) { fate = k; break; } r -= p; }
+  const counts = groups.map(([k, , p]) => [k, Math.round(p * 100)]);
+  const mine = counts.find(c => c[0] === fate); if (mine[1] === 0) mine[1] = 1;
+  const last = counts[counts.length - 1];
+  last[1] = Math.max(0, 100 - counts.slice(0, -1).reduce((s, c) => s + c[1], 0));
+  const cells = counts.flatMap(([k, n]) => Array(n).fill(k)).slice(0, 100);
+  while (cells.length < 100) cells.push(last[0]);
+  for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
+  return { kind, groups: groups.map(([k, l, p]) => [k, l, p]), counts: Object.fromEntries(counts), fate, cells, pick: null };
+}
+function gridHTML(roll) {
+  const picked = roll.pick != null;
+  const cls = k => ({ k: 'k', w: 'w', c: 'c', dis: 'dis', dow: 'k', disch: 'dh', back: 'ok', died: 'k', ok: 'ok', well: 'ok' }[k] || 'ok');
+  return `<div class="grid100 ${picked ? '' : 'pick'}" role="group" aria-label="${picked ? 'Your regiment' : 'Choose your place among 100 soldiers'}">
+    ${roll.cells.map((k, i) => `<button class="cell ${picked ? cls(k) : ''}${picked && i === roll.pick ? ' me' : ''}" data-cell="${i}" ${picked ? 'disabled' : ''} aria-label="${picked ? (i === roll.pick ? 'You: ' : '') + roll.groups.find(g => g[0] === k)[1] : 'Soldier ' + (i + 1)}"><svg aria-hidden="true"><use href="#man"/></svg></button>`).join('')}
+  </div>${picked ? `<div class="legend">${roll.groups.map(([k, l]) => `<span><i class="${cls(k)}"></i>${l}: ${roll.counts[k]}</span>`).join('')}</div>` : ''}`;
+}
+function bindGrid(onPick) {
+  app.querySelectorAll('.pick .cell').forEach(b => b.onclick = () => {
+    const i = +b.dataset.cell; const r = S.roll; r.pick = i;
+    const j = r.cells.findIndex((k, x) => k === r.fate && x !== i);
+    if (r.cells[i] !== r.fate && j >= 0) [r.cells[i], r.cells[j]] = [r.cells[j], r.cells[i]];
+    save(); onPick();
+  });
+}
+
+// ---- Title: who is playing ----
+function renderTitle() {
+  const p = S.player;
+  app.innerHTML = `<section class="card fade">
+    <h1>The Soldier’s Odds</h1>
+    <p class="sub">Enlist in the Civil War, and find out whether you come home.</p>
+    <div class="pair">${photo(SIDES.U.img, SIDES.U.cap, true)}${photo(SIDES.C.img, SIDES.C.cap, true)}</div>
+    <div class="content prose">
+      <p>More Americans died in the Civil War than in any other war in the nation’s history. In this simulation you will enlist as a private and fight in real battles of the war, in the East and in the West.</p>
+      <p>Your chances of being killed, wounded, or captured in each battle, and of dying of disease in camp, are the real chances that soldiers on your side faced. Nothing in this game is made easier for you.</p>
+      <div class="who">
+        <div class="field"><label for="teacher">Your teacher</label><select id="teacher"><option value="">Choose…</option>${Object.entries(TEACHERS).map(([k, v]) => `<option value="${k}" ${p.teacher === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="field"><label for="period">Class period</label><select id="period"><option value="">Choose…</option>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}" ${String(p.period) === String(n) ? 'selected' : ''}>Period ${n}</option>`).join('')}</select></div>
+        <div class="field"><label for="first">First name</label><input id="first" maxlength="15" autocomplete="off" value="${esc(p.first)}"></div>
+        <div class="field"><label for="initial">Last initial</label><input id="initial" maxlength="1" autocomplete="off" value="${esc(p.initial)}" style="text-transform:uppercase"></div>
+      </div>
+      <p class="hint" id="hint"></p>
+      <p class="small">Your first name, last initial, and fate appear on the <a href="leaderboard/" target="_blank">class casualty board</a>. Only your first war counts.</p>
+      <div class="actions"><button class="btn primary" id="enlist">Enlist</button></div>
+    </div></section>`;
+  document.getElementById('enlist').onclick = () => {
+    const t = document.getElementById('teacher').value, per = document.getElementById('period').value;
+    const first = document.getElementById('first').value.trim().replace(/\s+/g, ''), init = document.getElementById('initial').value.trim().toUpperCase();
+    const err = !t ? 'Choose your teacher.' : !per ? 'Choose your class period.' : !/^[A-Za-z][A-Za-z'-]{0,14}$/.test(first) ? 'Type your first name using letters only.' : !/^[A-Z]$/.test(init) ? 'Type the first letter of your last name.' : '';
+    if (err) { document.getElementById('hint').textContent = err; return; }
+    S.player = { teacher: t, period: +per, first: first[0].toUpperCase() + first.slice(1).toLowerCase(), initial: init };
+    go('side');
+  };
+}
+
+// ---- Choose a side ----
+function renderSide() {
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">Spring 1861</p>
+    <h2>Choose your side, Private ${esc(S.player.first)}</h2>
+    <div class="prose"><p>Confederate guns have fired on Fort Sumter. President Lincoln has called for 75,000 volunteers, and the South is raising armies of its own. Young men on both sides are rushing to enlist before the war ends without them.</p></div>
+    <div class="pair" style="margin-top:14px">
+      ${['U', 'C'].map(k => { const s = SIDES[k]; return `<button class="side ${k === 'U' ? 'u' : 'c'}" data-side="${k}">
+        <h3>${s.name}</h3>
+        <span>Join the ${s.army}. ${k === 'U' ? 'You enlist for three years. Like many regiments, yours will fight <b>2 big battles</b>. The rest of the time you march, drill, stand guard, and wait in camp.' : 'An 1862 law keeps Confederate soldiers in the army for the whole war. You will fight <b>3 big battles</b> and stay in camp until the war ends.'}</span></button>`; }).join('')}
+    </div></section>`;
+  app.querySelectorAll('[data-side]').forEach(b => b.onclick = () => go('choose', { side: b.dataset.side }));
+}
+
+// ---- Choose the next battle ----
+function remainingNeeded() { return side().term - S.fought; }
+function renderChoose() {
+  const lastEnd = S.plan.length ? B(S.plan[S.plan.length - 1]).end : -1;
+  const need = remainingNeeded();
+  // How many battles could still be fought, starting with b (each must start after the last one ends).
+  const room = b => { let n = 1, cur = b.end; [...BATTLES].sort((x, y) => x.end - y.end).forEach(x => { if (x.m > cur) { n++; cur = x.end; } }); return n; };
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">${S.fought ? `You have survived ${S.fought} battle${S.fought > 1 ? 's' : ''}` : side().army}</p>
+    <h2>${S.fought ? 'Where will you fight next?' : 'Your first battle'}</h2>
+    <div class="prose"><p>You must fight ${need} more battle${need > 1 ? 's' : ''}. Battles go in order: once a battle is behind you, you can’t go back. You won’t know the odds until you’re there. ${S.fought ? '' : `You enlist three months before your first battle. ${S.side === 'U' ? 'After your last battle, you stay in the army until your three years are up.' : 'After your last battle, you stay in the army until the war ends in April 1865.'} Every month in camp is a chance to catch a deadly disease.`}</p></div>
+    <div class="campaign">${BATTLES.map(b => {
+      const done = S.plan.includes(b.id); const past = !done && b.m <= lastEnd; const open = !done && !past && room(b) >= need;
+      const status = done ? 'Fought' : past ? 'Past' : open ? '' : 'Too late';
+      return `<button class="bt ${open ? 'open' : done ? 'fought' : past ? 'past' : 'gone'}" ${open ? `data-b="${b.id}"` : 'disabled'}><span class="d">${b.date}</span><b>${b.name}</b><span class="st">${status}</span></button>`;
+    }).join('')}</div></section>`;
+  app.querySelectorAll('[data-b]').forEach(el => el.onclick = () => {
+    const b = B(el.dataset.b);
+    if (S.lastEnd == null) S.lastEnd = S.enlisted = Math.max(3, b.m - 3);
+    S.plan.push(b.id); S.cur = b.id;
+    const months = b.m - S.lastEnd;
+    if (months > 0) { const p = 1 - Math.pow(1 - side().disease, months); go('camp', { roll: makeRoll('camp', [['dis', 'Died of disease', p], ['well', 'Survived camp', 1 - p]]), campMonths: months }); }
+    else go('battle', { roll: null });
+  });
+}
+
+// ---- Camp and disease ----
+function renderCamp() {
+  const b = B(S.cur); const r = S.roll; const fin = !!S.final; const from = S.lastEnd, to = fin ? serviceEnds() : b.m;
+  const picked = r.pick != null; const died = r.fate === 'dis';
+  app.innerHTML = `<section class="card fade">
+    <div class="pair">${photo(...PHOTOS.camp)}${photo(...PHOTOS.hospital)}</div>
+    <div class="content">
+      <p class="dateline">${when(from)} to ${when(to)} · ${S.campMonths} month${S.campMonths > 1 ? 's' : ''} in camp</p>
+      <h2>${fin ? 'The rest of your service' : S.fought ? 'Between battles' : 'Training camp'}</h2>
+      ${fin ? `<div class="prose" style="margin-bottom:1em"><p>${b.short} was your last big battle, but you are still a soldier. ${S.side === 'U' ? (to >= 51 ? 'You stay with your regiment until the war ends in April 1865.' : `Your three-year enlistment runs until ${when(to)}.`) : 'You stay with the army until the war ends in April 1865.'} Your regiment marches, guards railroads and supply lines, and skirmishes, and it lives in camp.</p></div>` : ''}
+      <div class="prose"><p>Camps are crowded and filthy. Men drink from creeks downstream of the latrines, and food is often spoiled. Diarrhea and dysentery, typhoid fever, pneumonia, and measles sweep through the tents. Farm boys who never caught measles as children die of it by the hundreds. Doctors do not yet know that germs cause disease.</p>
+      <p>About two of every three soldiers who died in the Civil War died of disease, not bullets.</p></div>
+      <h3 style="margin-top:.8em">${picked ? 'Your regiment after these months' : 'Find yourself in your regiment'}</h3>
+      <p class="small">${picked ? '' : 'Each figure is one of 100 men in your regiment. Click one to see whether you survive the camp.'}</p>
+      ${gridHTML(r)}
+      ${picked ? `<div class="verdict ${died ? 'bad' : 'good'}"><b>${died ? 'You died of disease.' : 'You survived the camp.'}</b>${died ? `In ${when(to - 1)}, a fever swept through your company. You died in a crowded hospital tent, far from home, ${fin ? 'before you could go home.' : `before you ever reached ${b.short}.`}` : `About ${r.counts.dis} of your 100 comrades died of sickness in these ${S.campMonths} months. ${fin ? 'Your service is over. You are going home.' : `You march out with the regiment toward ${b.short}.`}`}</div>
+      <p class="small">Odds: about ${(SIDES[S.side].disease * 1200).toFixed(0)} of every 100 ${side().name} soldiers died of disease each year (an estimate based on army records).</p>
+      <div class="actions"><button class="btn primary" id="next">${died || fin ? 'See your service record' : `On to ${b.short}`}</button></div>` : ''}
+    </div></section>`;
+  if (!picked) bindGrid(() => render(false));
+  else document.getElementById('next').onclick = () => {
+    if (fin) { S.record.push({ camp: `${when(from)} – ${when(to)}`, out: died ? 'Died of disease in camp' : 'Served out your time in camp' }); S.final = false;
+      S.fate = died ? { type: 'disease', where: `in camp after ${b.short}`, when: when(to - 1) } : { type: 'home', where: '' }; return go('end'); }
+    if (died) { S.fate = { type: 'disease', where: `in camp before ${b.short}`, when: when(to - 1) }; S.record.push({ b: b.id, out: 'Died of disease in camp' }); go('end'); }
+    else go('battle', { roll: null });
+  };
+}
+
+// ---- The battle ----
+function renderBattle() {
+  const b = B(S.cur); const s = b[S.side]; const tot = s.k + s.w + s.c;
+  if (!S.roll || S.roll.kind !== 'battle') { S.roll = makeRoll('battle', [['k', 'Killed', s.k / s.e], ['w', 'Wounded', s.w / s.e], ['c', 'Captured or missing', s.c / s.e], ['ok', 'Unhurt', 1 - tot / s.e]]); save(); }
+  const r = S.roll; const picked = r.pick != null;
+  const fateText = { k: ['bad', 'You were killed in action.', `A few days from now, your family will read the casualty lists from ${b.short} in the newspaper and find your name.`],
+    w: ['mid', 'You were wounded.', 'A bullet tears into you. Stretcher-bearers carry you to the surgeons.'],
+    c: ['mid', 'You were captured.', 'Surrounded and cut off, you throw down your rifle. You are a prisoner of war.'],
+    ok: ['good', `You survived ${b.short} unhurt.`, b[S.side].win ? 'As the long lines march away from the field, you count yourself lucky. So many of your friends did not.' : 'That night around the campfire you mourn the friends you lost, and you thank God you are alive.'] }[r.fate];
+  app.innerHTML = `<section class="card fade">
+    ${photo(b.img, b.imgCap)}
+    <div class="content">
+      <p class="dateline">${b.date} · Battle ${S.fought + 1} of ${side().term}</p>
+      <h2>${b.name}</h2>
+      <div class="prose">${s.text.map(t => `<p>${t}</p>`).join('')}</div>
+      <div class="facts"><h3>${side().name} soldiers at ${b.short}</h3>
+        <dl><dt>Engaged</dt><dd>${fmt(s.e)}</dd><dt>Killed</dt><dd>${fmt(s.k)} (${p1(pct(s.k, s.e))}%)</dd><dt>Wounded</dt><dd>${fmt(s.w)} (${p1(pct(s.w, s.e))}%)</dd><dt>Captured or missing</dt><dd>${fmt(s.c)} (${p1(pct(s.c, s.e))}%)</dd><dt>All casualties</dt><dd>${fmt(tot)} (${Math.round(pct(tot, s.e))}%)</dd></dl>
+        <p class="result">${s.win ? `A ${side().name} victory.` : `A ${side().name} defeat.`}</p>
+        ${b.note ? `<p class="note">${b.note}</p>` : ''}</div>
+      <h3 style="margin-top:1em">${picked ? 'Your regiment after the battle' : 'Take your place in the line'}</h3>
+      <p class="small">${picked ? 'The grid shows the real odds for your side, rounded to whole soldiers out of 100.' : 'Each figure is one of 100 men in your regiment. Click one to find your fate.'}</p>
+      ${gridHTML(r)}
+      ${picked ? `<div class="verdict ${fateText[0]}"><b>${fateText[1]}</b>${fateText[2]}</div><div class="actions"><button class="btn primary" id="next">Continue</button></div>` : ''}
+    </div></section>`;
+  if (!picked) { bindGrid(() => render(false)); return; }
+  document.getElementById('next').onclick = () => {
+    S.fought++; S.lastEnd = b.end;
+    if (r.fate === 'k') { S.record.push({ b: b.id, out: 'Killed in action' }); S.fate = { type: 'killed', where: b.short }; return go('end'); }
+    if (r.fate === 'w') { S.wounded.push(b.short); const p = side(); return go('wound', { roll: makeRoll('wound', [['dow', 'Died of wounds', p.dow], ['disch', 'Discharged, disabled', p.disch], ['back', 'Returned to duty', 1 - p.dow - p.disch]]) }); }
+    if (r.fate === 'c') { S.captured.push(b.short); return go('capture', { roll: captureRoll(b) }); }
+    S.record.push({ b: b.id, out: 'Unhurt' });
+    afterBattle();
+  };
+}
+function serviceEnds() { return S.side === 'U' ? Math.min(51, Math.max(S.lastEnd, S.enlisted + 36)) : 51; }
+function afterBattle() {
+  if (remainingNeeded() > 0) return go('choose', { roll: null });
+  const months = serviceEnds() - S.lastEnd;
+  if (months > 0) { const p = 1 - Math.pow(1 - side().disease, months); return go('camp', { final: true, roll: makeRoll('camp', [['dis', 'Died of disease', p], ['well', 'Survived camp', 1 - p]]), campMonths: months }); }
+  S.fate = { type: 'home', where: '' }; go('end');
+}
+
+// ---- Wounded ----
+function renderWound() {
+  const b = B(S.cur); const r = S.roll; const picked = r.pick != null; const p = side();
+  const msg = { dow: ['bad', 'You died of your wounds.', 'The surgeons did what they could, but infection set in. You died in the hospital weeks after the battle.'],
+    disch: ['mid', 'You were discharged and sent home.', 'The surgeon had to amputate. You are honorably discharged as disabled. Your war is over, but you will carry it for the rest of your life.'],
+    back: ['good', 'You recovered and returned to your regiment.', 'After weeks in the hospital, you are well enough to fight. You rejoin your company.'] }[r.fate];
+  app.innerHTML = `<section class="card fade">
+    ${photo(...PHOTOS.wounded)}
+    <div class="content">
+      <p class="dateline">After ${b.short}</p><h2>The field hospital</h2>
+      <div class="prose"><p>Civil War rifles fired heavy, soft lead bullets that shattered bones. For a badly broken arm or leg, the surest treatment was amputation. Surgeons worked for days without rest, often without washing their hands or instruments. Infection killed many men who survived the surgery.</p></div>
+      <h3 style="margin-top:.8em">${picked ? 'What happened to 100 wounded men like you' : 'Will you recover?'}</h3>
+      <p class="small">${picked ? '' : 'Each figure is one of 100 wounded soldiers. Click one.'}</p>
+      ${gridHTML(r)}
+      ${picked ? `<div class="verdict ${msg[0]}"><b>${msg[1]}</b>${msg[2]}</div>
+      <p class="small">About ${Math.round(p.dow * 100)} of every 100 wounded ${p.name} soldiers died of their wounds${S.side === 'C' ? ' (an estimate; most Confederate medical records burned in 1865)' : ', according to Union army records'}. Records of how many recovered and returned to duty are incomplete; the split between those discharged and those who returned is our estimate.</p>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>` : ''}
+    </div></section>`;
+  if (!picked) { bindGrid(() => render(false)); return; }
+  document.getElementById('next').onclick = () => {
+    if (r.fate === 'dow') { S.record.push({ b: b.id, out: 'Wounded; died of wounds' }); S.fate = { type: 'wounds', where: b.short }; return go('end'); }
+    if (r.fate === 'disch') { S.record.push({ b: b.id, out: 'Wounded; discharged' }); S.discharged = true; S.fate = { type: 'home', where: b.short }; return go('end'); }
+    S.record.push({ b: b.id, out: 'Wounded; returned to duty' }); afterBattle();
+  };
+}
+
+// ---- Captured ----
+function captureRoll(b) {
+  const p = side();
+  const die = b.cap === 'prison' ? p.prison : b.cap === 'held' ? 0.03 : b.cap === 'end' ? 0.02 : 0.01;
+  return makeRoll('capture', [['died', 'Died in captivity', die], ['ok', b.cap === 'prison' || b.cap === 'end' ? 'Survived prison' : 'Exchanged', 1 - die]]);
+}
+function renderCapture() {
+  const b = B(S.cur); const r = S.roll; const picked = r.pick != null; const U = S.side === 'U';
+  const text = {
+    held: U ? ['Prisoner of war', 'You are sent to a Confederate prison, such as a crowded tobacco warehouse in Richmond. There is no agreement yet for trading prisoners, and you wait for months.', 'In 1862 the two sides agree to exchange prisoners, and you are sent back to your regiment.']
+      : ['Prisoner of war', 'You are shipped north to a prison camp such as Camp Douglas in Chicago, where many Southern men suffer through their first northern winter. There is no agreement yet for trading prisoners, and you wait for months.', 'In the fall of 1862 you are exchanged and return to the army.'],
+    parole: ['Paroled', 'Under an agreement made in July 1862, captured soldiers are usually “paroled” within days: you promise not to fight until you are formally exchanged for an enemy prisoner.', 'A few weeks later you are exchanged and return to your regiment.'],
+    prison: [U ? 'Andersonville' : 'A Northern prison camp', `In 1863 prisoner exchanges broke down, partly because the Confederacy refused to exchange Black Union soldiers. Captured men now stay in prison until the war ends. ${U ? 'You are sent south to Andersonville, Georgia, an open stockade where tens of thousands of men live in the mud with almost no food or shelter.' : 'You are sent north to a camp like Point Lookout, Maryland, or Elmira, New York, where prisoners freeze in thin tents and die of disease.'}`, 'You survive and are released when the war ends. You go home weighing a fraction of what you did when you were captured.'],
+    end: ['Prisoner at war’s end', 'You are marched to a Union prison camp. Lee surrenders three days later, but prisoners are held until they sign an oath of loyalty to the United States in the summer of 1865.', 'You are released and walk home.'],
+  }[b.cap];
+  const died = r.fate === 'died';
+  const ph = b.cap === 'prison' && U ? PHOTOS.andersonville : PHOTOS.rebprisoners;
+  app.innerHTML = `<section class="card fade">
+    ${photo(...ph)}
+    <div class="content">
+      <p class="dateline">After ${b.short}</p><h2>${text[0]}</h2>
+      <div class="prose"><p>${text[1]}</p></div>
+      <h3 style="margin-top:.8em">${picked ? 'What happened to 100 prisoners like you' : 'Will you survive captivity?'}</h3>
+      <p class="small">${picked ? '' : 'Each figure is one of 100 prisoners. Click one.'}</p>
+      ${gridHTML(r)}
+      ${picked ? `<div class="verdict ${died ? 'bad' : 'good'}"><b>${died ? 'You died in captivity.' : 'You survived.'}</b>${died ? 'Weakened by hunger and exposure, you died of disease in the prison camp. You were buried in a long trench with hundreds of others.' : text[2]}</div>
+      <p class="small">${b.cap === 'prison' ? `About ${Math.round(side().prison * 100)} of every 100 ${side().name} soldiers held in enemy prisons died there. At Andersonville, about 13,000 of 45,000 Union prisoners died in 14 months.` : 'Before mid-1863, most prisoners were exchanged quickly, and few died in captivity. The death rate here is our estimate.'}</p>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>` : ''}
+    </div></section>`;
+  if (!picked) { bindGrid(() => render(false)); return; }
+  document.getElementById('next').onclick = () => {
+    if (died) { S.record.push({ b: b.id, out: 'Captured; died in prison' }); S.fate = { type: 'prison', where: b.short }; return go('end'); }
+    if (b.cap === 'prison' || b.cap === 'end') { S.record.push({ b: b.id, out: 'Captured; released when the war ended' }); S.released = true; S.fate = { type: 'home', where: b.short }; return go('end'); }
+    S.record.push({ b: b.id, out: 'Captured; exchanged' }); afterBattle();
+  };
+}
+
+// ---- The end ----
+async function postResult() {
+  if (S.posted && ['posted', 'already', 'sending'].includes(S.posted.status)) return;
+  S.posted = { status: 'sending' }; save();
+  try {
+    const lb = await import('./lb.js');
+    S.posted = await lb.postResult(S.player, { side: S.side === 'U' ? 'Union' : 'Confederate', fate: S.fate.type, where: S.fate.where || '', wounded: S.wounded, captured: S.captured, discharged: S.discharged, released: S.released, fought: S.fought });
+  } catch (e) { S.posted = { status: 'error', msg: e && e.message ? e.message : 'no connection' }; }
+  save(); if (S.screen === 'end') render(false);
+}
+function renderEnd() {
+  const f = S.fate; const sd = side(); const name = `Private ${esc(S.player.first)} ${esc(S.player.initial)}.`;
+  const head = { killed: [`Killed in action at ${f.where}`, PHOTOS.grave], wounds: [`Died of wounds received at ${f.where}`, PHOTOS.grave], disease: ['Died of disease', PHOTOS.hospital], prison: [`Died in prison after being captured at ${f.where}`, PHOTOS.grave],
+    home: [S.discharged ? 'Discharged and sent home' : S.released ? 'Released from prison and sent home' : 'You came home', S.side === 'U' ? PHOTOS.homeU : PHOTOS.homeC] }[f.type];
+  const dead = f.type !== 'home';
+  const st = S.posted || {};
+  const status = st.status === 'posted' ? `Your fate is now on the <a href="leaderboard/" target="_blank">class casualty board</a>.` : st.status === 'already' ? `${esc(S.player.first)} ${esc(S.player.initial)}. already has a war on the casualty board. Only your first war counts.` : st.status === 'error' ? `Your result couldn’t be posted: ${esc(st.msg)} <button class="btn" id="retry">Try again</button>` : 'Posting to the class casualty board…';
+  app.innerHTML = `<section class="card fade">
+    ${photo(head[1][0], head[1][1])}
+    <div class="content">
+      <p class="dateline">${name} · ${sd.army}</p>
+      <h2>${head[0]}</h2>
+      <div class="prose">${dead ? `<p>${f.type === 'disease' ? `You died in camp in ${f.when}, one of hundreds of thousands of soldiers killed by sickness.` : 'Your family will learn of your death from a newspaper casualty list or a letter from your captain.'} Thousands of soldiers were buried in unmarked graves and never identified. There were no dog tags; some men pinned paper with their names to their coats before a battle so they could be identified if they fell.</p>`
+        : `<p>${S.discharged ? 'You were sent home with a disability. You will need help to farm or work, and you may apply for a pension.' : S.released ? 'You walk out of the prison camp a skeleton of the soldier you were, but alive.' : `Your service is over. You fought in ${S.fought} battles${S.wounded.length ? ', were wounded, and recovered' : ''}${S.captured.length ? ', and survived capture' : ''}.`} Many veterans carried the war with them for the rest of their lives, in their bodies and in their memories.</p>`}</div>
+      <div class="facts"><h3>Service record</h3><div class="tblwrap"><table class="record"><thead><tr><th>Battle</th><th>Date</th><th>What happened to you</th></tr></thead><tbody>
+        ${S.record.map(x => { const b = x.b ? B(x.b) : null; return `<tr><td>${b ? b.short : 'In camp'}</td><td>${b ? b.date : x.camp}</td><td>${x.out}</td></tr>`; }).join('')}
+      </tbody></table></div></div>
+      <div class="facts"><h3>The real war</h3>
+        <dl><dt>Union soldiers who died</dt><dd>about 360,000, roughly 1 in 6</dd><dt>Confederate soldiers who died</dt><dd>about 260,000, at least 1 in 4</dd><dt>Deaths from disease</dt><dd>about 2 of every 3 deaths</dd><dt>Prisoners who died in captivity</dt><dd>about 56,000</dd></dl>
+        <p class="note">Soldiers’ experiences varied widely. Some regiments fought in a dozen battles; others spent most of the war guarding forts and railroads. This game gives each soldier ${SIDES.U.term} (Union) or ${SIDES.C.term} (Confederate) major battles so that, across a whole class, the results come out close to the real war’s.</p></div>
+      <p class="small" style="margin-top:14px">${status}</p>
+      <h3 style="margin-top:1em">Think about it</h3>
+      <ol class="qs"><li>Did more soldiers in your class die in battle or of disease? Does that match the real war, where disease killed about two of every three?</li>
+        <li>Why was disease so deadly in Civil War camps?</li>
+        <li>Compare the Union and Confederate results on the casualty board. Which side lost a larger share of its soldiers? Why might the Confederacy, with fewer men, have suffered more?</li>
+        <li>Why did prisoners’ chances of dying rise so sharply after 1863?</li>
+        <li>What would it have been like for a family at home waiting for news after a battle?</li></ol>
+      <div class="actions"><a class="btn" href="leaderboard/" target="_blank">See the casualty board</a><button class="btn" id="again">Play again (won’t count)</button></div>
+    </div></section>`;
+  const rt = document.getElementById('retry'); if (rt) rt.onclick = () => { S.posted = null; postResult(); };
+  document.getElementById('again').onclick = () => { const p = S.player; S = blank(); S.player = p; S.posted = null; go('title'); };
+  postResult();
+}
+
+render(false);
+})();
+</script>
+</body>
+</html>
