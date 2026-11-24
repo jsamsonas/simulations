@@ -1,75 +1,762 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>History Simulations</title>
-  <style>
-    :root {
-      --bg: #f6f1e7; --card: #fffdf8; --ink: #2a2520; --muted: #6b6258;
-      --line: #ddd2bf; --accent: #7a2e1f; --tag: #efe6d4;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1c1a17; --card: #26231f; --ink: #ece6dc; --muted: #a89f92;
-        --line: #3a352e; --accent: #e09a7a; --tag: #332e27;
-      }
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--ink);
-      font-family: Georgia, "Times New Roman", serif; line-height: 1.45; }
-    main { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
-    h1 { font-size: 2rem; margin: 0 0 4px; }
-    .lede { color: var(--muted); margin: 0 0 28px; }
-    h2 { font-size: 1.15rem; letter-spacing: .04em; text-transform: uppercase;
-      color: var(--accent); border-bottom: 1px solid var(--line);
-      padding-bottom: 6px; margin: 32px 0 12px; }
-    ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-    a.card { display: block; height: 100%; padding: 14px 16px; background: var(--card);
-      border: 1px solid var(--line); border-radius: 8px; color: inherit;
-      text-decoration: none; transition: border-color .15s, transform .15s; }
-    a.card:hover, a.card:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
-    .t { font-weight: bold; font-size: 1.05rem; }
-    .s { color: var(--muted); font-size: .92rem; margin-top: 2px; }
-    .tag { display: inline-block; margin-top: 8px; font-size: .75rem; font-family: system-ui, sans-serif;
-      background: var(--tag); color: var(--muted); padding: 2px 8px; border-radius: 99px; }
-    footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
-  </style>
-  <script>
-    // The old GitHub Pages address can't save leaderboard scores; send visitors to the Firebase site.
-    if (/github\.io$/.test(location.hostname)) location.replace('https://sams-history.web.app/');
-  </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Through Their Eyes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: parchment cards, one per moment; two tracks (his war / your war); a 10×10 regiment grid decides each fate. */
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0; --paper:#EFF2E9; --paper-2:#E4E8DC; --ink:#22251E; --ink-soft:#565B4F; --rule:#B5BBA9;
+  --river:#3B6987; --seal:#952A2A; --on-seal:#FBF7F2; --brass:#7E5D1C; --brass-fill:#C9A04A;
+  --union:#2F4E7A; --sick:#5E7A3A; --home:#7E8C70; --good:#3F6B34;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme: dark; --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D; --rule:#3A4537;
+  --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B; --brass-fill:#BE9641;
+  --union:#8FB0DE; --sick:#9DBB76; --home:#A6B394; --good:#8FC07D;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8); } }
+:root[data-theme="dark"]{
+  color-scheme: dark; --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D; --rule:#3A4537;
+  --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B; --brass-fill:#BE9641;
+  --union:#8FB0DE; --sick:#9DBB76; --home:#A6B394; --good:#8FC07D;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8); }
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+a{color:var(--river)}
+.shell{max-width:1060px;margin:0 auto;padding-block:18px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.tally{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.tally li{min-width:28px;height:28px;border-radius:99px;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.85rem;color:var(--ink-soft);padding:0 8px}
+.tally li.done{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+.tally li.now{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.track{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:8px 12px;font-size:.95rem;display:flex;gap:10px;align-items:center;min-width:0}
+.track .lbl{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.track b{font-family:var(--display);font-weight:400;font-size:1.1rem;display:block;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;background:var(--good)}
+.dot.dead{background:var(--seal)} .dot.prison{background:var(--river)} .dot.home{background:var(--home)} .dot.wounded{background:var(--brass-fill)}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em;text-wrap:balance}
+h1{font-size:clamp(2.8rem,8vw,5rem);line-height:.95}
+h2{font-size:clamp(1.9rem,4.4vw,2.8rem)}
+h3{font-size:1.45rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.15rem,2.4vw,1.45rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--seal);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:66ch}
+.prose p:last-child{margin-bottom:0}
+.small{font-size:.95rem;color:var(--ink-soft)}
+.split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(18px,3.5vw,40px);align-items:start}
+@media (max-width:780px){.split{grid-template-columns:minmax(0,1fr)}}
+figure.photo{margin:0}
+figure.photo .frame{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;overflow:hidden;display:grid;place-items:center;aspect-ratio:4/3}
+figure.photo.tall .frame{aspect-ratio:4/5}
+figure.photo img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.18)}
+figure.photo.contain img{object-fit:contain}
+figure.photo .missing{padding:20px;text-align:center;font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+figure.photo figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1rem;margin-top:8px;line-height:1.3}
+.field{display:grid;gap:6px}
+.field label{font-weight:700;font-size:1rem}
+.field input,.field select{font:inherit;padding:10px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);width:100%}
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 6px;max-width:680px}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:6px 0 0;font-weight:700}
+.soldiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:10px}
+.soldier{appearance:none;font:inherit;text-align:left;border:1.5px solid var(--rule);background:var(--paper-2);color:var(--ink);border-radius:4px;padding:12px;cursor:pointer;display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start}
+.soldier:hover{border-color:var(--ink-soft)}
+.soldier[aria-pressed="true"]{border-color:var(--seal);box-shadow:0 0 0 3px color-mix(in srgb,var(--seal) 22%,transparent)}
+.soldier .pic{aspect-ratio:4/5;background:var(--paper);border:1px solid var(--rule);overflow:hidden;display:grid;place-items:center}
+.soldier .pic img{width:100%;height:100%;object-fit:cover;filter:sepia(.18)}
+.soldier b{font-family:var(--display);font-weight:400;font-size:1.4rem;display:block;line-height:1.1}
+.soldier .u{font-size:.92rem;color:var(--union);font-weight:700;display:block;margin:3px 0 6px}
+.soldier p{margin:0;font-size:.98rem}
+.soon{opacity:.55;cursor:default}
+.soon:hover{border-color:var(--rule)}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--ink-soft);color:var(--ink-soft);border-radius:99px;padding:0 8px;margin-top:6px}
+.question{font-family:var(--display);font-size:1.45rem;line-height:1.2;margin:1.1em 0 .6em}
+.opts{display:grid;gap:10px}
+.opt{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:12px 16px;cursor:pointer}
+.opt:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.opt[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.opt:disabled{cursor:default}
+.opt:disabled:not([aria-pressed="true"]):not(.right){opacity:.55}
+.opt.right{border-left-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--paper-2))}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft)}
+.opt[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.opt.right .mark{background:var(--good);border-color:var(--good);color:var(--paper)}
+.opt .ob{display:block;font-size:.95rem;color:var(--ink-soft)}
+.opt .od{display:block;font-size:.85rem;font-weight:700;margin-top:4px}
+.od.up{color:var(--seal)} .od.down{color:var(--good)}
+.verdict{display:flex;align-items:center;gap:16px;margin:22px 0 10px}
+.stamp{width:92px;height:92px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.9rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .5s ease-out both}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.1rem}
+blockquote.q{margin:16px 0;padding:14px 18px;border-left:4px solid var(--brass);background:color-mix(in srgb,var(--brass-fill) 10%,var(--paper));font-family:var(--display);font-size:1.3rem;line-height:1.35}
+blockquote.q cite{display:block;font-family:var(--text);font-style:normal;font-size:.9rem;color:var(--ink-soft);margin-top:6px}
+.box{margin-top:16px;border-left:4px solid var(--river);background:color-mix(in srgb,var(--river) 7%,var(--paper));padding:12px 16px;border-radius:0 4px 4px 0}
+.box h3{color:var(--river);font-size:1.2rem;margin-bottom:.25em}
+.box p{margin:0 0 .5em;font-size:1rem}
+.box p:last-child{margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 86%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.facts{margin:18px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:14px 18px;border-radius:2px}
+.facts h3{font-size:1.25rem;margin-bottom:.4em}
+.facts dl{display:grid;grid-template-columns:auto 1fr;gap:3px 18px;margin:0}
+.facts dt{color:var(--ink-soft)} .facts dd{margin:0;font-weight:500;font-variant-numeric:tabular-nums}
+.facts .note{font-size:.9rem;color:var(--ink-soft);margin:.6em 0 0}
+.grid100{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;max-width:440px;margin:14px 0 10px}
+.cell{appearance:none;border:1.5px solid var(--rule);background:var(--paper-2);border-radius:3px;aspect-ratio:1;padding:2px;display:grid;place-items:center;color:var(--ink-soft);cursor:default}
+.cell svg{width:72%;height:72%;fill:currentColor}
+.pick .cell{cursor:pointer}
+.pick .cell:hover{border-color:var(--ink);color:var(--ink)}
+.cell.k{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.cell.w{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.cell.c{background:var(--river);border-color:var(--river);color:var(--paper)}
+.cell.dis{background:var(--sick);border-color:var(--sick);color:var(--paper)}
+.cell.dh{background:var(--home);border-color:var(--home);color:var(--paper)}
+.cell.ok{opacity:.75}
+.cell.me{outline:3px solid var(--ink);outline-offset:2px;opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:1rem;margin:0 0 6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:2px;display:inline-block;border:1.5px solid var(--rule)}
+.legend i.k{background:var(--seal);border-color:var(--seal)} .legend i.w{background:var(--brass-fill);border-color:var(--brass-fill)}
+.legend i.c{background:var(--river);border-color:var(--river)} .legend i.dis{background:var(--sick);border-color:var(--sick)} .legend i.dh{background:var(--home);border-color:var(--home)}
+.result{border-left:5px solid var(--ink-soft);background:var(--paper-2);padding:12px 16px;border-radius:0 3px 3px 0;margin-top:12px}
+.result.bad{border-color:var(--seal)} .result.good{border-color:var(--home)} .result.mid{border-color:var(--brass-fill)}
+.result b{font-family:var(--display);font-weight:400;font-size:1.45rem;display:block}
+.sidebyside{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,28px);margin-top:16px}
+@media (max-width:700px){.sidebyside,.tracks{grid-template-columns:1fr}}
+.col{border:1px solid var(--rule);border-top:5px solid var(--union);background:var(--paper-2);border-radius:3px;padding:14px 16px}
+.col.you{border-top-color:var(--seal)}
+.col h3{margin-bottom:.2em}
+.col .fate{font-family:var(--display);font-size:1.3rem;margin:0 0 .4em}
+.col ol{margin:0;padding-left:1.2em;font-size:.98rem}
+.col li{margin-bottom:4px}
+.letter{max-width:620px;margin:10px auto 0;font-family:var(--display);font-size:1.3rem;line-height:1.5}
+.letter p{margin:0 0 .6em}
+.letter .sig{text-align:right;font-style:italic}
+.tblwrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:1rem;min-width:520px}
+.t th{text-align:left;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--rule);padding:6px 8px}
+.t td{border-bottom:1px solid var(--rule);padding:7px 8px;vertical-align:top}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:1px 8px;border-radius:999px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.sect{margin-top:28px;padding-top:20px;border-top:1px solid var(--rule)}
+ol.qs{padding-left:22px;display:grid;gap:8px}
+textarea.summary{width:100%;min-height:260px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88rem;line-height:1.5;padding:12px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.copyok{color:var(--good);font-weight:700}
+.foot{margin-top:26px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--ink-soft);font-size:.9rem}
+.linkbtn{appearance:none;background:none;border:0;color:var(--ink-soft);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+@media (prefers-reduced-motion:no-preference){.fade{animation:fade .35s ease-out}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}}
+@media (prefers-reduced-motion:reduce){.stamp{animation:none}}
+</style>
 </head>
 <body>
-<main>
-  <h1>History Simulations</h1>
-  <p class="lede">Pick the simulation your class is playing. Your progress saves in this browser, so use the same device each time.</p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="man" viewBox="0 0 20 20"><circle cx="10" cy="3.6" r="2.6"/><path d="M6.2 7.2h7.6l1 6.2h-2.2l-.4 5.6H7.8l-.4-5.6H5.2z"/><path d="M14.6 1.5l.9.2-1.7 11-.9-.2z"/></symbol></svg>
+<div class="shell">
+  <div class="topbar"><span class="brand" id="brand">Through Their Eyes</span><ol class="tally" id="tally" aria-label="Chapters"></ol></div>
+  <div class="tracks" id="tracks" hidden></div>
+  <main id="app" tabindex="-1" aria-live="polite"></main>
+  <div class="foot"><span>Mr. Sam’s History Simulations · <a href="../" style="color:inherit">All simulations</a></span><button class="linkbtn" id="restart" hidden>Start over</button></div>
+</div>
+<script>
+/* ======================================================================
+   THROUGH THEIR EYES
+   Two tracks: predict what a real soldier did (his war), and live the war
+   yourself as a private in his regiment (your war), with real odds.
+   Each chapter: story → prediction → reveal → your choice → your fate.
+   ====================================================================== */
+/*ENGINE-START*/
+// Monthly chance of dying of disease. Union average from Soldier's Odds; Black regiments
+// were given more labor duty and worse medical care, and died of disease about twice as often.
+const DISEASE = { white: 0.0042, black: 0.0085 };
+const DOW = 0.156;          // share of wounded Union soldiers who died of their wounds
+const DISCHARGE = 0.20;     // share of wounded survivors discharged as unfit for service
+// Chance of dying as a prisoner: early-war prisoners were quickly exchanged; after mid-1863 they were not.
+const PRISON = { exchange: 0.03, union: 0.155, andersonville: 0.29 };
 
-  <h2>Early American History</h2>
-  <ul>
-    <li><a class="card" href="colony_sim/"><div class="t">The Colony Simulation</div><div class="s">Found a British colony and guide it to the eve of the Revolution, 1612–1773</div></a></li>
-    <li><a class="card" href="be-washington/"><div class="t">Be Washington</div><div class="s">The beginnings of the French and Indian War, 1753–1754</div><span class="tag">Text game · slow first load</span></a></li>
-    <li><a class="card" href="confederation/"><div class="t">Rope of Sand</div><div class="s">A state under the Articles of Confederation, 1781–1788</div></a></li>
-    <li><a class="card" href="lewis-clark/"><div class="t">Be Lewis and Clark</div><div class="s">The Corps of Discovery, 1804–1806</div></a></li>
-    <li><a class="card" href="mill-town/"><div class="t">The Mill Town Game</div><div class="s">A New England town in the Industrial Revolution, 1823–1855</div></a></li>
-    <li><a class="card" href="john-ross/"><div class="t">Be John Ross</div><div class="s">The Cherokee Nation and the Trail of Tears, 1828–1839</div></a></li>
-    <li><a class="card" href="be-lincoln-sumter/"><div class="t">Be Lincoln: Fort Sumter</div><div class="s">The Fort Sumter Crisis, 1861</div></a></li>
-    <li><a class="card" href="be-lincoln/"><div class="t">Be Lincoln: Wartime President</div><div class="s">Seven hard choices of the Civil War, 1861–1865</div></a></li>
-    <li><a class="card" href="through-their-eyes/"><div class="t">Through Their Eyes</div><div class="s">Follow a real soldier through the war, and fight a war of your own beside him</div></a></li>
-    <li><a class="card" href="civil-war-soldier/"><div class="t">The Soldier’s Odds</div><div class="s">Enlist in the Civil War and face a real soldier’s chances, 1861–1865</div></a></li>
-    <li><a class="card" href="civil_war/"><div class="t">Civil War Simulation</div><div class="s">A soldier’s view of the war, from 1862</div><span class="tag">Text game · slow first load</span></a></li>
-    <li><a class="card" href="civil_war_crossroads/"><div class="t">Crossroads of the Civil War</div><div class="s">Command decisions at the war’s turning points</div><span class="tag">Text game · slow first load</span></a></li>
-  </ul>
+const SOLDIERS = {
+  rhodes: {
+    name: 'Elisha Hunt Rhodes', short: 'Rhodes', unit: '2nd Rhode Island Infantry', race: 'white', years: '1861–1865',
+    img: ['Elisha Hunt Rhodes (7222613128).jpg', 'Elisha Hunt Rhodes, 2nd Rhode Island Infantry.'],
+    blurb: 'A 19-year-old clerk from Rhode Island who fought in the East from the first battle to the last.',
+    intro: [
+      'Elisha Hunt Rhodes was 19 when the war began. His father, a sailor, had drowned at sea, and Elisha helped support his widowed mother. It took a lot of persuading before she let him enlist.',
+      'He joined the 2nd Rhode Island Infantry in June 1861. He was soon made first sergeant, though he later admitted he had no idea what a first sergeant was supposed to do. He kept a diary the whole war. You will follow him, and you will enlist in the same regiment.'
+    ],
+    quote: ['just what a First Sergeant’s duty might be I had no idea.', 'Elisha Hunt Rhodes, on joining the regiment in 1861'],
+    end: 'Rhodes fought in every major campaign of the Army of the Potomac, from Bull Run to Appomattox. He rose from the ranks to command his regiment as a colonel. He went home in July 1865, became a businessman in Providence, and died in 1917. His great-grandson published his diary in 1985.',
+    endFate: 'Survived the war as colonel of his regiment',
+    chapters: [
+      { date: 'July 21, 1861', title: 'Bull Run',
+        img: ['Bull run bridge 1862.jpg', 'The wrecked Stone Bridge over Bull Run, photographed in 1862.'],
+        text: ['Everyone expects one big battle to end the war. On a hot Sunday the Union army attacks along a creek called Bull Run, and the 2nd Rhode Island is one of the first regiments sent in. Your colonel, John Slocum, and your major, Sullivan Ballou, are both mortally wounded.',
+          'By late afternoon the Union line breaks, and the army runs all the way back to Washington.'],
+        predict: { q: 'When Confederate bullets first hit the 2nd Rhode Island, what did Rhodes and the men do?',
+          options: [['charge', 'Charged the Confederate line with bayonets'], ['lay', 'Dropped flat on the ground without waiting for orders'], ['run', 'Broke and ran to the rear'], ['stand', 'Stood in a straight line and fired, as they had drilled']],
+          answer: 'lay', quote: ['immediately laid down without waiting for orders.', 'Rhodes’s diary, describing the regiment under fire at Bull Run'],
+          reveal: 'Brand-new soldiers learned fast. Lying down saved lives, and later in the war veterans did it without thinking. Rhodes survived his first battle and the long, humiliating retreat.' },
+        yours: { q: 'Bullets are snapping overhead. What do you do?',
+          options: [['down', 'Get down and fire from the ground', 'Like the men around you.', { bat: 0.8 }], ['stand', 'Stand and fire, like you were drilled', 'Officers want a straight line.', { bat: 1.25 }]] },
+        fate: { months: 2, k: 481 / 18000, w: 1011 / 18000, c: 1216 / 18000, cap: 'exchange',
+          facts: [['Union soldiers engaged', '18,000'], ['Killed', '481'], ['Wounded', '1,011'], ['Captured or missing', '1,216']],
+          note: 'Whole Union army at Bull Run. Prisoners this early in the war were usually exchanged within months.' } },
+      { date: 'March – August 1862', title: 'The Peninsula',
+        img: ['Savage Station, Va. Field hospital after the battle of June 27 LOC cwpb.01063.jpg', 'Wounded Union soldiers at a field hospital at Savage’s Station, Virginia, June 1862.'],
+        text: ['General George McClellan ships the army to the peninsula southeast of Richmond. By June you are close enough to hear Richmond’s church bells. Then General Robert E. Lee attacks in the Seven Days’ Battles, and McClellan retreats to the James River.',
+          'The real killer on the Peninsula is the swamp. Typhoid, dysentery and malaria put thousands of men in the hospital. Rhodes is promoted to lieutenant in July.'],
+        predict: { q: 'After the Seven Days, McClellan pulls the army back down the Peninsula. What did Rhodes think?',
+          options: [['relief', 'He was relieved to get away from Lee'], ['wrong', 'He thought the army was going the wrong way'], ['home', 'He wanted to go home'], ['lincoln', 'He blamed President Lincoln']],
+          answer: 'wrong', quote: ['We are moving in the wrong direction, it seems to me.', 'Rhodes’s diary, summer 1862'],
+          reveal: 'Like many soldiers, Rhodes was frustrated that the army kept backing away. McClellan’s men loved him, but he was always sure Lee had more men than he did.' },
+        yours: { q: 'The drinking water comes from the swamp. What do you do?',
+          options: [['boil', 'Boil your water and drink coffee', 'It takes time and firewood.', { dis: 0.6 }], ['creek', 'Drink straight from the creek', 'It’s hot and you’re thirsty.', { dis: 1.6 }]] },
+        fate: { months: 12, disMult: 1.2, k: 0.008, w: 0.04, c: 0.015, cap: 'exchange',
+          facts: [['Months covered', 'Aug. 1861 – Aug. 1862'], ['Monthly chance of dying of disease', 'about 0.75% for a first-year soldier on the Peninsula']],
+          note: 'Battle odds here are our estimate for a regiment in the Seven Days. Twice as many Union soldiers died of disease as of battle.' } },
+      { date: 'September 1862 – May 1863', title: 'Antietam and Fredericksburg',
+        img: ['DunkerChurchAntietam1862.jpg', 'Confederate dead near the Dunker Church at Antietam, photographed two days after the battle.'],
+        text: ['Lee invades Maryland. At Antietam, on September 17, 1862, the bloodiest day in American history, your corps arrives late and is mostly held in reserve. Lee’s battered army is trapped with the Potomac River at its back.',
+          'Five days later Lincoln announces the Emancipation Proclamation. That winter and spring you fight at Fredericksburg, and in May 1863 your corps storms the stone wall on Marye’s Heights.'],
+        predict: { q: 'Lee’s army is pinned against the Potomac River after Antietam. What did Rhodes want McClellan to do?',
+          options: [['attack', 'Attack again and drive Lee into the river'], ['rest', 'Let the exhausted army rest'], ['peace', 'Offer the South peace terms'], ['dig', 'Dig in and wait for Lee to attack']],
+          answer: 'attack', quote: ['Oh why did we not attack them and drive them into the river?', 'Rhodes’s diary, September 1862'],
+          reveal: 'McClellan let Lee escape back to Virginia. Lincoln was as frustrated as Rhodes, and in November he fired McClellan.' },
+        yours: { q: 'Your captain asks for volunteers for the skirmish line, the thin line of men out in front of the army.',
+          options: [['skirm', 'Volunteer', 'Skirmishers are the first to be shot at, and the first to be noticed.', { bat: 1.8 }], ['ranks', 'Stay in the ranks', 'Let someone else go.', { bat: 1 }]] },
+        fate: { months: 9, k: 0.02, w: 0.08, c: 0.02, cap: 'exchange',
+          facts: [['Months covered', 'Sept. 1862 – May 1863'], ['Battles', 'Antietam, Fredericksburg, Marye’s Heights']],
+          note: 'Our estimate for a regiment of Rhodes’s corps, which was held back at Antietam but fought hard at Marye’s Heights.' } },
+      { date: 'July 1–3, 1863', title: 'The March to Gettysburg',
+        img: ["A harvest of death, Gettysburg, Pennsylvania - negative by T.H. O'Sullivan; positive by A Gardner. LCCN2006685384.jpg", '“A Harvest of Death,” Gettysburg, July 1863, by Timothy O’Sullivan.'],
+        text: ['Lee has invaded Pennsylvania. On July 1 the armies collide at a crossroads town called Gettysburg. Your corps, the 6th, is camped in Maryland, more than thirty miles away.',
+          'The Union army is outnumbered on the first day. Every man counts.'],
+        predict: { q: 'The 6th Corps is more than 30 miles away when the battle starts. What happened?',
+          options: [['train', 'They rode to Gettysburg by train'], ['march', 'They marched all night and arrived the next afternoon'], ['late', 'They arrived after the battle was over'], ['guard', 'They stayed behind to guard Washington']],
+          answer: 'march',
+          reveal: 'The 6th Corps marched about 35 miles through the night and the next day, in July heat, and reached the battlefield on the afternoon of July 2. Rhodes’s regiment was mostly held in reserve, moving from place to place behind the line, and saw little fighting. On July 3 Lee’s last great attack, Pickett’s Charge, failed.' },
+        yours: { q: 'It is 2 a.m. and you have marched for hours. Your feet are bleeding. What do you do?',
+          options: [['keep', 'Keep up with the column', 'Your friends are counting on you.', { bat: 1 }], ['fall', 'Fall out and rest by the road', 'Hundreds of men do. You might miss the fighting.', { bat: 0.3, dis: 1.2 }]] },
+        fate: { months: 2, k: 3155 / 104256 * 0.25, w: 14531 / 104256 * 0.25, c: 5369 / 104256 * 0.25, cap: 'union',
+          facts: [['Union soldiers engaged', '104,256'], ['Killed', '3,155'], ['Wounded', '14,531'], ['Captured or missing', '5,369']],
+          note: 'Whole Union army at Gettysburg. Because the 6th Corps was mostly in reserve, your odds here are one quarter of these.' } },
+      { date: 'Spring 1864', title: 'Three Years Are Up',
+        img: ['Abandoned Winter Camp - NARA - 525184.jpg', 'Log huts of a Union winter camp in Virginia.'],
+        text: ['After a winter in log huts, a new general arrives to command all Union armies: Ulysses S. Grant. Rhodes wrote that Grant didn’t look like much, but he liked the look in his eye.',
+          'There is a bigger question. The men who enlisted in 1861 signed up for three years. In June 1864 their time is up. The army offers a bounty of hundreds of dollars and a 30-day trip home to every veteran who reenlists. About half of them do.'],
+        predict: { q: 'Rhodes’s three years are almost up. What did he decide?',
+          options: [['home', 'Went home when his term ended'], ['stay', 'Stayed in the army to see the war through'], ['cav', 'Transferred to the cavalry'], ['desk', 'Took a safe job in Washington']],
+          answer: 'stay',
+          reveal: 'Rhodes stayed “with the patriotic purpose of seeing the war through,” as one biography puts it. When the regiment was reorganized in June 1864, he was the senior officer left, and he took command of what remained of the 2nd Rhode Island.' },
+        yours: { q: 'Your three years are almost up too. What will you do?',
+          options: [['reenlist', 'Reenlist', 'Take the bounty and the furlough, and see it through.', { bat: 1 }], ['home', 'Go home when your time is up', 'You’ve done your part. Your war ends here.', { home: true }]] },
+        fate: { months: 9, k: 0, w: 0, c: 0, cap: 'union',
+          facts: [['Months covered', 'July 1863 – April 1864'], ['Danger', 'Disease in winter camp']],
+          note: 'No major battle for your regiment, but disease never stopped.' } },
+      { date: 'May – June 1864', title: 'The Overland Campaign',
+        img: ["General view of the Battle of the Wilderness, from a point north of the tavern, looking toward Parker's store LCCN2004661870.jpg", 'The Battle of the Wilderness, sketched on the spot in May 1864.'],
+        text: ['Grant crosses the Rapidan River and Lee strikes him in the tangled woods of the Wilderness. The brush catches fire. Then come Spotsylvania and Cold Harbor. For six weeks the armies are almost never out of contact.',
+          'Before the attack at Cold Harbor, some soldiers pin slips of paper with their names to their coats so their bodies can be identified.'],
+        predict: { q: 'After the Wilderness, Grant has lost about 17,000 men. Every Union general before him retreated after a battle like that. What did the army do?',
+          options: [['retreat', 'Retreated north to rest and refit'], ['south', 'Turned south and kept marching toward Richmond'], ['stop', 'Stopped and dug in where it was'], ['truce', 'Asked Lee for a truce']],
+          answer: 'south',
+          reveal: 'When the soldiers realized they were turning south, not north, many cheered. Grant had told Lincoln he would not turn back. The cost was enormous: about 55,000 Union casualties in six weeks. Rhodes came through it, and took command of his regiment in June.' },
+        yours: { q: 'The order comes to charge the Confederate trenches at Cold Harbor. What do you do?',
+          options: [['charge', 'Charge as ordered', 'Straight at the earthworks.', { bat: 1.15 }], ['dig', 'Go forward, then dig in as soon as the fire gets heavy', 'Many veterans did exactly this.', { bat: 0.8 }]] },
+        fate: { months: 2, k: 0.045, w: 0.19, c: 0.045, cap: 'union',
+          facts: [['Union casualties', 'about 55,000'], ['Union soldiers', 'about 120,000 at the start, plus thousands of reinforcements'], ['Killed', 'about 7,600'], ['Wounded', 'about 38,000'], ['Captured or missing', 'about 9,000']],
+          note: 'Historians’ estimates for the whole campaign, the Wilderness through Cold Harbor. Because so many reinforcements joined along the way, your odds are a little lower than these totals suggest.' } },
+      { date: 'July – October 1864', title: 'Saving Washington',
+        img: ['Trenches petersburg.jpg', 'Union trenches near Petersburg, Virginia.'],
+        text: ['Lee sends General Jubal Early north to threaten Washington, D.C. Your corps rushes back by steamboat. On July 12 you march into the forts on the edge of the capital, where Early’s men are attacking Fort Stevens.',
+          'Then the corps follows Early into the Shenandoah Valley under General Philip Sheridan. At Winchester in September, Rhodes leads the regiment and is promoted for gallant conduct.'],
+        predict: { q: 'At Fort Stevens, Rhodes saw someone standing on the fort’s wall in plain view of enemy sharpshooters. Who was it?',
+          options: [['grant', 'General Grant'], ['lincoln', 'President Lincoln'], ['stanton', 'Secretary of War Stanton'], ['mother', 'A newspaper reporter']],
+          answer: 'lincoln', quote: ['glad that we had saved Washington from capture.', 'Rhodes’s diary, July 1864'],
+          reveal: 'Abraham Lincoln watched the fight from the parapet of Fort Stevens, the only time a sitting president came under enemy fire in battle. A soldier, by tradition, told him to get down.' },
+        yours: { q: 'At Winchester your colonel needs a volunteer to carry an order across open ground under fire.',
+          options: [['go', 'Volunteer', 'It’s dangerous, and it could make your name.', { bat: 1.6 }], ['stay', 'Keep your place in line', 'Someone else can do it.', { bat: 1 }]] },
+        fate: { months: 4, k: 697 / 39240, w: 3983 / 39240, c: 338 / 39240, cap: 'union',
+          facts: [['Union soldiers engaged at Winchester', 'about 39,000'], ['Killed', '697'], ['Wounded', '3,983'], ['Captured or missing', '338']],
+          note: 'Union army at the Third Battle of Winchester, September 19, 1864.' } },
+      { date: 'December 1864 – April 1865', title: 'Petersburg and the End',
+        img: ['Appomattox Court House, Va. McLean house LOC cwpb.03957.jpg', 'The McLean house at Appomattox Court House, where Lee surrendered on April 9, 1865.'],
+        text: ['The corps returns to the trenches at Petersburg for the winter. Many of the Union soldiers there are Black men of the United States Colored Troops. Rhodes, like many white soldiers, had doubted they would fight.',
+          'On April 2, 1865, your corps breaks through the Confederate lines. Richmond falls the next day, and a week later Lee surrenders at Appomattox.'],
+        predict: { q: 'After watching Black soldiers attack at Petersburg, what did Rhodes write?',
+          options: [['fight', 'That they had proved they would fight'], ['doubt', 'That he still doubted them'], ['jealous', 'That they were getting too much credit'], ['nothing', 'He never mentioned them']],
+          answer: 'fight', quote: ['yesterday’s work convinced me that they will fight.', 'Rhodes’s diary, at Petersburg'],
+          reveal: 'Rhodes changed his mind. A few days before the end, he wrote what the war had come to mean to him: “The end of the war will be the end of slavery.” He was 23 years old and in command of his regiment.' },
+        yours: { q: 'Before dawn on April 2, your regiment will charge the Confederate works. Where do you go?',
+          options: [['first', 'With the first wave', 'Into the abatis and the cannon fire.', { bat: 1.4 }], ['second', 'With the second wave', 'Right behind them.', { bat: 0.8 }]] },
+        fate: { months: 4, k: 0.015, w: 0.06, c: 0.005, cap: 'union',
+          facts: [['Months covered', 'Dec. 1864 – April 1865'], ['Battles', 'Petersburg trenches, the April 2 breakthrough, Sailor’s Creek']],
+          note: 'Our estimate for a regiment of the 6th Corps in the final campaign.' } }
+    ]
+  },
 
-  <h2>World History</h2>
-  <ul>
-    <li><a class="card" href="cotton-town/"><div class="t">The Cotton Town Game</div><div class="s">A Lancashire town in the Industrial Revolution, 1786–1842</div></a></li>
-    <li><a class="card" href="be-lafayette/"><div class="t">Be Lafayette</div><div class="s">Liberty or order? The Revolution in France, 1789–1802</div></a></li>
-    <li><a class="card" href="long-fuse/"><div class="t">The Long Fuse</div><div class="s">A Great Power foreign minister, 1890–1914</div></a></li>
-  </ul>
+  gooding: {
+    name: 'James Henry Gooding', short: 'Gooding', unit: '54th Massachusetts Infantry', race: 'black', years: '1863–1864',
+    img: ['Recruiting poster for the Massachusetts 54th regiment.jpg', 'A recruiting poster calling Black men to join the 54th Massachusetts, 1863.'],
+    blurb: 'A whaling sailor from New Bedford who wrote to the newspaper, and to President Lincoln, from the front.',
+    intro: [
+      'James Henry Gooding was born enslaved in North Carolina in 1838. His freedom was bought when he was a small child, and he grew up and went to school in New York. As a young man he sailed on whaling ships out of New Bedford, Massachusetts, earning as much as $20 a month.',
+      'After the Emancipation Proclamation, Black men could finally join the Union army. Gooding enlisted in the 54th Massachusetts in February 1863, one of the first Black regiments raised in the North. Every week he sent a letter to the New Bedford Mercury, which printed it. You will follow him, and enlist in Company C alongside him.'
+    ],
+    quote: ['our boys out on picket look sharper for snakes than they do for rebels.', 'James Henry Gooding, letter to the New Bedford Mercury, June 1863'],
+    end: 'Gooding was wounded and captured at Olustee, Florida, in February 1864, and sent to the prison camp at Andersonville, Georgia. He died there on July 19, 1864, at age 25, and is buried in grave 3,585 of what is now Andersonville National Cemetery. A month before he died, Congress granted equal pay to Black soldiers. He never learned that the fight he had led was won.',
+    endFate: 'Died a prisoner at Andersonville, July 1864',
+    chapters: [
+      { date: 'February – June 1863', title: 'Joining the 54th',
+        img: ['18630721 To Colored Men! Freedom, Protection, Pay, and a Call to Military Duty! - U.S. National Archives.jpg', 'A recruiting broadside from 1863 promising Black recruits freedom, protection and pay.'],
+        text: ['Recruiters promise the men of the 54th the same pay as white soldiers: $13 a month. The Confederate Congress has announced that captured Black soldiers will be treated as rebel slaves, not prisoners of war. Their white officers could be executed. You enlist anyway.',
+          'In June the regiment reaches the Georgia coast. Colonel James Montgomery orders the 54th to help loot and burn the empty town of Darien, Georgia. Your commander, 25-year-old Colonel Robert Gould Shaw, believes his men are there to fight, not to burn.'],
+        predict: { q: 'What did Colonel Shaw do about the burning of Darien?',
+          options: [['refuse', 'Refused and marched the 54th away'], ['protest', 'Obeyed, then complained about it to higher commanders'], ['join', 'Joined in eagerly'], ['arrest', 'Arrested Colonel Montgomery']],
+          answer: 'protest',
+          reveal: 'Shaw obeyed the order but wrote to complain over Montgomery’s head that looting and burning were unfit work for his regiment. He wanted the 54th to prove itself in a real battle. He would get his chance within a month.' },
+        yours: { q: 'Some men are carrying things out of the empty houses of Darien. What do you do?',
+          options: [['take', 'Take something for yourself', 'The owners fled. Everyone else is doing it.', { note: 'take' }], ['refuse', 'Leave it alone', 'You came to fight, not to steal.', { note: 'refuse' }]] },
+        fate: { months: 4, k: 0, w: 0, c: 0, cap: 'andersonville',
+          facts: [['Months covered', 'Feb. – June 1863'], ['Danger', 'Disease in camp']],
+          note: 'Black regiments were given extra labor duty and worse medical care. They died of disease about twice as often as white regiments.' } },
+      { date: 'July 18, 1863', title: 'Fort Wagner',
+        img: ['The Storming of Ft Wagner-lithograph by Kurz and Allison 1890.jpg', 'The Storming of Fort Wagner, a Kurz & Allison print made in 1890.'],
+        text: ['Fort Wagner guards the entrance to Charleston Harbor, on a narrow strip of sand between the ocean and a marsh. Colonel Shaw asks for the 54th to lead the attack.',
+          'At dusk, after two days with little food or sleep, 600 men of the 54th charge down the beach toward the fort’s walls. Shaw is killed on the parapet. Sergeant William Carney is shot several times but carries the flag back to Union lines, the first act by a Black soldier to earn the Medal of Honor.'],
+        predict: { q: 'How far did the 54th get at Fort Wagner?',
+          options: [['beach', 'They were stopped on the beach and never reached the fort'], ['wall', 'They reached the top of the walls and fought hand to hand'], ['took', 'They captured the fort'], ['ran', 'They broke and ran before reaching the fort']],
+          answer: 'wall', quote: ['We met the foe on the parapet of Wagner with the bayonet', 'Gooding, letter to the Mercury, July 1863'],
+          reveal: 'The attack failed, and the fort never fell to an assault. But the 54th had fought its way onto the walls. In another letter Gooding wrote that “a regiment of white men gave us three cheers as we were passing them,” proof, he said, that the 54th had done its duty as men should. Gooding survived the assault.' },
+        yours: { q: 'The color sergeant goes down in front of you. The flag is lying in the sand.',
+          options: [['flag', 'Pick up the flag and carry it forward', 'Every enemy rifle will aim at you.', { bat: 1.6 }], ['line', 'Keep fighting with your company', 'Someone else will grab it.', { bat: 1 }]] },
+        fate: { months: 1, k: 82 / 600, w: 173 / 600, c: 15 / 600, cap: 'andersonville',
+          facts: [['Men of the 54th in the attack', '600'], ['Killed or never found', '82'], ['Wounded', '173'], ['Captured', '15']],
+          note: 'Counts for the 54th Massachusetts. “Never found” are the 52 men missing and never accounted for; nearly all were killed. Captured Black soldiers were not exchanged.' } },
+      { date: 'August – December 1863', title: 'Seven Dollars a Month',
+        img: ['Recruiting poster for the Massachusetts 54th regiment.jpg', 'The 54th had been promised the same pay as white soldiers.'],
+        text: ['Payday comes at last. The paymaster tells the 54th that Black soldiers will get $10 a month, minus $3 for clothing: $7. White privates get $13 and pay nothing for clothing.',
+          'Many of the men have wives and children at home who depend on that money. Some of their families are falling into poverty.'],
+        predict: { q: 'What did the men of the 54th do on payday?',
+          options: [['take', 'Took the $7 and kept complaining'], ['refuse', 'Refused to take any pay at all until it was equal'], ['quit', 'Laid down their rifles and refused to fight'], ['desert', 'Many deserted and went home']],
+          answer: 'refuse', quote: ['Are we Soldiers, or are we Labourers?', 'Gooding, letter to President Lincoln, September 28, 1863'],
+          reveal: 'The 54th refused every payday for eighteen months, and kept fighting. Gooding wrote directly to the President: if the United States demanded that the Confederacy treat Black prisoners as soldiers, shouldn’t it “set the example herself by paying all her Soldiers alike?” Massachusetts offered to make up the difference from its own treasury. The men refused that too. Equal pay had to come from the United States. In December, Gooding was promoted to corporal.' },
+        yours: { q: 'The paymaster’s table is set up. Your family at home is short of money.',
+          options: [['refuse', 'Refuse the pay with your regiment', 'Nothing until it’s equal.', { note: 'refusepay' }], ['take', 'Take the $7 and send it home', 'Your family needs it now.', { note: 'takepay' }]] },
+        fate: { months: 5, k: 0.004, w: 0.02, c: 0, cap: 'andersonville',
+          facts: [['Months covered', 'Aug. – Dec. 1863'], ['Duty', 'Digging siege trenches on Morris Island under Confederate shellfire']],
+          note: 'Our estimate for shellfire during the siege of Charleston, plus disease.' } },
+      { date: 'February 20, 1864', title: 'Olustee',
+        img: ['Battle of Olustee.jpg', 'The Battle of Olustee, Florida, February 20, 1864.'],
+        text: ['The 54th is sent to Florida. Near a railroad stop called Olustee, the Union army marches into a Confederate force waiting in the pine woods. The Union line collapses, and the 54th is rushed forward from the rear as other regiments break.',
+          'Going into the fight, the men reportedly shout, “Massachusetts and seven dollars a month!”'],
+        predict: { q: 'What did the 54th do at Olustee?',
+          options: [['lead', 'Led a charge that broke the Confederate line'], ['ran', 'Broke and ran with the rest of the army'], ['cover', 'Held the line, covered the retreat, then pulled a train of wounded men by hand'], ['surr', 'Was surrounded and surrendered']],
+          answer: 'cover',
+          reveal: 'The 54th held until dark and covered the army’s retreat. When a train full of wounded soldiers lost its engine, men of the 54th tied ropes to the cars and pulled them by hand for miles. But Corporal Gooding was not with them. He had been shot in the thigh and left on the field. His captain wrote home that he had been killed. He was alive, and a prisoner.' },
+        yours: { q: 'The regiment is pulling back. A wounded friend from Company C calls your name.',
+          options: [['help', 'Go back and carry him', 'Confederate troops are close.', { bat: 1.1, cap: 2.5 }], ['go', 'Fall back with the regiment', 'You can’t save everyone.', { bat: 1 }]] },
+        fate: { months: 2, k: 13 / 510, w: 63 / 510, c: 10 / 510, cap: 'andersonville',
+          facts: [['Men of the 54th at Olustee', 'about 510'], ['Casualties', '86'], ['Killed, wounded, captured', 'about 13, 63 and 10 (our estimate)']],
+          note: 'There are reports that Confederate soldiers killed wounded Black soldiers left on the field at Olustee. Black prisoners were not exchanged.' } },
+      { date: 'March – July 1864', title: 'Andersonville',
+        img: ['Photo of Andersonville Prison, Georgia. View from the main gate Issuing rations to thirty-three thousand prisoners - - Photographed by A.J. Riddle. LCCN2017650850 (cropped).jpg', 'Andersonville Prison, August 1864: some 33,000 prisoners crowded into an open stockade.'],
+        text: ['Gooding is taken to Camp Sumter, the prison stockade at Andersonville, Georgia. There are no barracks, only a creek used for both drinking and sewage. By August more than 30,000 men are crowded inside. Nearly 13,000 will die there.',
+          'Exchanges of prisoners have stopped, largely because the Confederacy refuses to exchange Black soldiers as equals.'],
+        predict: { q: 'In June 1864, Congress finally granted equal pay to Black soldiers. Did Gooding ever learn about it?',
+          options: [['yes', 'Yes, a new prisoner brought the news'], ['no', 'No, he died before the news reached him'], ['letter', 'Yes, in a letter from his wife'], ['freed', 'Yes, after he was exchanged and sent home']],
+          answer: 'no',
+          reveal: 'James Henry Gooding died at Andersonville on July 19, 1864. He was 25. The pay he had fought for, and written to the President about, had been won a month earlier. The 54th received its back pay that fall.' },
+        yours: { q: 'The 54th is back on the South Carolina coast. In November 1864, it is ordered to attack Confederate earthworks at Honey Hill.',
+          options: [['charge', 'Charge with your regiment', 'Through swamp and thick woods.', { bat: 1 }], ['flank', 'Volunteer for the flanking party', 'A smaller group sent around the side. Riskier.', { bat: 1.4 }]],
+          onlyIfActive: true },
+        fate: { months: 9, k: 89 / 5500, w: 629 / 5500, c: 28 / 5500, cap: 'andersonville',
+          facts: [['Union soldiers at Honey Hill', 'about 5,500'], ['Killed', '89'], ['Wounded', '629'], ['Captured or missing', '28']],
+          note: 'Union force at the Battle of Honey Hill, November 30, 1864. If you are a prisoner, your odds come from Andersonville, where about 29% of prisoners died.' } },
+      { date: '1865', title: 'The Last Year',
+        img: ['The Old Flag Never Touched the Ground.jpg', 'Sergeant William Carney of the 54th, who saved the flag at Fort Wagner.'],
+        text: ['In February 1865 the Confederates abandon Charleston, the city the 54th fought so long to reach, and Black soldiers march through its streets. In April the regiment fights one of the last battles of the war, at Boykin’s Mill, South Carolina.',
+          'The 54th is mustered out in August 1865 and sails home to Boston.'],
+        predict: { q: 'About how many Black men served in the Union army and navy by the end of the war?',
+          options: [['20', 'About 20,000'], ['60', 'About 60,000'], ['200', 'About 200,000'], ['600', 'About 600,000']],
+          answer: '200',
+          reveal: 'About 180,000 Black men served in the Union army and about 19,000 in the navy, roughly one in ten Union soldiers. Lincoln wrote in 1864 that without them, the Union could not keep fighting. About 40,000 of them died, most from disease.' },
+        yours: null,
+        fate: { months: 6, k: 0.004, w: 0.02, c: 0, cap: 'union',
+          facts: [['Months covered', 'Jan. – Aug. 1865']],
+          note: 'Our estimate for the regiment’s last months of service.' } }
+    ]
+  }
+};
+const COMING = [['Sam Watkins', '1st Tennessee Infantry (Confederate)'], ['John Ransom', '9th Michigan Cavalry'], ['Henry Morton Stanley', '6th Arkansas, then the Union army'], ['Sarah Emma Edmonds', '2nd Michigan Infantry']];
 
-  <footer>Text games can take up to 30 seconds to load the first time.</footer>
-</main>
+function newGame(player, sid) {
+  return { v: 1, player, sid, ch: 0, step: 'story', preds: [], mine: [], you: { status: 'active', log: [], wounds: 0 }, roll: null, roll2: null, ychoice: null, pchoice: null };
+}
+// New recruits died of disease far more often than veterans who had survived their first year.
+const ROOKIE = 1.5, VETERAN = 0.35;
+function oddsFor(G, chapter, mod) {
+  const S = SOLDIERS[G.sid]; const f = chapter.fate; mod = mod || {};
+  const ci = S.chapters.indexOf(chapter);
+  let served = S.chapters.slice(0, ci).reduce((n, c) => n + c.fate.months, 0), live = 1;
+  for (let m = 0; m < f.months; m++, served++) live *= 1 - DISEASE[S.race] * (served < 12 ? ROOKIE : VETERAN) * (f.disMult || 1) * (mod.dis || 1);
+  const pd = 1 - live;
+  const b = mod.bat == null ? 1 : mod.bat, cm = mod.cap || 1;
+  const k = f.k * b * (1 - pd), w = f.w * b * (1 - pd), c = f.c * b * cm * (1 - pd);
+  return [['dis', 'Died of disease', pd], ['k', 'Killed', k], ['w', 'Wounded', w], ['c', 'Captured', c], ['ok', 'Came through', Math.max(0, 1 - pd - k - w - c)]];
+}
+function woundOdds() { return [['k', 'Died of wounds', DOW], ['dh', 'Discharged and sent home', (1 - DOW) * DISCHARGE], ['ok', 'Recovered and returned', (1 - DOW) * (1 - DISCHARGE)]]; }
+function prisonOdds(kind) { const p = PRISON[kind]; return [['k', 'Died in prison', p], ['ok', kind === 'exchange' ? 'Exchanged and returned' : 'Survived prison', 1 - p]]; }
+function pick(groups, rnd = Math.random) { let r = rnd(); for (const [k, , p] of groups) { if (r < p) return k; r -= p; } return groups[groups.length - 1][0]; }
+// Plays your fate for one chapter with a random number source; used by the page and the balance test.
+function resolve(G, chapter, mod, rnd = Math.random) {
+  const out = { first: pick(oddsFor(G, chapter, mod), rnd), second: null };
+  if (out.first === 'w') out.second = pick(woundOdds(), rnd);
+  if (out.first === 'c') out.second = pick(prisonOdds(chapter.fate.cap), rnd);
+  return out;
+}
+function apply(G, ci, r) {
+  const y = G.you; const C = SOLDIERS[G.sid].chapters[ci];
+  let status = 'active', text;
+  if (r.first === 'dis') { status = 'dead'; text = 'Died of disease'; }
+  else if (r.first === 'k') { status = 'dead'; text = 'Killed in action'; }
+  else if (r.first === 'w') { y.wounds++; if (r.second === 'k') { status = 'dead'; text = 'Wounded, and died of wounds'; } else if (r.second === 'dh') { status = 'home'; text = 'Wounded and discharged'; } else text = 'Wounded, recovered and returned'; }
+  else if (r.first === 'c') {
+    if (r.second === 'k') { status = 'dead'; text = 'Captured, and died in prison'; }
+    else if (C.fate.cap === 'exchange') text = 'Captured, then exchanged';
+    else { status = 'prison-survived'; text = 'Captured, and survived prison'; }
+  } else text = 'Came through';
+  y.log.push({ ci, text, first: r.first, second: r.second });
+  if (status !== 'active') y.status = status;
+  return status;
+}
+/*ENGINE-END*/
+
+// ======================================================================
+// UI
+// ======================================================================
+const KEY = 'throughTheirEyes.v1';
+const TEACHERS = ['Mr. Sam', 'Mrs. Sondej'];
+const IMG = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=1000`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = s => document.querySelector(s);
+const app = $('#app');
+let G = load();
+let setup = { teacher: '', period: '', first: '', initial: '', sid: 'rhodes', err: '' };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
+function load() { try { const g = JSON.parse(localStorage.getItem(KEY)); return g && g.v === 1 ? g : null; } catch (e) { return null; } }
+const S = () => SOLDIERS[G.sid];
+const CH = () => S().chapters[G.ch];
+const yourName = () => `Private ${G.player.first} ${G.player.initial}.`;
+const letters = 'ABCD';
+function photo([file, cap], cls = '') {
+  return `<figure class="photo ${cls}"><div class="frame"><img src="${IMG(file)}" alt="${esc(cap)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'Picture: ' + this.alt}))"></div><figcaption>${esc(cap)}</figcaption></figure>`;
+}
+const quote = q => q ? `<blockquote class="q">“${esc(q[0])}”<cite>${esc(q[1])}</cite></blockquote>` : '';
+const pct = p => p < 0.01 && p > 0 ? (p * 100).toFixed(1) + '%' : Math.round(p * 100) + '%';
+
+// ---------- chrome ----------
+const YOU = { active: ['', 'In the ranks'], dead: ['dead', 'Did not survive'], home: ['home', 'Sent home'], 'prison-survived': ['prison', 'Prisoner until war’s end'], wenthome: ['home', 'Went home'] };
+function renderChrome() {
+  $('#restart').hidden = !G;
+  if (!G || G.step === 'intro') { $('#tally').innerHTML = ''; $('#tracks').hidden = true; $('#brand').textContent = 'Through Their Eyes'; if (!G) return; }
+  const chs = S().chapters;
+  $('#brand').textContent = `Through Their Eyes · ${S().short}`;
+  $('#tally').innerHTML = chs.map((c, i) => `<li class="${i < G.ch || G.step === 'end' ? 'done' : i === G.ch ? 'now' : ''}" title="${esc(c.title)}">${i + 1}</li>`).join('');
+  if (G.step === 'intro') return;
+  const y = G.you; const [cls, lbl] = YOU[y.status];
+  const last = y.log[y.log.length - 1];
+  $('#tracks').hidden = false;
+  $('#tracks').innerHTML = `<div class="track"><span class="dot"></span><div style="min-width:0"><span class="lbl">His war · ${esc(S().unit)}</span><b>${esc(S().name)}</b></div><span style="flex:1"></span><span class="small">${G.preds.filter(p => p.match).length}/${G.preds.length} predicted</span></div>
+    <div class="track"><span class="dot ${y.wounds && y.status === 'active' ? 'wounded' : cls}"></span><div style="min-width:0"><span class="lbl">Your war</span><b>${esc(yourName())}</b></div><span style="flex:1"></span><span class="small">${lbl}${y.wounds && y.status === 'active' ? ' (wounded ' + y.wounds + '×)' : ''}</span></div>`;
+}
+
+// ---------- setup ----------
+function renderSetup() {
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">The Civil War, 1861 – 1865</p>
+    <h1>Through Their Eyes</h1>
+    <p class="sub">Follow a real soldier through the Civil War, and fight a war of your own beside him.</p>
+    <div class="prose"><p>The soldier you follow really lived, and his story is already written. At each turning point, predict what he did, then read what really happened, often in his own words.</p>
+      <p>You will also enlist as a private in his regiment. Your choices change your odds, but the odds themselves are real. You may come home, or you may not. At the end, you’ll compare your war with his.</p></div>
+    <h3 style="margin-top:22px">Choose your soldier</h3>
+    <div class="soldiers">
+      ${Object.entries(SOLDIERS).map(([id, s]) => `<button class="soldier" data-sid="${id}" aria-pressed="${setup.sid === id}"><span class="pic"><img src="${IMG(s.img[0])}" alt="" onerror="this.remove()"></span><span><b>${s.name}</b><span class="u">${s.unit} · ${s.years}</span><p>${s.blurb}</p></span></button>`).join('')}
+      ${COMING.map(([n, u]) => `<div class="soldier soon" aria-disabled="true" style="grid-template-columns:1fr"><span><b>${n}</b><span class="u" style="color:var(--ink-soft)">${u}</span><span class="badge">Coming soon</span></span></div>`).join('')}
+    </div>
+    <div class="who">
+      <div class="field"><label for="teacher">Your teacher</label><select id="teacher"><option value="">Choose…</option>${TEACHERS.map(t => `<option ${setup.teacher === t ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+      <div class="field"><label for="period">Class period</label><select id="period"><option value="">Choose…</option>${[1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option ${String(setup.period) === String(n) ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+      <div class="field"><label for="first">First name</label><input id="first" maxlength="15" autocomplete="off" value="${esc(setup.first)}"></div>
+      <div class="field"><label for="initial">Last initial</label><input id="initial" maxlength="1" autocomplete="off" value="${esc(setup.initial)}" style="text-transform:uppercase"></div>
+    </div>
+    <p class="hint" role="alert">${esc(setup.err)}</p>
+    <div class="actions"><button class="btn primary" id="go">Enlist</button><span class="small">Your progress saves in this browser.</span></div>
+  </section>`;
+  app.querySelectorAll('[data-sid]').forEach(b => b.onclick = () => { readForm(); setup.sid = b.dataset.sid; renderSetup(); });
+  $('#go').onclick = () => {
+    readForm();
+    const first = setup.first.trim().replace(/\s+/g, ''), ini = setup.initial.trim().toUpperCase();
+    setup.err = !setup.teacher ? 'Choose your teacher.' : !setup.period ? 'Choose your class period.' : !/^[A-Za-z][A-Za-z'-]{0,14}$/.test(first) ? 'Type your first name using letters only.' : !/^[A-Z]$/.test(ini) ? 'Type the first letter of your last name.' : '';
+    if (setup.err) { renderSetup(); return; }
+    G = newGame({ teacher: setup.teacher, period: setup.period, first: first[0].toUpperCase() + first.slice(1).toLowerCase(), initial: ini }, setup.sid);
+    G.step = 'intro'; save(); render();
+  };
+}
+function readForm() { setup.teacher = $('#teacher').value; setup.period = $('#period').value; setup.first = $('#first').value; setup.initial = $('#initial').value; }
+
+// ---------- intro ----------
+function renderIntro() {
+  const s = S();
+  app.innerHTML = `<section class="card fade"><div class="split">
+    <div><p class="dateline">${esc(s.unit)} · ${s.years}</p><h2>${esc(s.name)}</h2><div class="prose">${s.intro.map(p => `<p>${esc(p)}</p>`).join('')}</div>${quote(s.quote)}</div>
+    ${photo(s.img, 'tall')}</div>
+    <div class="box"><h3>How this works</h3><p><b>His war:</b> at each chapter, predict what ${esc(s.short)} did. You’ll find out if you were right.</p><p><b>Your war:</b> you are ${esc(yourName())}, a private in the same regiment. You make one choice each chapter, then choose your place among 100 soldiers to see what happens to you. The odds are based on real numbers.</p></div>
+    <div class="actions"><button class="btn primary" id="go">Begin</button></div></section>`;
+  $('#go').onclick = () => { G.step = 'story'; save(); render(); };
+}
+
+// ---------- chapter ----------
+function renderStory() {
+  const C = CH(), s = S(), P = C.predict;
+  app.innerHTML = `<section class="card fade"><div class="split">
+    <div><p class="dateline">Chapter ${G.ch + 1} of ${s.chapters.length} · ${esc(C.date)}</p><h2>${esc(C.title)}</h2><div class="prose">${C.text.map(p => `<p>${esc(p)}</p>`).join('')}</div></div>
+    ${photo(C.img)}</div>
+    <p class="question">${esc(P.q)}</p>
+    <div class="opts">${P.options.map(([k, l], i) => `<button class="opt" data-k="${k}" aria-pressed="${G.pchoice === k}"><span class="mark">${letters[i]}</span><span>${esc(l)}</span></button>`).join('')}</div>
+    <div class="actions"><button class="btn primary" id="go" ${G.pchoice ? '' : 'disabled'}>Lock in my prediction</button></div></section>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => { G.pchoice = b.dataset.k; app.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#go').disabled = false; });
+  $('#go').onclick = () => { G.preds[G.ch] = { pick: G.pchoice, match: G.pchoice === P.answer }; G.step = 'reveal'; save(); render(); };
+}
+function renderReveal() {
+  const C = CH(), P = C.predict, pr = G.preds[G.ch];
+  const ans = P.options.find(o => o[0] === P.answer)[1];
+  const nextLabel = G.you.status === 'active' && C.yours ? 'Now, your war' : G.you.status === 'active' ? 'See what happens to you' : nextChapterLabel();
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">Chapter ${G.ch + 1} · ${esc(C.date)}</p><h2>${esc(C.title)}</h2>
+    <p class="question" style="margin-top:.4em">${esc(P.q)}</p>
+    <div class="opts">${P.options.map(([k, l], i) => `<button class="opt ${k === P.answer ? 'right' : ''}" aria-pressed="${pr.pick === k}" disabled><span class="mark">${k === P.answer ? '✓' : letters[i]}</span><span>${esc(l)}</span></button>`).join('')}</div>
+    <div class="verdict"><div class="stamp ${pr.match ? 'match' : 'diff'}">${pr.match ? 'You<br>called it' : 'Not what<br>happened'}</div>
+      <p>${pr.match ? 'You predicted what ' + esc(S().short) + ' did.' : 'What really happened: <b>' + esc(ans) + '</b>.'}</p></div>
+    ${quote(P.quote)}
+    <div class="prose"><p>${esc(P.reveal)}</p></div>
+    <div class="actions"><button class="btn primary" id="go">${nextLabel}</button></div></section>`;
+  $('#go').onclick = () => {
+    if (G.you.status !== 'active') return advance();
+    G.step = C.yours ? 'choice' : 'fate'; G.ychoice = null;
+    if (!C.yours) startRoll({});
+    save(); render();
+  };
+}
+function renderChoice() {
+  const C = CH(), Y = C.yours;
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">Your war · ${esc(C.date)}</p><h2>${esc(yourName())}</h2>
+    <p class="question" style="margin-top:.4em">${esc(Y.q)}</p>
+    <div class="opts">${Y.options.map(([k, l, b, m], i) => `<button class="opt" data-k="${k}" aria-pressed="${G.ychoice === k}"><span class="mark">${letters[i]}</span><span>${esc(l)}<span class="ob">${esc(b)}</span>${effect(m)}</span></button>`).join('')}</div>
+    <div class="actions"><button class="btn primary" id="go" ${G.ychoice ? '' : 'disabled'}>Decide</button></div></section>`;
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => { G.ychoice = b.dataset.k; app.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#go').disabled = false; });
+  $('#go').onclick = () => {
+    const m = Y.options.find(o => o[0] === G.ychoice)[3];
+    G.mine[G.ch] = G.ychoice;
+    if (m.home) { G.you.status = 'wenthome'; G.you.log.push({ ci: G.ch, text: 'Went home when your enlistment ended' }); G.step = 'went'; save(); render(); return; }
+    startRoll(m); G.step = 'fate'; save(); render();
+  };
+}
+function effect(m) {
+  if (m.home) return '<span class="od down">Your war ends</span>';
+  const parts = [];
+  if (m.bat != null && m.bat !== 1) parts.push(m.bat > 1 ? ['up', 'More dangerous in battle'] : ['down', 'Safer in battle']);
+  if (m.dis && m.dis !== 1) parts.push(m.dis > 1 ? ['up', 'More risk of disease'] : ['down', 'Less risk of disease']);
+  if (m.cap) parts.push(['up', 'Higher chance of capture']);
+  return parts.map(([c, t]) => `<span class="od ${c}">${t}</span>`).join('');
+}
+function renderWent() {
+  app.innerHTML = `<section class="card fade"><p class="dateline">${esc(CH().date)}</p><h2>You Go Home</h2>
+    <div class="prose"><p>Your enlistment is up. You turn in your rifle, collect your discharge papers and ride the train home. About half the veterans of 1861 made the same choice. Nobody could blame them.</p>
+    <p>Your war is over, and you survived it. But ${esc(S().short)}’s war is not. Keep following him to the end.</p></div>
+    <div class="actions"><button class="btn primary" id="go">${nextChapterLabel()}</button></div></section>`;
+  $('#go').onclick = advance;
+}
+
+// ---------- the 100-soldier grid ----------
+function makeRoll(groups, fate) {
+  const counts = groups.map(([k, , p]) => [k, Math.round(p * 100)]);
+  const mine = counts.find(c => c[0] === fate); if (mine[1] === 0) mine[1] = 1;
+  const last = counts[counts.length - 1];
+  last[1] = Math.max(0, 100 - counts.slice(0, -1).reduce((s, c) => s + c[1], 0));
+  const cells = counts.flatMap(([k, n]) => Array(n).fill(k)).slice(0, 100);
+  while (cells.length < 100) cells.push(last[0]);
+  for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
+  return { groups: groups.map(([k, l, p]) => [k, l, p]), counts: Object.fromEntries(counts), fate, cells, pick: null };
+}
+const cellCls = k => ({ k: 'k', w: 'w', c: 'c', dis: 'dis', dh: 'dh', ok: 'ok' }[k]);
+function gridHTML(roll) {
+  const picked = roll.pick != null;
+  return `<div class="grid100 ${picked ? '' : 'pick'}" role="group" aria-label="${picked ? 'Your regiment' : 'Choose your place among 100 soldiers'}">
+    ${roll.cells.map((k, i) => `<button class="cell ${picked ? cellCls(k) : ''}${picked && i === roll.pick ? ' me' : ''}" data-cell="${i}" ${picked ? 'disabled' : ''} aria-label="${picked ? (i === roll.pick ? 'You: ' : '') + roll.groups.find(g => g[0] === k)[1] : 'Soldier ' + (i + 1)}"><svg aria-hidden="true"><use href="#man"/></svg></button>`).join('')}
+  </div>${picked ? `<div class="legend">${roll.groups.filter(g => roll.counts[g[0]]).map(([k, l]) => `<span><i class="${cellCls(k)}"></i>${l}: ${roll.counts[k]}</span>`).join('')}</div>` : '<p class="small">Click any soldier to take your place in the regiment.</p>'}`;
+}
+function bindGrid(roll, done) {
+  app.querySelectorAll('.pick .cell').forEach(b => b.onclick = () => {
+    const i = +b.dataset.cell; roll.pick = i;
+    const j = roll.cells.findIndex((k, x) => k === roll.fate && x !== i);
+    if (roll.cells[i] !== roll.fate && j >= 0) [roll.cells[i], roll.cells[j]] = [roll.cells[j], roll.cells[i]];
+    save(); done();
+  });
+}
+function startRoll(mod) {
+  const C = CH(); const r = resolve(G, C, mod);
+  G.res = r;
+  G.roll = makeRoll(oddsFor(G, C, mod), r.first);
+  G.roll2 = r.second ? makeRoll(r.first === 'w' ? woundOdds() : prisonOdds(C.fate.cap), r.second) : null;
+  G.applied = false;
+}
+const FIRST = { dis: ['bad', 'You died of disease.', 'Like two of every three soldiers who died in the war, you never fell in battle. Fever and dysentery killed you in camp.'],
+  k: ['bad', 'You were killed.', ''], w: ['mid', 'You were wounded.', 'You are carried to a field hospital. What happens next?'],
+  c: ['mid', 'You were captured.', ''], ok: ['good', 'You came through.', 'You are alive and in one piece, for now.'] };
+function renderFate() {
+  const C = CH(), f = C.fate, roll = G.roll;
+  const first = roll.pick != null ? FIRST[roll.fate] : null;
+  const capText = f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">Your war · ${esc(C.date)}</p><h2>${esc(C.title)}</h2>
+    <div class="split"><div>${gridHTML(roll)}
+      ${first ? `<div class="result ${first[0]}"><b>${first[1]}</b>${first[2] || (roll.fate === 'c' ? capText : '')}</div>` : ''}
+      ${first && G.roll2 ? `<h3 style="margin-top:18px">${roll.fate === 'w' ? 'The surgeon' : 'Prison'}</h3>${gridHTML(G.roll2)}${G.roll2.pick != null ? `<div class="result ${G.roll2.fate === 'k' ? 'bad' : G.roll2.fate === 'dh' ? 'good' : 'mid'}"><b>${G.roll2.groups.find(g => g[0] === G.roll2.fate)[1]}.</b>${secondText()}</div>` : ''}` : ''}
+    </div>
+    <div><div class="facts"><h3>The real numbers</h3><dl>${f.facts.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join('')}</dl><p class="note">${esc(f.note)}</p></div>
+      <div class="facts"><h3>Your odds this chapter</h3><dl>${roll.groups.filter(g => g[2] > 0.0005).map(([k, l, p]) => `<dt>${l}</dt><dd>${pct(p)}</dd>`).join('')}</dl><p class="note">Includes disease over ${f.months} month${f.months > 1 ? 's' : ''}${G.ychoice ? ' and your choice' : ''}.</p></div></div></div>
+    ${done() ? `<div class="actions"><button class="btn primary" id="go">${G.you.status === 'active' ? nextChapterLabel() : 'Keep following ' + esc(S().short)}</button></div>` : ''}
+  </section>`;
+  if (roll.pick == null) bindGrid(roll, renderFate);
+  else if (G.roll2 && G.roll2.pick == null) bindGrid(G.roll2, renderFate);
+  if (done() && !G.applied) { apply(G, G.ch, G.res); G.applied = true; save(); renderChrome(); }
+  const go = $('#go'); if (go) go.onclick = advance;
+}
+function done() { return G.roll.pick != null && (!G.roll2 || G.roll2.pick != null); }
+function secondText() {
+  const r = G.roll2.fate, first = G.roll.fate;
+  if (first === 'w') return r === 'k' ? ' Infection was the killer. Surgeons had no idea germs existed.' : r === 'dh' ? ' Your wound is too serious for you to keep fighting. You are going home.' : ' After weeks in the hospital, you rejoin your regiment.';
+  return r === 'k' ? ' Hunger, exposure and disease killed you in prison.' : CH().fate.cap === 'exchange' ? ' After a few months you are exchanged and return to your regiment.' : ' You survive, starving and sick, until the war ends.';
+}
+function nextChapterLabel() { return G.ch + 1 < S().chapters.length ? 'Next: ' + S().chapters[G.ch + 1].title : 'How it ended'; }
+function advance() {
+  G.roll = G.roll2 = G.res = null; G.pchoice = G.ychoice = null;
+  if (G.ch + 1 < S().chapters.length) { G.ch++; G.step = 'story'; }
+  else { G.step = G.you.status === 'dead' ? 'letter' : 'end'; }
+  save(); render();
+}
+
+// ---------- the letter ----------
+function renderLetter() {
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">Spotsylvania, Virginia · May 10, 1864</p><h2>A Soldier’s Last Letter</h2>
+    <div class="prose"><p>You did not survive the war. Neither did about 620,000 other soldiers. Most of their families never saw them again, and many never learned exactly how they died.</p>
+      <p>James Robert Montgomery was a 26-year-old Confederate private from Camden, Mississippi. On May 10, 1864, a shell fragment tore into his right shoulder. Knowing he was dying, he wrote to his father. His blood is still on the paper.</p></div>
+    <div class="letter">
+      <p>“Dear Father. This is my last letter to you.</p>
+      <p>I have been struck by a piece of shell and my right shoulder is horribly mangled and I know death is inevitable.</p>
+      <p>My grave will be marked so that you may visit it if you desire to do so.</p>
+      <p>Give my love to all my friends.</p>
+      <p>Again, a long farewell to you. May we meet in heaven.</p>
+      <p class="sig">Your dying son, J. R. Montgomery”</p>
+    </div>
+    <p class="small" style="margin-top:16px">Excerpts from the letter, as read in the PBS documentary <i>Death and the Civil War</i> (2012). His family never found his grave, so they could never bring him home.</p>
+    <div class="actions"><button class="btn primary" id="go">See how ${esc(S().short)}’s war ended</button></div></section>`;
+  $('#go').onclick = () => { G.step = 'end'; save(); render(); };
+}
+
+// ---------- end ----------
+function yourFate() {
+  const st = G.you.status, last = G.you.log[G.you.log.length - 1];
+  const c = S().chapters[last.ci];
+  if (st === 'dead') return last.first === 'dis' ? `Died of disease in camp during “${c.title}” (${c.date})` : `${last.text}: ${c.title}, ${c.date}`;
+  if (st === 'home') return `Wounded and discharged, ${S().chapters[last.ci].date}. Survived.`;
+  if (st === 'wenthome') return 'Went home when your enlistment ended. Survived.';
+  if (st === 'prison-survived') return 'Captured, and survived prison until the war ended.';
+  return G.you.wounds ? `Survived the war, wounded ${G.you.wounds} time${G.you.wounds > 1 ? 's' : ''}` : 'Survived the war without a wound';
+}
+function report() {
+  const s = S(), p = G.player, n = G.preds.filter(x => x.match).length;
+  const L = ['THROUGH THEIR EYES - SUMMARY REPORT', `Student: ${p.first} ${p.initial}.   Teacher: ${p.teacher}   Period: ${p.period}`,
+    `Soldier followed: ${s.name}, ${s.unit}`, `Completed: ${new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}`, '',
+    `HIS WAR: ${s.endFate}`, `Predictions correct: ${n} of ${s.chapters.length}`, '', `YOUR WAR: ${yourFate()}`, '', 'CHAPTER BY CHAPTER'];
+  s.chapters.forEach((c, i) => {
+    const pr = G.preds[i]; const y = G.you.log.find(l => l.ci === i);
+    const yo = c.yours && G.mine[i] ? c.yours.options.find(o => o[0] === G.mine[i])[1] : null;
+    L.push(`${i + 1}. ${c.date} - ${c.title}`);
+    if (pr) L.push(`   Prediction: ${pr.match ? 'correct' : 'missed'} (${c.predict.options.find(o => o[0] === pr.pick)[1]})`);
+    if (yo) L.push(`   Your choice: ${yo}`);
+    if (y) L.push(`   Your fate: ${y.text}`);
+  });
+  return L.join('\n');
+}
+function renderEnd() {
+  const s = S(), n = G.preds.filter(x => x.match).length, alive = G.you.status !== 'dead';
+  app.innerHTML = `<section class="card fade">
+    <p class="dateline">${esc(s.unit)} · ${s.years}</p><h2>Two Wars</h2>
+    <div class="sidebyside">
+      <div class="col"><span class="small">His war</span><h3>${esc(s.name)}</h3><p class="fate">${esc(s.endFate)}</p><p style="font-size:1rem;margin:0">${esc(s.end)}</p></div>
+      <div class="col you"><span class="small">Your war</span><h3>${esc(yourName())}</h3><p class="fate">${esc(yourFate())}</p>
+        <ol>${G.you.log.map(l => `<li><b>${esc(s.chapters[l.ci].title)}:</b> ${esc(l.text)}</li>`).join('')}</ol></div>
+    </div>
+    <div class="sect"><h3>Your predictions: ${n} of ${s.chapters.length}</h3><div class="tblwrap"><table class="t"><thead><tr><th>Chapter</th><th>What really happened</th><th></th></tr></thead><tbody>
+      ${s.chapters.map((c, i) => { const pr = G.preds[i]; return `<tr><td><b>${esc(c.title)}</b><br><span class="small">${esc(c.date)}</span></td><td>${esc(c.predict.options.find(o => o[0] === c.predict.answer)[1])}</td><td>${pr ? `<span class="tag ${pr.match ? 'match' : 'diff'}">${pr.match ? 'Called it' : 'Missed'}</span>` : ''}</td></tr>`; }).join('')}
+    </tbody></table></div></div>
+    <div class="sect"><h3>Think about it</h3><ol class="qs">
+      <li>Your war and ${esc(s.short)}’s war turned out ${alive === (s.endFate.startsWith('Survived')) ? 'the same way' : 'differently'}. How much of each soldier’s fate came from choices, and how much from luck?</li>
+      <li>Which of ${esc(s.short)}’s choices surprised you most? What does it tell you about him?</li>
+      <li>${G.sid === 'gooding' ? 'Why did the men of the 54th refuse to take unequal pay, even when their families were suffering? Would you have?' : 'Rhodes changed his mind about Black soldiers and about what the war was for. What changed it?'}</li>
+      <li>More soldiers died of disease than in battle. Why do you think that was?</li>
+    </ol></div>
+    <div class="sect"><h3>Your summary report</h3><p class="small">Copy this report and paste it into Canvas.</p>
+      <textarea class="summary" id="rep" readonly>${esc(report())}</textarea>
+      <div class="actions"><button class="btn primary" id="copy">Copy report</button><span id="copied" class="copyok" aria-live="polite"></span><span style="flex:1"></span><button class="btn" id="again">Follow another soldier</button></div></div>
+  </section>`;
+  $('#copy').onclick = async () => {
+    const t = $('#rep'); let ok = false;
+    try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); try { ok = document.execCommand('copy'); } catch (e2) {} }
+    $('#copied').textContent = ok ? 'Copied! Now paste it into Canvas.' : 'Select the text above and copy it.';
+  };
+  $('#again').onclick = () => wipe(true);
+}
+
+// ---------- router ----------
+function wipe(keepPlayer) {
+  if (G && keepPlayer) setup = { ...setup, teacher: G.player.teacher, period: G.player.period, first: G.player.first, initial: G.player.initial, err: '' };
+  G = null; try { localStorage.removeItem(KEY); } catch (e) {} render();
+}
+$('#restart').onclick = () => {
+  const b = $('#restart');
+  if (G && G.step !== 'end' && !b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Click again to erase this game'; setTimeout(() => { delete b.dataset.sure; b.textContent = 'Start over'; }, 4000); return; }
+  delete b.dataset.sure; b.textContent = 'Start over'; wipe(true);
+};
+function render() {
+  renderChrome();
+  if (!G) renderSetup();
+  else ({ intro: renderIntro, story: renderStory, reveal: renderReveal, choice: renderChoice, fate: renderFate, went: renderWent, letter: renderLetter, end: renderEnd })[G.step]();
+  window.scrollTo(0, 0); app.focus({ preventScroll: true });
+}
+render();
+</script>
 </body>
 </html>
