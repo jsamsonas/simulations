@@ -1,63 +1,944 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Colony Simulation</title>
-  <!-- mini-coi must load first: it lets input() work on GitHub Pages -->
-  <script src="./mini-coi.js" scope="./"></script>
-  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
-  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
-  <style>
-    body { margin: 0; background: #1e1e1e; color: #ddd; font-family: Georgia, serif; }
-    header { padding: 16px; text-align: center; }
-    h1 { margin: 0; font-size: 1.6rem; }
-    #loading { margin: 8px 0 0; font-style: italic; color: #aaa; }
-    main { max-width: 900px; margin: 0 auto; padding: 0 16px 24px; }
-    #report { margin-top: 20px; }
-    #report h2 { font-size: 1.2rem; margin: 0 0 8px; }
-    #report-text { width: 100%; box-sizing: border-box; height: 340px; background: #111; color: #eee;
-      border: 1px solid #555; padding: 10px; font: 14px/1.4 monospace; }
-    #copy-btn { margin-top: 8px; padding: 10px 18px; font-size: 1rem; cursor: pointer;
-      background: #2f5d8a; color: #fff; border: 0; border-radius: 6px; }
-    #copy-status { margin-left: 10px; color: #9fd49f; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Colony Simulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#DCD6C8; --paper:#F3EEE3; --paper-2:#E8E1D2; --ink:#26221B; --ink-soft:#5E574A; --rule:#BFB49F;
+  --river:#335F7E; --seal:#8E2F23; --on-seal:#FBF6EF; --brass:#7A5A1A; --brass-fill:#C9A04A;
+  --good:#3F6B34; --bad:#A13A2A; --warn:#B07A12;
+  --c-food:#6B8E3A; --c-economy:#B08A2E; --c-population:#335F7E; --c-natives:#9A5B2E; --c-britain:#8E2F23;
+  --shadow:0 1px 0 rgba(38,34,27,.06), 0 18px 40px -24px rgba(38,34,27,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#13110D; --paper:#1E1B15; --paper-2:#27231B; --ink:#EAE3D4; --ink-soft:#ADA48F; --rule:#433C30;
+    --river:#8DB6D2; --seal:#DE7A66; --on-seal:#1E0E0A; --brass:#DFBD6B; --brass-fill:#BE9641;
+    --good:#8FC07D; --bad:#EE8A75; --warn:#E3B14F;
+    --c-food:#9BC062; --c-economy:#DDB65A; --c-population:#8DB6D2; --c-natives:#D49565; --c-britain:#DE7A66;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#13110D; --paper:#1E1B15; --paper-2:#27231B; --ink:#EAE3D4; --ink-soft:#ADA48F; --rule:#433C30;
+  --river:#8DB6D2; --seal:#DE7A66; --on-seal:#1E0E0A; --brass:#DFBD6B; --brass-fill:#BE9641;
+  --good:#8FC07D; --bad:#EE8A75; --warn:#E3B14F;
+  --c-food:#9BC062; --c-economy:#DDB65A; --c-population:#8DB6D2; --c-natives:#D49565; --c-britain:#DE7A66;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+.shell{max-width:1040px;margin:0 auto;padding:16px clamp(16px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.brand{font-family:var(--display);font-size:1.25rem;color:var(--ink-soft)}
+.seals{display:flex;gap:5px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.seals li{font-family:var(--display);font-size:.82rem;color:var(--ink-soft);border:1.5px solid var(--rule);border-radius:999px;padding:1px 8px}
+.seals li.done{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+.seals li.now{border-color:var(--seal);color:var(--seal);font-weight:700}
+.seals li.lost{background:var(--bad);border-color:var(--bad);color:var(--paper)}
+
+/* meters */
+.status{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);padding:8px 0 10px;margin-bottom:6px}
+.status-in{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:10px 12px}
+@media (max-width:640px){.status-in{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:8px}}
+.meter .lbl{display:flex;justify-content:space-between;gap:4px;font-size:.82rem;color:var(--ink-soft);line-height:1.2}
+.meter .lbl b{color:var(--ink);font-size:1rem}
+.meter .bar{height:8px;background:var(--paper-2);border-radius:99px;overflow:hidden;margin-top:4px;border:1px solid var(--rule)}
+.meter .bar i{display:block;height:100%;border-radius:99px;transition:width .6s ease}
+.meter.danger .lbl b{color:var(--bad)}
+.meter.danger .bar{border-color:var(--bad)}
+@media (max-width:640px){.meter .lbl{flex-direction:column}.meter .lbl .full{display:none}}
+@media (min-width:641px){.meter .lbl .short{display:none}}
+.c-food{--c:var(--c-food)} .c-economy{--c:var(--c-economy)} .c-population{--c:var(--c-population)} .c-natives{--c:var(--c-natives)} .c-britain{--c:var(--c-britain)}
+.meter .bar i{background:var(--c)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(18px,3.4vw,38px)}
+.fade{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(2.6rem,8vw,4.8rem);line-height:.98}
+h2{font-size:clamp(1.9rem,4.4vw,2.7rem)}
+h3{font-size:1.45rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.15rem,2.3vw,1.4rem);color:var(--ink-soft);margin:.2em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--seal);font-size:1.15rem;margin:0 0 .2em}
+.prose p{margin:0 0 .85em;max-width:66ch}
+.muted{color:var(--ink-soft)}
+.small{font-size:.95rem}
+.split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(18px,3.5vw,40px);align-items:start}
+@media (max-width:780px){.split{grid-template-columns:minmax(0,1fr)}}
+
+/* pictures */
+figure.photo{margin:0}
+figure.photo .frame{background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center}
+figure.photo img{width:100%;height:100%;object-fit:cover;display:block}
+figure.photo.contain img{object-fit:contain;background:#efe8d8}
+figure.photo figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:.98rem;margin-top:6px;line-height:1.3}
+.missing{padding:24px;text-align:center;font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+
+/* forms */
+.field{display:grid;gap:5px}
+.field label{font-weight:700;font-size:1rem}
+.field input,.field select{font:inherit;padding:10px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);width:100%}
+.field input:focus,.field select:focus{border-color:var(--river);outline:none}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+@media (max-width:520px){.formgrid{grid-template-columns:1fr}}
+.formgrid .wide{grid-column:1/-1}
+.pick{display:flex;gap:10px;flex-wrap:wrap}
+.pickbtn{appearance:none;font:inherit;padding:9px 16px;border-radius:3px;border:1.5px solid var(--rule);background:var(--paper-2);color:var(--ink);cursor:pointer}
+.pickbtn[aria-pressed="true"]{border-color:var(--seal);background:color-mix(in srgb,var(--seal) 12%,var(--paper-2));font-weight:700}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:1rem}
+.chk input{margin-top:5px;width:18px;height:18px;flex:none}
+.hint{color:var(--bad);font-weight:700;min-height:1.4em;margin:6px 0 0}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 86%,black)}
+.btn.small{font-size:.9rem;padding:6px 12px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}
+.mcard{border:1px solid var(--rule);border-top:5px solid var(--c);background:var(--paper-2);padding:12px 14px;border-radius:3px}
+.mcard b{font-family:var(--display);font-weight:400;font-size:1.25rem;display:block}
+.mcard p{margin:4px 0 0;font-size:.98rem}
+.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0;display:grid;gap:10px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--seal);color:var(--on-seal);display:grid;place-items:center;font-family:var(--display)}
+
+/* decision cards */
+.question{font-family:var(--display);font-size:1.5rem;line-height:1.2;margin:1.2em 0 .6em}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.choice{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--paper-2);border:1.5px solid var(--rule);border-radius:6px;padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s,box-shadow .15s;position:relative}
+.choice:hover{transform:translateY(-2px);border-color:var(--ink-soft);box-shadow:var(--shadow)}
+.choice[aria-pressed="true"]{border-color:var(--seal);background:color-mix(in srgb,var(--seal) 10%,var(--paper-2));box-shadow:0 0 0 3px color-mix(in srgb,var(--seal) 25%,transparent)}
+.choice .ct{font-family:var(--display);font-size:1.3rem;line-height:1.1}
+.choice .cb{font-size:1rem}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto;padding-top:6px}
+.tg{font-size:.8rem;font-weight:700;padding:1px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.tg.up{color:var(--good)} .tg.down{color:var(--bad)}
+.projects{margin-top:26px;border-top:1px solid var(--rule);padding-top:18px}
+.projects h3{margin-bottom:.2em}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+.proj{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--paper);border:1.5px dashed var(--rule);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.proj[aria-pressed="true"]{border-style:solid;border-color:var(--brass);background:color-mix(in srgb,var(--brass-fill) 16%,var(--paper))}
+.proj:disabled{cursor:default;opacity:.55}
+.proj .pt{font-weight:700}
+.proj .pc{font-size:.85rem;color:var(--bad)}
+.proj .pp{font-size:.85rem;color:var(--ink-soft)}
+.owned{display:inline-block;font-size:.75rem;font-weight:700;background:var(--brass-fill);color:#2A1E05;border-radius:99px;padding:0 7px;align-self:flex-start}
+
+/* event card */
+.deck{display:grid;place-items:center;margin:20px 0 6px;perspective:1200px}
+.flip{width:min(100%,430px);aspect-ratio:3/4;position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.3,1);cursor:pointer;border:0;background:none;padding:0;font:inherit;color:inherit}
+.flip.open{transform:rotateY(180deg);cursor:default}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;border:1px solid var(--rule);box-shadow:var(--shadow);overflow:hidden}
+.back{background:var(--seal);color:var(--on-seal);display:grid;place-items:center;text-align:center;padding:20px}
+.back .inner{border:2px solid color-mix(in srgb,var(--on-seal) 60%,transparent);border-radius:6px;inset:12px;position:absolute;display:grid;place-items:center;padding:16px}
+.back .q{font-family:var(--display);font-size:2rem;line-height:1.1}
+.back .q small{display:block;font-size:1rem;font-style:italic;margin-top:10px;opacity:.85}
+.front{transform:rotateY(180deg);background:var(--paper);display:flex;flex-direction:column}
+.front .art{flex:0 0 46%;background:var(--paper-2);display:grid;place-items:center;border-bottom:1px solid var(--rule);overflow:hidden}
+.front .art img{width:100%;height:100%;object-fit:cover}
+.front .art svg{width:46%;height:auto}
+.front .body{padding:14px 18px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.front .kind{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.front .kind.good{color:var(--good)} .front .kind.bad{color:var(--bad)}
+.front h3{margin:0;font-size:1.6rem}
+.front p{margin:0;font-size:1rem}
+.shield{font-size:.9rem;font-weight:700;color:var(--brass)}
+.desk{border:2px dashed var(--brass);border-radius:6px;padding:16px 18px;margin-top:16px;background:color-mix(in srgb,var(--brass-fill) 8%,var(--paper))}
+.desk label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--rule);font-size:1rem}
+.desk label:last-of-type{border-bottom:0}
+.desk input{margin-top:5px}
+
+/* results */
+.ledger{display:grid;gap:10px;margin:16px 0}
+.lrow{display:grid;grid-template-columns:8.5rem 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--rule)}
+.lrow:last-child{border-bottom:1px solid var(--rule)}
+.lrow .k{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.lrow .v b{font-weight:700}
+@media (max-width:520px){.lrow{grid-template-columns:1fr;gap:2px}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.chip{font-size:.85rem;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--paper-2);border:1px solid var(--rule)}
+.chip.up{color:var(--good)} .chip.down{color:var(--bad)}
+.history{margin-top:18px;border-left:4px solid var(--river);background:color-mix(in srgb,var(--river) 7%,var(--paper));padding:12px 16px;border-radius:0 4px 4px 0}
+.history h3{color:var(--river);font-size:1.25rem;margin-bottom:.25em}
+.history p{margin:0 0 .5em;font-size:1rem}
+.history p:last-child{margin:0}
+.liberty{margin-top:14px;border-left:4px solid var(--brass);background:color-mix(in srgb,var(--brass-fill) 10%,var(--paper));padding:10px 16px;border-radius:0 4px 4px 0;font-size:1rem}
+.gameover{border:2px solid var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--paper));padding:16px 18px;border-radius:4px;margin:16px 0}
+.gameover h3{color:var(--bad)}
+.compare{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:640px){.compare{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cmp{background:var(--paper-2);border:1px solid var(--rule);border-top:4px solid var(--c);border-radius:3px;padding:8px 10px;font-size:.92rem}
+.cmp b{display:block;font-size:1.25rem}
+.cmp .d.up{color:var(--good)} .cmp .d.down{color:var(--bad)}
+
+/* end */
+.stamp{display:inline-grid;place-items:center;text-align:center;width:120px;height:120px;border-radius:50%;border:3px double;font-family:var(--display);font-size:1rem;line-height:1.1;padding:12px;transform:rotate(-8deg);animation:stamp .5s ease-out both;flex:none}
+.stamp.win{color:var(--good);border-color:var(--good)}
+.stamp.lose{color:var(--bad);border-color:var(--bad)}
+@keyframes stamp{from{transform:scale(1.6) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}
+.headrow{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--display);font-size:clamp(2.2rem,6vw,3.4rem);line-height:1}
+.sect{margin-top:30px;padding-top:22px;border-top:1px solid var(--rule)}
+.tablewrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:1rem;min-width:520px}
+.t th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 8px;border-bottom:1.5px solid var(--ink-soft)}
+.t td{padding:8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.grade{font-family:var(--display);font-size:1.6rem;width:2.4rem;text-align:center}
+.g-A,.g-B{color:var(--good)} .g-C{color:var(--warn)} .g-D,.g-F{color:var(--bad)}
+.why{display:grid;gap:8px;margin:10px 0}
+.why li{margin-left:1.1em}
+.dq li{margin:0 0 .6em}
+textarea.summary{width:100%;min-height:280px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88rem;line-height:1.5;padding:12px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.copyok{color:var(--good);font-weight:700}
+.foot{margin-top:28px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--ink-soft);font-size:.9rem}
+.linkbtn{appearance:none;background:none;border:0;color:var(--ink-soft);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>The Colony Simulation</h1>
-    <p id="loading">Loading the simulation... this can take up to 30 seconds the first time.</p>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">The Colony Simulation</div>
+    <ol class="seals" id="seals" aria-label="Rounds"></ol>
   </header>
-  <main>
-    <script type="py" terminal worker src="./main.py"></script>
-    <!-- Filled in by main.py when the game ends -->
-    <section id="report" hidden>
-      <h2>Your Summary Report</h2>
-      <textarea id="report-text" readonly></textarea>
-      <button id="copy-btn" type="button">Copy report</button><span id="copy-status"></span>
-    </section>
-  </main>
-  <script>
-    // hide the loading message once the terminal appears
-    new MutationObserver((_, obs) => {
-      if (document.querySelector(".xterm")) {
-        document.getElementById("loading").style.display = "none";
-        obs.disconnect();
-      }
-    }).observe(document.body, { childList: true, subtree: true });
+  <div class="status" id="status" hidden><div class="status-in" id="meters" aria-live="polite"></div></div>
+  <main id="app" tabindex="-1"></main>
+  <div class="foot"><span>Mr. Sam’s History Simulations · <a href="../" style="color:inherit">All simulations</a></span><button class="linkbtn" id="restart" hidden>Start over</button></div>
+</div>
 
-    // copy the summary report so students can paste it into Canvas
-    document.getElementById("copy-btn").addEventListener("click", async () => {
-      const box = document.getElementById("report-text");
-      const status = document.getElementById("copy-status");
-      try {
-        await navigator.clipboard.writeText(box.value);
-      } catch (e) {
-        box.select();
-        document.execCommand("copy");
-      }
-      status.textContent = "Copied! Now paste it into Canvas.";
-    });
-  </script>
+<script>
+/* ======================================================================
+   THE COLONY SIMULATION (card version)
+   All game content is in ROUNDS, PROJECTS and EVENTS below. Each "fx"
+   object lists how many points a meter gains (+) or loses (-).
+   ====================================================================== */
+/*ENGINE-START*/
+const METERS = {
+  food:       { name: 'Food',              short: 'Food',    about: 'Enough to eat through the winter.' },
+  economy:    { name: 'Economy',           short: 'Money',   about: 'Money, trade and the investors back in England.' },
+  population: { name: 'Population',        short: 'People',  about: 'How many colonists live here, and how happy they are to stay.' },
+  natives:    { name: 'Native Relations',  short: 'Natives', about: 'Peace and trust with the Native nations whose land surrounds you.' },
+  britain:    { name: 'British Relations', short: 'Britain', about: 'How the King and Parliament see your colony.' }
+};
+const MK = Object.keys(METERS);
+const START = 50, CAP = 100;
+const TEACHERS = ['Mr. Sam', 'Mrs. Sondej'];
+
+// Each round after the decision and event, the colony produces according to how it makes its living (round 1).
+const PRODUCTION = {
+  FUR:     { fx: { food: 5,  economy: 8,  population: 3, natives: 3 },  text: 'Traders bring furs and deerskins into {colony}, and the colony grows a little food of its own.' },
+  TOBACCO: { fx: { food: 4,  economy: 10, population: 5, natives: -2 }, text: 'Tobacco fields spread along the rivers of {colony}, and every ship to England is packed with it.' },
+  FARMS:   { fx: { food: 10, economy: 6,  population: 6, natives: -1 }, text: 'Families clear new fields, fish the coast, and cut timber. {colony} grows slowly but steadily.' }
+};
+
+const ROUNDS = [
+  { year: '1612', title: 'How Will the Colony Make a Living?',
+    img: ['Adventures of Captain John Smith in Virginia 1624.jpg', 'Scenes of trade and conflict between the English and the Powhatan, from John Smith’s 1624 history of Virginia.'],
+    text: [
+      'It is 1612. {colony} has barely survived its first years. Disease, hunger and fighting have killed most of the people who came on the first ships. The investors in London want a profit, and they want it soon.',
+      'All around you live the Powhatan, a confederation of about 30 tribes led by the paramount chief Wahunsenaca, whom the English call Powhatan. They grow corn, hunt and trade across the region. How {colony} makes its living will shape everything that comes after.'
+    ],
+    question: 'What will be the heart of {colony}’s economy?',
+    options: [
+      { key: 'FUR', name: 'Trade with the Powhatan', blurb: 'Swap copper, tools and cloth for corn and furs. You need few settlers and little land.',
+        fx: { economy: 15, population: -10, natives: 20 },
+        result: 'Trade keeps the peace and the furs sell well. But a trading post doesn’t grow, and few English families want to move to {colony}.',
+        who: 'New Netherland and New France built their colonies on the fur trade. Early Jamestown survived on Powhatan corn.' },
+      { key: 'TOBACCO', name: 'Plant tobacco', blurb: 'John Rolfe has a sweet tobacco from the Caribbean that sells for high prices in London. It needs lots of land and workers.',
+        fx: { economy: 25, food: -10, population: 10, natives: -15, britain: 5 },
+        result: 'Tobacco fever! Money pours in and settlers rush over. But colonists plant tobacco instead of food, and the fields push deeper into Powhatan land.',
+        who: 'Virginia and Maryland. Within twenty years Virginia was shipping more than a million pounds of tobacco a year.' },
+      { key: 'FARMS', name: 'Family farms and fishing', blurb: 'Bring whole families to grow food, fish the coast and cut timber. Steady, but slow money.',
+        fx: { food: 20, population: 15, natives: -10 },
+        result: 'Families arrive and the storehouses fill up. Each new farm, though, is land the Native peoples once used.',
+        who: 'The New England colonies, such as Plymouth and Massachusetts Bay.' }
+    ],
+    history: 'Jamestown nearly died during the “Starving Time” of 1609–1610. John Rolfe’s tobacco saved it as a business, and Rolfe married Pocahontas, Wahunsenaca’s daughter, in 1614. The peace that followed lasted until 1622, when the Powhatan struck back against the spreading tobacco farms.' },
+
+  { year: '1619', title: 'Who Will Make the Laws?',
+    img: ['Armstrong\'s picture of the First Assembly in Jamestown 1619.jpg', 'The first elected assembly in English America meets in the church at Jamestown, July 30, 1619.'],
+    text: [
+      'It is 1619. More colonists arrive every year, and they want a say in the laws they live under. Back in England, people believe that “free-born Englishmen” have rights, including the right to be taxed only by their own representatives.',
+      'The company that owns {colony} is willing to let colonists help govern. Others warn that a strong governor keeps order best in a dangerous land.'
+    ],
+    question: 'How will {colony} be governed?',
+    options: [
+      { key: 'ASSEMBLY', name: 'An elected assembly', blurb: 'Landowning men elect representatives who make laws together with the governor.',
+        fx: { population: 10, economy: 5, britain: -5 }, flag: 'assembly',
+        liberty: [1, 'Created an elected assembly (only landowning men could vote)'],
+        result: 'Colonists are proud to have a voice, and more of them stay. London watches the new assembly closely.',
+        who: 'Virginia’s House of Burgesses met in July 1619, the first elected assembly in English America.' },
+      { key: 'TOWN', name: 'Town meetings and a compact', blurb: 'Every free man signs an agreement to obey “just and equal laws” and votes in the town meeting.',
+        fx: { population: 15, food: 5, britain: -10 }, flag: 'assembly',
+        liberty: [1, 'Governed by town meetings and a written compact'],
+        result: 'Towns run their own affairs. Neighbors work together, but the Crown sees {colony} as a little too independent.',
+        who: 'The Pilgrims signed the Mayflower Compact in 1620, and New England towns governed themselves through town meetings.' },
+      { key: 'GOVERNOR', name: 'Rule by the governor', blurb: 'The governor and an appointed council make every law. Orders are carried out quickly.',
+        fx: { britain: 15, economy: 5, population: -10 }, flag: 'governor',
+        liberty: [-1, 'Gave all power to an appointed governor'],
+        result: 'London likes a colony that takes orders. Some colonists grumble that they have fewer rights here than at home.',
+        who: 'New Netherland under Peter Stuyvesant, and New York, which had no assembly until 1683.' }
+    ],
+    history: 'The House of Burgesses met in 1619 and kept meeting after Virginia became a royal colony in 1624. The same summer, the first recorded Africans in English Virginia arrived at Point Comfort. They had been captured from a Portuguese slave ship.' },
+
+  { year: '1636', title: 'Religion and the Land',
+    img: ['Alonzo Chappel - The Landing of Roger Williams in 1636 - 43.003 - Rhode Island School of Design Museum.jpg', 'Roger Williams, banished from Massachusetts, is welcomed by the Narragansett in 1636.'],
+    text: [
+      'It is 1636. Massachusetts has banished a minister named Roger Williams. He says church and government should be separate, that every person should be free to worship as they choose, and that colonists must pay Native Americans for their land instead of simply taking it.',
+      'His ideas are spreading in {colony}. Some colonists want to follow his example. Others say one official church holds a colony together, and that paying for land would cost a fortune.'
+    ],
+    question: 'What will {colony} do about religion and Native land?',
+    options: [
+      { key: 'FREEDOM', name: 'Freedom of conscience', blurb: 'Anyone may worship as they choose, or not at all. Pay Native nations for the land you use.',
+        fx: { natives: 20, population: 10, britain: -15, economy: -10 },
+        liberty: [2, 'Granted full religious freedom and paid Native nations for land'],
+        result: 'Baptists, Quakers and Jews find a home in {colony}, and the nearby Native nations trust you more. England and the other colonies call {colony} a sewer of heretics.',
+        who: 'Rhode Island under Roger Williams. Its 1663 charter guaranteed religious liberty.' },
+      { key: 'TOLERATION', name: 'Tolerate all Christians', blurb: 'Protestants and Catholics may worship freely. Land policy stays the same.',
+        fx: { population: 10, britain: -5, natives: -5 },
+        liberty: [1, 'Passed a law tolerating all Christians'],
+        result: 'Families of different Christian churches settle in peace. Non-Christians still are not protected.',
+        who: 'Maryland’s Toleration Act of 1649.' },
+      { key: 'ESTABLISHED', name: 'One official church', blurb: 'Everyone pays taxes to support the official church, and dissenters must leave. Land is claimed under the King’s charter.',
+        fx: { britain: 10, economy: 5, population: -5, natives: -15 },
+        liberty: [-1, 'Required one official church and banished dissenters'],
+        result: '{colony} is orderly and united, and London approves. Dissenters leave for other colonies, and Native nations watch their land disappear.',
+        who: 'Massachusetts Bay (Puritan) and Virginia (Church of England).' }
+    ],
+    history: 'Williams bought land from the Narragansett sachems Canonicus and Miantonomi and founded Providence. Rhode Island became a refuge for people other colonies would not accept. Massachusetts kept its official church until 1833.' },
+
+  { year: '1660', title: 'The Navigation Acts',
+    img: ['A South East View of the Great Town of Boston in New England.jpeg', 'Ships crowd the harbor of a busy colonial port, Boston, in the 1720s.'],
+    text: [
+      'Parliament has passed the Navigation Acts. Certain colonial goods, such as tobacco and sugar, may only be shipped to England. Colonial trade must travel on English ships. European goods headed for the colonies must pass through England first, where they are taxed.',
+      'England calls this mercantilism: the colonies exist to make the mother country rich. Merchants in {colony} are angry. Dutch traders could pay far better prices.'
+    ],
+    question: 'How will {colony} respond to the Navigation Acts?',
+    options: [
+      { key: 'OBEY', name: 'Obey the law', blurb: 'We are loyal English subjects. Ship only on English ships, to English ports.',
+        fx: { britain: 20, economy: -5 },
+        result: 'Customs officers report that {colony} is a model colony. Your merchants grumble about lower prices.',
+        who: 'Most colonial governments officially enforced the Acts.' },
+      { key: 'SMUGGLE', name: 'Smuggle', blurb: 'Quietly trade with Dutch and French merchants and pay no English taxes.',
+        fx: { economy: 20, population: 5, britain: -20 }, flag: 'smuggle',
+        result: 'Profits soar in the quiet coves of {colony}. The Royal Navy is starting to ask questions.',
+        who: 'Smuggling was common, especially in New England and with the Dutch and French Caribbean.' },
+      { key: 'SHIPS', name: 'Build the ships ourselves', blurb: 'The Acts count colonial-built ships as English. Build shipyards and profit within the law.',
+        fx: { economy: -10, population: 5, britain: 10 }, flag: 'ships',
+        result: 'Shipyards cost money to start, but they will earn extra every round from now on. London is pleased.',
+        who: 'New England. By the 1770s about one third of British merchant ships were built in the colonies.' }
+    ],
+    history: 'Parliament passed Navigation Acts in 1651, 1660 and 1663. They were poorly enforced for decades, a policy later called “salutary neglect.” When Britain finally began enforcing its trade laws after 1763, colonists were furious.' },
+
+  { year: '1676', title: 'Crisis on the Frontier',
+    img: ['Howard Pyle - The Burning of Jamestown.jpg', 'Nathaniel Bacon’s rebels set fire to Jamestown in September 1676 (painting by Howard Pyle, 1905).'],
+    text: [
+      'It is 1676. Settlers keep pushing onto Native land, and raids and revenge killings go back and forth on the frontier. In New England, King Philip’s War has burned dozens of towns. In Virginia, a young planter named Nathaniel Bacon is raising an army of angry frontier farmers and former servants.',
+      'They demand that the government of {colony} attack every Native village, friendly or not, and open their land for settlement.'
+    ],
+    question: 'How will {colony} handle the frontier?',
+    options: [
+      { key: 'FORTS', name: 'Forts and peace', blurb: 'Build a line of forts, keep trading with friendly nations, and stop settlers from grabbing more land.',
+        fx: { natives: 10, population: -10, economy: -10, britain: 5 },
+        result: 'The frontier calms down, but forts are expensive and frontier families feel betrayed by their own government.',
+        who: 'Virginia’s Governor William Berkeley tried this in 1676, and it helped spark Bacon’s Rebellion.' },
+      { key: 'BACON', name: 'Unleash the militia', blurb: 'Let frontier militia attack Native villages, friendly or not, and take their land.',
+        fx: { natives: -25, population: 10, economy: 5, britain: -15 },
+        liberty: [-1, 'Let the militia attack friendly Native nations to seize land'],
+        result: 'Frontier men cheer and new land opens up. Native nations that were your allies are now your enemies, and the King sends troops to restore order.',
+        who: 'Bacon’s followers attacked the friendly Occaneechi and Pamunkey, then burned Jamestown.' },
+      { key: 'TREATY', name: 'Buy land by treaty', blurb: 'Meet with Native leaders, pay for land, and set boundaries both sides agree to.',
+        fx: { natives: 15, economy: -15, population: 5 },
+        liberty: [1, 'Bought Native land through treaties'],
+        result: 'The payments cost {colony} a great deal, but settlers can move onto the land in peace.',
+        who: 'William Penn and the Lenape in Pennsylvania (Treaty of Shackamaxon, 1682).' }
+    ],
+    history: 'Bacon died of disease in October 1676 and his rebellion fell apart. But Virginia’s planters had learned to fear armed, landless former servants. That fear helped push them toward enslaved African labor instead.' },
+
+  { year: '1690', title: 'Who Will Do the Work?',
+    img: ['Tobacco cultivation (Virginia, ca. 1670).jpg', 'Enslaved Africans working tobacco on a Virginia plantation, around 1670.'],
+    text: [
+      'It is the 1690s. The farms and businesses of {colony} need many more workers. For decades most workers came from England as indentured servants. They worked four to seven years to pay for their passage, then went free and wanted land of their own.',
+      'Fewer English servants are coming now, and the ones who finish their contracts are restless. Some planters are turning to a crueler system: buying enslaved Africans, who would be held in slavery for life, and so would their children.'
+    ],
+    question: 'How will {colony} get its workers?',
+    options: [
+      { key: 'SERVANTS', name: 'Indentured servants', blurb: 'Keep bringing servants from Britain. Masters get 50 acres for each person they bring (the headright system).',
+        fx: { population: 10, economy: 5, natives: -5 },
+        result: 'Servants keep coming and many earn their freedom. When they do, they head for the frontier looking for land.',
+        who: 'Most workers in Virginia and Maryland before about 1680.' },
+      { key: 'ENSLAVED', name: 'Enslaved labor', blurb: 'Buy enslaved Africans to work the fields for life, without pay.',
+        fx: { economy: 20, food: 5, population: -5 }, flag: 'slavery',
+        liberty: [-2, 'Turned to enslaved labor, holding people in bondage for life'],
+        result: 'Planters grow rich and fewer poor free colonists come. This game’s meters only count free colonists. The people enslaved in {colony} pay the real price, and it doesn’t show up in your scores. It does show up in your Liberty Record.',
+        who: 'Virginia, Maryland and the Carolinas. Virginia’s Slave Codes of 1705 made slavery a permanent, race-based system by law.' },
+      { key: 'FREE', name: 'Free families, no slavery', blurb: 'Advertise for free families from Germany, Scotland and Ireland, and forbid slavery.',
+        fx: { population: 15, food: 5, economy: -5 }, flag: 'free',
+        liberty: [1, 'Forbade slavery and welcomed free immigrant families'],
+        result: 'Thousands of free families arrive. Farms are smaller and money is slower, but {colony} fills with people.',
+        who: 'Pennsylvania drew thousands of German families. Georgia banned slavery from 1735 to 1751. Quakers in Germantown, Pennsylvania wrote the first protest against slavery in 1688.' }
+    ],
+    history: 'By 1750 enslaved people made up about 40 percent of Virginia’s population and a majority in South Carolina. Slavery was legal in all thirteen colonies, North and South, though it was far less common in the North.' },
+
+  { year: '1754', title: 'The French and Indian War',
+    img: ['Benjamin Franklin - Join or Die.jpg', 'Benjamin Franklin’s “Join, or Die” cartoon, Pennsylvania Gazette, May 1754.'],
+    text: [
+      'It is 1754. Britain and France both claim the Ohio River valley. A young Virginia militia officer named George Washington has fired the first shots of what will become a world war.',
+      'Britain wants the colonies to send men and money. In Albany, New York, Benjamin Franklin has a bigger idea: unite the colonies under one council and make an alliance with the Haudenosaunee (Iroquois) Confederacy.'
+    ],
+    question: 'What will {colony} do?',
+    options: [
+      { key: 'WAR', name: 'Men and money for Britain', blurb: 'Raise troops, pay war taxes, and fight for King and Country.',
+        fx: { britain: 20, economy: -15, population: -10, natives: -10 },
+        result: 'Your soldiers fight alongside the redcoats. The cost in money and lives is high, but Britain will remember your loyalty.',
+        who: 'Virginia and Massachusetts raised thousands of soldiers.' },
+      { key: 'ALBANY', name: 'Back the Albany Plan', blurb: 'Support Franklin’s plan for one council of all the colonies, allied with the Haudenosaunee.',
+        fx: { natives: 10, population: 5, economy: -5, britain: -5 }, flag: 'union',
+        result: 'The other colonies won’t give up their power, so the plan fails. But {colony} has made friends in other colonies and in the Haudenosaunee longhouses.',
+        who: 'Delegates from seven colonies approved the plan at Albany in 1754. Then every colonial assembly rejected it.' },
+      { key: 'STAYOUT', name: 'Stay out of it', blurb: 'This is Britain’s war. Keep our money and our sons at home.',
+        fx: { economy: 5, natives: 5, britain: -20 }, flag: 'stayout',
+        result: 'Your treasury and families are safe for now. But London is furious, and the frontier has no protection.',
+        who: 'Pennsylvania’s Quaker-led assembly argued with its governor and delayed war money for more than a year.' }
+    ],
+    history: 'Britain won the war in 1763 and took Canada and everything east of the Mississippi from France. But the war doubled Britain’s debt, and Parliament decided the colonies should help pay for it.' },
+
+  { year: '1765', title: 'The Stamp Act',
+    img: ['1765 one penny stamp.jpg', 'A one-penny stamp printed for the Stamp Act of 1765.'],
+    text: [
+      'It is 1765. To pay for the army in America, Parliament has passed the Stamp Act. Newspapers, legal documents, licenses, even playing cards must carry an official stamp, bought with hard-to-find silver.',
+      'This is the first direct tax Parliament has ever placed on the colonies. “No taxation without representation!” colonists cry. Nobody in {colony} voted for a single member of Parliament.'
+    ],
+    question: 'How will {colony} respond to the Stamp Act?',
+    options: [
+      { key: 'PAY', name: 'Pay the tax', blurb: 'The law is the law. Buy the stamps and keep the peace.',
+        fx: { britain: 15, economy: -10, population: -15 },
+        result: 'The King’s officials praise {colony}. Your own people call you a tool of Parliament.',
+        who: 'Georgia was the only colony where stamps were actually sold, and only briefly.' },
+      { key: 'CONGRESS', name: 'Petition with the other colonies', blurb: 'Send delegates to the Stamp Act Congress in New York to protest respectfully to the King and Parliament.',
+        fx: G => ({ britain: -5, economy: -5, population: G.flags.governor ? 5 : 10, ...(G.flags.union ? { population: 15 } : {}) }),
+        result: G => G.flags.union ? 'Your friendships from Albany pay off. {colony}’s delegates help lead the Congress, and your people are proud.' : G.flags.governor ? 'With no elected assembly to choose delegates, {colony} has a small voice at the Congress.' : 'Your delegates join eight other colonies in a Declaration of Rights and Grievances.',
+        who: 'Nine colonies met in October 1765 and sent the Declaration of Rights and Grievances.' },
+      { key: 'BOYCOTT', name: 'Boycott British goods', blurb: 'Merchants sign non-importation agreements. Families wear homespun cloth instead of British cloth.',
+        fx: { britain: -15, economy: -5, population: 15 },
+        result: 'British merchants feel the pain and beg Parliament for repeal. Your people are united.',
+        who: 'Merchants in New York, Philadelphia and Boston signed non-importation agreements in 1765.' },
+      { key: 'MOB', name: 'Back the Sons of Liberty', blurb: 'Let crowds hang the stamp collector in effigy and force him to resign.',
+        fx: { britain: -25, population: 10 },
+        result: 'No stamps will ever be sold in {colony}. But mobs destroyed property, and London sees your colony as lawless.',
+        who: 'Boston crowds wrecked stamp distributor Andrew Oliver’s office in August 1765, and Oliver resigned.' }
+    ],
+    history: 'Parliament repealed the Stamp Act in 1766, mostly because the boycott hurt British merchants. The same day, it passed the Declaratory Act, saying it could make laws for the colonies “in all cases whatsoever.”' },
+
+  { year: '1773', title: 'The Tea Crisis',
+    img: ['Boston Tea Party Currier colored.jpg', 'The Destruction of Tea at Boston Harbor, December 16, 1773 (Currier lithograph, 1846).'],
+    text: [
+      'It is 1773. Parliament has repealed most of its taxes but kept one on tea, to prove it still has the right to tax the colonies. The new Tea Act lets the East India Company sell tea so cheaply that even with the tax, it costs less than smuggled tea.',
+      'Three ships loaded with East India tea have anchored in {colony}’s harbor. The governor demands the tea be unloaded and the tax paid. Patriots are gathering at the docks.'
+    ],
+    question: 'What will happen to the tea?',
+    final: true,
+    options: [
+      { key: 'ALLOW', name: 'Let it be sold', blurb: 'Unload the tea, pay the tax, and enjoy cheap tea.',
+        fx: { britain: 25, population: -20, economy: 5 },
+        result: 'The British are relieved and business is good. But the patriots of {colony} will never trust you again.',
+        who: 'No colony did this.' },
+      { key: 'STORE', name: 'Land it and lock it up', blurb: 'Unload the tea but store it in a warehouse. No one buys it, and no tax is paid.',
+        fx: { britain: 5, population: 5, economy: -5 },
+        result: 'A clever compromise. The tea sits unsold, nobody pays the tax, and no laws are broken.',
+        who: 'Charleston, South Carolina. Patriots later sold the stored tea to help pay for the Revolution.' },
+      { key: 'SENDBACK', name: 'Send the ships home', blurb: 'Refuse to let the tea land. Order the captains to sail back to England.',
+        fx: { britain: -15, population: 15 },
+        result: 'The tea ships turn around with their cargo untouched. Parliament is insulted, but no property was destroyed.',
+        who: 'Philadelphia and New York turned the tea ships away.' },
+      { key: 'DESTROY', name: 'Dump it in the harbor', blurb: 'Patriots disguised as Mohawks board the ships and throw every chest overboard.',
+        fx: { britain: -30, population: 20, economy: -10 },
+        result: 'SPLASH! The harbor of {colony} is brown with tea. Parliament will make an example of you.',
+        who: 'Boston, December 16, 1773: 342 chests were dumped into the harbor.' }
+    ],
+    history: 'Parliament answered the Boston Tea Party with the Coercive (Intolerable) Acts of 1774. It closed Boston’s port and took away much of Massachusetts’ self-government. The other colonies rallied to Boston’s side and sent delegates to the First Continental Congress.' }
+];
+
+const PROJECTS = [
+  { key: 'SCHOOLS', name: 'Schools', cost: { economy: -10, food: -5 }, protects: 'Boosts the Great Awakening',
+    note: 'Massachusetts required towns to keep schools in 1647.' },
+  { key: 'FORT', name: 'Fort and militia', cost: { economy: -15, food: -5, population: -5, natives: -5 }, protects: 'Shields against war and pirates',
+    note: 'Every colony relied on a militia of ordinary men.' },
+  { key: 'WHARVES', name: 'Roads and wharves', cost: { economy: -15, food: -5, natives: -5 }, protects: 'Shields against drought and hurricanes',
+    note: 'Wharves let ships bring food in from other colonies.' },
+  { key: 'DOCTORS', name: 'Doctors and inoculation', cost: { economy: -10, food: -5 }, protects: 'Shields against smallpox',
+    note: 'Boston tried smallpox inoculation in 1721, after Onesimus, an enslaved African, explained the method.' },
+  { key: 'AGENT', name: 'Agent in London', cost: { economy: -10, food: -5 }, protects: 'Shields against smuggling trouble and royal orders',
+    note: 'Benjamin Franklin served as London agent for several colonies.' }
+];
+
+// from/to = the rounds after which the event can be drawn (1 = after the 1612 decision).
+// w(G) = how likely the event is compared with others. guard = the project that softens it.
+const EVENTS = [
+  { key: 'DROUGHT', name: 'Drought', from: 1, to: 8, w: () => 1, good: false, icon: 'sun',
+    text: 'A terrible dry summer. The corn withers in the fields and many in {colony} go hungry.',
+    fx: { food: -20, economy: -10, population: -10 }, guard: 'WHARVES',
+    guarded: 'A terrible dry summer, but your wharves let ships bring in food from other colonies.', gfx: { food: -5, economy: -5 } },
+  { key: 'WAR', name: 'War on the Frontier', from: 1, to: 8, good: false, icon: 'arrows',
+    w: G => (G.m.natives < 25 ? 2.5 : G.m.natives < 45 ? 1.5 : 0.6) + (G.flags.stayout && G.round >= 7 ? 1.5 : 0),
+    text: 'Settlers have pushed onto Native hunting grounds once too often. Raids have turned into open war with a neighboring nation.',
+    fx: { food: -10, economy: -10, population: -15, natives: -10 }, guard: 'FORT',
+    guarded: 'War breaks out on the frontier, but your fort and militia hold the line and the fighting ends quickly.', gfx: { economy: -5, population: -5, natives: -5 } },
+  { key: 'HURRICANE', name: 'Hurricane', from: 1, to: 8, w: () => 0.8, good: false, icon: 'storm',
+    text: 'A hurricane tears through {colony}, flattening crops and wrecking ships.',
+    fx: { food: -15, economy: -15, population: -5 }, guard: 'WHARVES',
+    guarded: 'A hurricane strikes, but your stone wharves and roads make repairs quick.', gfx: { food: -5, economy: -5 } },
+  { key: 'SMALLPOX', name: 'Smallpox', from: 1, to: 8, w: () => 1, good: false, icon: 'drop',
+    text: 'Smallpox sweeps through {colony}, killing young and old. It spreads to Native villages too, where it is even deadlier.',
+    fx: { population: -20, economy: -5, natives: -5 }, guard: 'DOCTORS',
+    guarded: 'Smallpox arrives, but your doctors isolate the sick and inoculate the healthy. Far fewer die.', gfx: { population: -5 } },
+  { key: 'PEACE', name: 'A Peace Treaty', from: 1, to: 8, good: true, icon: 'pipe',
+    w: G => G.m.natives >= 50 ? 1.6 : 0.5,
+    text: 'After weeks of talks, a neighboring Native nation agrees to live in peace and trade with {colony}.',
+    fx: { natives: 15, economy: 10, population: 5 } },
+  { key: 'HARVEST', name: 'A Plentiful Harvest', from: 1, to: 8, w: () => 1, good: true, icon: 'wheat',
+    text: 'The rain came at just the right times. {colony}’s barns are full for the winter.',
+    fx: { food: 20, economy: 5, population: 5 } },
+  { key: 'PIRATES', name: 'Pirates!', from: 2, to: 5, w: () => 0.9, good: false, icon: 'ship',
+    text: 'Pirates raid the coast of {colony}, looting ships and burning warehouses.',
+    fx: { economy: -15, food: -5, population: -10 }, guard: 'FORT',
+    guarded: 'Pirates sail into the harbor, take one look at your fort’s cannon, and sail away.', gfx: { economy: -5 } },
+  { key: 'SETTLERS', name: 'New Settlers Arrive', from: 1, to: 8, w: () => 0.9, good: true, icon: 'people',
+    text: 'Ships arrive packed with families looking for a fresh start in {colony}.',
+    fx: { population: 15, economy: 5, food: -5 } },
+  { key: 'FAVOR', name: 'Royal Favor', from: 2, to: 8, good: true, icon: 'crown',
+    w: G => G.m.britain >= 50 ? 1.3 : 0.4,
+    text: 'The King’s officials report that {colony} is a loyal, well-run colony. London sends praise and new settlers.',
+    fx: { britain: 15, economy: 5, population: 5 } },
+  { key: 'CAUGHT', name: 'Caught Smuggling', from: 4, to: 8, good: false, icon: 'ship',
+    w: G => G.flags.smuggle ? 2.5 : 0.4,
+    text: 'The Royal Navy seized a ship from {colony} full of untaxed Dutch goods. The King is not pleased.',
+    fx: { economy: -10, britain: -15 }, guard: 'AGENT',
+    guarded: 'A ship from {colony} was caught smuggling, but your agent in London smoothed things over.', gfx: { economy: -5, britain: -5 } },
+  { key: 'AWAKENING', name: 'The Great Awakening', from: 6, to: 7, w: () => 1.6, good: true, icon: 'church',
+    text: 'Traveling preachers like George Whitefield draw crowds of thousands. Religious revival sweeps {colony}.',
+    fx: { population: 10, economy: 5 }, guard: 'SCHOOLS',
+    guarded: 'The Great Awakening sweeps {colony}. New colleges and schools train ministers, and families flock to your well-educated colony.', gfx: { population: 20, economy: 10 },
+    img: ['George Whitefield preaching.jpg', 'George Whitefield preaching in the open air.'] },
+  { key: 'STONO', name: 'Enslaved People Rise Up', from: 6, to: 8, good: false, icon: 'chain',
+    w: G => G.flags.slavery ? 2 : 0,
+    text: 'Enslaved people in {colony} rise up and fight for their freedom, as the people at South Carolina’s Stono River did in 1739. The colony’s leaders crush the uprising and pass even harsher laws instead of ending slavery.',
+    fx: { population: -10, economy: -10 } },
+  { key: 'PROCLAMATION', name: 'Proclamation of 1763', from: 7, to: 7, w: () => 2.5, good: false, icon: 'crown',
+    text: 'King George III forbids colonists to settle west of the Appalachian Mountains, to keep peace with the Native nations there. Land-hungry colonists are outraged.',
+    fx: { britain: -10, population: -10, natives: 15 }, guard: 'AGENT',
+    guarded: 'The King forbids settlement west of the Appalachians. Your agent in London explains the order, so colonists in {colony} accept it calmly.', gfx: { britain: -5, natives: 15 } }
+];
+
+// ---------- engine ----------
+function newGame(player) {
+  return { v: 2, player, stage: 'intro', round: 0, m: Object.fromEntries(MK.map(k => [k, START])), flags: {}, owned: [], econ: null,
+    picks: [], log: [], liberty: [], over: null, desk: !!player.desk, pending: null, srcs: Object.fromEntries(MK.map(k => [k, []])) };
+}
+function fxOf(o, G) { return typeof o === 'function' ? o(G) : o; }
+function apply(G, fx, src) {
+  for (const k of MK) if (fx[k]) { G.m[k] = Math.min(CAP, G.m[k] + fx[k]); G.srcs[k].push([src, fx[k]]); }
+}
+function failed(G, final) { return MK.find(k => G.m[k] <= 0 && !(final && k === 'britain')) || null; }
+function eligibleEvents(G) {
+  const r = G.round + 1; // 1-based round just decided
+  return EVENTS.map(e => ({ e, w: (r >= e.from && r <= e.to) ? e.w(G) : 0 })).filter(x => x.w > 0);
+}
+function drawEvent(G, rnd = Math.random) {
+  const list = eligibleEvents(G); const tot = list.reduce((s, x) => s + x.w, 0);
+  let t = rnd() * tot; for (const x of list) { if ((t -= x.w) <= 0) return x.e.key; } return list[list.length - 1].e.key;
+}
+// Decision + optional project for the current round.
+function decide(G, optKey, projKey) {
+  const R = ROUNDS[G.round]; const o = R.options.find(x => x.key === optKey);
+  const before = { ...G.m }; const entry = { round: G.round, choice: optKey, project: projKey || null, event: null, before, parts: [] };
+  if (projKey) { const P = PROJECTS.find(p => p.key === projKey); apply(G, P.cost, 'Project: ' + P.name); G.owned.push(projKey); entry.parts.push(['project', P.name, P.cost]); }
+  const fx = fxOf(o.fx, G); apply(G, fx, R.year + ' decision: ' + o.name); entry.parts.push(['decision', o.name, fx]);
+  if (o.flag) G.flags[o.flag] = true;
+  if (G.round === 0) G.econ = optKey;
+  if (o.liberty) G.liberty.push({ year: R.year, pts: o.liberty[0], text: o.liberty[1] });
+  G.picks[G.round] = optKey; G.log.push(entry);
+  const f = failed(G, R.final);
+  if (f) { G.over = { meter: f, round: G.round }; }
+  return entry;
+}
+function runEvent(G, evKey) {
+  const entry = G.log[G.log.length - 1]; const E = EVENTS.find(e => e.key === evKey);
+  const shielded = E.guard && G.owned.includes(E.guard);
+  const fx = shielded ? E.gfx : E.fx; apply(G, fx, 'Event: ' + E.name);
+  entry.event = evKey; entry.shielded = shielded; entry.parts.push(['event', E.name, fx]);
+  let f = failed(G);
+  if (!f) {
+    const P = PRODUCTION[G.econ]; const pfx = { ...P.fx }; if (G.flags.ships) pfx.economy += 4;
+    apply(G, pfx, 'Years of work'); entry.parts.push(['production', 'The years pass', pfx]);
+    f = failed(G);
+  }
+  if (f) G.over = { meter: f, round: G.round };
+  entry.after = { ...G.m };
+  return entry;
+}
+function libertyScore(G) { return G.liberty.reduce((s, x) => s + x.pts, 0); }
+function grade(v) { return v >= 80 ? 'A' : v >= 65 ? 'B' : v >= 50 ? 'C' : v >= 35 ? 'D' : 'F'; }
+function totalScore(G) { return MK.reduce((s, k) => s + Math.max(0, G.m[k]), 0); }
+/*ENGINE-END*/
+
+// ======================================================================
+// Pictures
+// ======================================================================
+const IMG = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=1000`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function photo([file, cap], cls = '') {
+  return `<figure class="photo ${cls}"><div class="frame"><img src="${IMG(file)}" alt="${esc(cap)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'missing',textContent:'Picture: ' + this.alt}))"></div><figcaption>${esc(cap)}</figcaption></figure>`;
+}
+const ICONS = {
+  sun: '<circle cx="50" cy="50" r="18"/><g stroke-width="5" stroke-linecap="round"><path d="M50 10v14M50 76v14M10 50h14M76 50h14M22 22l10 10M68 68l10 10M22 78l10-10M68 32l10-10"/></g>',
+  arrows: '<g stroke-width="5" stroke-linecap="round" fill="none"><path d="M18 82L78 22M82 82L22 22"/><path d="M78 22h-14M78 22v14M22 22h14M22 22v14"/></g>',
+  storm: '<path d="M30 58a16 16 0 1 1 6-31 22 22 0 0 1 40 10 13 13 0 0 1-4 25z" fill="none" stroke-width="5"/><path d="M50 62l-8 16h10l-6 14" fill="none" stroke-width="5" stroke-linejoin="round"/>',
+  drop: '<g fill="none" stroke-width="5"><circle cx="50" cy="50" r="30"/></g><circle cx="40" cy="42" r="5"/><circle cx="60" cy="46" r="5"/><circle cx="48" cy="62" r="5"/><circle cx="62" cy="64" r="4"/>',
+  pipe: '<g fill="none" stroke-width="5" stroke-linecap="round"><path d="M14 64L70 32"/><path d="M70 32l10-6v14l-8 4"/></g><g stroke-width="4" stroke-linecap="round"><path d="M30 56l4 12M42 49l4 12M54 42l4 12"/></g>',
+  wheat: '<g fill="none" stroke-width="5" stroke-linecap="round"><path d="M50 90V22"/><path d="M50 34c-10-4-14-12-14-12s10 0 14 8M50 34c10-4 14-12 14-12s-10 0-14 8M50 50c-10-4-14-12-14-12s10 0 14 8M50 50c10-4 14-12 14-12s-10 0-14 8M50 66c-10-4-14-12-14-12s10 0 14 8M50 66c10-4 14-12 14-12s-10 0-14 8"/></g>',
+  ship: '<g fill="none" stroke-width="5" stroke-linejoin="round"><path d="M16 66h68l-10 16H26z"/><path d="M50 66V16"/><path d="M50 20l26 38H50M50 26L28 58h22"/></g>',
+  people: '<g fill="none" stroke-width="5"><circle cx="34" cy="34" r="10"/><circle cx="66" cy="34" r="10"/><path d="M16 80c0-14 8-24 18-24s18 10 18 24M48 80c0-14 8-24 18-24s18 10 18 24"/></g>',
+  crown: '<path d="M18 70l-4-40 20 18 16-28 16 28 20-18-4 40z" fill="none" stroke-width="5" stroke-linejoin="round"/><path d="M18 80h64" stroke-width="5"/>',
+  church: '<g fill="none" stroke-width="5" stroke-linejoin="round"><path d="M26 86V50l24-18 24 18v36z"/><path d="M50 32V10M42 18h16"/><path d="M44 86V70h12v16"/></g>',
+  chain: '<g fill="none" stroke-width="6"><rect x="12" y="38" width="34" height="24" rx="12"/><rect x="54" y="38" width="34" height="24" rx="12"/><path d="M38 50h24"/></g>'
+};
+const icon = k => `<svg viewBox="0 0 100 100" aria-hidden="true" fill="var(--ink-soft)" stroke="var(--ink-soft)">${ICONS[k] || ICONS.crown}</svg>`;
+
+// ======================================================================
+// UI
+// ======================================================================
+const KEY = 'colonySim.v2';
+const $ = s => document.querySelector(s);
+const app = $('#app');
+let G = load();
+let ui = {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
+function load() { try { const g = JSON.parse(localStorage.getItem(KEY)); return g && g.v === 2 ? g : null; } catch (e) { return null; } }
+const fill = (s, G) => String(s).replace(/\{colony\}/g, esc(G.player.colony));
+const txt = (s, G) => typeof s === 'function' ? s(G) : s;
+const sgn = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v);
+const chips = fx => `<div class="chips">${MK.filter(k => fx[k]).map(k => `<span class="chip ${fx[k] > 0 ? 'up' : 'down'}">${METERS[k].name} ${sgn(fx[k])}</span>`).join('')}</div>`;
+function tagsFor(o) {
+  const fx = fxOf(o.fx, G);
+  return `<div class="tags">${MK.filter(k => fx[k]).map(k => `<span class="tg ${fx[k] > 0 ? 'up' : 'down'}">${METERS[k].short} ${fx[k] > 0 ? '▲' : '▼'}</span>`).join('')}</div>`;
+}
+
+function renderChrome() {
+  $('#seals').innerHTML = ROUNDS.map((R, i) => {
+    let c = '';
+    if (G && G.stage !== 'intro') {
+      if (G.over && i === G.over.round) c = 'lost';
+      else if (i < G.round || G.stage === 'end' && !G.over) c = 'done';
+      else if (i === G.round && G.stage !== 'end') c = 'now';
+    }
+    return `<li class="${c}">${R.year}</li>`;
+  }).join('');
+  const show = G && G.stage !== 'setup';
+  $('#status').hidden = !show; $('#restart').hidden = !G;
+  if (show) $('#meters').innerHTML = MK.map(k => {
+    const v = Math.max(0, G.m[k]);
+    return `<div class="meter c-${k} ${v <= 15 ? 'danger' : ''}"><div class="lbl"><span class="full">${METERS[k].name}</span><span class="short">${METERS[k].short}</span><b>${v}</b></div><div class="bar"><i style="width:${v}%"></i></div></div>`;
+  }).join('');
+}
+
+// ---------- setup ----------
+let setup = { teacher: '', period: '', first: '', last: '', colony: '', desk: false, err: '' };
+function renderSetup() {
+  app.innerHTML = `<div class="card fade">
+    <div class="split">
+      <div>
+        <p class="dateline">1612 – 1773</p>
+        <h1>The Colony Simulation</h1>
+        <p class="sub">Found a British colony in North America and guide it to the eve of the Revolution.</p>
+        <div class="prose"><p>You will make nine real decisions that colonial leaders faced, from how to feed your people to what to do with a ship full of taxed tea. Every choice was made by a real colony. At the end you’ll see how your colony compares with history.</p></div>
+      </div>
+      ${photo(['Powhatan john smith map.jpg', 'John Smith’s map of Virginia (1612) shows the Chesapeake Bay and the towns of the Powhatan.'], 'contain')}
+    </div>
+    <div class="sect" style="margin-top:22px">
+      <h3>Before you begin</h3>
+      <div class="field"><label>Your history teacher</label>
+        <div class="pick">${TEACHERS.map(t => `<button class="pickbtn" data-teacher="${esc(t)}" aria-pressed="${setup.teacher === t}">${esc(t)}</button>`).join('')}</div></div>
+      <div class="formgrid">
+        <div class="field"><label for="first">First name</label><input id="first" maxlength="20" autocomplete="off" value="${esc(setup.first)}"></div>
+        <div class="field"><label for="last">Last name</label><input id="last" maxlength="25" autocomplete="off" value="${esc(setup.last)}"></div>
+        <div class="field"><label for="period">Class period</label><select id="period"><option value="">Choose…</option>${[1,2,3,4,5,6,7,8].map(n => `<option ${String(setup.period) === String(n) ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+        <div class="field"><label for="colony">Name your colony</label><input id="colony" maxlength="30" autocomplete="off" placeholder="New Albion" value="${esc(setup.colony)}"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="desk" ${setup.desk ? 'checked' : ''}><span><b>Teacher’s desk.</b> <span class="muted">Let the teacher choose each round’s event instead of drawing a random card. Leave this off when playing on your own.</span></span></label>
+      <p class="hint" role="alert">${esc(setup.err)}</p>
+      <div class="actions"><button class="btn primary" id="go">Found your colony</button><span class="muted small">Your progress saves in this browser.</span></div>
+    </div>
+  </div>`;
+  app.querySelectorAll('[data-teacher]').forEach(b => b.onclick = () => { readForm(); setup.teacher = b.dataset.teacher; renderSetup(); });
+  $('#go').onclick = start;
+}
+function readForm() {
+  setup.first = $('#first').value; setup.last = $('#last').value; setup.period = $('#period').value; setup.colony = $('#colony').value; setup.desk = $('#desk').checked;
+}
+function cap(s) { s = s.trim().replace(/\s+/g, ' '); return s.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' '); }
+function start() {
+  readForm();
+  const err = !setup.teacher ? 'Choose your teacher.' : !setup.first.trim() ? 'Type your first name.' : !setup.last.trim() ? 'Type your last name.' : !setup.period ? 'Choose your class period.' : !setup.colony.trim() ? 'Give your colony a name.' : '';
+  if (err) { setup.err = err; renderSetup(); return; }
+  G = newGame({ teacher: setup.teacher, first: cap(setup.first), last: cap(setup.last), period: setup.period, colony: cap(setup.colony), desk: setup.desk });
+  save(); render();
+}
+
+// ---------- intro ----------
+function renderIntro() {
+  app.innerHTML = `<div class="card fade">
+    <p class="dateline">Your charter</p>
+    <h2>Welcome to ${esc(G.player.colony)}, ${esc(G.player.first)}</h2>
+    <div class="prose"><p>You are in charge of a new English colony in North America. You will lead ${esc(G.player.colony)} from its first hungry years to 1773, when the colonies stand at the edge of revolution.</p></div>
+    <h3 style="margin-top:18px">Keep five things in balance</h3>
+    <p class="muted small" style="margin:0">Each starts at ${START}. If any one drops to 0, your colony fails.</p>
+    <div class="mgrid">${MK.map(k => `<div class="mcard c-${k}"><b>${METERS[k].name}</b><p>${METERS[k].about}</p></div>`).join('')}</div>
+    <h3 style="margin-top:18px">Each round</h3>
+    <ol class="steps">
+      <li><span><b>Make a decision.</b> Each choice card shows which meters it helps (▲) or hurts (▼). You find out by how much after you decide.</span></li>
+      <li><span><b>Fund a project (optional).</b> Projects cost points now but shield your colony from disasters later. Each can be bought once.</span></li>
+      <li><span><b>Draw an event card.</b> Some events are lucky, some are disasters. The years pass, and your colony produces food and money.</span></li>
+    </ol>
+    <p class="small muted">You will also keep a <b>Liberty Record</b>. It doesn’t count toward survival, but it tracks whether your choices expanded or limited people’s freedom.</p>
+    <div class="actions"><button class="btn primary" id="go">Begin in 1612</button></div>
+  </div>`;
+  $('#go').onclick = () => { G.stage = 'round'; ui = {}; save(); render(); };
+}
+
+// ---------- round ----------
+function renderRound() {
+  const R = ROUNDS[G.round];
+  app.innerHTML = `<div class="card fade">
+    <div class="split">
+      <div><p class="dateline">Round ${G.round + 1} of ${ROUNDS.length} · ${R.year}</p><h2>${R.title}</h2>
+        <div class="prose">${R.text.map(p => `<p>${fill(p, G)}</p>`).join('')}</div></div>
+      ${photo(R.img)}
+    </div>
+    <p class="question">${fill(R.question, G)}</p>
+    <div class="choices">${R.options.map(o => `<button class="choice" data-opt="${o.key}" aria-pressed="${ui.opt === o.key}"><span class="ct">${o.name}</span><span class="cb">${fill(o.blurb, G)}</span>${tagsFor(o)}</button>`).join('')}</div>
+    ${R.final ? '' : `<div class="projects"><h3>Fund a project <span class="muted small" style="font-family:var(--text)">(optional, one per round)</span></h3>
+      <div class="pgrid">${PROJECTS.map(P => { const own = G.owned.includes(P.key); return `<button class="proj" data-proj="${P.key}" aria-pressed="${ui.proj === P.key}" ${own ? 'disabled' : ''}>${own ? '<span class="owned">Built</span>' : ''}<span class="pt">${P.name}</span><span class="pc">Cost: ${MK.filter(k => P.cost[k]).map(k => METERS[k].short + ' ' + sgn(P.cost[k])).join(', ')}</span><span class="pp">${P.protects}</span></button>`; }).join('')}</div></div>`}
+    <div class="actions"><button class="btn primary" id="seal" ${ui.opt ? '' : 'disabled'}>Make it official</button><span class="muted small" id="pickmsg">${ui.opt ? '' : 'Choose a decision card first.'}</span></div>
+  </div>`;
+  app.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => { ui.opt = b.dataset.opt; refreshPicks(); });
+  app.querySelectorAll('[data-proj]').forEach(b => b.onclick = () => { ui.proj = ui.proj === b.dataset.proj ? null : b.dataset.proj; refreshPicks(); });
+  $('#seal').onclick = seal;
+}
+function refreshPicks() {
+  app.querySelectorAll('[data-opt]').forEach(b => b.setAttribute('aria-pressed', ui.opt === b.dataset.opt));
+  app.querySelectorAll('[data-proj]').forEach(b => b.setAttribute('aria-pressed', ui.proj === b.dataset.proj));
+  $('#seal').disabled = !ui.opt; $('#pickmsg').textContent = ui.opt ? '' : 'Choose a decision card first.';
+}
+function seal() {
+  if (!ui.opt) return;
+  decide(G, ui.opt, ui.proj);
+  const R = ROUNDS[G.round];
+  G.stage = (G.over || R.final) ? 'results' : 'event';
+  G.pending = null; ui = {}; save(); render();
+}
+
+// ---------- event ----------
+function renderEvent() {
+  const R = ROUNDS[G.round], next = ROUNDS[G.round + 1];
+  if (!G.pending && !G.desk) { G.pending = drawEvent(G); save(); }
+  const list = eligibleEvents(G); const tot = list.reduce((s, x) => s + x.w, 0);
+  app.innerHTML = `<div class="card fade">
+    <p class="dateline">${R.year} – ${next.year}</p>
+    <h2>The Years Pass…</h2>
+    <div class="prose"><p>Things happen that no leader can plan for. ${G.desk ? 'Your teacher will choose what happens to ' + esc(G.player.colony) + ' next.' : 'Draw a card to see what happens to ' + esc(G.player.colony) + '.'}</p></div>
+    ${G.desk && !G.pending ? `<div class="desk"><h3>Teacher’s desk</h3>
+        ${list.map(x => `<label><input type="radio" name="ev" value="${x.e.key}"><span><b>${x.e.name}</b> <span class="muted small">(${Math.round(x.w / tot * 100)}% chance if drawn randomly)${x.e.guard && G.owned.includes(x.e.guard) ? ' · shielded' : ''}</span></span></label>`).join('')}
+        <div class="actions"><button class="btn primary" id="deskgo">Use this event</button><button class="btn" id="deskrand">Draw randomly</button></div></div>` : `
+    <div class="deck"><button class="flip" id="flip" aria-label="Draw the event card">
+      <div class="face back"><div class="inner"><div class="q">?<small>Tap to draw your card</small></div></div></div>
+      <div class="face front" id="front"></div></button></div>
+    <div class="actions" style="justify-content:center"><button class="btn primary" id="cont" hidden>See how ${esc(G.player.colony)} is doing</button></div>`}
+  </div>`;
+  if (G.desk && !G.pending) {
+    $('#deskgo').onclick = () => { const c = app.querySelector('input[name=ev]:checked'); if (!c) return; G.pending = c.value; save(); renderEvent(); };
+    $('#deskrand').onclick = () => { G.pending = drawEvent(G); save(); renderEvent(); };
+    return;
+  }
+  const E = EVENTS.find(e => e.key === G.pending); const sh = E.guard && G.owned.includes(E.guard);
+  const P = sh ? PROJECTS.find(p => p.key === E.guard) : null;
+  $('#front').innerHTML = `<div class="art">${E.img ? `<img src="${IMG(E.img[0])}" alt="${esc(E.img[1])}" onerror="this.parentNode.innerHTML=icon('${E.icon}')">` : icon(E.icon)}</div>
+    <div class="body"><span class="kind ${E.good || sh ? 'good' : 'bad'}">${E.good ? 'Good fortune' : sh ? 'Disaster averted' : 'Disaster'}</span><h3>${E.name}</h3>
+    <p>${fill(sh ? E.guarded : E.text, G)}</p>${sh ? `<span class="shield">Shielded by your ${P.name.toLowerCase()}</span>` : ''}${chips(sh ? E.gfx : E.fx)}</div>`;
+  const flip = $('#flip');
+  const open = () => { if (flip.classList.contains('open')) return; flip.classList.add('open'); flip.setAttribute('aria-label', E.name); setTimeout(() => { $('#cont').hidden = false; $('#cont').focus(); }, 650); };
+  flip.onclick = open;
+  $('#cont').onclick = () => { runEvent(G, G.pending); G.pending = null; G.stage = 'results'; save(); render(); };
+}
+
+// ---------- results ----------
+const OVER = {
+  food: '{colony} ran out of food. The survivors abandoned the colony.',
+  economy: '{colony} went bankrupt. The investors in London gave up and stopped sending ships.',
+  population: 'So many colonists died or left that {colony} was abandoned.',
+  natives: 'War with the surrounding Native nations destroyed {colony}.',
+  britain: 'The King revoked {colony}’s charter and took over the colony.'
+};
+function renderResults() {
+  const R = ROUNDS[G.round]; const L = G.log[G.log.length - 1]; const o = R.options.find(x => x.key === L.choice);
+  const after = L.after || G.m; const lib = o.liberty;
+  const label = { project: 'Project', decision: 'Your decision', event: 'Event', production: 'The years pass' };
+  app.innerHTML = `<div class="card fade">
+    <p class="dateline">Round ${G.round + 1} · ${R.year}</p>
+    <h2>${o.name}</h2>
+    <div class="prose"><p>${fill(txt(o.result, G), G)}</p></div>
+    <div class="ledger">${L.parts.map(([kind, name, fx]) => `<div class="lrow"><span class="k">${label[kind]}</span><span class="v"><b>${esc(kind === 'production' ? fill(PRODUCTION[G.econ].text, G) : name)}</b>${kind === 'production' && G.flags.ships ? ' <span class="muted small">(+4 money from your shipyards)</span>' : ''}${chips(fx)}</span></div>`).join('')}</div>
+    <div class="compare">${MK.map(k => { const d = after[k] - L.before[k]; return `<div class="cmp c-${k}">${METERS[k].name}<b>${Math.max(0, after[k])}</b><span class="d ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d ? sgn(d) + ' this round' : 'no change'}</span></div>`; }).join('')}</div>
+    ${lib ? `<div class="liberty"><b>Liberty Record:</b> ${esc(lib[1])} <b style="color:${lib[0] > 0 ? 'var(--good)' : 'var(--bad)'}">(${sgn(lib[0])})</b></div>` : ''}
+    <div class="history"><h3>What really happened</h3><p><b>Who chose this:</b> ${esc(o.who)}</p><p>${esc(R.history)}</p></div>
+    ${G.over ? `<div class="gameover"><h3>Game over</h3><p style="margin:0">${fill(OVER[G.over.meter], G)}</p></div>` : ''}
+    <div class="actions"><button class="btn primary" id="next">${G.over || R.final ? 'See your final report' : 'On to ' + ROUNDS[G.round + 1].year}</button></div>
+  </div>`;
+  $('#next').onclick = () => {
+    if (G.over || R.final) G.stage = 'end'; else { G.round++; G.stage = 'round'; }
+    ui = {}; save(); render();
+  };
+}
+
+// ---------- end ----------
+function epilogue() {
+  const p = G.picks, b = G.m.britain, pop = G.m.population;
+  if (G.over) return `${fill(OVER[G.over.meter], G)} Many early colonies failed this way. Roanoke vanished in the 1580s, and Jamestown came within days of being abandoned in 1610.`;
+  const tea = p[8], stamp = p[7];
+  let s;
+  if (tea === 'DESTROY' || b <= 15) s = `Parliament punishes ${esc(G.player.colony)} the way it punished Massachusetts: it closes your port and takes away your self-government. Your people do not back down. In April 1775, militia from ${esc(G.player.colony)} face British regulars, and the Revolution begins. You were one of its leaders.`;
+  else if (tea === 'ALLOW' || b >= 75) s = `${esc(G.player.colony)} stays loyal to the Crown longer than almost any colony. When war comes in 1775, Loyalists here are strong, and many will flee to Canada or Britain after the war. Your patriot neighbors never fully trust you.`;
+  else s = `${esc(G.player.colony)} walks a careful line. When fighting breaks out at Lexington and Concord in 1775, your people are divided. Like New York and Pennsylvania, you join the Revolution, but not everyone in your colony agrees.`;
+  if (G.flags.slavery) s += ` When the Declaration of Independence proclaims that “all men are created equal,” enslaved people in ${esc(G.player.colony)} will remind the patriots that those words are not yet true for them.`;
+  if (G.m.natives < 30) s += ` The Native nations you pushed aside will mostly side with Britain, hoping a British victory will stop settlers from taking more of their land.`;
+  else if (G.m.natives >= 70) s += ` Your long peace with your Native neighbors is rare. Across the colonies, the Revolution would bring new wars for Native land.`;
+  return s;
+}
+function whyList() {
+  const out = [];
+  if (G.over) {
+    const k = G.over.meter; const losses = G.srcs[k].filter(x => x[1] < 0).sort((a, b) => a[1] - b[1]).slice(0, 3);
+    out.push(`<b>${METERS[k].name} hit zero.</b> The biggest losses came from:`);
+    losses.forEach(([src, v]) => out.push(`${esc(src)} (${sgn(v)})`));
+    const proj = { food: 'Roads and wharves', population: 'Doctors and inoculation', natives: 'a fort or a treaty', britain: 'an Agent in London' }[k];
+    if (proj) out.push(`A different choice or ${proj} might have saved your colony.`);
+  } else {
+    const best = MK.reduce((a, k) => G.m[k] > G.m[a] ? k : a, MK[0]), worst = MK.reduce((a, k) => G.m[k] < G.m[a] ? k : a, MK[0]);
+    const top = G.srcs[best].filter(x => x[1] > 0).sort((a, b) => b[1] - a[1])[0];
+    const low = G.srcs[worst].filter(x => x[1] < 0).sort((a, b) => a[1] - b[1])[0];
+    out.push(`<b>Your strength was ${METERS[best].name} (${G.m[best]}).</b>${top ? ' The biggest boost: ' + esc(top[0]) + ' (' + sgn(top[1]) + ').' : ''}`);
+    out.push(`<b>Your weak spot was ${METERS[worst].name} (${Math.max(0, G.m[worst])}).</b>${low ? ' The biggest blow: ' + esc(low[0]) + ' (' + sgn(low[1]) + ').' : ''}`);
+    const shields = [...new Set(G.log.filter(l => l.shielded).map(l => EVENTS.find(e => e.key === l.event).name))];
+    if (shields.length) out.push(`Your projects softened: ${shields.map(esc).join(', ')}.`);
+    else if (G.owned.length) out.push(`You built ${G.owned.length} project${G.owned.length > 1 ? 's' : ''}, but none of them ended up shielding you from a disaster.`);
+  }
+  return out;
+}
+const DQ = [
+  'Which decision was the hardest for you? What made it hard, and who did your choice help or hurt?',
+  'Look at your Liberty Record. Did the choices that helped your colony survive also expand freedom? Why might colonial leaders have faced that same conflict?',
+  'Several colonies chose differently on the same issue (for example, Rhode Island and Massachusetts on religion). What did each colony value most?',
+  'Native nations, enslaved people and women had no vote in any colony. How would this simulation be different if you played as one of them?',
+  'By 1773, why were so many colonists ready to defy Britain when they had considered themselves loyal English subjects for 150 years?'
+];
+function report() {
+  const pl = G.player; const surv = !G.over; const lines = [
+    'THE COLONY SIMULATION - SUMMARY REPORT',
+    `Student: ${pl.first} ${pl.last}`, `Teacher: ${pl.teacher}    Period: ${pl.period}`, `Colony: ${pl.colony}`,
+    `Completed: ${new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}${G.desk ? ' (teacher’s desk)' : ''}`, '',
+    `Result: ${surv ? 'SURVIVED to 1773' : 'Colony failed in ' + ROUNDS[G.over.round].year + ' (' + METERS[G.over.meter].name + ' reached 0)'}`,
+    `Rounds completed: ${surv ? ROUNDS.length : G.over.round} of ${ROUNDS.length}`
+  ];
+  if (surv) lines.push(`Final colony score: ${totalScore(G)} of 500`);
+  lines.push('', 'DECISIONS');
+  ROUNDS.forEach((R, i) => {
+    const l = G.log.find(x => x.round === i);
+    if (!l) { lines.push(`${i + 1}. ${R.year} ${R.title}: (not reached)`); return; }
+    const o = R.options.find(x => x.key === l.choice);
+    lines.push(`${i + 1}. ${R.year} ${R.title}: ${o.name}`);
+    if (l.project) lines.push(`   Project: ${PROJECTS.find(p => p.key === l.project).name}`);
+    if (l.event) lines.push(`   Event: ${EVENTS.find(e => e.key === l.event).name}${l.shielded ? ' (shielded)' : ''}`);
+  });
+  lines.push('', 'REPORT CARD');
+  MK.forEach(k => lines.push(`   ${METERS[k].name}: ${Math.max(0, G.m[k])} (${surv ? grade(G.m[k]) : '-'})`));
+  lines.push('', `LIBERTY RECORD: ${sgn(libertyScore(G)) || '0'}`);
+  G.liberty.forEach(x => lines.push(`   ${x.year}: ${x.text} (${sgn(x.pts)})`));
+  return lines.join('\n');
+}
+function renderEnd() {
+  const surv = !G.over; const lib = libertyScore(G);
+  app.innerHTML = `<div class="card fade">
+    <div class="headrow">
+      <div class="stamp ${surv ? 'win' : 'lose'}">${surv ? 'Survived<br>to 1773' : 'Colony<br>failed<br>' + ROUNDS[G.over.round].year}</div>
+      <div><p class="dateline">Final report · ${esc(G.player.colony)}</p>
+        <h2 style="margin:0">${surv ? 'You are a true founder, ' + esc(G.player.first) + '!' : 'The end of ' + esc(G.player.colony)}</h2>
+        ${surv ? `<p class="big" style="margin:.2em 0 0">${totalScore(G)} <span class="muted" style="font-size:1.1rem;font-family:var(--text)">of 500 points</span></p>` : ''}</div>
+    </div>
+    <div class="sect"><h3>Why you ${surv ? 'survived' : 'failed'}</h3><ul class="why" style="padding-left:1.1em">${whyList().map(w => `<li style="margin-left:0">${w}</li>`).join('')}</ul></div>
+    <div class="sect"><h3>What became of ${esc(G.player.colony)}</h3><div class="prose"><p>${epilogue()}</p></div></div>
+    <div class="sect"><h3>Report card</h3><div class="tablewrap"><table class="t"><thead><tr><th>Meter</th><th>Final</th><th>Grade</th></tr></thead><tbody>
+      ${MK.map(k => { const g = surv ? grade(G.m[k]) : '—'; return `<tr><td>${METERS[k].name}</td><td>${Math.max(0, G.m[k])}</td><td class="grade g-${g}">${g}</td></tr>`; }).join('')}
+      </tbody></table></div><p class="small muted">A = 80+, B = 65+, C = 50+, D = 35+, F = below 35.</p></div>
+    <div class="sect"><h3>Your choices and history</h3><div class="tablewrap"><table class="t"><thead><tr><th>Year</th><th>Your choice</th><th>Who really chose this</th></tr></thead><tbody>
+      ${ROUNDS.map((R, i) => { const l = G.log.find(x => x.round === i); const o = l && R.options.find(x => x.key === l.choice); return `<tr><td>${R.year}</td><td>${o ? '<b>' + o.name + '</b><br><span class="small muted">' + R.title + '</span>' : '<span class="muted">Not reached</span>'}</td><td class="small">${o ? esc(o.who) : ''}</td></tr>`; }).join('')}
+      </tbody></table></div></div>
+    <div class="sect"><h3>Liberty Record: <span style="color:${lib > 0 ? 'var(--good)' : lib < 0 ? 'var(--bad)' : 'var(--ink-soft)'}">${sgn(lib) || '0'}</span></h3>
+      ${G.liberty.length ? `<ul class="small">${G.liberty.map(x => `<li><b>${x.year}:</b> ${esc(x.text)} <b style="color:${x.pts > 0 ? 'var(--good)' : 'var(--bad)'}">(${sgn(x.pts)})</b></li>`).join('')}</ul>` : '<p class="small muted">None of your choices changed anyone’s rights.</p>'}
+      <p class="small muted">The Liberty Record doesn’t affect survival. It shows whether your colony expanded or limited the rights of colonists, Native peoples and enslaved people.</p></div>
+    <div class="sect"><h3>Discussion questions</h3><ol class="dq">${DQ.map(q => `<li>${q}</li>`).join('')}</ol></div>
+    <div class="sect"><h3>Your summary report</h3><p class="small">Copy this report and paste it into Canvas.</p>
+      <textarea class="summary" id="rep" readonly>${esc(report())}</textarea>
+      <div class="actions"><button class="btn primary" id="copy">Copy report</button><span id="copied" class="copyok" aria-live="polite"></span><span style="flex:1"></span><button class="btn" id="again">Play again</button></div></div>
+  </div>`;
+  $('#copy').onclick = async () => {
+    const t = $('#rep'); let ok = false;
+    try { await navigator.clipboard.writeText(t.value); ok = true; } catch (e) { t.select(); try { ok = document.execCommand('copy'); } catch (e2) {} }
+    $('#copied').textContent = ok ? 'Copied! Now paste it into Canvas.' : 'Select the text above and copy it.';
+  };
+  $('#again').onclick = restart;
+}
+
+// ---------- router ----------
+function restart() {
+  if (G && G.stage !== 'end' && !confirmRestart()) return;
+  if (G) setup = { ...setup, teacher: G.player.teacher, first: G.player.first, last: G.player.last, period: G.player.period, colony: '', desk: G.player.desk, err: '' };
+  G = null; ui = {}; try { localStorage.removeItem(KEY); } catch (e) {} render();
+}
+function confirmRestart() {
+  const b = $('#restart');
+  if (b.dataset.sure) return true;
+  b.dataset.sure = '1'; b.textContent = 'Click again to erase this game'; setTimeout(() => { delete b.dataset.sure; b.textContent = 'Start over'; }, 4000);
+  return false;
+}
+$('#restart').onclick = restart;
+function render() {
+  renderChrome();
+  if (!G) renderSetup();
+  else ({ intro: renderIntro, round: renderRound, event: renderEvent, results: renderResults, end: renderEnd })[G.stage]();
+  renderChrome();
+  app.focus({ preventScroll: true }); window.scrollTo(0, 0);
+}
+render();
+</script>
 </body>
 </html>
