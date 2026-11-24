@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>History Simulations</title>
+  <style>
+    :root {
+      --bg: #f6f1e7; --card: #fffdf8; --ink: #2a2520; --muted: #6b6258;
+      --line: #ddd2bf; --accent: #7a2e1f; --tag: #efe6d4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1a17; --card: #26231f; --ink: #ece6dc; --muted: #a89f92;
+        --line: #3a352e; --accent: #e09a7a; --tag: #332e27;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif; line-height: 1.45; }
+    main { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 { font-size: 2rem; margin: 0 0 4px; }
+    .lede { color: var(--muted); margin: 0 0 28px; }
+    h2 { font-size: 1.15rem; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--accent); border-bottom: 1px solid var(--line);
+      padding-bottom: 6px; margin: 32px 0 12px; }
+    ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    a.card { display: block; height: 100%; padding: 14px 16px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 8px; color: inherit;
+      text-decoration: none; transition: border-color .15s, transform .15s; }
+    a.card:hover, a.card:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
+    .t { font-weight: bold; font-size: 1.05rem; }
+    .s { color: var(--muted); font-size: .92rem; margin-top: 2px; }
+    .tag { display: inline-block; margin-top: 8px; font-size: .75rem; font-family: system-ui, sans-serif;
+      background: var(--tag); color: var(--muted); padding: 2px 8px; border-radius: 99px; }
+    footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
+  </style>
+  <script>
+    // The old GitHub Pages address can't save leaderboard scores; send visitors to the Firebase site.
+    if (/github\.io$/.test(location.hostname)) location.replace('https://sams-history.web.app/');
+  </script>
+</head>
+<body>
+<main>
+  <h1>History Simulations</h1>
+  <p class="lede">Pick the simulation your class is playing. Your progress saves in this browser, so use the same device each time.</p>
+
+  <h2>Early American History</h2>
+  <ul>
+    <li><a class="card" href="colony_sim/"><div class="t">The Colony Simulation</div><div class="s">Found a British colony and guide it to the eve of the Revolution, 1612–1773</div></a></li>
+    <li><a class="card" href="be-washington/"><div class="t">Be Washington</div><div class="s">The beginnings of the French and Indian War, 1753–1754</div><span class="tag">Text game · slow first load</span></a></li>
+    <li><a class="card" href="confederation/"><div class="t">Rope of Sand</div><div class="s">A state under the Articles of Confederation, 1781–1788</div></a></li>
+    <li><a class="card" href="lewis-clark/"><div class="t">Be Lewis and Clark</div><div class="s">The Corps of Discovery, 1804–1806</div></a></li>
+    <li><a class="card" href="mill-town/"><div class="t">The Mill Town Game</div><div class="s">A New England town in the Industrial Revolution, 1823–1855</div></a></li>
+    <li><a class="card" href="john-ross/"><div class="t">Be John Ross</div><div class="s">The Cherokee Nation and the Trail of Tears, 1828–1839</div></a></li>
+    <li><a class="card" href="be-lincoln-sumter/"><div class="t">Be Lincoln: Fort Sumter</div><div class="s">The Fort Sumter Crisis, 1861</div></a></li>
+    <li><a class="card" href="be-lincoln/"><div class="t">Be Lincoln: Wartime President</div><div class="s">Seven hard choices of the Civil War, 1861–1865</div></a></li>
+    <li><a class="card" href="through-their-eyes/"><div class="t">Through Their Eyes</div><div class="s">Follow a real soldier through the war, and fight a war of your own beside him</div></a></li>
+    <li><a class="card" href="civil-war-soldier/"><div class="t">The Soldier’s Odds</div><div class="s">Enlist in the Civil War and face a real soldier’s chances, 1861–1865</div></a></li>
+    <li><a class="card" href="civil_war/"><div class="t">Civil War Simulation</div><div class="s">A soldier’s view of the war, from 1862</div><span class="tag">Text game · slow first load</span></a></li>
+    <li><a class="card" href="civil_war_crossroads/"><div class="t">Crossroads of the Civil War</div><div class="s">Command decisions at the war’s turning points</div><span class="tag">Text game · slow first load</span></a></li>
+  </ul>
+
+  <h2>World History</h2>
+  <ul>
+    <li><a class="card" href="cotton-town/"><div class="t">The Cotton Town Game</div><div class="s">A Lancashire town in the Industrial Revolution, 1786–1842</div></a></li>
+    <li><a class="card" href="be-lafayette/"><div class="t">Be Lafayette</div><div class="s">Liberty or order? The Revolution in France, 1789–1802</div></a></li>
+    <li><a class="card" href="long-fuse/"><div class="t">The Long Fuse</div><div class="s">A Great Power foreign minister, 1890–1914</div></a></li>
+  </ul>
+
+  <footer>Text games can take up to 30 seconds to load the first time.</footer>
+</main>
+</body>
+</html>
