@@ -187,11 +187,13 @@ textarea.summary{width:100%;min-height:260px;font-family:ui-monospace,"SF Mono",
 /*ENGINE-START*/
 // Monthly chance of dying of disease. Union average from Soldier's Odds; Black regiments
 // were given more labor duty and worse medical care, and died of disease about twice as often.
-const DISEASE = { white: 0.0042, black: 0.0085 };
-const DOW = 0.156;          // share of wounded Union soldiers who died of their wounds
-const DISCHARGE = 0.20;     // share of wounded survivors discharged as unfit for service
+const DISEASE = { white: 0.0042, black: 0.0085, confed: 0.0055 };
+// Share of wounded who died of their wounds, and share of wounded survivors discharged as unfit (from Soldier's Odds).
+const SIDES = { U: { dow: 0.156, discharge: 0.20 }, C: { dow: 0.18, discharge: 0.12 } };
 // Chance of dying as a prisoner: early-war prisoners were quickly exchanged; after mid-1863 they were not.
-const PRISON = { exchange: 0.03, union: 0.155, andersonville: 0.29 };
+const PRISON = { exchange: 0.03, union: 0.155, andersonville: 0.29, confed: 0.12 };
+// A deserter usually made it home; if caught he was punished and sent back; a few were shot as examples.
+const DESERT = [['dh', 'Made it home', 0.70], ['c', 'Caught and sent back', 0.29], ['k', 'Caught and shot', 0.01]];
 
 const SOLDIERS = {
   rhodes: {
@@ -205,6 +207,7 @@ const SOLDIERS = {
     quote: ['just what a First Sergeant’s duty might be I had no idea.', 'Elisha Hunt Rhodes, on joining the regiment in 1861'],
     end: 'Rhodes fought in every major campaign of the Army of the Potomac, from Bull Run to Appomattox. He rose from the ranks to command his regiment as a colonel. He went home in July 1865, became a businessman in Providence, and died in 1917. His great-grandson published his diary in 1985.',
     endFate: 'Survived the war as colonel of his regiment',
+    think: 'Rhodes changed his mind about Black soldiers and about what the war was for. What changed it?',
     chapters: [
       { date: 'July 21, 1861', title: 'Bull Run',
         img: ['Bull run bridge 1862.jpg', 'The wrecked Stone Bridge over Bull Run, photographed in 1862.'],
@@ -324,6 +327,7 @@ const SOLDIERS = {
     quote: ['our boys out on picket look sharper for snakes than they do for rebels.', 'James Henry Gooding, letter to the New Bedford Mercury, June 1863'],
     end: 'Gooding was wounded and captured at Olustee, Florida, in February 1864, and sent to the prison camp at Andersonville, Georgia. He died there on July 19, 1864, at age 25, and is buried in grave 3,585 of what is now Andersonville National Cemetery. A month before he died, Congress granted equal pay to Black soldiers. He never learned that the fight he had led was won.',
     endFate: 'Died a prisoner at Andersonville, July 1864',
+    think: 'Why did the men of the 54th refuse to take unequal pay, even when their families were suffering? Would you have?',
     chapters: [
       { date: 'February – June 1863', title: 'Joining the 54th',
         img: ['18630721 To Colored Men! Freedom, Protection, Pay, and a Call to Military Duty! - U.S. National Archives.jpg', 'A recruiting broadside from 1863 promising Black recruits freedom, protection and pay.'],
@@ -404,9 +408,130 @@ const SOLDIERS = {
           facts: [['Months covered', 'Jan. – Aug. 1865']],
           note: 'Our estimate for the regiment’s last months of service.' } }
     ]
+  },
+
+  watkins: {
+    name: 'Sam Watkins', short: 'Watkins', unit: '1st Tennessee Infantry (Confederate)', race: 'confed', side: 'C', years: '1861–1865',
+    img: ['Sam Watkins.jpg', 'Sam Watkins of Company H, 1st Tennessee Infantry.'],
+    blurb: 'A Tennessee farm boy who fought in the West from 1861 to the very end, and wrote one of the most famous soldier memoirs of the war.',
+    intro: [
+      'Sam Watkins was 21 and unmarried when Tennessee left the Union in 1861. He joined the Maury Grays, Company H of the 1st Tennessee Infantry, from Columbia, Tennessee. The soldiers called it “Co. Aytch.”',
+      'He fought from the mountains of western Virginia to the last battles in North Carolina. In 1881 he wrote down his memories for his hometown newspaper. The next year they became a book, “Co. Aytch.” You will follow him, and enlist in Company H beside him.'
+    ],
+    quote: ['But in the following pages I propose to tell of the fellows who did the shooting and killing', 'Sam Watkins, “Co. Aytch” (1882)'],
+    context: ['Reading Watkins carefully', 'Watkins wrote seventeen years after the war. Like many Confederate veterans, he said the South fought for “states’ rights” and wrote almost nothing about slavery. But in 1861 the states that formed the Confederacy said plainly why they were leaving. Mississippi’s declaration began: “Our position is thoroughly identified with the institution of slavery.” As you read Watkins, notice what he tells you and what he leaves out.'],
+    end: 'Watkins was wounded at Murfreesboro and again near Atlanta, but he survived the war. In April 1865 he was one of the last men of Company H when General Joseph Johnston’s army surrendered in North Carolina. He went home, married Virginia Mayes, farmed in Maury County and raised a family. He wrote “Co. Aytch” in 1881–1882 and died in 1901.',
+    endFate: 'Survived four years of war and surrendered in 1865',
+    think: 'Watkins wrote about the twenty-negro law, but almost nothing else about slavery. Why do you think a Confederate veteran writing in 1881 left it out?',
+    chapters: [
+      { date: 'May 1861 – February 1862', title: 'Off to Virginia',
+        img: ['Private Edwin Francis Jemison.jpg', 'Edwin Francis Jemison, a 16-year-old Confederate private from Georgia, 1861.'],
+        text: ['In the spring of 1861, as Tennessee leaves the Union, the Maury Grays march off to cheering crowds. The regiment votes to go to Virginia, where everyone expects the big battles to be.',
+          'Instead it spends the fall and winter in the mountains of western Virginia under Stonewall Jackson. There is little fighting but terrible cold. On one frozen outpost, Watkins finds a whole line of sentinels frozen to death at their posts. Then a young soldier is caught asleep on guard duty. The punishment for that is death.'],
+        predict: { q: 'The young soldier who fell asleep on guard was court-martialed. What happened, and how did Watkins feel?',
+          options: [['shot', 'He was shot, and Watkins thought it was fair'], ['acquit', 'He was found not guilty, and Watkins was glad'], ['whip', 'He was whipped, and Watkins thought it was too harsh'], ['desert', 'He deserted before the trial']],
+          answer: 'acquit', quote: ['he was acquitted, and I was glad of it.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'Watkins admitted that he had dozed off on guard duty himself. Most soldiers were farm boys who had never stood watch all night in a snowstorm. The army needed discipline, but many soldiers thought shooting an exhausted boy was too much.' },
+        yours: { q: 'It is your turn on a picket post in the snow, alone, at 2 a.m.',
+          options: [['walk', 'Keep walking your post to stay warm', 'Your feet ache, but you keep moving.', { dis: 0.7 }], ['rest', 'Wrap up in your blanket and sit down', 'Just for a minute.', { dis: 1.5 }]] },
+        fate: { months: 9, k: 0.003, w: 0.01, c: 0.003, cap: 'exchange',
+          facts: [['Months covered', 'May 1861 – Feb. 1862'], ['Danger', 'Cold, measles and camp fevers']],
+          note: 'Confederate soldiers died of disease even more often than Union soldiers. New recruits from farms had never been exposed to measles, mumps or chickenpox.' } },
+      { date: 'April 6–7, 1862', title: 'Shiloh',
+        img: ["The Battle of Pittsburg Landing (Shiloh, Tenn., April 1862)- ...The left wing, Gen. Hurlbut's Div., Apr. 6th; Charge & repulse of rebels at Peach Orchard LCCN2005694846.jpg", 'Fighting at the Peach Orchard on the first day at Shiloh.'],
+        text: ['The 1st Tennessee is sent west to join General Albert Sidney Johnston. At dawn on April 6, the Confederates surprise Grant’s army in its camps near Shiloh Church, Tennessee, and drive the Yankees back toward the river.',
+          'Watkins later wrote that during the charge he felt “happier than a fellow does when he professes religion.” By evening, Johnston is dead and Grant’s army is pinned against the Tennessee River.'],
+        predict: { q: 'The Confederates were winning on the first evening at Shiloh. What stopped them?',
+          options: [['counter', 'A Union counterattack drove them back'], ['ammo', 'They ran out of ammunition'], ['halt', 'Their commanders ordered them to halt for the night'], ['rain', 'A thunderstorm stopped the fighting']],
+          answer: 'halt', quote: ['The victory was complete, but the word “halt” turned victory into defeat.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'General P. G. T. Beauregard, who took command when Johnston was killed, stopped the attack at dusk. That night Union reinforcements arrived, and the next day Grant drove the Confederates from the field. More Americans were killed and wounded at Shiloh than in all of America’s earlier wars combined.' },
+        yours: { q: 'Your regiment runs through a captured Union camp. There is food on the fires, new blankets, and coffee. You haven’t eaten since yesterday.',
+          options: [['loot', 'Stop and grab what you can', 'Thousands of hungry Confederates did. Officers couldn’t stop them.', { bat: 0.8 }], ['push', 'Keep pushing forward', 'The Yankees are running. Finish it.', { bat: 1.25 }]] },
+        fate: { months: 2, k: 1728 / 44699, w: 8012 / 44699, c: 959 / 44699, cap: 'exchange',
+          facts: [['Confederate soldiers engaged', '44,699'], ['Killed', '1,728'], ['Wounded', '8,012'], ['Captured or missing', '959']],
+          note: 'Whole Confederate army at Shiloh. Watkins wrote that the soldiers “went through the Yankee camps” and began rummaging for food and plunder.' } },
+      { date: 'April – October 1862', title: 'The Twenty-Negro Law',
+        img: ['Gettysburg, Pa. Three Confederate prisoners.jpg', 'Three Confederate privates, photographed after their capture at Gettysburg in 1863.'],
+        text: ['The men of 1861 had signed up for one year. In April 1862 the Confederate Congress passes the first draft in American history. Every soldier must now stay in the army for three years or the whole war, and new men are drafted to join them.',
+          'That fall Congress adds an exemption: one white man may stay home on any plantation with twenty or more enslaved people, to keep them working and under control. Under General Braxton Bragg’s strict discipline, men are whipped and shot for desertion, and Watkins watches some of the executions.'],
+        predict: { q: 'Most soldiers in the 1st Tennessee owned no enslaved people at all. How did Watkins and his friends react to the twenty-negro law?',
+          options: [['fair', 'They thought it was fair, because the plantations had to keep running'], ['bitter', 'They were bitter and said it was “a rich man’s war, poor man’s fight”'], ['quit', 'The whole regiment went home'], ['ignore', 'They hardly noticed it']],
+          answer: 'bitter', quote: ['A law was made by the Confederate States Congress about this time allowing every person who owned twenty negroes to go home.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'Watkins wrote that it gave rise to the saying “rich man’s war, poor man’s fight.” The law shows how closely the Confederacy was tied to slavery: keeping enslaved people under control was important enough to excuse slaveholders from fighting. About one in nine Confederate soldiers deserted during the war.' },
+        yours: { q: 'Your one year is up, but the new law says you can’t go home. A friend is slipping away tonight. He asks you to come.',
+          options: [['stay', 'Stay with the regiment', 'You won’t leave your company.', { bat: 1 }], ['desert', 'Desert with him', 'Your family needs you at home. But if you’re caught, you could be shot.', { desert: true }]] },
+        fate: { months: 5, k: 0.002, w: 0.01, c: 0, cap: 'exchange',
+          facts: [['Confederate deserters during the war', 'about 103,000'], ['Executed for desertion', 'a few hundred, on both sides combined']],
+          note: 'Most deserters who were caught were whipped, branded, fined or jailed, then sent back to the ranks. A few were shot as an example to the others.' } },
+      { date: 'October 1862 – January 1863', title: 'Perryville and Murfreesboro',
+        img: ['Rosecrans at Stones River.jpg', 'Union General William Rosecrans at the Battle of Stones River (Murfreesboro).'],
+        text: ['Bragg invades Kentucky. At Perryville in October, the 1st Tennessee charges a line of Union cannons and loses hundreds of men. Watkins is shot through his hat and his cartridge box but not hurt. Then Bragg retreats back into Tennessee.',
+          'On December 31 the armies meet again at Murfreesboro, on Stones River. This time Watkins is wounded in the arm by a shell fragment and a bullet.'],
+        predict: { q: 'The night before Perryville, Watkins stood picket duty right across the street from a Union picket. What did they do?',
+          options: [['fire', 'Fired at each other all night'], ['raid', 'Made friends and raided a nearby house’s pantry together'], ['capture', 'Watkins captured the Yankee'], ['ignore', 'Ignored each other until dawn']],
+          answer: 'raid', quote: ['We got very friendly during the night, and made a raid upon a citizen’s pantry', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'They came away with a bucket of honey, a pitcher of milk and some biscuits. Soldiers on both sides often traded coffee, tobacco and newspapers between the lines. They had more in common with each other than with the generals who sent them into battle the next day.' },
+        yours: { q: 'At Murfreesboro the man next to you is hit in the leg. He asks you to help him back to the field hospital.',
+          options: [['help', 'Help him to the rear', 'You’ll be out of the fight for a while. Officers call it shirking.', { bat: 0.7 }], ['stay', 'Stay in the line', 'The stretcher bearers will find him.', { bat: 1 }]] },
+        fate: { months: 4, k: 1294 / 37739, w: 7945 / 37739, c: 1027 / 37739, cap: 'exchange',
+          facts: [['Confederates engaged at Murfreesboro', 'about 37,700'], ['Killed', '1,294'], ['Wounded', '7,945'], ['Captured or missing', '1,027']],
+          note: 'Confederate army at Murfreesboro (Stones River). Watkins wrote that the 1st Tennessee lost more than 350 men at Perryville alone.' } },
+      { date: 'September – November 1863', title: 'Chickamauga and Missionary Ridge',
+        img: ['Chickamauga.jpg', 'The Battle of Chickamauga, September 1863.'],
+        text: ['At Chickamauga Creek in Georgia, Bragg wins the biggest Confederate victory in the West. It costs more than 18,000 Confederate casualties. Watkins loses close friends and spends a night among the dead and wounded on the field.',
+          'The Union army retreats into Chattanooga, and Bragg besieges it from the heights of Missionary Ridge. Watkins and his friends are so hungry they live on parched corn. In November, Grant arrives with reinforcements.'],
+        predict: { q: 'On November 25, Union soldiers charged straight up the steep slope of Missionary Ridge, partly without orders. What happened?',
+          options: [['slaughter', 'They were slaughtered on the slope'], ['broke', 'The Confederate line broke, and Bragg’s army fled'], ['stalemate', 'Neither side could win, and both sides dug in'], ['counter', 'Confederates counterattacked and drove them off']],
+          answer: 'broke',
+          reveal: 'The Confederate line on the crest collapsed. Watkins was out on picket duty in front of the ridge and was swept up the slope along with the advancing Union line before he got back to his own side. Bragg was removed from command, and General Joseph E. Johnston took over the army.' },
+        yours: { q: 'The line on Missionary Ridge is breaking. Men are running past you down the back of the ridge.',
+          options: [['run', 'Run for it with everyone else', 'Live to fight another day.', { bat: 0.8 }], ['stay', 'Stay and fight it out with your company', 'Somebody has to hold.', { bat: 1.1, cap: 3 }]] },
+        fate: { months: 4, k: 0.036, w: 0.22, c: 0.06, cap: 'confed',
+          facts: [['Confederates at Chickamauga', 'about 65,000'], ['Killed', '2,312'], ['Wounded', '14,674'], ['Captured or missing', '1,468'], ['Captured at Chattanooga two months later', 'about 4,100']],
+          note: 'Your odds combine both battles. By now prisoner exchanges have stopped, so a captured Confederate goes to a Union prison camp until the war ends.' } },
+      { date: 'May – September 1864', title: 'The Road to Atlanta',
+        img: ['Battle of Kenesaw Mountian.png', 'The Battle of Kennesaw Mountain, June 27, 1864.'],
+        text: ['General Joseph E. Johnston rebuilds the army over the winter, and the men love him. When Sherman marches on Atlanta in May, Johnston falls back from one line of trenches to the next, making the Yankees pay for every attack.',
+          'On June 27, at a bend in the line on Kennesaw Mountain the soldiers called the “Dead Angle,” the 1st Tennessee holds off a massive Union assault. Watkins fires so many times that his rifle grows hot enough to set off the powder before he can finish loading. His friend William Hughes is killed saving his life.'],
+        predict: { q: 'In July 1864, Jefferson Davis replaced Johnston with the aggressive General John Bell Hood. How did Watkins feel?',
+          options: [['glad', 'Glad, because Johnston kept retreating'], ['devastated', 'Devastated. He called it the worst blow the South ever received'], ['nothing', 'He didn’t care who commanded'], ['hopeful', 'Hopeful that Hood would save Atlanta']],
+          answer: 'devastated', quote: ['The most terrible and disastrous blow that the South ever received was when Hon. Jefferson Davis placed General Hood in command of the Army of Tennessee.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'Hood attacked Sherman again and again outside Atlanta and lost thousands of men. Watkins was wounded in the Battle of Atlanta on July 22. Atlanta fell to Sherman on September 2.' },
+        yours: { q: 'Union soldiers are charging the Dead Angle. To get a clear shot, you have to raise your head above the earthworks.',
+          options: [['up', 'Stand up on the firing step and fire over the top', 'You can see them coming.', { bat: 1.3 }], ['slot', 'Fire through a gap in the logs', 'Slower, and you can’t see as much.', { bat: 0.8 }]] },
+        fate: { months: 5, k: 0.04, w: 0.2, c: 0.07, cap: 'confed',
+          facts: [['Confederate casualties in the Atlanta Campaign', 'about 35,000'], ['Confederate soldiers', 'about 65,000 at the start'], ['Watkins’s own count at the Dead Angle', '“I had shot one hundred and twenty times that day.”']],
+          note: 'Your odds are our estimate from the campaign totals.' } },
+      { date: 'November – December 1864', title: 'Franklin and Nashville',
+        img: ['Kurz and Allison - Battle of Franklin, November 30, 1864.jpg', 'The Battle of Franklin, November 30, 1864, a Kurz & Allison print made in 1891.'],
+        text: ['Hood marches north into Tennessee to retake Nashville. The army passes through Columbia, Watkins’s hometown. Of the 120 men who left Columbia with Company H in 1861, only twelve are still with it.',
+          'At Franklin, on November 30, Hood orders the army to charge Union trenches across two miles of open ground. Watkins’s regiment is sent forward as skirmishers.'],
+        predict: { q: 'What happened when Hood’s army charged the Union trenches at Franklin?',
+          options: [['won', 'They broke through and captured Franklin'], ['shattered', 'They were shattered: more than 6,000 casualties and six generals killed'], ['stopped', 'Hood called off the attack before it began'], ['surr', 'The Union army surrendered']],
+          answer: 'shattered', quote: ['If I had not been a skirmisher on that day, I would not have been writing this today, in the year of our Lord 1882.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'In five hours the Army of Tennessee lost more men than in some whole campaigns. “I was there. I saw it,” Watkins wrote. Two weeks later, at Nashville, the Union army destroyed what was left of Hood’s army, and the survivors retreated south through snow, many barefoot.' },
+        yours: { q: 'The colonel needs men for the skirmish line, out in front of the main attack at Franklin.',
+          options: [['skirm', 'Volunteer for the skirmish line', 'Usually the most dangerous job. Today, maybe not.', { bat: 0.6 }], ['charge', 'Charge with the main line', 'Straight at the Union trenches.', { bat: 1.2 }]] },
+        fate: { months: 3, k: 1750 / 20000, w: 3800 / 20000, c: 702 / 20000, cap: 'confed',
+          facts: [['Confederates in the attack', 'about 20,000'], ['Killed', 'about 1,750'], ['Wounded', 'about 3,800'], ['Captured or missing', 'about 700']],
+          note: 'Confederate army at Franklin. Union losses were about a third as large.' } },
+      { date: 'January – April 1865', title: 'The Surrender',
+        img: ['Composite Sherman + Johnston.jpg', 'Union General William T. Sherman and Confederate General Joseph E. Johnston, who met to arrange the surrender.'],
+        text: ['What is left of the army is sent to North Carolina, where Johnston is back in command, trying to slow Sherman’s march north. In March they fight one last big battle at Bentonville.',
+          'On April 9, Lee surrenders in Virginia. On April 26, 1865, Johnston surrenders his army to Sherman, and the soldiers are paroled at Greensboro, North Carolina, and sent home.'],
+        predict: { q: 'About 3,200 men served in the 1st Tennessee during the war. How many were left to surrender in April 1865?',
+          options: [['1500', 'About 1,500'], ['800', 'About 800'], ['300', 'About 300'], ['65', 'About 65']],
+          answer: '65', quote: ['If I remember correctly, there were just sixty-five men in all, including officers, that were paroled on that day.', 'Sam Watkins, “Co. Aytch”'],
+          reveal: 'The rest had been killed, wounded, captured, discharged, or had died of disease or deserted. Watkins wrote, “Our cause was lost from the beginning.” Slavery was abolished by the 13th Amendment that December.' },
+        yours: null,
+        fate: { months: 4, k: 239 / 21000 * 0.5, w: 1694 / 21000 * 0.5, c: 673 / 21000 * 0.5, cap: 'confed',
+          facts: [['Confederates at Bentonville', 'about 21,000'], ['Killed', '239'], ['Wounded', '1,694'], ['Captured or missing', '673']],
+          note: 'Only part of the army fought at Bentonville, so your odds are half of these.' } }
+    ]
   }
+
 };
-const COMING = [['Sam Watkins', '1st Tennessee Infantry (Confederate)'], ['John Ransom', '9th Michigan Cavalry'], ['Henry Morton Stanley', '6th Arkansas, then the Union army'], ['Sarah Emma Edmonds', '2nd Michigan Infantry']];
+const COMING = [['John Ransom', '9th Michigan Cavalry'], ['Henry Morton Stanley', '6th Arkansas, then the Union army'], ['Sarah Emma Edmonds', '2nd Michigan Infantry']];
 
 function newGame(player, sid) {
   return { v: 1, player, sid, ch: 0, step: 'story', preds: [], mine: [], you: { status: 'active', log: [], wounds: 0 }, roll: null, roll2: null, ychoice: null, pchoice: null };
@@ -423,20 +548,22 @@ function oddsFor(G, chapter, mod) {
   const k = f.k * b * (1 - pd), w = f.w * b * (1 - pd), c = f.c * b * cm * (1 - pd);
   return [['dis', 'Died of disease', pd], ['k', 'Killed', k], ['w', 'Wounded', w], ['c', 'Captured', c], ['ok', 'Came through', Math.max(0, 1 - pd - k - w - c)]];
 }
-function woundOdds() { return [['k', 'Died of wounds', DOW], ['dh', 'Discharged and sent home', (1 - DOW) * DISCHARGE], ['ok', 'Recovered and returned', (1 - DOW) * (1 - DISCHARGE)]]; }
+function woundOdds(G) { const s = SIDES[SOLDIERS[G.sid].side || 'U']; return [['k', 'Died of wounds', s.dow], ['dh', 'Discharged and sent home', (1 - s.dow) * s.discharge], ['ok', 'Recovered and returned', (1 - s.dow) * (1 - s.discharge)]]; }
 function prisonOdds(kind) { const p = PRISON[kind]; return [['k', 'Died in prison', p], ['ok', kind === 'exchange' ? 'Exchanged and returned' : 'Survived prison', 1 - p]]; }
 function pick(groups, rnd = Math.random) { let r = rnd(); for (const [k, , p] of groups) { if (r < p) return k; r -= p; } return groups[groups.length - 1][0]; }
 // Plays your fate for one chapter with a random number source; used by the page and the balance test.
 function resolve(G, chapter, mod, rnd = Math.random) {
+  if (mod && mod.desert) return { desert: true, first: pick(DESERT, rnd), second: null };
   const out = { first: pick(oddsFor(G, chapter, mod), rnd), second: null };
-  if (out.first === 'w') out.second = pick(woundOdds(), rnd);
+  if (out.first === 'w') out.second = pick(woundOdds(G), rnd);
   if (out.first === 'c') out.second = pick(prisonOdds(chapter.fate.cap), rnd);
   return out;
 }
 function apply(G, ci, r) {
   const y = G.you; const C = SOLDIERS[G.sid].chapters[ci];
   let status = 'active', text;
-  if (r.first === 'dis') { status = 'dead'; text = 'Died of disease'; }
+  if (r.desert) { if (r.first === 'dh') { status = 'deserted'; text = 'Deserted and made it home'; } else if (r.first === 'k') { status = 'dead'; text = 'Caught deserting, and shot'; } else text = 'Deserted, caught and sent back'; }
+  else if (r.first === 'dis') { status = 'dead'; text = 'Died of disease'; }
   else if (r.first === 'k') { status = 'dead'; text = 'Killed in action'; }
   else if (r.first === 'w') { y.wounds++; if (r.second === 'k') { status = 'dead'; text = 'Wounded, and died of wounds'; } else if (r.second === 'dh') { status = 'home'; text = 'Wounded and discharged'; } else text = 'Wounded, recovered and returned'; }
   else if (r.first === 'c') {
@@ -474,7 +601,7 @@ const quote = q => q ? `<blockquote class="q">“${esc(q[0])}”<cite>${esc(q[1]
 const pct = p => p < 0.01 && p > 0 ? (p * 100).toFixed(1) + '%' : Math.round(p * 100) + '%';
 
 // ---------- chrome ----------
-const YOU = { active: ['', 'In the ranks'], dead: ['dead', 'Did not survive'], home: ['home', 'Sent home'], 'prison-survived': ['prison', 'Prisoner until war’s end'], wenthome: ['home', 'Went home'] };
+const YOU = { deserted: ['home', 'Deserted'], active: ['', 'In the ranks'], dead: ['dead', 'Did not survive'], home: ['home', 'Sent home'], 'prison-survived': ['prison', 'Prisoner until war’s end'], wenthome: ['home', 'Went home'] };
 function renderChrome() {
   $('#restart').hidden = !G;
   if (!G || G.step === 'intro') { $('#tally').innerHTML = ''; $('#tracks').hidden = true; $('#brand').textContent = 'Through Their Eyes'; if (!G) return; }
@@ -529,6 +656,7 @@ function renderIntro() {
   app.innerHTML = `<section class="card fade"><div class="split">
     <div><p class="dateline">${esc(s.unit)} · ${s.years}</p><h2>${esc(s.name)}</h2><div class="prose">${s.intro.map(p => `<p>${esc(p)}</p>`).join('')}</div>${quote(s.quote)}</div>
     ${photo(s.img, 'tall')}</div>
+    ${s.context ? `<div class="box" style="border-left-color:var(--brass);background:color-mix(in srgb,var(--brass-fill) 10%,var(--paper))"><h3 style="color:var(--brass)">${esc(s.context[0])}</h3><p>${esc(s.context[1])}</p></div>` : ''}
     <div class="box"><h3>How this works</h3><p><b>His war:</b> at each chapter, predict what ${esc(s.short)} did. You’ll find out if you were right.</p><p><b>Your war:</b> you are ${esc(yourName())}, a private in the same regiment. You make one choice each chapter, then choose your place among 100 soldiers to see what happens to you. The odds are based on real numbers.</p></div>
     <div class="actions"><button class="btn primary" id="go">Begin</button></div></section>`;
   $('#go').onclick = () => { G.step = 'story'; save(); render(); };
@@ -583,6 +711,7 @@ function renderChoice() {
 }
 function effect(m) {
   if (m.home) return '<span class="od down">Your war ends</span>';
+  if (m.desert) return '<span class="od up">Your war ends, one way or another</span>';
   const parts = [];
   if (m.bat != null && m.bat !== 1) parts.push(m.bat > 1 ? ['up', 'More dangerous in battle'] : ['down', 'Safer in battle']);
   if (m.dis && m.dis !== 1) parts.push(m.dis > 1 ? ['up', 'More risk of disease'] : ['down', 'Less risk of disease']);
@@ -626,17 +755,20 @@ function bindGrid(roll, done) {
 function startRoll(mod) {
   const C = CH(); const r = resolve(G, C, mod);
   G.res = r;
-  G.roll = makeRoll(oddsFor(G, C, mod), r.first);
-  G.roll2 = r.second ? makeRoll(r.first === 'w' ? woundOdds() : prisonOdds(C.fate.cap), r.second) : null;
+  G.roll = makeRoll(r.desert ? DESERT : oddsFor(G, C, mod), r.first);
+  G.roll2 = r.second ? makeRoll(r.first === 'w' ? woundOdds(G) : prisonOdds(C.fate.cap), r.second) : null;
   G.applied = false;
 }
-const FIRST = { dis: ['bad', 'You died of disease.', 'Like two of every three soldiers who died in the war, you never fell in battle. Fever and dysentery killed you in camp.'],
+const DFIRST = { dh: ['good', 'You made it home.', ' You slip away at night and walk home through the woods. Your war is over. If the army ever catches you, you could still be shot.'],
+  c: ['mid', 'You were caught.', ' Cavalry patrols bring you back in irons. You are whipped, lose your pay and are sent back to the ranks.'],
+  k: ['bad', 'You were caught and shot.', ' A court-martial sentences you to death as an example. Your whole brigade is lined up to watch.'] };
+const FIRST = { dis: ['bad', 'You died of disease.', 'You never fell in battle. Fever and dysentery killed you in camp, far from any battlefield.'],
   k: ['bad', 'You were killed.', ''], w: ['mid', 'You were wounded.', 'You are carried to a field hospital. What happens next?'],
   c: ['mid', 'You were captured.', ''], ok: ['good', 'You came through.', 'You are alive and in one piece, for now.'] };
 function renderFate() {
   const C = CH(), f = C.fate, roll = G.roll;
-  const first = roll.pick != null ? FIRST[roll.fate] : null;
-  const capText = f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
+  const first = roll.pick != null ? (G.res.desert ? DFIRST : FIRST)[roll.fate] : null;
+  const capText = f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : f.cap === 'confed' ? 'Prisoner exchanges have stopped. You are sent to a Union prison camp, such as Camp Douglas in Chicago, until the war ends.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
   app.innerHTML = `<section class="card fade">
     <p class="dateline">Your war · ${esc(C.date)}</p><h2>${esc(C.title)}</h2>
     <div class="split"><div>${gridHTML(roll)}
@@ -691,6 +823,7 @@ function yourFate() {
   const c = S().chapters[last.ci];
   if (st === 'dead') return last.first === 'dis' ? `Died of disease in camp during “${c.title}” (${c.date})` : `${last.text}: ${c.title}, ${c.date}`;
   if (st === 'home') return `Wounded and discharged, ${S().chapters[last.ci].date}. Survived.`;
+  if (st === 'deserted') return `Deserted and made it home (${c.date}). Survived.`;
   if (st === 'wenthome') return 'Went home when your enlistment ended. Survived.';
   if (st === 'prison-survived') return 'Captured, and survived prison until the war ended.';
   return G.you.wounds ? `Survived the war, wounded ${G.you.wounds} time${G.you.wounds > 1 ? 's' : ''}` : 'Survived the war without a wound';
@@ -725,8 +858,8 @@ function renderEnd() {
     <div class="sect"><h3>Think about it</h3><ol class="qs">
       <li>Your war and ${esc(s.short)}’s war turned out ${alive === (s.endFate.startsWith('Survived')) ? 'the same way' : 'differently'}. How much of each soldier’s fate came from choices, and how much from luck?</li>
       <li>Which of ${esc(s.short)}’s choices surprised you most? What does it tell you about him?</li>
-      <li>${G.sid === 'gooding' ? 'Why did the men of the 54th refuse to take unequal pay, even when their families were suffering? Would you have?' : 'Rhodes changed his mind about Black soldiers and about what the war was for. What changed it?'}</li>
-      <li>More soldiers died of disease than in battle. Why do you think that was?</li>
+      <li>${esc(s.think)}</li>
+      <li>Look at what happened to the men around you in each chapter. What surprised you most about how soldiers in your regiment died?</li>
     </ol></div>
     <div class="sect"><h3>Your summary report</h3><p class="small">Copy this report and paste it into Canvas.</p>
       <textarea class="summary" id="rep" readonly>${esc(report())}</textarea>
