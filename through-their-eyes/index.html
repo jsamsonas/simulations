@@ -529,9 +529,117 @@ const SOLDIERS = {
           note: 'Only part of the army fought at Bentonville, so your odds are half of these.' } }
     ]
   }
+,
+
+  edmonds: {
+    name: 'Sarah Emma Edmonds', short: 'Edmonds', unit: '2nd Michigan Infantry', race: 'white', side: 'U', years: '1861–1863', pron: ['she', 'her', 'her'],
+    img: ['Sarah Edmonds.jpg', 'Sarah Emma Edmonds, who served in the 2nd Michigan as “Franklin Thompson.”'],
+    blurb: 'A young woman from Canada who cut her hair, became “Franklin Thompson,” and served two years as a soldier in the 2nd Michigan.',
+    intro: [
+      'Sarah Emma Edmonds grew up on a farm in New Brunswick, Canada, with a father who mistreated her. At about 15 she ran away to escape a marriage he had arranged. She cut her hair, put on men’s clothes, and became “Franklin Thompson.” As Thompson she crossed into the United States and became a successful traveling Bible salesman.',
+      'When the war began, Franklin Thompson was living in Flint, Michigan. On May 25, 1861, “he” enlisted as a private in Company F of the 2nd Michigan Infantry. You will follow her, and you will enlist in Company F too.'
+    ],
+    quote: ['I procured the dress and outfit of an Irish female peddler, following the army, selling cakes, pies, etc.', 'Sarah Emma Edmonds, “Nurse and Spy in the Union Army” (1865)'],
+    context: ['Reading Edmonds carefully', 'Edmonds told her story in a bestselling book, “Nurse and Spy in the Union Army.” Army records prove she served as Private Franklin Thompson. But no army record shows that she was ever a spy, and in 1883 she told a reporter that her book was “not strictly so.” As you read, think about which parts of her story historians can prove and which parts they can’t.'],
+    end: 'Edmonds left the army in April 1863, then served as a nurse under her own name until the war ended. Her book sold about 175,000 copies, and she gave the profits to soldiers’ aid groups. In 1867 she married Linus Seelye. Her old comrades helped her win a government pension in 1884 and clear Franklin Thompson’s name of desertion. In 1897 she was admitted to the Grand Army of the Republic, the Union veterans’ organization, as one of its very few women members. She died in Texas in 1898 and was buried with military honors.',
+    endFate: 'Served two years as Franklin Thompson, then left to avoid discovery',
+    think: 'Edmonds’s book mixes things historians can prove with things they can’t. How should a historian use a source like that? Is it still worth reading?',
+    chapters: [
+      { date: 'May – July 1861', title: 'Private Franklin Thompson',
+        img: ['Bull run bridge 1862.jpg', 'The Stone Bridge over Bull Run, where the Union army’s retreat began in July 1861.'],
+        text: ['Every recruit has to pass a medical examination. If the doctor discovers that Franklin Thompson is a woman, she will be sent home in disgrace. Edmonds is short and slight, with no beard, but many of the recruits are teenage boys who look just as young.',
+          'Thompson is assigned to work as a field nurse. At Bull Run in July the regiment helps cover the army’s retreat, and Thompson stays behind to care for the wounded.'],
+        predict: { q: 'How did Edmonds get past the army’s medical exam?',
+          options: [['bribe', 'She paid the doctor to look the other way'], ['quick', 'The exam was quick and no one had to undress'], ['nurse', 'Nurses didn’t need an exam'], ['friend', 'A friend took the exam for her']],
+          answer: 'quick',
+          reveal: 'Army medical exams were usually a quick look: Can you see? Can you hear? Do you have teeth to tear open a cartridge? Examiners rarely made recruits undress, and no one asked for proof of who you were. Women who served in disguise usually cut their hair, wore loose clothing, and were discovered only if they were wounded, fell sick, were captured or died.' },
+        yours: { q: 'The Union army is retreating from Bull Run. Wounded men are lying in a church that is being used as a hospital.',
+          options: [['stay', 'Stay behind to help the wounded', 'The Confederates are coming. You could be captured.', { cap: 3 }], ['go', 'Retreat with your regiment', 'Orders are orders.', { bat: 1 }]] },
+        fate: { where: 'Bull Run, July 1861', months: 3, k: 481 / 18000 * 0.3, w: 1011 / 18000 * 0.3, c: 1216 / 18000 * 0.3, cap: 'exchange',
+          facts: [['Union soldiers engaged at Bull Run', '18,000'], ['Killed', '481'], ['Wounded', '1,011'], ['Captured or missing', '1,216']],
+          note: 'The 2nd Michigan covered the retreat and did little of the fighting, so your odds here are less than a third of these.' } },
+      { date: 'April – July 1862', title: 'Nurse and Spy?',
+        img: ['Nurse and spy in the Union Army - AT REBEL HEADQUARTERS.png', '“At Rebel Headquarters,” an illustration from Edmonds’s book.'],
+        text: ['The army sails to the Virginia Peninsula and lays siege to Yorktown. Thompson carries the regiment’s mail and nurses the wounded at Williamsburg, Fair Oaks and Malvern Hill.',
+          'In her book, Edmonds says that during the siege of Yorktown she was chosen to go behind Confederate lines as a spy. She says she was tested on her knowledge of firearms and given an oath of allegiance before her first mission.'],
+        predict: { q: 'According to her book, how did Edmonds disguise herself to get behind Confederate lines the first time?',
+          options: [['officer', 'She wore a stolen Confederate officer’s uniform'], ['cuff', 'She darkened her skin and posed as an enslaved man'], ['lady', 'She dressed as a Southern lady on a visit'], ['boy', 'She posed as a drummer boy']],
+          answer: 'cuff', quote: ['I had a small vial of nitrate of silver in weak solution, which I applied to prevent the remaining color from coming off.', 'Edmonds, “Nurse and Spy in the Union Army”'],
+          reveal: 'Edmonds wrote that she colored her skin, wore a wig, and worked in Confederate trenches as a “contraband” named Cuff. Later she said she went as an Irish peddler woman named Bridget. Did it happen? No army record shows Edmonds as a spy, and a leading historian of Union spying says she almost certainly never was one. Her service as Franklin Thompson is proven; her spy stories are not.' },
+        yours: { q: 'An officer asks for a volunteer to slip out at night and scout the Confederate lines.',
+          options: [['scout', 'Volunteer to scout', 'A captured spy can be hanged.', { bat: 1.2, cap: 3 }], ['camp', 'Stay with the regiment', 'You’re a soldier, not a spy.', { bat: 1 }]] },
+        fate: { where: 'the Peninsula, 1862', months: 10, disMult: 1.2, k: 0.02, w: 0.07, c: 0.015, cap: 'exchange',
+          facts: [['Months covered', 'Aug. 1861 – July 1862'], ['Battles', 'Yorktown, Williamsburg, Fair Oaks, the Seven Days']],
+          note: 'Our estimate for a regiment of the 2nd Michigan’s division, which fought hard at Williamsburg and Fair Oaks, plus disease in the Peninsula swamps.' } },
+      { date: 'August – December 1862', title: 'The Hidden Injury',
+        img: ['Second Battle of Bull Run.jpg', 'The Second Battle of Bull Run, August 1862.'],
+        text: ['Thompson now carries mail and messages between units, often riding alone under fire. Around the time of the Second Battle of Bull Run, Thompson is thrown from a mount into a ditch and badly hurt, with injuries that troubled her for the rest of her life.',
+          'In December, at Fredericksburg, she serves as an orderly carrying messages for Colonel Orlando Poe.'],
+        predict: { q: 'Edmonds was badly injured in the fall. What did she do?',
+          options: [['hospital', 'Went to an army hospital to recover'], ['hide', 'Kept the injury quiet and stayed on duty'], ['home', 'Was sent home to Michigan'], ['confess', 'Told her captain the truth and asked for help']],
+          answer: 'hide',
+          reveal: 'According to later accounts, she avoided army doctors, because an examination would have revealed that she was a woman. Women soldiers lived with that fear all the time: being wounded or sick was the most common way they were found out. Years later, her pension was based partly on the injuries from this fall.' },
+        yours: { q: 'At Fredericksburg, Colonel Poe needs riders to carry orders to the front line.',
+          options: [['ride', 'Volunteer to carry orders', 'Riding alone across the battlefield.', { bat: 1.4 }], ['ranks', 'Stay in the ranks', 'Your regiment is in reserve today.', { bat: 0.8 }]] },
+        fate: { where: 'Second Bull Run and Fredericksburg, 1862', months: 5, k: 0.02, w: 0.09, c: 0.04, cap: 'exchange',
+          facts: [['Months covered', 'Aug. – Dec. 1862'], ['Battles', 'Second Bull Run, Fredericksburg']],
+          note: 'Our estimate for the 2nd Michigan in these battles. At Second Bull Run the Union army lost about 14,000 of roughly 62,000 men.' } },
+      { date: 'March – April 1863', title: 'Malaria',
+        img: ['A ward in hospital at convalescent camp near Alexandria, Va LCCN2012650251.jpg', 'A ward in an army hospital. A hospital stay was the most likely way for a woman soldier to be discovered.'],
+        text: ['In 1863 the 2nd Michigan is sent west to Kentucky. That spring Thompson comes down with malaria: chills, burning fever, exhaustion. Thompson asks for a leave to recover and is turned down.',
+          'The regiment’s surgeon would send a sick soldier to an army hospital, where doctors and nurses would discover the truth within a day.'],
+        predict: { q: 'Sick with malaria and denied a leave, what did Edmonds do?',
+          options: [['hospital', 'Went to the army hospital and was discovered'], ['leave', 'Left the army without permission to get private care'], ['confess', 'Told the colonel and was honorably discharged'], ['stay', 'Kept serving while sick']],
+          answer: 'leave',
+          reveal: 'On April 19, 1863, Franklin Thompson walked away from the army in Kentucky and was never seen again. Edmonds recovered in a private hospital. When she was well, she found that Private Thompson had been listed as a deserter, and deserters could be shot. Franklin Thompson was gone for good.' },
+        yours: { q: 'Your regiment moves to Mississippi to help besiege Vicksburg. Malaria is everywhere. You are shaking with fever.',
+          options: [['surgeon', 'Report to the surgeon', 'You might be sent to a crowded hospital, but you’ll get quinine.', { dis: 0.7 }], ['tough', 'Tough it out in camp', 'Hospitals scare you more than fever.', { dis: 1.6 }]] },
+        fate: { where: 'Vicksburg, 1863', months: 7, disMult: 2, k: 0.003, w: 0.01, c: 0, cap: 'union',
+          facts: [['Months covered', 'Jan. – July 1863'], ['Danger', 'Malaria and dysentery in Kentucky and Mississippi']],
+          note: 'The 2nd Michigan’s corps arrived at Vicksburg in June 1863 and guarded Grant’s rear. It saw little fighting there, but disease in the Mississippi summer was deadly.' } },
+      { date: '1863 – 1865', title: 'Nurse and Author',
+        img: ['Wounded soldiers in hospital - NARA - 524705.jpg', 'Wounded Union soldiers in a hospital ward.'],
+        text: ['Edmonds goes back to the war, this time as herself. She works as a nurse for the United States Christian Commission, caring for wounded soldiers until the war ends.',
+          'She also writes her story. In 1864 it is published as “The Female Spy of the Union Army,” and in 1865 as “Nurse and Spy in the Union Army.” It becomes a bestseller.'],
+        predict: { q: 'Her book sold about 175,000 copies. What did Edmonds do with the money?',
+          options: [['kept', 'Kept it and bought a farm'], ['gave', 'Gave the profits to groups that helped soldiers'], ['family', 'Sent it to her family in Canada'], ['lawyer', 'Paid a lawyer to clear Franklin Thompson’s name']],
+          answer: 'gave',
+          reveal: 'Edmonds gave the profits to soldiers’ aid organizations. The book made her famous, but it never revealed that she and Franklin Thompson were the same person. Her old comrades in the 2nd Michigan didn’t know for years.' },
+        yours: { q: 'Your regiment is besieged at Knoxville, Tennessee, in November 1863. Your colonel asks for volunteers to charge Confederate rifle pits.',
+          options: [['charge', 'Volunteer for the charge', 'A chance to break the siege.', { bat: 1.6 }], ['hold', 'Hold your place in the earthworks', 'Let the Confederates come to you.', { bat: 0.8 }]] },
+        fate: { where: 'Knoxville, 1863', months: 5, k: 0.025, w: 0.07, c: 0.02, cap: 'union',
+          facts: [['Months covered', 'Aug. – Dec. 1863'], ['Battles', 'The siege of Knoxville and Fort Sanders']],
+          note: 'Our estimate. The 2nd Michigan lost heavily in a charge at Knoxville on November 24, 1863.' } },
+      { date: '1876 – 1886', title: 'Clearing Frank Thompson’s Name',
+        img: ['Sarah Edmonds.jpg', 'Sarah Emma Edmonds, later in life.'],
+        text: ['After the war Edmonds marries and raises a family, but her health is poor from malaria and her old injuries. In 1876 she goes to a reunion of the 2nd Michigan. Her old comrades meet “Franklin Thompson” again, as a woman.',
+          'She needs a soldier’s pension. But the army says Private Thompson was a deserter, and deserters get nothing.'],
+        predict: { q: 'Her old comrades learned that Frank Thompson had been a woman all along. What did they do?',
+          options: [['angry', 'Felt tricked and refused to help'], ['help', 'Wrote statements supporting her pension and her name'], ['nothing', 'Stayed out of it'], ['press', 'Sold the story to the newspapers']],
+          answer: 'help', quote: ['a female soldier who . . . served as a private', 'U.S. War Department letter, June 30, 1886'],
+          reveal: 'Men from Company F signed statements about her service. In 1884 Congress passed a special act giving her a pension of $12 a month, and the charge of desertion was removed. The government officially recognized that a woman had served as a Union soldier.' },
+        yours: { q: 'It is early 1864. Your three years are almost up, and the army is offering a bounty and a furlough to veterans who reenlist.',
+          options: [['reenlist', 'Reenlist', 'See the war through to the end.', { bat: 1 }], ['home', 'Go home when your time is up', 'You’ve done your part. Your war ends here.', { home: true }]] },
+        fate: { where: 'the Overland Campaign, 1864', months: 6, k: 0.045, w: 0.19, c: 0.045, cap: 'union',
+          facts: [['Months covered', 'Jan. – July 1864'], ['Battles', 'The Overland Campaign and the Battle of the Crater at Petersburg']],
+          note: 'Our estimate for the 2nd Michigan’s corps in 1864. The whole Union army lost about 55,000 men in six weeks of the Overland Campaign.' } },
+      { date: '1897 and after', title: 'How Many Others?',
+        img: ['Grand Review of the Armies - Washington, D.C. - May 1865.jpg', 'Union veterans march in the Grand Review in Washington, May 1865.'],
+        text: ['In 1897 Edmonds is admitted to the Grand Army of the Republic, the organization of Union veterans, as one of its very few women members. She dies in Texas in 1898, and in 1901 she is reburied with military honors in the Grand Army section of a Houston cemetery.',
+          'She was not the only woman to fight in disguise. Most were never discovered, so no one knows the exact number.'],
+        predict: { q: 'About how many women do historians believe disguised themselves as soldiers in the Civil War?',
+          options: [['few', 'Only a handful, maybe ten'], ['hundreds', 'Hundreds, on both sides'], ['thousands', 'About 10,000'], ['none', 'Edmonds is the only proven case']],
+          answer: 'hundreds',
+          reveal: 'Historians have found records of about 250 women who served in disguise, and estimates run to 400 or more, on both the Union and Confederate sides. Some were discovered only when they were wounded or killed. Others, like Jennie Hodgers, who served as Albert Cashier of the 95th Illinois, kept their secret for decades.' },
+        yours: null,
+        fate: { where: 'Petersburg, 1864–1865', months: 9, k: 0.015, w: 0.06, c: 0.01, cap: 'union',
+          facts: [['Months covered', 'Aug. 1864 – July 1865'], ['Your regiment', 'The Petersburg trenches and the final breakthrough, April 1865']],
+          note: 'Our estimate for the 2nd Michigan in the last months of the war.' } }
+    ]
+  }
 
 };
-const COMING = [['John Ransom', '9th Michigan Cavalry'], ['Henry Morton Stanley', '6th Arkansas, then the Union army'], ['Sarah Emma Edmonds', '2nd Michigan Infantry']];
+const COMING = [['John Ransom', '9th Michigan Cavalry'], ['Henry Morton Stanley', '6th Arkansas, then the Union army']];
 
 function newGame(player, sid) {
   return { v: 1, player, sid, ch: 0, step: 'story', preds: [], mine: [], you: { status: 'active', log: [], wounds: 0 }, roll: null, roll2: null, ychoice: null, pchoice: null };
@@ -591,6 +699,9 @@ let setup = { teacher: '', period: '', first: '', initial: '', sid: 'rhodes', er
 function save() { try { localStorage.setItem(KEY, JSON.stringify(G)); } catch (e) {} }
 function load() { try { const g = JSON.parse(localStorage.getItem(KEY)); return g && g.v === 1 ? g : null; } catch (e) { return null; } }
 const S = () => SOLDIERS[G.sid];
+// Pronouns for the soldier being followed: [subject, possessive, object].
+const PR = () => S().pron || ['he', 'his', 'him'];
+const Cap = w => w[0].toUpperCase() + w.slice(1);
 const CH = () => S().chapters[G.ch];
 const yourName = () => `Private ${G.player.first} ${G.player.initial}.`;
 const letters = 'ABCD';
@@ -612,7 +723,7 @@ function renderChrome() {
   const y = G.you; const [cls, lbl] = YOU[y.status];
   const last = y.log[y.log.length - 1];
   $('#tracks').hidden = false;
-  $('#tracks').innerHTML = `<div class="track"><span class="dot"></span><div style="min-width:0"><span class="lbl">His war · ${esc(S().unit)}</span><b>${esc(S().name)}</b></div><span style="flex:1"></span><span class="small">${G.preds.filter(p => p.match).length}/${G.preds.length} predicted</span></div>
+  $('#tracks').innerHTML = `<div class="track"><span class="dot"></span><div style="min-width:0"><span class="lbl">${Cap(PR()[1])} war · ${esc(S().unit)}</span><b>${esc(S().name)}</b></div><span style="flex:1"></span><span class="small">${G.preds.filter(p => p.match).length}/${G.preds.length} predicted</span></div>
     <div class="track"><span class="dot ${y.wounds && y.status === 'active' ? 'wounded' : cls}"></span><div style="min-width:0"><span class="lbl">Your war</span><b>${esc(yourName())}</b></div><span style="flex:1"></span><span class="small">${lbl}${y.wounds && y.status === 'active' ? ' (wounded ' + y.wounds + '×)' : ''}</span></div>`;
 }
 
@@ -621,9 +732,9 @@ function renderSetup() {
   app.innerHTML = `<section class="card fade">
     <p class="dateline">The Civil War, 1861 – 1865</p>
     <h1>Through Their Eyes</h1>
-    <p class="sub">Follow a real soldier through the Civil War, and fight a war of your own beside him.</p>
-    <div class="prose"><p>The soldier you follow really lived, and his story is already written. At each turning point, predict what he did, then read what really happened, often in his own words.</p>
-      <p>You will also enlist as a private in his regiment. Your choices change your odds, but the odds themselves are real. You may come home, or you may not. At the end, you’ll compare your war with his.</p></div>
+    <p class="sub">Follow a real soldier through the Civil War, and fight a war of your own beside them.</p>
+    <div class="prose"><p>The soldier you follow really lived, and that soldier’s story is already written. At each turning point, predict what your soldier did, then read what really happened, often in the soldier’s own words.</p>
+      <p>You will also enlist as a private in the same regiment. Your choices change your odds, but the odds themselves are real. You may come home, or you may not. At the end, you’ll compare your war with theirs.</p></div>
     <h3 style="margin-top:22px">Choose your soldier</h3>
     <div class="soldiers">
       ${Object.entries(SOLDIERS).map(([id, s]) => `<button class="soldier" data-sid="${id}" aria-pressed="${setup.sid === id}"><span class="pic"><img src="${IMG(s.img[0])}" alt="" onerror="this.remove()"></span><span><b>${s.name}</b><span class="u">${s.unit} · ${s.years}</span><p>${s.blurb}</p></span></button>`).join('')}
@@ -657,7 +768,7 @@ function renderIntro() {
     <div><p class="dateline">${esc(s.unit)} · ${s.years}</p><h2>${esc(s.name)}</h2><div class="prose">${s.intro.map(p => `<p>${esc(p)}</p>`).join('')}</div>${quote(s.quote)}</div>
     ${photo(s.img, 'tall')}</div>
     ${s.context ? `<div class="box" style="border-left-color:var(--brass);background:color-mix(in srgb,var(--brass-fill) 10%,var(--paper))"><h3 style="color:var(--brass)">${esc(s.context[0])}</h3><p>${esc(s.context[1])}</p></div>` : ''}
-    <div class="box"><h3>How this works</h3><p><b>His war:</b> at each chapter, predict what ${esc(s.short)} did. You’ll find out if you were right.</p><p><b>Your war:</b> you are ${esc(yourName())}, a private in the same regiment. You make one choice each chapter, then choose your place among 100 soldiers to see what happens to you. The odds are based on real numbers.</p></div>
+    <div class="box"><h3>How this works</h3><p><b>${Cap(PR()[1])} war:</b> at each chapter, predict what ${esc(s.short)} did. You’ll find out if you were right.</p><p><b>Your war:</b> you are ${esc(yourName())}, a private in the same regiment. You make one choice each chapter, then choose your place among 100 soldiers to see what happens to you. The odds are based on real numbers.</p></div>
     <div class="actions"><button class="btn primary" id="go">Begin</button></div></section>`;
   $('#go').onclick = () => { G.step = 'story'; save(); render(); };
 }
@@ -697,7 +808,7 @@ function renderReveal() {
 function renderChoice() {
   const C = CH(), Y = C.yours;
   app.innerHTML = `<section class="card fade">
-    <p class="dateline">Your war · ${esc(C.date)}</p><h2>${esc(yourName())}</h2>
+    <p class="dateline">Your war · ${esc(C.fate.where ? Cap(C.fate.where) : C.date)}</p><h2>${esc(yourName())}</h2>
     <p class="question" style="margin-top:.4em">${esc(Y.q)}</p>
     <div class="opts">${Y.options.map(([k, l, b, m], i) => `<button class="opt" data-k="${k}" aria-pressed="${G.ychoice === k}"><span class="mark">${letters[i]}</span><span>${esc(l)}<span class="ob">${esc(b)}</span>${effect(m)}</span></button>`).join('')}</div>
     <div class="actions"><button class="btn primary" id="go" ${G.ychoice ? '' : 'disabled'}>Decide</button></div></section>`;
@@ -721,7 +832,7 @@ function effect(m) {
 function renderWent() {
   app.innerHTML = `<section class="card fade"><p class="dateline">${esc(CH().date)}</p><h2>You Go Home</h2>
     <div class="prose"><p>Your enlistment is up. You turn in your rifle, collect your discharge papers and ride the train home. About half the veterans of 1861 made the same choice. Nobody could blame them.</p>
-    <p>Your war is over, and you survived it. But ${esc(S().short)}’s war is not. Keep following him to the end.</p></div>
+    <p>Your war is over, and you survived it. But ${esc(S().short)}’s war is not. Keep following ${PR()[2]} to the end.</p></div>
     <div class="actions"><button class="btn primary" id="go">${nextChapterLabel()}</button></div></section>`;
   $('#go').onclick = advance;
 }
@@ -770,7 +881,7 @@ function renderFate() {
   const first = roll.pick != null ? (G.res.desert ? DFIRST : FIRST)[roll.fate] : null;
   const capText = f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : f.cap === 'confed' ? 'Prisoner exchanges have stopped. You are sent to a Union prison camp, such as Camp Douglas in Chicago, until the war ends.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
   app.innerHTML = `<section class="card fade">
-    <p class="dateline">Your war · ${esc(C.date)}</p><h2>${esc(C.title)}</h2>
+    <p class="dateline">Your war${C.fate.where ? '' : ' · ' + esc(C.date)}</p><h2>${esc(C.fate.where ? Cap(C.fate.where) : C.title)}</h2>
     <div class="split"><div>${gridHTML(roll)}
       ${first ? `<div class="result ${first[0]}"><b>${first[1]}</b>${first[2] || (roll.fate === 'c' ? capText : '')}</div>` : ''}
       ${first && G.roll2 ? `<h3 style="margin-top:18px">${roll.fate === 'w' ? 'The surgeon' : 'Prison'}</h3>${gridHTML(G.roll2)}${G.roll2.pick != null ? `<div class="result ${G.roll2.fate === 'k' ? 'bad' : G.roll2.fate === 'dh' ? 'good' : 'mid'}"><b>${G.roll2.groups.find(g => g[0] === G.roll2.fate)[1]}.</b>${secondText()}</div>` : ''}` : ''}
@@ -818,12 +929,14 @@ function renderLetter() {
 }
 
 // ---------- end ----------
+// Where your own war was at a given chapter (some soldiers' chapters follow their story, not yours).
+function whereAt(ci) { const c = S().chapters[ci]; return c.fate.where || `${c.title}, ${c.date}`; }
 function yourFate() {
   const st = G.you.status, last = G.you.log[G.you.log.length - 1];
   const c = S().chapters[last.ci];
-  if (st === 'dead') return last.first === 'dis' ? `Died of disease in camp during “${c.title}” (${c.date})` : `${last.text}: ${c.title}, ${c.date}`;
-  if (st === 'home') return `Wounded and discharged, ${S().chapters[last.ci].date}. Survived.`;
-  if (st === 'deserted') return `Deserted and made it home (${c.date}). Survived.`;
+  if (st === 'dead') return last.first === 'dis' ? `Died of disease in camp: ${whereAt(last.ci)}` : `${last.text}: ${whereAt(last.ci)}`;
+  if (st === 'home') return `Wounded and discharged: ${whereAt(last.ci)}. Survived.`;
+  if (st === 'deserted') return `Deserted and made it home: ${whereAt(last.ci)}. Survived.`;
   if (st === 'wenthome') return 'Went home when your enlistment ended. Survived.';
   if (st === 'prison-survived') return 'Captured, and survived prison until the war ended.';
   return G.you.wounds ? `Survived the war, wounded ${G.you.wounds} time${G.you.wounds > 1 ? 's' : ''}` : 'Survived the war without a wound';
@@ -832,7 +945,7 @@ function report() {
   const s = S(), p = G.player, n = G.preds.filter(x => x.match).length;
   const L = ['THROUGH THEIR EYES - SUMMARY REPORT', `Student: ${p.first} ${p.initial}.   Teacher: ${p.teacher}   Period: ${p.period}`,
     `Soldier followed: ${s.name}, ${s.unit}`, `Completed: ${new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}`, '',
-    `HIS WAR: ${s.endFate}`, `Predictions correct: ${n} of ${s.chapters.length}`, '', `YOUR WAR: ${yourFate()}`, '', 'CHAPTER BY CHAPTER'];
+    `${PR()[1].toUpperCase()} WAR: ${s.endFate}`, `Predictions correct: ${n} of ${s.chapters.length}`, '', `YOUR WAR: ${yourFate()}`, '', 'CHAPTER BY CHAPTER'];
   s.chapters.forEach((c, i) => {
     const pr = G.preds[i]; const y = G.you.log.find(l => l.ci === i);
     const yo = c.yours && G.mine[i] ? c.yours.options.find(o => o[0] === G.mine[i])[1] : null;
@@ -848,16 +961,16 @@ function renderEnd() {
   app.innerHTML = `<section class="card fade">
     <p class="dateline">${esc(s.unit)} · ${s.years}</p><h2>Two Wars</h2>
     <div class="sidebyside">
-      <div class="col"><span class="small">His war</span><h3>${esc(s.name)}</h3><p class="fate">${esc(s.endFate)}</p><p style="font-size:1rem;margin:0">${esc(s.end)}</p></div>
+      <div class="col"><span class="small">${Cap(PR()[1])} war</span><h3>${esc(s.name)}</h3><p class="fate">${esc(s.endFate)}</p><p style="font-size:1rem;margin:0">${esc(s.end)}</p></div>
       <div class="col you"><span class="small">Your war</span><h3>${esc(yourName())}</h3><p class="fate">${esc(yourFate())}</p>
-        <ol>${G.you.log.map(l => `<li><b>${esc(s.chapters[l.ci].title)}:</b> ${esc(l.text)}</li>`).join('')}</ol></div>
+        <ol>${G.you.log.map(l => `<li><b>${esc(whereAt(l.ci))}:</b> ${esc(l.text)}</li>`).join('')}</ol></div>
     </div>
     <div class="sect"><h3>Your predictions: ${n} of ${s.chapters.length}</h3><div class="tblwrap"><table class="t"><thead><tr><th>Chapter</th><th>What really happened</th><th></th></tr></thead><tbody>
       ${s.chapters.map((c, i) => { const pr = G.preds[i]; return `<tr><td><b>${esc(c.title)}</b><br><span class="small">${esc(c.date)}</span></td><td>${esc(c.predict.options.find(o => o[0] === c.predict.answer)[1])}</td><td>${pr ? `<span class="tag ${pr.match ? 'match' : 'diff'}">${pr.match ? 'Called it' : 'Missed'}</span>` : ''}</td></tr>`; }).join('')}
     </tbody></table></div></div>
     <div class="sect"><h3>Think about it</h3><ol class="qs">
       <li>Your war and ${esc(s.short)}’s war turned out ${alive === (s.endFate.startsWith('Survived')) ? 'the same way' : 'differently'}. How much of each soldier’s fate came from choices, and how much from luck?</li>
-      <li>Which of ${esc(s.short)}’s choices surprised you most? What does it tell you about him?</li>
+      <li>Which of ${esc(s.short)}’s choices surprised you most? What does it tell you about ${PR()[2]}?</li>
       <li>${esc(s.think)}</li>
       <li>Look at what happened to the men around you in each chapter. What surprised you most about how soldiers in your regiment died?</li>
     </ol></div>
