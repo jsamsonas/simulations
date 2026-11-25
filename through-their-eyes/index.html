@@ -191,7 +191,7 @@ const DISEASE = { white: 0.0042, black: 0.0085, confed: 0.0055 };
 // Share of wounded who died of their wounds, and share of wounded survivors discharged as unfit (from Soldier's Odds).
 const SIDES = { U: { dow: 0.156, discharge: 0.20 }, C: { dow: 0.18, discharge: 0.12 } };
 // Chance of dying as a prisoner: early-war prisoners were quickly exchanged; after mid-1863 they were not.
-const PRISON = { exchange: 0.03, union: 0.155, andersonville: 0.29, confed: 0.12 };
+const PRISON = { exchange: 0.03, douglas: 0.08, union: 0.155, andersonville: 0.29, confed: 0.12 };
 // A deserter usually made it home; if caught he was punished and sent back; a few were shot as examples.
 const DESERT = [['dh', 'Made it home', 0.70], ['c', 'Caught and sent back', 0.29], ['k', 'Caught and shot', 0.01]];
 
@@ -746,9 +746,118 @@ const SOLDIERS = {
           note: 'Our estimate. In the whole war the 9th Michigan Cavalry lost 28 men killed in battle and 156 to disease.' } }
     ]
   }
+,
+
+  stanley: {
+    name: 'Henry Morton Stanley', short: 'Stanley', unit: '6th Arkansas Infantry (Confederate), then the Union army and navy', race: 'confed', side: 'C', years: '1861–1865',
+    img: ['Henry Morton Stanley, 1872.jpg', 'Henry Morton Stanley in 1872.'],
+    blurb: 'A Welsh orphan who fought for the Confederacy, joined the Union army to escape a prison camp, then served in the Union navy, deserting from both Union services.',
+    intro: [
+      'He was born John Rowlands in Wales in 1841 and grew up partly in a workhouse for poor children. At 18 he sailed to New Orleans and took a new name, Henry Stanley, after a merchant he said had adopted him.',
+      'When the war began he was clerking in a country store in Arkansas. He was a newcomer, and he didn’t feel the war was his fight. You will follow him, and you will join the same Arkansas company. Unlike Stanley, you will stay in the Confederate army.'
+    ],
+    quote: ['I became so absorbed with some blue figures in front of me', 'Henry Morton Stanley, “Autobiography,” on the Battle of Shiloh'],
+    context: ['Reading Stanley carefully', 'Stanley’s autobiography was published in 1909, after his death, and finished by his widow. Historians have caught him inventing parts of his own life. His story of being adopted by the merchant whose name he took is disputed. He said he was discharged from the Union army for illness, but army records list him as a deserter. Even his most famous line, “Dr. Livingstone, I presume?”, does not appear in his own journal. As you read, ask which parts of his story can be checked.'],
+    end: 'After the war Stanley became a newspaper reporter. In 1871 he found the missionary David Livingstone in East Africa and became world-famous. Later he worked for King Leopold II of Belgium to set up the Congo Free State, a colony where Leopold’s agents forced Congolese people into brutal labor, and many died. Stanley was knighted and died in London in 1904. His legacy is still argued about today.',
+    endFate: 'Fought for the Confederacy, joined the Union army and navy, and deserted both',
+    think: 'Stanley switched sides to get out of a prison camp. Was that betrayal, survival or something else? What does his story say about why ordinary soldiers fought?',
+    chapters: [
+      { date: 'Summer 1861', title: 'The Package',
+        img: ['Carte-de-visite of Henry M. Stanley.jpg', 'Henry M. Stanley, in a photograph taken after the war.'],
+        text: ['Arkansas secedes in May 1861. In the little river town where Stanley works, every young man is joining a company called the Dixie Grays. Stanley, a 20-year-old immigrant from Wales, feels no great loyalty to either side and holds back.',
+          'Then a package arrives for him.'],
+        predict: { q: 'What was in the package, and what did Stanley do?',
+          options: [['draft', 'A draft notice, so he had to report'], ['petticoat', 'Women’s underclothes, mocking him as a coward, so he enlisted the next day'], ['ticket', 'A ticket home to Wales, so he left'], ['letter', 'A letter from his family begging him not to fight']],
+          answer: 'petticoat', quote: ['a grave blunder', 'Stanley, describing his decision to enlist'],
+          reveal: 'Someone had sent him a chemise and a petticoat, the kind of insult that told a man he was a coward. He hid it and joined the Dixie Grays, a company of the 6th Arkansas Infantry, the next day. Shame and pressure from neighbors pushed many young men into uniform on both sides.' },
+        yours: { q: 'Measles sweeps the camp that winter. Your best friend is sick in his tent.',
+          options: [['nurse', 'Move in and nurse him', 'He has no one else. You might catch it.', { dis: 1.6 }], ['apart', 'Keep your distance', 'The surgeon says to stay away.', { dis: 0.8 }]] },
+        fate: { where: 'Arkansas and Kentucky, 1861–1862', months: 9, k: 0, w: 0, c: 0, cap: 'exchange',
+          facts: [['Months covered', 'Summer 1861 – March 1862'], ['Danger', 'Measles, mumps and camp fevers']],
+          note: 'Thousands of new Confederate soldiers died of disease in their first winter before they ever saw a battle.' } },
+      { date: 'April 6–7, 1862', title: 'Shiloh',
+        img: ["The Battle of Pittsburg Landing (Shiloh, Tenn., April 1862)- ...The left wing, Gen. Hurlbut's Div., Apr. 6th; Charge & repulse of rebels at Peach Orchard LCCN2005694846.jpg", 'Fighting at the Peach Orchard on the first day at Shiloh.'],
+        text: ['At dawn on April 6, the 6th Arkansas charges into the Union camps near Shiloh Church. A bullet strikes Stanley’s belt buckle and knocks him flat, but he gets up and keeps going.',
+          'The next morning Grant’s reinforced army counterattacks. Stanley is fighting in thick woods and smoke.'],
+        predict: { q: 'How was Stanley captured on April 7?',
+          options: [['wounded', 'He was badly wounded and left on the field'], ['alone', 'He kept advancing after his company fell back, and ended up surrounded'], ['regiment', 'His whole regiment surrendered'], ['desert', 'He walked over to the Union side on purpose']],
+          answer: 'alone', quote: ['I dropped my weapon incontinently', 'Stanley, on being surrounded by Union soldiers'],
+          reveal: 'Stanley wrote that he was so focused on the enemy in front of him that he didn’t notice his comrades had pulled back. Suddenly about half a dozen Union soldiers with bayonets surrounded him, and he dropped his rifle. He was sent north as a prisoner of war.' },
+        yours: { q: 'The Yankees are falling back through the woods. Your company has stopped to re-form.',
+          options: [['chase', 'Keep chasing them on your own', 'You can see them just ahead.', { bat: 1.2, cap: 3 }], ['stay', 'Stay with your company', 'Wait for the line to move together.', { bat: 1 }]] },
+        fate: { where: 'Shiloh, April 1862', months: 1, k: 1728 / 44699, w: 8012 / 44699, c: 959 / 44699, cap: 'douglas',
+          facts: [['Confederate soldiers engaged', '44,699'], ['Killed', '1,728'], ['Wounded', '8,012'], ['Captured or missing', '959']],
+          note: 'Whole Confederate army at Shiloh. Captured Confederates were sent to prison camps in the North.' } },
+      { date: 'April – June 1862', title: 'Camp Douglas',
+        img: ['Confederate prisoners at Camp Douglas, Chicago.jpg', 'Confederate prisoners at Camp Douglas in Chicago.'],
+        text: ['Stanley is shipped by steamboat and train to Camp Douglas, a prison camp in Chicago. The ground is swampy, the barracks are crowded and filthy, and dysentery and typhoid kill prisoners every day.',
+          'Stanley decides the men there are “simply doomed.” Then Union recruiters come into the camp with an offer.'],
+        predict: { q: 'How did Stanley get out of Camp Douglas?',
+          options: [['escape', 'Climbed the fence and escaped'], ['exchange', 'Was exchanged for a Union prisoner'], ['oath', 'Swore loyalty to the United States and joined the Union army'], ['sick', 'Was released because he was sick']],
+          answer: 'oath',
+          reveal: 'On June 4, 1862, Stanley took an oath of loyalty to the United States and enlisted in the Union army. Prisoners who switched sides like this were nicknamed “Galvanized Yankees.” Thousands did it, some because they had changed their minds about the war, and many just to get out of prison alive.' },
+        yours: { q: 'Your regiment has retreated to Corinth, Mississippi. The only water comes from shallow, muddy holes.',
+          options: [['dig', 'Dig your own well deeper, and boil what you can', 'Hard work in the heat.', { dis: 0.7 }], ['hole', 'Drink from the muddy holes like everyone else', 'You’re exhausted.', { dis: 1.5 }]] },
+        fate: { where: 'Corinth, Mississippi, 1862', months: 3, disMult: 2, k: 0.003, w: 0.01, c: 0.003, cap: 'exchange',
+          facts: [['Months covered', 'April – June 1862'], ['Danger', 'Typhoid and dysentery at Corinth']],
+          note: 'Disease at Corinth was so bad in the spring of 1862 that it helped force the Confederate army to abandon the town that May.' } },
+      { date: 'June – August 1862', title: 'Galvanized Yankee',
+        img: ['A ward in hospital at convalescent camp near Alexandria, Va LCCN2012650251.jpg', 'A ward in a Union army hospital.'],
+        text: ['Stanley is now a Union soldier, in a blue uniform. But the seeds of disease from Camp Douglas are still in him. Within days of leaving Chicago, he collapses with dysentery and fever and is left behind in a hospital at Harpers Ferry while his new regiment moves on.',
+          'He is weak, alone, and has no money.'],
+        predict: { q: 'What happened to Stanley’s Union army service?',
+          options: [['fought', 'He recovered and fought at Antietam'], ['left', 'He left and never went back. He said he was discharged, but records list him as a deserter'], ['died', 'He nearly died and was sent home to Wales by the army'], ['return', 'He went back to the Confederate army']],
+          answer: 'left',
+          reveal: 'A Maryland farm family nursed him back to health and paid his train fare to Baltimore. Stanley never rejoined his regiment, and on August 31, 1862, he was listed as a deserter. He worked his way to Britain as a deckhand, where his mother turned him away, then came back to America.' },
+        yours: { q: 'Your regiment invades Kentucky, then fights at Perryville and Murfreesboro. Your captain wants volunteers for the skirmish line.',
+          options: [['skirm', 'Volunteer', 'Out in front, where officers notice you.', { bat: 1.6 }], ['ranks', 'Stay in the ranks', 'Let someone else go.', { bat: 1 }]] },
+        fate: { where: 'Perryville and Murfreesboro, 1862', months: 7, k: 1294 / 37739, w: 7945 / 37739, c: 1027 / 37739, cap: 'exchange',
+          facts: [['Confederates engaged at Murfreesboro', 'about 37,700'], ['Killed', '1,294'], ['Wounded', '7,945'], ['Captured or missing', '1,027']],
+          note: 'Confederate army at Murfreesboro. Your Arkansas regiment also fought at Perryville in October.' } },
+      { date: '1863 – 1864', title: 'A New Name, Again',
+        img: ['Uss minnesota.jpg', 'The steam frigate USS Minnesota.'],
+        text: ['Back in New York, Stanley works as a clerk. In July 1864 he enlists again, this time in the United States Navy, and is assigned to the warship USS Minnesota as a clerk keeping the ship’s log.',
+          'But the army still lists him as a deserter, and deserters could be shot.'],
+        predict: { q: 'How did Stanley keep the Navy from finding out he was an army deserter?',
+          options: [['bribe', 'He bribed the recruiting officer'], ['changed', 'He changed his birth date and birthplace on the forms'], ['told', 'He confessed and was pardoned'], ['nothing', 'Nobody ever checked, so he did nothing']],
+          answer: 'changed',
+          reveal: 'Stanley signed up as Henry Stanley with a different birth date and place, so no one could trace him. Changing names and stories came easily to him. He had already been John Rowlands, Henry Stanley and, for a while in Arkansas, William Stanley.' },
+        yours: { q: 'At Missionary Ridge your division holds the north end of the ridge. Union troops are climbing the slope below you.',
+          options: [['rocks', 'Roll rocks and fire down from the crest', 'Your division really did this.', { bat: 0.85 }], ['charge', 'Join the counterattack down the hill', 'Drive them off and take prisoners.', { bat: 1.4, cap: 1.3 }]] },
+        fate: { where: 'Chickamauga and Missionary Ridge, 1863', months: 12, k: 0.036, w: 0.22, c: 0.05, cap: 'confed',
+          facts: [['Confederates at Chickamauga', 'about 65,000'], ['Killed', '2,312'], ['Wounded', '14,674'], ['Captured or missing', '1,468']],
+          note: 'Your division, under General Patrick Cleburne, held its ground at Missionary Ridge even as the rest of the line broke. By now prisoners were no longer exchanged.' } },
+      { date: 'December 1864 – February 1865', title: 'Fort Fisher',
+        img: ['Union Attack on Fort Fisher North Carolina January 15 1865.jpg', 'The Union attack on Fort Fisher, North Carolina, January 15, 1865.'],
+        text: ['The Minnesota joins the great fleet that bombards Fort Fisher, the fort guarding Wilmington, North Carolina, the Confederacy’s last open seaport. Stanley keeps the ship’s log and writes vivid reports of the battle for newspapers. It is the start of his career as a reporter.',
+          'In February 1865 the ship docks for repairs in Portsmouth, New Hampshire.'],
+        predict: { q: 'What did Stanley do when the Minnesota docked in Portsmouth?',
+          options: [['stay', 'Stayed aboard until the war ended'], ['forged', 'Walked off the ship with a forged pass and never came back'], ['promoted', 'Was promoted to officer'], ['hero', 'Received a medal for Fort Fisher']],
+          answer: 'forged',
+          reveal: 'On February 10, 1865, Stanley and a 15-year-old shipmate left using forged passes. He may be the only man who served in the Confederate army, the Union army and the Union navy, and he deserted from two of them.' },
+        yours: { q: 'Bad news reaches your camp from Arkansas: Union troops and outlaws are raiding farms back home. Some men in your regiment are slipping away to protect their families.',
+          options: [['stay', 'Stay with the army', 'Your family will have to manage.', { bat: 1 }], ['desert', 'Go home to Arkansas', 'It’s hundreds of miles. If you’re caught, you could be shot.', { desert: true }]] },
+        fate: { where: 'the Atlanta Campaign, 1864', months: 8, k: 0.04, w: 0.2, c: 0.07, cap: 'confed',
+          facts: [['Confederate casualties in the Atlanta Campaign', 'about 35,000'], ['Confederate soldiers', 'about 65,000 at the start']],
+          note: 'Our estimate from the campaign totals. Desertion grew as the war went badly, especially among soldiers whose homes were under Union control.' } },
+      { date: '1866 – 1904', title: 'Dr. Livingstone',
+        img: ['Henry Morton Stanley meeting David Livingstone at Ujiji, in Wellcome V0006855.jpg', 'An engraving of Stanley meeting David Livingstone at Ujiji, 1871.'],
+        text: ['After the war Stanley becomes a newspaper correspondent, reporting from the American West and from Africa.',
+          'Meanwhile your regiment marches north with General Hood into Tennessee, to Franklin.'],
+        predict: { q: 'In 1871, Stanley became one of the most famous men in the world. Why?',
+          options: [['pole', 'He was the first to reach the North Pole'], ['davis', 'He captured Jefferson Davis'], ['livingstone', 'He found the missing missionary David Livingstone in Africa'], ['booth', 'He interviewed John Wilkes Booth']],
+          answer: 'livingstone',
+          reveal: 'His newspaper sent him to find Livingstone, who had not been heard from in years. Stanley found him at Ujiji, near Lake Tanganyika, in November 1871. Later he helped King Leopold II of Belgium claim the Congo, where Leopold’s regime brought terrible suffering to the Congolese people. The man who switched sides in the Civil War ended up famous, and controversial, for something else entirely.' },
+        yours: { q: 'At Franklin, General Hood orders your division to charge the Union trenches across open ground. General Cleburne will lead it.',
+          options: [['front', 'Charge in the front line', 'Right behind General Cleburne.', { bat: 1.3 }], ['second', 'Go in with the second line', 'Close behind.', { bat: 0.9 }]] },
+        fate: { where: 'Franklin, 1864–1865', months: 6, k: 1750 / 20000, w: 3800 / 20000, c: 702 / 20000, cap: 'confed',
+          facts: [['Confederates in the attack at Franklin', 'about 20,000'], ['Killed', 'about 1,750'], ['Wounded', 'about 3,800'], ['Captured or missing', 'about 700']],
+          note: 'General Cleburne was killed leading this charge, one of six Confederate generals killed at Franklin.' } }
+    ]
+  }
 
 };
-const COMING = [['Henry Morton Stanley', '6th Arkansas, then the Union army']];
+const COMING = [];
 
 function newGame(player, sid) {
   return { v: 1, player, sid, ch: 0, step: 'story', preds: [], mine: [], you: { status: 'active', log: [], wounds: 0 }, roll: null, roll2: null, ychoice: null, pchoice: null };
@@ -766,7 +875,7 @@ function oddsFor(G, chapter, mod) {
   return [['dis', 'Died of disease', pd], ['k', 'Killed', k], ['w', 'Wounded', w], ['c', 'Captured', c], ['ok', 'Came through', Math.max(0, 1 - pd - k - w - c)]];
 }
 function woundOdds(G) { const s = SIDES[SOLDIERS[G.sid].side || 'U']; return [['k', 'Died of wounds', s.dow], ['dh', 'Discharged and sent home', (1 - s.dow) * s.discharge], ['ok', 'Recovered and returned', (1 - s.dow) * (1 - s.discharge)]]; }
-function prisonOdds(kind) { const p = PRISON[kind]; return [['k', 'Died in prison', p], ['ok', kind === 'exchange' ? 'Exchanged and returned' : 'Survived prison', 1 - p]]; }
+function prisonOdds(kind) { const p = PRISON[kind]; return [['k', 'Died in prison', p], ['ok', kind === 'exchange' || kind === 'douglas' ? 'Exchanged and returned' : 'Survived prison', 1 - p]]; }
 function pick(groups, rnd = Math.random) { let r = rnd(); for (const [k, , p] of groups) { if (r < p) return k; r -= p; } return groups[groups.length - 1][0]; }
 // Plays your fate for one chapter with a random number source; used by the page and the balance test.
 function resolve(G, chapter, mod, rnd = Math.random) {
@@ -785,7 +894,7 @@ function apply(G, ci, r) {
   else if (r.first === 'w') { y.wounds++; if (r.second === 'k') { status = 'dead'; text = 'Wounded, and died of wounds'; } else if (r.second === 'dh') { status = 'home'; text = 'Wounded and discharged'; } else text = 'Wounded, recovered and returned'; }
   else if (r.first === 'c') {
     if (r.second === 'k') { status = 'dead'; text = 'Captured, and died in prison'; }
-    else if (C.fate.cap === 'exchange') text = 'Captured, then exchanged';
+    else if (C.fate.cap === 'exchange' || C.fate.cap === 'douglas') text = 'Captured, then exchanged';
     else { status = 'prison-survived'; text = 'Captured, and survived prison'; }
   } else text = 'Came through';
   y.log.push({ ci, text, first: r.first, second: r.second });
@@ -988,7 +1097,7 @@ const FIRST = { dis: ['bad', 'You died of disease.', 'You never fell in battle. 
 function renderFate() {
   const C = CH(), f = C.fate, roll = G.roll;
   const first = roll.pick != null ? (G.res.desert ? DFIRST : FIRST)[roll.fate] : null;
-  const capText = f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : f.cap === 'confed' ? 'Prisoner exchanges have stopped. You are sent to a Union prison camp, such as Camp Douglas in Chicago, until the war ends.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
+  const capText = f.cap === 'douglas' ? 'You are sent north to Camp Douglas, a crowded, disease-ridden prison camp in Chicago. In the summer of 1862 the two sides agree to exchange prisoners again.' : f.cap === 'exchange' ? 'Early in the war, prisoners were usually exchanged within a few months.' : f.cap === 'andersonville' ? 'Black prisoners were not exchanged, and some were enslaved or killed. You are sent to a Confederate prison.' : f.cap === 'confed' ? 'Prisoner exchanges have stopped. You are sent to a Union prison camp, such as Camp Douglas in Chicago, until the war ends.' : 'Prisoner exchanges have stopped. You are sent to a prison camp until the war ends.';
   app.innerHTML = `<section class="card fade">
     <p class="dateline">Your war${C.fate.where ? '' : ' · ' + esc(C.date)}</p><h2>${esc(C.fate.where ? Cap(C.fate.where) : C.title)}</h2>
     <div class="split"><div>${gridHTML(roll)}
@@ -1008,7 +1117,7 @@ function done() { return G.roll.pick != null && (!G.roll2 || G.roll2.pick != nul
 function secondText() {
   const r = G.roll2.fate, first = G.roll.fate;
   if (first === 'w') return r === 'k' ? ' Infection was the killer. Surgeons had no idea germs existed.' : r === 'dh' ? ' Your wound is too serious for you to keep fighting. You are going home.' : ' After weeks in the hospital, you rejoin your regiment.';
-  return r === 'k' ? ' Hunger, exposure and disease killed you in prison.' : CH().fate.cap === 'exchange' ? ' After a few months you are exchanged and return to your regiment.' : ' You survive, starving and sick, until the war ends.';
+  return r === 'k' ? ' Hunger, exposure and disease killed you in prison.' : (CH().fate.cap === 'exchange' || CH().fate.cap === 'douglas') ? ' After a few months you are exchanged and return to your regiment.' : ' You survive, starving and sick, until the war ends.';
 }
 function nextChapterLabel() { return G.ch + 1 < S().chapters.length ? 'Next: ' + S().chapters[G.ch + 1].title : 'How it ended'; }
 function advance() {
