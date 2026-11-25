@@ -897,7 +897,7 @@ function apply(G, ci, r) {
     else if (C.fate.cap === 'exchange' || C.fate.cap === 'douglas') text = 'Captured, then exchanged';
     else { status = 'prison-survived'; text = 'Captured, and survived prison'; }
   } else text = 'Came through';
-  y.log.push({ ci, text, first: r.first, second: r.second });
+  y.log.push({ ci, text, first: r.first, second: r.second, desert: !!r.desert });
   if (status !== 'active') y.status = status;
   return status;
 }
@@ -965,6 +965,7 @@ function renderSetup() {
       <div class="field"><label for="initial">Last initial</label><input id="initial" maxlength="1" autocomplete="off" value="${esc(setup.initial)}" style="text-transform:uppercase"></div>
     </div>
     <p class="hint" role="alert">${esc(setup.err)}</p>
+    <p class="small" style="margin-top:10px">Your first name, last initial and what happens to you appear on the class casualty board. Only your first game counts.</p>
     <div class="actions"><button class="btn primary" id="go">Enlist</button><span class="small">Your progress saves in this browser.</span></div>
   </section>`;
   app.querySelectorAll('[data-sid]').forEach(b => b.onclick = () => { readForm(); setup.sid = b.dataset.sid; renderSetup(); });
@@ -1174,6 +1175,40 @@ function report() {
   });
   return L.join('\n');
 }
+// What goes on the class casualty board: your own war, the soldier you followed, and your prediction score.
+const TEACHER_KEY = { 'Mr. Sam': 'sam', 'Mrs. Sondej': 'sondej' };
+function warRecord() {
+  const y = G.you, last = y.log[y.log.length - 1];
+  let fate = 'home', where = '';
+  if (y.status === 'dead') {
+    where = whereAt(last.ci);
+    fate = last.desert ? 'executed' : last.first === 'dis' ? 'disease' : last.first === 'k' ? 'killed' : last.first === 'w' ? 'wounds' : 'prison';
+  }
+  return { soldier: G.sid, side: (S().side || 'U') === 'U' ? 'Union' : 'Confederate', fate, where,
+    wounded: y.log.filter(l => l.first === 'w' && l.second !== 'k').map(l => whereAt(l.ci)),
+    captured: y.log.filter(l => l.first === 'c' && !l.desert && l.second !== 'k').map(l => whereAt(l.ci)),
+    discharged: y.status === 'home', released: y.status === 'prison-survived', deserted: y.status === 'deserted', wentHome: y.status === 'wenthome',
+    predicted: G.preds.filter(x => x && x.match).length, chapters: S().chapters.length };
+}
+async function postResult() {
+  if (G.posted && ['posted', 'already', 'sending'].includes(G.posted.status)) return;
+  G.posted = { status: 'sending' }; save();
+  try {
+    const lb = await import('./lb.js');
+    const p = G.player;
+    G.posted = await lb.postResult({ teacher: TEACHER_KEY[p.teacher] || 'sam', period: +p.period, first: p.first, initial: p.initial }, warRecord());
+  } catch (e) { G.posted = { status: 'error', msg: e && e.message ? e.message : 'no connection' }; }
+  save();
+  const el = document.getElementById('poststatus'); if (el) { el.innerHTML = postStatus(); bindRetry(); }
+}
+function postStatus() {
+  const st = G.posted || {}, who = `${esc(G.player.first)} ${esc(G.player.initial)}.`;
+  return st.status === 'posted' ? 'Your war is now on the <a href="leaderboard/" target="_blank">class casualty board</a>.'
+    : st.status === 'already' ? `${who} already has a game on the casualty board. Only your first game counts.`
+    : st.status === 'error' ? `Your result couldn’t be posted: ${esc(st.msg)} <button class="btn" id="retry" style="padding:4px 12px;font-size:.9rem">Try again</button>`
+    : 'Posting to the class casualty board…';
+}
+function bindRetry() { const b = document.getElementById('retry'); if (b) b.onclick = () => { G.posted = null; postResult(); }; }
 function renderEnd() {
   const s = S(), n = G.preds.filter(x => x.match).length, alive = G.you.status !== 'dead';
   app.innerHTML = `<section class="card fade">
@@ -1181,6 +1216,7 @@ function renderEnd() {
     <div class="sidebyside">
       <div class="col"><span class="small">${Cap(PR()[1])} war</span><h3>${esc(s.name)}</h3><p class="fate">${esc(s.endFate)}</p><p style="font-size:1rem;margin:0">${esc(s.end)}</p></div>
       <div class="col you"><span class="small">Your war</span><h3>${esc(yourName())}</h3><p class="fate">${esc(yourFate())}</p>
+        <p class="small" id="poststatus" style="margin:0 0 .6em">${postStatus()}</p>
         <ol>${G.you.log.map(l => `<li><b>${esc(whereAt(l.ci))}:</b> ${esc(l.text)}</li>`).join('')}</ol></div>
     </div>
     <div class="sect"><h3>Your predictions: ${n} of ${s.chapters.length}</h3><div class="tblwrap"><table class="t"><thead><tr><th>Chapter</th><th>What really happened</th><th></th></tr></thead><tbody>
@@ -1202,6 +1238,7 @@ function renderEnd() {
     $('#copied').textContent = ok ? 'Copied! Now paste it into Canvas.' : 'Select the text above and copy it.';
   };
   $('#again').onclick = () => wipe(true);
+  bindRetry(); postResult();
 }
 
 // ---------- router ----------
