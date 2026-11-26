@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inside a WWI Trench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F0E1; --panel:#FBF8EF; --stage-a:#EAE6D6; --stage-b:#D9D3BE;
+  --ink:#1B2A4A; --ink-soft:#4C5874; --gold:#C9A227; --gold-ink:#7A6012;
+  --rule:rgba(27,42,74,.16); --card-shadow:0 10px 30px rgba(27,42,74,.18);
+  --pin-bg:#1B2A4A; --pin-fg:#F5F0E1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+    --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+    --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+    --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+  --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+  --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+  --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:"Libre Caslon Text",Georgia,"Times New Roman",serif;font-weight:400;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100%}
+.stage{position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%,var(--stage-a) 0%,var(--stage-b) 78%)}
+.stage.night{background:radial-gradient(ellipse at 50% 30%,#1b2438 0%,#070a12 80%)}
+.stage.night .hint{color:#b7bfcf}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hint{position:absolute;top:14px;left:16px;right:16px;max-width:30em;font-size:.85rem;
+  color:var(--ink-soft);pointer-events:none;margin:0}
+
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;border:0;padding:0;background:none;
+  display:flex;align-items:center;gap:6px;cursor:pointer;transform:translate(-9px,-9px)}
+.pin .dot{width:18px;height:18px;border-radius:50%;background:var(--pin-bg);
+  border:2px solid var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.35);flex:none}
+.pin .lbl{font-size:.8rem;white-space:nowrap;background:var(--panel);color:var(--ink);
+  padding:2px 8px;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.25);
+  opacity:0;transition:opacity .15s}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.on .lbl{opacity:1}
+.pin.on .dot{background:var(--gold)}
+.pins.off .pin:not(.on){display:none}
+
+.card{position:absolute;left:16px;bottom:16px;width:min(460px,calc(100% - 32px));
+  max-height:62%;overflow:auto;background:var(--panel);border-left:4px solid var(--gold);
+  box-shadow:var(--card-shadow);padding:18px 22px 20px;border-radius:2px}
+.card[hidden]{display:none}
+.card h2{font-size:1.45rem;line-height:1.2;margin-bottom:.55rem;padding-right:3.5rem}
+.card p{margin:0 0 .75rem;max-width:62ch}
+.card .close{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--rule);
+  border-radius:3px;padding:2px 10px;font-size:.85rem;cursor:pointer;color:var(--ink-soft)}
+.card .close:hover{color:var(--ink);border-color:var(--ink-soft)}
+.card blockquote{margin:.4rem 0 .9rem;padding:.2rem 0 .2rem 1rem;border-left:2px solid var(--rule);
+  font-style:italic;white-space:pre-line}
+.card blockquote cite{display:block;font-style:normal;font-size:.85rem;color:var(--ink-soft);margin-top:.25rem;white-space:normal}
+.card .fact{font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.2rem}
+.card dl{margin:.2rem 0 .9rem;display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;font-size:.95rem}
+.card dt{font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;color:var(--gold-ink)}
+.card dd{margin:0}
+
+.panel{background:var(--panel);border-left:1px solid var(--rule);overflow:auto;padding:28px 26px 40px}
+.panel h1{font-size:1.9rem;line-height:1.15;margin-bottom:.35rem}
+.panel .sub{font-family:"Libre Caslon Text",Georgia,serif;font-style:italic;color:var(--ink-soft);margin:0 0 1.1rem}
+.panel p{margin:0 0 1rem}
+.note{border:1px solid var(--rule);border-left:3px solid var(--gold);padding:12px 14px;font-size:.92rem;margin:0 0 1.4rem}
+.note p{margin:0}
+.panel h3{font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--gold-ink)}
+.toggles{display:grid;gap:.45rem;margin:0}
+.toggles label{display:flex;gap:.6rem;align-items:center;cursor:pointer;font-size:.95rem}
+.toggles input{width:18px;height:18px;accent-color:var(--gold);margin:0}
+.reset{margin-top:.8rem;background:none;border:1px solid var(--ink-soft);border-radius:3px;
+  padding:5px 14px;cursor:pointer;font-size:.92rem}
+.reset:hover{background:var(--ink);color:var(--panel)}
+.parts{list-style:none;margin:0;padding:0}
+.parts li{margin:0}
+.parts button{display:block;width:100%;text-align:left;background:none;border:0;
+  border-bottom:1px solid var(--rule);padding:7px 2px;cursor:pointer;font-size:.97rem}
+.parts button:hover{color:var(--gold-ink)}
+.parts button[aria-current="true"]{color:var(--gold-ink);font-weight:700}
+.about-btn{margin-top:1.4rem;display:block;width:100%;text-align:left;background:none;
+  border:1px solid var(--rule);border-left:3px solid var(--gold);padding:10px 14px;cursor:pointer}
+.about-btn strong{font-family:"Libre Caslon Text",Georgia,serif;font-weight:400;font-size:1.05rem;display:block}
+.about-btn span{font-size:.88rem;color:var(--ink-soft)}
+.fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}
+
+@media (max-width: 860px){
+  html,body{height:auto}
+  .app{grid-template-columns:1fr;height:auto}
+  .stage{height:64svh;min-height:380px}
+  .panel{border-left:0;border-top:1px solid var(--rule);overflow:visible;padding:22px 18px 36px}
+  .card{left:10px;right:10px;bottom:10px;width:auto;max-height:50%;padding:14px 16px 16px}
+  .card h2{font-size:1.25rem}
+  .hint{font-size:.8rem}
+  .pin .dot{width:13px;height:13px;border-width:2px}
+}
+@media (prefers-reduced-motion: reduce){ .pin .lbl{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage" aria-label="3D model of a First World War trench system">
+    <p class="hint" id="hint">Drag to turn the model. Scroll or pinch to zoom. Tap any part to learn about it.</p>
+    <div class="pins" id="pins"></div>
+    <section class="card" id="card" hidden aria-live="polite">
+      <button class="close" id="closeCard" type="button">Close</button>
+      <div id="cardBody"></div>
+    </section>
+  </main>
+
+  <aside class="panel">
+    <h1>Inside a WWI Trench</h1>
+    <p class="sub">A British front line on the Western Front, about 1916</p>
+    <p>For most of the First World War, two lines of trenches faced each other across Belgium and France. You are looking from behind the British lines toward the German trenches on the far side of no man&rsquo;s land.</p>
+    <div class="note"><p>The ground beside one fire bay has been cut away so you can see the trench from the side, and the dugout hidden beneath it. The model shows no people. Millions of men lived, worked, and died in trenches like these.</p></div>
+
+    <h3>View</h3>
+    <div class="toggles">
+      <label><input type="checkbox" id="tCut" checked> Cut away the ground</label>
+      <label><input type="checkbox" id="tNight"> Night</label>
+      <label><input type="checkbox" id="tPins" checked> Show markers</label>
+    </div>
+    <button class="reset" id="reset" type="button">Reset view</button>
+
+    <h3>The fire trench</h3>
+    <ul class="parts" data-group="front"></ul>
+    <h3>Behind the front line</h3>
+    <ul class="parts" data-group="behind"></ul>
+    <h3>No man&rsquo;s land and the enemy</h3>
+    <ul class="parts" data-group="nml"></ul>
+
+    <button class="about-btn" type="button" data-key="about">
+      <strong>About this model</strong>
+      <span>What it is based on, and what it squeezes or leaves out</span>
+    </button>
+  </aside>
+</div>
+
+<!-- three.js r128 and OrbitControls, shared with the Brooks tour so this page doesn't depend on outside sites -->
+<script src="../brooks-ship/lib/three.min.js"></script>
+<script src="../brooks-ship/lib/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------------- Content ---------------- */
+const INFO = {
+  firebay:{group:"front",title:"Fire bay and fire step",body:[
+    "The front-line trench was called the fire trench. In this model it is 6 feet deep, with 2 more feet of sandbags on top, so a man walking along the bottom could not be seen or shot from the enemy line. To fire back, he climbed onto the fire step, a ledge in the front wall that raised his head and shoulders just above the top.",
+    "Every man in the front line stood on the fire step, rifle ready, at “stand-to” each dawn and dusk, the hours when an attack was most likely. Then most climbed down to eat, sleep, clean weapons, and work, while sentries kept watch. More men watched at night, because darkness was when raids and patrols moved.",
+    "Battalions did not stay in the front line for long. A common pattern was a few days in the fire trench, a few in support, a few in reserve, and then a rest behind the lines, though it varied with the sector and the fighting."],
+    fact:"The Western Front ran about 440 miles (700 km), from the North Sea coast of Belgium to the border of Switzerland."},
+  traverse:{group:"front",title:"Traverses",body:[
+    "Look down on the front line and you will see it is not straight. Every 20 or 30 feet, the trench bends around a solid block of earth called a traverse, which gives it a pattern like the top of a castle wall.",
+    "Traverses were there for protection. A shell that landed in one bay sent its blast and fragments into the walls instead of down the length of the trench. And if enemy soldiers got into one bay, they could not fire straight along the whole line.",
+    "The pattern also meant a man in one bay could see only the few men beside him. Everyone else was around a corner."],
+    fact:"Soldiers called it enfilade fire when a gun could shoot straight down the length of a line. Traverses, and the zigzags in communication trenches, were the cure."},
+  parapet:{group:"front",title:"Parapet, parados, and sandbags",body:[
+    "The earth bank on the enemy side of the trench is the parapet. The lower bank behind it is the parados, which caught fragments from shells bursting behind the trench and kept men from being outlined against the sky.",
+    "The top layers were built of sandbags, burlap sacks filled with soil. Rain, frost, and shellfire kept knocking the walls down, so filling sandbags and rebuilding never stopped. Soldiers in the line spent far more of their time digging, carrying, and repairing than fighting.",
+    "New arrivals were warned on their first day: never put your head above the parapet in daylight. Enemy snipers watched for any movement."],
+    fact:"Trench walls were held up, or revetted, with timber, wire mesh, woven branches, or sheets of corrugated iron."},
+  duckboards:{group:"front",title:"Duckboards and the mud",body:[
+    "Duckboards were wooden walkways laid along the bottom of the trench so men could walk above the water and mud. In low, wet ground like Flanders, water could stand in a trench for weeks.",
+    "Standing for days in cold water caused trench foot. Feet swelled and went numb, and in bad cases the flesh died and toes or feet had to be amputated. More than 20,000 British soldiers were treated for it in the first winter of the war, 1914–1915. The army fought back with dry socks, whale oil rubbed on the feet, and foot inspections, and made officers responsible for their men’s feet.",
+    "Rats grew fat in the trenches, and almost every man had lice. Lice spread trench fever, a painful illness that could take a man out of the line for weeks."],
+    quote:{text:"Bent double, like old beggars under sacks,\nKnock-kneed, coughing like hags, we cursed through sludge",cite:"Wilfred Owen, British officer and poet, “Dulce et Decorum Est,” written 1917–1918"}},
+  periscope:{group:"front",title:"Trench periscope",body:[
+    "Since looking over the parapet could be fatal, daytime sentries watched no man’s land through periscopes: a tube or box with two mirrors that let a man see over the top while his head stayed below it.",
+    "Snipers learned to shoot at periscopes too, so sentries kept them low and moved them often. Some soldiers fitted rifles with a periscope and a long trigger linkage, so they could aim and fire without showing themselves. A well-known version was invented by an Australian soldier at Gallipoli in 1915."]},
+  sniper:{group:"front",title:"Sniper’s loophole",body:[
+    "This steel plate, set among the sandbags, has a small hole a rifle could fire through. A shutter covered the hole when it was not in use. If an enemy sniper saw light through it, he knew a head was behind it.",
+    "Snipers on both sides often worked in pairs from hidden positions, one watching through a telescope and one shooting. Even in a quiet sector, with no battle going on, a battalion lost men every week to snipers, shells, and accidents. The British army called these steady losses “wastage.”"],
+    fact:"Early in the war, German snipers were better equipped, with more telescopic sights. The British army set up sniping schools to catch up."},
+  mg:{group:"front",title:"Machine gun",body:[
+    "This is a Vickers gun, the British army’s heavy machine gun. It fired about 450 to 500 bullets a minute, with a water jacket around the barrel to keep it from overheating. It took a team of men to carry and run it: the gun, the heavy tripod, belts of ammunition, and cans of water.",
+    "Machine guns were the main reason that attacking across open ground was so deadly. A few guns, firing from protected positions with overlapping fields of fire, could stop a whole battalion advancing on foot.",
+    "That is why both sides dug in. In the fall of 1914, after the German advance was stopped at the Marne, each army tried to get around the other’s flank. When they reached the sea, the trenches stretched unbroken across Belgium and France."],
+    fact:"Britain formed a separate Machine Gun Corps in 1915 to train and organize machine gunners."},
+  gas:{group:"front",title:"Gas alarm",body:[
+    "An empty shell case hung from a post made a gas gong. When a sentry saw or smelled gas drifting toward the line, he beat it, and every man grabbed for his mask. Rattles and horns were used too.",
+    "Germany first used poison gas on a large scale at Ypres in April 1915, releasing chlorine from cylinders so the wind carried it over the Allied line. Soon both sides were using gas, including phosgene and mustard gas, which burned skin, eyes, and lungs.",
+    "The first masks were cotton pads soaked in chemicals, then cloth hoods with eyepieces. By 1916 British soldiers carried the much better small box respirator. Gas killed far fewer men than shells or bullets, but few weapons were more feared."],
+    quote:{text:"Gas! GAS! Quick, boys!—An ecstasy of fumbling,\nFitting the clumsy helmets just in time",cite:"Wilfred Owen, “Dulce et Decorum Est,” written 1917–1918"},
+    hippLabel:"Reading Owen’s poem with HIPP:",
+    hipp:[["Historical context","Owen drafted it in 1917 while recovering from shell shock at Craiglockhart, a military hospital in Scotland, and revised it in 1918."],
+          ["Intended audience","People at home in Britain who cheered the war on. An early draft was addressed to Jessie Pope, a writer of patriotic war poems."],
+          ["Purpose","To show what a gas attack really did to a man, and to call it a lie that dying for one’s country is sweet and fitting."],
+          ["Point of view","A British infantry officer who had led men on the Western Front."]],
+    after:["Owen was killed in action on November 4, 1918, one week before the war ended. Most of his poems, including this one, were published after his death."]},
+  ladder:{group:"front",title:"Going over the top",body:[
+    "Ladders let men climb out of the trench quickly in an attack. “Going over the top” meant leaving the trench and crossing no man’s land toward the enemy, usually at a set time, after an artillery bombardment, at the blast of an officer’s whistle.",
+    "The bombardment was supposed to cut the enemy’s wire and kill or stun the defenders. Often it did not. On July 1, 1916, the first day of the Battle of the Somme, the British army suffered 57,470 casualties, including 19,240 men killed, the worst single day in its history.",
+    "Failed attacks usually went wrong the same way: wire still standing, machine guns that had survived the shelling, and a long walk across open ground."],
+    quote:{text:"Lines of grey, muttering faces, masked with fear,\nThey leave their trenches, going over the top",cite:"Siegfried Sassoon, British officer and poet, “Attack,” 1918"}},
+
+  dugout:{group:"behind",title:"Dugout",body:[
+    "Dugouts were rooms dug into the trench wall or deep underground, where men slept, ate, and sheltered from shellfire. These steep stairs lead about 13 feet below the trench floor. Timber frames hold up the roof and walls.",
+    "Many British front-line dugouts were small and shallow, and soldiers often scraped a “funk hole” into the trench wall instead. German dugouts were usually deeper and stronger, because Germany mostly stayed on the defensive in the West and built to stay. On the Somme, many German dugouts were 20 to 40 feet underground.",
+    "A blanket hung at the bottom of the stairs served as a gas curtain. Inside, candles gave the only light, the air was damp and stale, and rats ran over the beds at night."],
+    fact:"Before the Somme attack in 1916, British guns fired about 1.5 million shells over eight days. Many German soldiers waited it out deep underground, then climbed up and manned their machine guns."},
+  commtrench:{group:"behind",title:"Communication trench",body:[
+    "Communication trenches ran back from the front line to the support and reserve lines. Everything came and went through them: fresh troops, food, water, ammunition, mail, and the wounded on stretchers.",
+    "They zigzagged so that a shell or machine gun could not sweep straight down their length. They were narrow, too, and a stretcher party going down while a carrying party came up could jam a trench for a long time. Moving up to the line, at night and in mud, could take hours."],
+    fact:"Real communication trenches were often hundreds of yards long. This model squeezes them to fit on the screen."},
+  support:{group:"behind",title:"Support trench",body:[
+    "A second line of trenches ran behind the front, usually 70 to 100 yards back. Troops here could rush forward to help if the front line was attacked, and the front-line troops could fall back to it if they were driven out.",
+    "Farther back still was a reserve line. Together the front, support, and reserve trenches made a belt of defenses that was very hard to break through. Even when an attack captured the first line, the defenders could often hold the next one."],
+    fact:"By 1917, German defenses on the Western Front were built in depth, with several lines of trenches and concrete strongpoints stretching back thousands of yards."},
+  latrine:{group:"behind",title:"Latrine",body:[
+    "Latrines were pits or buckets set in short side trenches, usually a little way behind the front line. Soldiers assigned as sanitary men emptied the buckets and spread chloride of lime to fight the smell and the flies.",
+    "With hundreds of men crowded together for days, keeping clean was nearly impossible, and disease was a constant danger. The army fought it with strict rules about latrines, drinking water, and waste.",
+    "Even a trip to the latrine could be deadly. Enemy snipers and gunners learned where latrines were and watched them."],
+    fact:"In the American Civil War, disease killed about twice as many soldiers as combat did. On the Western Front, weapons killed far more men than disease, partly because of better sanitation and medicine."},
+  aid:{group:"behind",title:"Regimental aid post",body:[
+    "A wounded man was first treated by his battalion’s stretcher-bearers, then carried to the regimental aid post, often a dugout or shelter near the support line. There a medical officer stopped bleeding, applied dressings, and sent him back.",
+    "From the aid post the wounded moved back through a chain of stations: a dressing station, then a casualty clearing station with surgeons, and finally a base hospital or a ship home. Soldiers called a wound bad enough to send them home a “Blighty one.”",
+    "Carrying one stretcher through narrow, muddy trenches took four men, sometimes more, and in deep mud it could take hours."],
+    quote:{text:"In Flanders fields the poppies blow\nBetween the crosses, row on row",cite:"John McCrae, Canadian army doctor, “In Flanders Fields,” 1915"},
+    after:["McCrae wrote the poem in May 1915, during the Second Battle of Ypres, after the death of a close friend. It made the red poppy a symbol of remembrance. McCrae himself died of pneumonia in January 1918 while serving at a military hospital in France."]},
+  sign:{group:"behind",title:"Trench names and signs",body:[
+    "Miles of trenches that all looked alike were easy to get lost in, especially at night. So trenches and junctions were given names, painted on boards, and nailed up where they met.",
+    "British soldiers often named them after places at home, like Piccadilly Circus, Regent Street, or Oxford Street. Others were named for units, officers, or events. Trench maps used the same names, so a runner carrying a message could find his way."],
+    fact:"A wrong turn was more than an inconvenience. It could lead a man into a dead end, an abandoned trench, or out toward the enemy."},
+  mortar:{group:"behind",title:"Trench mortar",body:[
+    "A trench mortar fired a bomb high into the air so that it came down almost straight into an enemy trench, which ordinary artillery, firing on a flatter path, often could not do.",
+    "The British Stokes mortar, designed in 1915, was simple: a tube on a base plate. A bomb dropped down the tube struck a firing pin at the bottom and shot out again, so a good crew could fire many rounds a minute.",
+    "Infantrymen often disliked having mortars nearby, because firing them drew enemy shells right back onto their own trench."]},
+  rations:{group:"behind",title:"Rations and the rum jar",body:[
+    "Food came up the communication trenches at night, carried by ration parties. The staples were tinned “bully beef,” hard biscuits that could crack a tooth, bread when it could be brought forward, jam, tea, and sugar. Men cooked over small braziers, and food from the field kitchens often arrived cold.",
+    "The stoneware jar held the rum ration. It was marked S.R.D., most likely for Supply Reserve Depot, though soldiers joked that it meant “Seldom Reaches Destination.” A small tot was handed out on cold mornings, often at stand-to.",
+    "Drinking water came up in old petrol cans, and it often tasted of petrol or of the chlorine used to make it safe."],
+    fact:"Letters and parcels came up with the rations. Mail from home did more for morale than almost anything else; the British army handled about two billion letters during the war."},
+
+  sap:{group:"nml",title:"Sap and listening post",body:[
+    "A sap was a narrow trench dug forward from the front line into no man’s land. At the end of this one is a listening post, a small pit where two or three men lay out at night, as close to the enemy as they dared.",
+    "Their job was to listen: for enemy working parties, for patrols crawling through the grass, and for the clink of metal that might mean a raid was coming. They had to stay silent and still for hours. If they heard something, one man crept back to warn the line."]},
+  wire:{group:"nml",title:"Barbed wire",body:[
+    "Belts of barbed wire protected both lines. This model shows one belt in front of each trench; by 1916 there were often several, many yards deep. The wire was meant to hold attackers in the open, where machine guns could cut them down.",
+    "Wire was put up and repaired at night by wiring parties. Iron “screw pickets” could be twisted into the ground instead of hammered, so the enemy would not hear. When a flare went up, the men froze, because movement gave them away.",
+    "Cutting the enemy’s wire before an attack was the artillery’s job, and it was hard to do. Shells often just tossed the wire around. Attackers who reached a belt that was still whole were trapped in front of it."]},
+  nml:{group:"nml",title:"No man’s land",body:[
+    "The ground between the two front lines belonged to no one. Its width varied a great deal: in a few places only a few yards, but often a few hundred. Shellfire turned it into a wasteland of craters, broken wire, splintered trees, and, after a battle, the bodies of men who could not be brought back.",
+    "At night it was busy. Patrols crawled out to scout, raiding parties tried to bring back prisoners, and stretcher-bearers searched for the wounded.",
+    "At Christmas 1914, in some places along the line, the shooting stopped. British and German soldiers climbed out, met in no man’s land, shook hands, traded food and souvenirs, buried their dead, and in a few places kicked a football around. Commanders on both sides disapproved, and nothing like it happened on that scale again."],
+    after:["Think about it: many of the men in that truce sang the same Christmas carols and knew the same Gospel story of “on earth peace, good will toward men” (Luke 2:14). What does the truce suggest about the soldiers on each side, and why do you think it could not last?"]},
+  shells:{group:"nml",title:"Shell holes",body:[
+    "Artillery was the greatest killer of the war. More than half of all wounds on the Western Front were caused by shells and their fragments, not bullets.",
+    "Heavy guns firing from miles behind the lines could reach any trench. Soldiers learned to tell shells apart by their sound, gave them nicknames like “whizz-bangs” and “Jack Johnsons,” and lived with the knowledge that one could land anywhere, at any moment.",
+    "In wet ground, craters filled with water. At Passchendaele in 1917, rain and shelling turned the battlefield into a swamp, and men and horses who slipped off the duckboard tracks could drown in the shell holes.",
+    "Constant shelling also caused shell shock, a breakdown that could bring on shaking, nightmares, or loss of speech. Some commanders at first saw it as weakness; doctors came to treat it as a real wound of war."]},
+  german:{group:"nml",title:"The German line",body:[
+    "Across no man’s land is the German front line, built on the same plan: fire bays, traverses, wire, and dugouts. Its fire step is on the far side, facing you.",
+    "After their advance in 1914, the Germans held much of the higher ground and mostly stayed on the defensive in the West while they fought Russia in the East. They built their trenches to last, with deep dugouts and, later, concrete.",
+    "Those trench lines meant German armies still occupied almost all of Belgium and a large part of northern France, including important coal and iron regions. To win, Britain and France had to attack."]},
+  pillbox:{group:"nml",title:"Concrete pillbox",body:[
+    "Small concrete forts, which British soldiers nicknamed pillboxes, sheltered machine guns behind walls that only a direct hit from a heavy shell could break. The Germans built many of them in Flanders in 1917, where the ground was too wet for deep dugouts.",
+    "Attacking one meant crossing open ground under fire, then working around to its sides or back, where its firing slits could not reach."],
+    fact:"Some of these pillboxes still stand today in the fields around Ypres, in Belgium."},
+  night:{group:"nml",title:"Night in the trenches",body:[
+    "Night was the busiest time on the Western Front. Under cover of darkness, ration and water parties came up, wiring parties fixed the wire, and men dug, filled sandbags, and patrolled.",
+    "Both sides fired flares into the sky to light up no man’s land. When one burst overhead, anyone out in the open froze, because a still figure was hard to spot and a moving one was not. British soldiers called them Very lights, after the pistol that fired them.",
+    "Then came dawn, stand-to on the fire step, and another long day of keeping your head down."]},
+
+  about:{group:null,title:"About this model",body:[
+    "This model shows a typical British section of the Western Front around 1916, built from the standard trench layouts in British army manuals and soldiers’ descriptions. It is not a copy of one real place. Real trenches were messier, bent by the shape of the land, the weather, and the last battle.",
+    "The trenches themselves are drawn close to real size, but the distances between them are squeezed so everything fits on the screen. Here the support trench sits about 23 yards behind the front line; in reality it was usually 70 to 100 yards back. No man’s land here is about 40 yards across; in many places it was a few hundred.",
+    "Like the Brooks model, this one shows no people. More than 8 million soldiers of all nations died in the First World War, and every one of them had a name, a family, and a home."],
+    after:["Think about it: what can a model like this show you that a photograph cannot? What can it never show?"]}
+};
+const ORDER = ["firebay","traverse","parapet","duckboards","periscope","sniper","mg","gas","ladder",
+               "dugout","commtrench","support","latrine","aid","sign","mortar","rations",
+               "sap","wire","nml","shells","german","pillbox","night"];
+
+/* ---------------- Fallback if WebGL/libs unavailable ---------------- */
+const stage = document.getElementById("stage");
+function fail(msg){
+  const d=document.createElement("div"); d.className="fallback"; d.textContent=msg; stage.appendChild(d);
+}
+if(!window.THREE || !THREE.OrbitControls){ fail("The 3D model could not load. Try reloading the page. The descriptions in the side panel still work."); }
+
+/* ---------------- Terrain (units: feet) ---------------- */
+const X0=-60, X1=60, Z0=-90, Z1=150, BOT=-26, X_CUT=14, CAP={z0:-34,z1:14};
+const inCap=(x,z)=>x>X_CUT && z>CAP.z0 && z<CAP.z1;
+const P=38, BAY=24, TRAV=14, LEG=3.5;          // fire bays 24 ft, traverses 14 ft
+const BR={z0:0,dir:1,off:2}, GE={z0:128,dir:-1,off:21};
+function rng(seed){ return ()=>{ seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const zs = x => -70+3*Math.sin(x/9);          // support trench centerline
+
+function lineAt(L,x,z){
+  const u=L.dir*(z-L.z0);
+  if(u<-20||u>12.5) return null;
+  const m=((x-L.off)%P+P)%P;
+  let f=null,b=0;
+  const para = u>=3&&u<12 ? 2*(u<4.5?1:Math.pow(Math.max(0,1-(u-4.5)/7.5),1.3)) : 0;
+  if(m<BAY){
+    if(u>=-3&&u<1) f=-6; else if(u>=1&&u<3) f=-3.5;
+    else if(u>=3) b=para;
+    else if(u>-8) b=1.2*(1-Math.pow((-3-u)/5,2));
+  }else{
+    const t=m-BAY, leg=t<LEG||t>TRAV-LEG;
+    if(u>=-13&&u<-7) f=-6;
+    else if(leg&&u>=-7&&u<1) f=-6;
+    else if(u>=-7&&u<3) b=2;
+    else if(u>=3) b=para;
+    else if(u<-13&&u>-19) b=1.2*(1-Math.pow((-13-u)/6,2));
+  }
+  return [f,b];
+}
+function poly(pts,w,floor,spoil){
+  let a=1e9,b=-1e9,c=1e9,d=-1e9; pts.forEach(([x,z])=>{a=Math.min(a,x);b=Math.max(b,x);c=Math.min(c,z);d=Math.max(d,z);});
+  const pad=w/2+(spoil?3:0)+0.6; return {pts,w,floor,spoil,bb:[a-pad,b+pad,c-pad,d+pad]};
+}
+function distSeg(px,pz,ax,az,bx,bz){ const dx=bx-ax,dz=bz-az; let t=((px-ax)*dx+(pz-az)*dz)/(dx*dx+dz*dz); t=Math.max(0,Math.min(1,t)); return Math.hypot(px-ax-t*dx,pz-az-t*dz); }
+function distPoly(p,x,z){ let d=1e9; for(let i=0;i<p.pts.length-1;i++) d=Math.min(d,distSeg(x,z,p.pts[i][0],p.pts[i][1],p.pts[i+1][0],p.pts[i+1][1])); return d; }
+const COMMA=poly([[-43,-12],[-39,-20],[-47,-28],[-39,-36],[-47,-44],[-39,-52],[-47,-60],[-43,-68]],4,-6,true);
+const COMMB=poly([[-5,-12],[-1,-20],[-9,-28],[-1,-36],[-9,-44],[-1,-52],[-9,-60],[-5,-69]],4,-6,true);
+const SAP=poly([[-24,0],[-24,10],[-21,17],[-27,25],[-24,33],[-24,40]],3,-5,false);
+const LAT=poly([[-6,-30],[6,-30]],3,-5.5,false);
+const MOR=poly([[-44,-30],[-35,-30]],3,-5,false);
+const GCOMM=poly([[-24,136],[-20,143],[-24,151]],4,-6,true);
+const POLYS=[COMMA,COMMB,SAP,LAT,MOR,GCOMM];
+const PITS=[{x:-24,z:42.5,r:3.5,floor:-4.5},{x:-33,z:-30,r:4,floor:-4}];
+const RECTS=[{x0:5,x1:9,z0:-32.5,z1:-27.5,floor:-5.5},{x0:-24.5,x1:-15.5,z0:-86.5,z1:-77.5,floor:-2.5},{x0:-21.5,x1:-18.5,z0:-78,z1:-73,floor:-4}];
+
+/* shell craters (seeded, so every visit looks the same) */
+const CR=[]; const R=rng(19);
+function craterOK(x,z,r,zone){
+  if(distPoly(SAP,x,z)<r+3 || Math.hypot(x+24,z-42.5)<r+5) return false;
+  if(Math.abs(x-35)<r+7 && Math.abs(z-113.5)<r+6) return false;
+  if(zone==="rear"){
+    if([COMMA,COMMB,LAT,MOR].some(p=>distPoly(p,x,z)<r+3)) return false;
+    if(Math.hypot(x+33,z+30)<r+6 || (x>3&&x<11&&z>-35&&z<-25)) return false;
+    if(Math.abs(z-zs(x))<r+8) return false;
+  }
+  return !CR.some(c=>Math.hypot(c.x-x,c.z-z)<(c.r+r)*0.8);
+}
+function addCraters(n,zone,xr,zr,rr,dr){
+  let tries=0;
+  while(n>0 && tries++<4000){
+    const x=xr[0]+R()*(xr[1]-xr[0]), z=zr[0]+R()*(zr[1]-zr[0]), r=rr[0]+R()*(rr[1]-rr[0]);
+    if(!craterOK(x,z,r,zone)) continue;
+    CR.push({x,z,r,d:dr[0]+R()*(dr[1]-dr[0]),zone}); n--;
+  }
+}
+addCraters(40,"nml",[-57,57],[35,93],[3,8.5],[1.8,4.2]);
+addCraters(7,"wire",[-57,57],[15,31],[1.8,3],[1,1.6]);
+addCraters(6,"wire",[-57,57],[97,109],[1.8,3],[1,1.6]);
+addCraters(7,"rear",[-57,57],[-62,-24],[2.5,4],[1.3,2.1]);
+const BIG=CR.filter(c=>c.zone==="nml").sort((a,b)=>b.r-a.r)[0];
+function craterH(x,z){
+  let s=0;
+  for(const c of CR){
+    const dx=x-c.x,dz=z-c.z, L=c.r*1.5; if(dx>L||dx<-L||dz>L||dz<-L) continue;
+    const dd=Math.hypot(dx,dz)/c.r;
+    if(dd<1) s-=c.d*(1-dd*dd); else if(dd<1.5) s+=0.28*c.d*Math.sin(Math.PI*(dd-1)/0.5);
+  }
+  return s;
+}
+const noise=(x,z)=>0.22*Math.sin(x*0.13+1.3)*Math.cos(z*0.11)+0.12*Math.sin(x*0.37+z*0.21)+0.08*Math.cos(x*0.71-z*0.53);
+function H(x,z){
+  let b=noise(x,z)+craterH(x,z), f=null;
+  const F=v=>{ f = f===null ? v : Math.min(f,v); };
+  for(const L of [BR,GE]){
+    const r=lineAt(L,x,z); if(!r) continue;
+    if(r[0]!==null) F(r[0]);
+    let bb=r[1]; if(L===BR && Math.abs(x+17)<1.6 && z>=3 && z<8) bb*=0.35;   // machine-gun embrasure
+    b+=bb;
+  }
+  const ds=Math.abs(z-zs(x)); if(ds<3) F(-6); else if(ds<7) b+=0.8*(1-Math.pow((ds-3)/4,2));
+  for(const p of POLYS){
+    if(x<p.bb[0]||x>p.bb[1]||z<p.bb[2]||z>p.bb[3]) continue;
+    const d=distPoly(p,x,z);
+    if(d<p.w/2) F(p.floor); else if(p.spoil && d<p.w/2+3) b+=0.5*(1-Math.pow((d-p.w/2)/3,2));
+  }
+  for(const c of PITS){ const d=Math.hypot(x-c.x,z-c.z); if(d<c.r) F(c.floor); else if(d<c.r+2.5) b+=0.6*(1-(d-c.r)/2.5); }
+  for(const r of RECTS) if(x>r.x0&&x<r.x1&&z>r.z0&&z<r.z1) F(r.floor);
+  return f===null ? b : Math.min(b,f);
+}
+
+/* Dugout, under the fire bay at the cut (x from 0 to 14) */
+const DG={x0:0,x1:14,z0:-26,z1:-14,y0:-19.5,y1:-13, sx0:10.5,sx1:14};
+const stairLo = z => -6-(-3-z)*(13.5/11);           // stair floor from z=-3 (trench) to z=-14 (room)
+function cavityAtCut(z){
+  if(z>=DG.z0&&z<=DG.z1) return [DG.y0,DG.y1];
+  if(z>DG.z1&&z<=-3){ const lo=stairLo(z); return [lo,lo+6.3]; }
+  return null;
+}
+
+/* Which part of the ground was clicked */
+function regionAt(p){
+  const x=p.x,z=p.z;
+  if(p.y<-6.5 && z<-2 && z>-27 && x>-0.5 && x<14.5) return "dugout";
+  if(distPoly(SAP,x,z)<2.5 || Math.hypot(x+24,z-42.5)<5) return "sap";
+  if(z>=113) return "german";
+  if(z>14){
+    for(const c of CR) if(Math.hypot(x-c.x,z-c.z)<c.r) return "shells";
+    return z>=96 ? "german" : "nml";
+  }
+  if(Math.abs(z-zs(x))<7) return "support";
+  if(z<-75) return (x>-27&&x<-13) ? "aid" : null;
+  if(distPoly(LAT,x,z)<2.5 || (x>4&&x<10&&z>-33.5&&z<-26.5)) return "latrine";
+  if(distPoly(MOR,x,z)<2.5 || Math.hypot(x+33,z+30)<5) return "mortar";
+  if(distPoly(COMMA,x,z)<4 || distPoly(COMMB,x,z)<4) return "commtrench";
+  if(z>-20 && z<12.5){
+    const m=((x-BR.off)%P+P)%P;
+    if(m<BAY) return (z>=3||z<-3) ? "parapet" : "firebay";
+    return z>=3 ? "parapet" : "traverse";
+  }
+  return null;
+}
+
+if(window.THREE && THREE.OrbitControls) build();
+
+function build(){
+let renderer;
+try{
+  renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+}catch(e){ fail("Your browser could not start 3D graphics (WebGL). Try a different browser or device."); return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x000000,0);
+stage.insertBefore(renderer.domElement, stage.firstChild);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38,1,1,2000);
+const HOME = {pos:new THREE.Vector3(150,120,-110), target:new THREE.Vector3(0,-8,24)};
+const HOME_DIR = new THREE.Vector3(0.62,0.6,-0.5).normalize();
+function fitHome(){
+  const w=stage.clientWidth||1000, h=stage.clientHeight||700, asp=w/h, t=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  const d=Math.max((asp<0.9?100:128)/(t*asp), 80/t);
+  HOME.pos.copy(HOME.target).addScaledVector(HOME_DIR,d);
+}
+camera.position.copy(HOME.pos);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.minDistance = 10; controls.maxDistance = 480;
+controls.maxPolarAngle = Math.PI*0.49;
+controls.update();
+
+const hemi = new THREE.HemisphereLight(0xfff6e2,0x3a2c1e,0.8); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff,0.7); sun.position.set(70,120,-60); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff,0.25); fill.position.set(-80,40,90); scene.add(fill);
+
+const COL = {wood:0x6b5235, woodDark:0x4d3a26, bag:0x9c8a66, metal:0x2f3330, brass:0x9a7b2c,
+  concrete:0x8f8b82, ink:0x221a12, gold:0xc9a227, hole:0x0d0a07, wire:0x2a2622};
+
+const pickables = [];
+const byKey = {};
+function tag(obj,key){ obj.userData.key=key; (byKey[key]=byKey[key]||[]).push(obj); if(obj.isMesh) pickables.push(obj); return obj; }
+function mat(color,opts){ return new THREE.MeshStandardMaterial(Object.assign({color,roughness:0.9,metalness:0.0},opts||{})); }
+const inkLine = new THREE.LineBasicMaterial({color:COL.ink,transparent:true,opacity:0.45});
+function edges(mesh,thresh){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,thresh||25),inkLine); e.raycast=()=>{}; mesh.add(e); return mesh; }
+
+const groups = { base:new THREE.Group(), cap:new THREE.Group(), section:new THREE.Group(), under:new THREE.Group(), night:new THREE.Group() };
+Object.values(groups).forEach(g=>scene.add(g));
+function home(x,z){ return inCap(x,z) ? groups.cap : groups.base; }
+function box(w,h,d,color,x,y,z,key,opts){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color,opts)); m.position.set(x,y,z); if(key) tag(m,key); return m;
+}
+function cyl(rt,rb,h,color,x,y,z,key,opts,seg){
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||12),mat(color,opts)); m.position.set(x,y,z); if(key) tag(m,key); return m;
+}
+
+/* ---- Ground surface ---- */
+const DX=0.5, NX=Math.round((X1-X0)/DX), NZ=Math.round((Z1-Z0)/DX);
+const HGT=new Float32Array((NX+1)*(NZ+1));
+const terrain=(function(){
+  const nv=(NX+1)*(NZ+1), pos=new Float32Array(nv*3);
+  for(let j=0;j<=NZ;j++) for(let i=0;i<=NX;i++){
+    const k=j*(NX+1)+i, x=X0+i*DX, z=Z0+j*DX, y=H(x,z);
+    HGT[k]=y; pos[k*3]=x; pos[k*3+1]=y; pos[k*3+2]=z;
+  }
+  const all=[], main=[], cap=[];
+  for(let j=0;j<NZ;j++) for(let i=0;i<NX;i++){
+    const a=j*(NX+1)+i, b=a+1, c=a+NX+1, d=c+1;
+    const tri=[a,c,b, b,c,d];
+    all.push(...tri);
+    (inCap(X0+(i+.5)*DX, Z0+(j+.5)*DX)?cap:main).push(...tri);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute("position",new THREE.BufferAttribute(pos,3)); g.setIndex(all); g.computeVertexNormals();
+  const nrm=g.getAttribute("normal"), col=new Float32Array(nv*3);
+  const MUD=new THREE.Color(0x6c5b46), MUD2=new THREE.Color(0x5b4b3a), GRASS=new THREE.Color(0x6f6b47), GRASS2=new THREE.Color(0x707a4c),
+        FLOOR=new THREE.Color(0x3f3224), WALL=new THREE.Color(0x574330), SAND=new THREE.Color(0x8a7556), c=new THREE.Color();
+  for(let k=0;k<nv;k++){
+    const x=pos[k*3], y=pos[k*3+1], z=pos[k*3+2], ny=nrm.getY(k);
+    if(z>14&&z<112) c.copy(MUD).lerp(MUD2,0.5+0.5*Math.sin(x*0.21+z*0.17)*Math.cos(z*0.09));
+    else if(z<-80||z>140) c.copy(GRASS2); else c.copy(GRASS).lerp(MUD,0.35+0.25*Math.sin(x*0.3)*Math.sin(z*0.23));
+    if(y>0.9) c.lerp(SAND,Math.min(1,(y-0.9)/1.2));
+    if(y<-2.5) c.lerp(FLOOR,Math.min(1,(-2.5-y)/2));
+    c.lerp(WALL,Math.min(1,Math.max(0,(0.85-ny)/0.5))*0.8);
+    col[k*3]=c.r; col[k*3+1]=c.g; col[k*3+2]=c.b;
+  }
+  g.setAttribute("color",new THREE.BufferAttribute(col,3));
+  const m=mat(0xffffff,{vertexColors:true,roughness:1});
+  function part(idx,parent){
+    const gg=new THREE.BufferGeometry();
+    gg.setAttribute("position",g.getAttribute("position")); gg.setAttribute("normal",nrm); gg.setAttribute("color",g.getAttribute("color"));
+    gg.setIndex(idx); gg.computeBoundingSphere();
+    const mesh=new THREE.Mesh(gg,m); mesh.userData.region=true; pickables.push(mesh); parent.add(mesh); return mesh;
+  }
+  part(main,groups.base); part(cap,groups.cap);
+  g.dispose();
+  return {pos};
+})();
+function hAt(x,z){   // bilinear sample of the built surface
+  const fi=Math.max(0,Math.min(NX-1e-4,(x-X0)/DX)), fj=Math.max(0,Math.min(NZ-1e-4,(z-Z0)/DX));
+  const i=Math.floor(fi), j=Math.floor(fj), u=fi-i, v=fj-j, k=j*(NX+1)+i;
+  return (HGT[k]*(1-u)+HGT[k+1]*u)*(1-v)+(HGT[k+NX+1]*(1-u)+HGT[k+NX+2]*u)*v;
+}
+
+/* ---- Cut faces: soil layers on the sides of the block ---- */
+const SOIL=[{top:99,col:new THREE.Color(0x4a3826)},{top:-1.5,col:new THREE.Color(0x8b6b46)},{top:-11,col:new THREE.Color(0x77766b)}];
+function soilCol(y){ let c=SOIL[0].col; SOIL.forEach(s=>{ if(y<s.top) c=s.col; }); return c; }
+function face(axis,fixed,a0,a1,cav,parent){
+  const pos=[],col=[],da=DX;
+  const P3=(a,y)=> axis==="x" ? [fixed,y,a] : [a,y,fixed];
+  const top=a=> axis==="x" ? hAt(fixed,a) : hAt(a,fixed);
+  function quad(a,b,ya0,yb0,ya1,yb1){   // corners: (a,ya0)(b,yb0) bottom, (a,ya1)(b,yb1) top
+    const c=soilCol((ya0+ya1+yb0+yb1)/4);
+    const p=[P3(a,ya0),P3(b,yb0),P3(b,yb1), P3(a,ya0),P3(b,yb1),P3(a,ya1)];
+    p.forEach(v=>{pos.push(...v); col.push(c.r,c.g,c.b);});
+  }
+  for(let a=a0;a<a1-1e-6;a+=da){
+    const b=Math.min(a+da,a1), t0=top(a), t1=top(b), cv=cav?cav((a+b)/2):null;
+    const tmin=Math.min(t0,t1);
+    let ints=[[BOT,null]];
+    if(cv){ ints=[[BOT,cv[0]]]; if(cv[1]<tmin-0.05) ints.push([cv[1],null]); }
+    ints.forEach(([lo,hi])=>{
+      const cuts=[-11,-1.5].filter(y=>y>lo && y<(hi===null?tmin:hi));
+      let y=lo;
+      cuts.forEach(cy=>{ quad(a,b,y,y,cy,cy); y=cy; });
+      if(hi===null) quad(a,b,y,y,t0,t1); else quad(a,b,y,y,hi,hi);
+    });
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute("color",new THREE.Float32BufferAttribute(col,3));
+  g.computeVertexNormals();
+  const m=new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,side:THREE.DoubleSide,roughness:1}));
+  m.userData.region=true; pickables.push(m); parent.add(m);
+  // outline along the top of the face
+  const lp=[]; for(let a=a0;a<a1-1e-6;a+=da){ const b=Math.min(a+da,a1); lp.push(...P3(a,top(a)+0.03),...P3(b,top(b)+0.03)); }
+  const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.Float32BufferAttribute(lp,3));
+  const l=new THREE.LineSegments(lg,inkLine); l.raycast=()=>{}; parent.add(l);
+  return m;
+}
+face("x",X0,Z0,Z1,null,groups.base);
+face("z",Z0,X0,X1,null,groups.base);
+face("z",Z1,X0,X1,null,groups.base);
+face("x",X1,Z0,CAP.z0,null,groups.base);
+face("x",X1,CAP.z1,Z1,null,groups.base);
+face("x",X1,CAP.z0,CAP.z1,null,groups.cap);
+face("x",X_CUT,CAP.z0,CAP.z1,cavityAtCut,groups.section);
+face("z",CAP.z0,X_CUT,X1,null,groups.section);
+face("z",CAP.z1,X_CUT,X1,null,groups.section);
+
+/* ---- Instanced parts (sandbags, duckboards, posts, pickets) ---- */
+const dummy=new THREE.Object3D();
+function instances(geo,material,key,list){
+  const buckets=new Map();
+  list.forEach(t=>{ const g=t.group||home(t.x,t.z); if(!buckets.has(g)) buckets.set(g,[]); buckets.get(g).push(t); });
+  buckets.forEach((arr,g)=>{
+    const im=new THREE.InstancedMesh(geo,material,arr.length);
+    arr.forEach((t,i)=>{ dummy.position.set(t.x,t.y,t.z); dummy.rotation.set(t.rx||0,t.ry||0,t.rz||0); dummy.scale.set(t.sx||1,t.sy||1,t.sz||1); dummy.updateMatrix(); im.setMatrixAt(i,dummy.matrix); });
+    im.instanceMatrix.needsUpdate=true; im.computeBoundingSphere&&im.computeBoundingSphere();
+    tag(im,key); g.add(im);
+  });
+}
+const bays=(L)=>{ const out=[]; for(let s=L.off-5*P;s<X1;s+=P){ const a=Math.max(s,X0), b=Math.min(s+BAY,X1); if(b>a) out.push([a,b,s]); } return out; };
+const travs=(L)=>{ const out=[]; for(let s=L.off-5*P+BAY;s<X1;s+=P){ const a=Math.max(s,X0), b=Math.min(s+TRAV,X1); if(b>a) out.push([a,b,s]); } return out; };
+
+/* sandbags on the inside face of each parapet */
+function sandbagList(L,skip){
+  const out=[];
+  bays(L).forEach(([a,b])=>{
+    for(let r=0;r<4;r++){
+      const y=-0.55+r*0.72, z=L.z0+L.dir*2.55;
+      for(let x=a+0.5+(r%2)*1.0; x<b-0.6; x+=2){ if(skip&&skip(x,r)) continue; out.push({x,y,z,ry:(R()-0.5)*0.08}); }
+    }
+  });
+  return out;
+}
+const bagGeo=new THREE.BoxGeometry(1.9,0.72,0.95);
+instances(bagGeo,mat(COL.bag),"parapet",sandbagList(BR,(x,r)=>(Math.abs(x+24)<2.2) || (Math.abs(x+17)<1.8&&r>=1) || (x>2.6&&x<5.4&&r>=1&&r<=2)));
+instances(bagGeo,mat(0x8f8063),"german",sandbagList(GE,(x)=>Math.abs(x-33)<0));
+// listening post ring
+(function(){ const L=[]; for(let r=0;r<2;r++) for(let a=0;a<Math.PI*2;a+=0.42){ const s=Math.sin(a); if(s<-0.55) continue; const x=-24+3.9*Math.cos(a), z=42.5+3.9*s; L.push({x,y:hAt(x,z)+0.3+r*0.7,z,ry:-a+Math.PI/2}); } instances(bagGeo,mat(COL.bag),"sap",L); })();
+
+/* duckboards */
+(function(){
+  const L=[], Y=-5.62;
+  bays(BR).forEach(([a,b])=>{ for(let x=a+0.4;x<b-0.2;x+=0.75) L.push({x,y:Y,z:-1}); });
+  travs(BR).forEach(([a,b,s])=>{
+    for(let x=Math.max(s,X0)+0.4;x<Math.min(s+TRAV,X1)-0.2;x+=0.75) L.push({x,y:Y,z:-10});
+    [s+LEG/2, s+TRAV-LEG/2].forEach(cx=>{ if(cx<X0||cx>X1) return; for(let z=-12.6;z<0.8;z+=0.75) L.push({x:cx,y:Y,z,ry:Math.PI/2}); });
+  });
+  [COMMA,COMMB].forEach(p=>{ for(let i=0;i<p.pts.length-1;i++){ const [ax,az]=p.pts[i],[bx,bz]=p.pts[i+1], len=Math.hypot(bx-ax,bz-az), dx=(bx-ax)/len, dz=(bz-az)/len;
+      for(let t=0.4;t<len;t+=0.75) L.push({x:ax+dx*t,y:Y,z:az+dz*t,ry:Math.atan2(dz,-dx)}); } });
+  for(let x=X0+0.4;x<X1;x+=0.75){ const d=Math.cos(x/9)/3; L.push({x,y:Y,z:zs(x),ry:Math.atan2(d,-1)}); }
+  instances(new THREE.BoxGeometry(0.42,0.14,3.1),mat(0x7a6040),"duckboards",L);
+  // rails under the slats along the fire bays
+  bays(BR).forEach(([a,b])=>{ [-2.1,0.1].forEach(z=>{ const m=box(b-a,0.25,0.3,0x5e4a32,(a+b)/2,-5.82,z,"duckboards"); home((a+b)/2,z).add(m); }); });
+})();
+
+/* revetment: posts on the back wall, planks on the front of the fire step */
+(function(){
+  const L=[];
+  bays(BR).forEach(([a,b])=>{ for(let x=a+1.5;x<b-0.5;x+=3) L.push({x,y:-3.2,z:-2.85}); });
+  instances(new THREE.BoxGeometry(0.32,5.6,0.32),mat(COL.wood),"firebay",L);
+  const pl=mat(0x6e5537);
+  bays(BR).forEach(([a,b])=>{
+    const segs = (a<X_CUT&&b>X_CUT) ? [[a,X_CUT],[X_CUT,b]] : [[a,b]];
+    segs.forEach(([p,q])=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(q-p,2.5,0.16),pl); m.position.set((p+q)/2,-4.75,0.93); tag(m,"firebay"); home((p+q)/2+0.01*(q>X_CUT?1:-1),0.9).add(m); });
+  });
+})();
+
+/* barbed wire */
+function wireBelt(rows,skip,key){
+  const pk=[], lines=[];
+  rows.forEach((z,ri)=>{
+    const row=[];
+    for(let x=X0+2+(ri%2)*2.5;x<X1-1;x+=5){ if(skip(x)) { row.push(null); continue; } const y=hAt(x,z); pk.push({x,y:y+1.5,z,rx:(R()-0.5)*0.15,rz:(R()-0.5)*0.15}); row.push([x,y,z]); }
+    for(let i=0;i<row.length-1;i++){ const p=row[i],q=row[i+1]; if(!p||!q) continue;
+      [0.7,1.6,2.6].forEach(hh=>lines.push(p[0],p[1]+hh,p[2], q[0],q[1]+hh,q[2]));
+      lines.push(p[0],p[1]+0.4,p[2], q[0],q[1]+2.8,q[2],  p[0],p[1]+2.8,p[2], q[0],q[1]+0.4,q[2]);
+    }
+    row.__pts=row;
+    rows[ri]={z,row};
+  });
+  for(let r=0;r<rows.length-1;r++){ const A=rows[r].row,B=rows[r+1].row; for(let i=0;i<Math.min(A.length,B.length);i++){ const p=A[i],q=B[i]; if(!p||!q) continue; lines.push(p[0],p[1]+2.7,p[2], q[0],q[1]+0.3,q[2]); } }
+  // loose coils
+  [rows[0].z+2, rows[rows.length-1].z-2].forEach(zc=>{
+    let prev=null;
+    for(let x=X0+0.5;x<X1-0.5;x+=0.3){ if(skip(x)){prev=null;continue;} const a=x*2.1, y=hAt(x,zc)+1.1+1.0*Math.sin(a), p=[x,y,zc+1.0*Math.cos(a)]; if(prev) lines.push(...prev,...p); prev=p; }
+  });
+  instances(new THREE.CylinderGeometry(0.09,0.09,3.2,6),mat(0x3a3530,{metalness:0.4}),key,pk);
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(lines,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:COL.wire,transparent:true,opacity:0.75})); l.raycast=()=>{}; groups.base.add(l);
+  const z0=rows[0].z, z1=rows[rows.length-1].z;
+  const pm=new THREE.Mesh(new THREE.BoxGeometry(X1-X0,3.6,Math.abs(z1-z0)+3),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+  pm.position.set(0,1.8,(z0+z1)/2); tag(pm,key); groups.base.add(pm);
+}
+wireBelt([17,21,25,29],x=>Math.abs(x+24)<4.5,"wire");
+wireBelt([109,105,101,97],x=>false,"wire");
+
+/* water in the deeper shell holes */
+CR.filter(c=>c.zone==="nml"&&c.d>2.4).forEach(c=>{
+  const rr=c.r*Math.sqrt(0.6/c.d)*0.95;
+  const m=new THREE.Mesh(new THREE.CircleGeometry(rr,24),mat(0x3d4234,{roughness:0.25,metalness:0.15}));
+  m.rotation.x=-Math.PI/2; m.position.set(c.x,hAt(c.x,c.z)+0.6,c.z); tag(m,"shells"); groups.base.add(m);
+});
+
+/* ---- Fire-trench props ---- */
+// scaling ladders
+[-56,-52.5].forEach(x=>{
+  const g=new THREE.Group(), L=Math.hypot(8.4,3.1), th=Math.atan2(3.1,8.4);
+  [-0.85,0.85].forEach(dx=>g.add(tag(new THREE.Mesh(new THREE.BoxGeometry(0.2,L,0.2),mat(COL.wood)),"ladder")).children.slice(-1)[0].position.set(dx,0,0));
+  for(let y=-L/2+0.8;y<L/2-0.3;y+=1.05){ const r=new THREE.Mesh(new THREE.BoxGeometry(1.7,0.13,0.13),mat(COL.wood)); r.position.set(0,y,0); tag(r,"ladder"); g.add(r); }
+  g.position.set(x,-6+4.2,0.25+1.55); g.rotation.x=th; groups.base.add(g);
+});
+// periscope
+(function(){
+  const g=new THREE.Group(), x=-31, z=1.7;
+  g.add(box(0.28,6.6,0.24,0x4b4a3f,x,-0.2,z,"periscope"));
+  g.add(box(0.4,0.65,0.55,0x3d3c33,x,3.0,z+0.1,"periscope"));
+  g.add(box(0.36,0.5,0.4,0x3d3c33,x,0.6,z-0.2,"periscope"));
+  g.add(box(0.12,3.0,0.12,COL.wood,x+0.25,-2,z+0.25,"periscope"));
+  groups.base.add(g);
+})();
+// sniper's loophole plate
+(function(){
+  const x=4;
+  groups.base.add(edges(box(2.2,1.55,0.22,0x55524b,x,0.75,2.0,"sniper",{metalness:0.5,roughness:0.6})));
+  groups.base.add(box(0.36,0.26,0.26,COL.hole,x+0.2,0.85,1.95,"sniper"));
+  groups.base.add(box(0.5,0.4,0.06,0x3f3d38,x+0.75,0.85,1.86,"sniper",{metalness:0.5}));
+})();
+// Vickers machine gun on a sandbag platform
+(function(){
+  const x=-17, g=new THREE.Group();
+  g.add(box(3.2,3.5,2.2,COL.bag,x,-1.75,1.85,"mg"));
+  for(let k=0;k<3;k++){ const a=k*2.1+0.5; const leg=cyl(0.06,0.06,1.4,COL.metal,x+0.45*Math.cos(a),0.55,1.6+0.45*Math.sin(a),"mg"); leg.rotation.set(0.35*Math.sin(a),0,-0.35*Math.cos(a)); g.add(leg); }
+  const jacket=cyl(0.24,0.24,2.3,0x3c403a,x,1.3,3.0,"mg",{metalness:0.5,roughness:0.5},16); jacket.rotation.x=Math.PI/2; g.add(jacket);
+  const muzzle=cyl(0.09,0.12,0.6,COL.metal,x,1.3,4.4,"mg",{metalness:0.6}); muzzle.rotation.x=Math.PI/2; g.add(muzzle);
+  g.add(box(0.45,0.5,1.15,COL.metal,x,1.3,1.4,"mg",{metalness:0.5,roughness:0.5}));
+  g.add(box(0.5,0.32,0.75,0x4a5038,x+0.6,0.2,1.1,"mg"));
+  groups.base.add(g);
+})();
+// gas gong
+(function(){
+  const x=-35, g=new THREE.Group();
+  g.add(box(0.3,5.6,0.3,COL.wood,x,-3.2,-2.55,"gas"));
+  g.add(box(0.12,0.12,1.1,COL.wood,x,-0.6,-2.0,"gas"));
+  g.add(cyl(0.34,0.36,1.3,COL.brass,x,-1.6,-1.55,"gas",{metalness:0.65,roughness:0.35},16));
+  g.add(box(0.06,0.5,0.06,0x222222,x,-0.85,-1.55,"gas"));
+  groups.base.add(g);
+})();
+// dugout doorway in the back wall of the trench
+(function(){
+  const g=new THREE.Group(), z=-2.75;
+  g.add(box(0.35,5.6,0.35,COL.woodDark,DG.sx0+0.2,-3.2,z,"dugout"));
+  g.add(box(0.35,5.6,0.35,COL.woodDark,DG.sx1-0.25,-3.2,z,"dugout"));
+  g.add(box(DG.sx1-DG.sx0,0.45,0.4,COL.woodDark,(DG.sx0+DG.sx1)/2,-0.3,z,"dugout"));
+  const d=new THREE.Mesh(new THREE.PlaneGeometry(DG.sx1-DG.sx0-0.6,5.3),mat(COL.hole)); d.position.set((DG.sx0+DG.sx1)/2,-3.3,-2.95); tag(d,"dugout"); g.add(d);
+  groups.base.add(g);
+})();
+// trench sign
+(function(){
+  const c=document.createElement("canvas"); c.width=512; c.height=128; const x=c.getContext("2d");
+  x.fillStyle="#d8cdb0"; x.fillRect(0,0,512,128); x.strokeStyle="#3a2c1c"; x.lineWidth=8; x.strokeRect(4,4,504,120);
+  x.fillStyle="#2a2016"; x.font="bold 54px Georgia, serif"; x.textAlign="center"; x.textBaseline="middle"; x.fillText("PICCADILLY CIRCUS",256,68);
+  const t=new THREE.CanvasTexture(c);
+  const g=new THREE.Group(), px=-40.6, pz=-15.2;
+  g.add(box(0.3,7,0.3,COL.woodDark,px,-2.5,pz,"sign"));
+  [0,Math.PI].forEach(ry=>{ const b=new THREE.Mesh(new THREE.PlaneGeometry(4.6,1.15),mat(0xffffff,{map:t})); b.position.set(px-1.2,0.2,pz+(ry?-0.06:0.06)); b.rotation.y=ry; tag(b,"sign"); g.add(b); });
+  groups.base.add(g);
+})();
+// latrine
+(function(){
+  const g=new THREE.Group();
+  g.add(box(4.2,0.28,0.7,COL.wood,7,-3.6,-28.9,"latrine"));
+  [5.2,8.8].forEach(x=>g.add(box(0.28,1.9,0.28,COL.wood,x,-4.55,-28.9,"latrine")));
+  [[6,-31],[8,-31]].forEach(([x,z])=>g.add(cyl(0.5,0.42,1.0,0x5b5a4f,x,-5.0,z,"latrine",{metalness:0.3})));
+  g.add(box(0.7,0.9,0.5,0xcfc8b4,5.8,-5.05,-27.9,"latrine"));
+  groups.base.add(g);
+})();
+// Stokes mortar
+(function(){
+  const g=new THREE.Group(), x=-33, z=-30;
+  g.add(box(1.6,0.22,1.6,COL.metal,x,-3.85,z,"mortar",{metalness:0.4}));
+  const tube=cyl(0.22,0.24,3.6,0x3e4239,x,-2.15,z+0.9,"mortar",{metalness:0.5,roughness:0.5},14); tube.rotation.x=0.5; g.add(tube);
+  [-0.55,0.55].forEach(dx=>{ const l=cyl(0.05,0.05,2.0,COL.metal,x+dx,-3.05,z+1.6,"mortar"); l.rotation.x=-0.45; g.add(l); });
+  [[1.9,-0.8],[2.0,0.6],[-1.9,0.4]].forEach(([dx,dz])=>g.add(edges(box(1.3,0.6,0.8,0x5a4a32,x+dx,-3.7,z+dz,"mortar"))));
+  groups.base.add(g);
+})();
+// rations: brazier, dixie, rum jar
+(function(){
+  const g=new THREE.Group(), x=10, z=zs(10);
+  g.add(cyl(0.55,0.48,1.1,0x262320,x,-4.95,z,"rations",{metalness:0.4}));
+  const coals=new THREE.Mesh(new THREE.CircleGeometry(0.5,16),new THREE.MeshStandardMaterial({color:0x5a1d08,emissive:0xff5a14,emissiveIntensity:0.9}));
+  coals.rotation.x=-Math.PI/2; coals.position.set(x,-4.38,z); tag(coals,"rations"); g.add(coals);
+  g.add(edges(box(1.3,0.7,0.65,0x4d5040,x+1.6,-5.2,z-0.4,"rations",{metalness:0.3})));
+  g.add(cyl(0.36,0.42,0.95,0xb79b6c,x-1.5,-5.07,z+0.6,"rations",{roughness:0.6},16));
+  g.add(cyl(0.22,0.34,0.4,0x5b3b22,x-1.5,-4.4,z+0.6,"rations",{roughness:0.6},16));
+  groups.base.add(g);
+})();
+// regimental aid post: corrugated-iron shelter, flag, stretcher
+(function(){
+  const g=new THREE.Group();
+  const sh=new THREE.Mesh(new THREE.CylinderGeometry(4.4,4.4,9,20,1,true,0,Math.PI),mat(0x6f6a5f,{side:THREE.DoubleSide,metalness:0.35,roughness:0.7}));
+  sh.rotation.z=Math.PI/2; tag(sh,"aid"); g.add(sh);
+  const ribs=[]; for(let x=-4.4;x<=4.41;x+=0.55){ for(let a=0;a<Math.PI;a+=Math.PI/20){ const b=a+Math.PI/20; ribs.push(x,4.42*Math.sin(a),4.42*Math.cos(a), x,4.42*Math.sin(b),4.42*Math.cos(b)); } }
+  const rg=new THREE.BufferGeometry(); rg.setAttribute("position",new THREE.Float32BufferAttribute(ribs,3)); const rl=new THREE.LineSegments(rg,inkLine); rl.raycast=()=>{}; g.add(rl);
+  const back=new THREE.Mesh(new THREE.CircleGeometry(4.4,20,0,Math.PI),mat(COL.bag,{side:THREE.DoubleSide})); back.rotation.y=Math.PI/2; back.position.x=4.5; tag(back,"aid"); g.add(back);
+  const door=new THREE.Mesh(new THREE.CircleGeometry(4.3,20,0,Math.PI),mat(COL.hole,{side:THREE.DoubleSide})); door.rotation.y=Math.PI/2; door.position.x=-4.3; tag(door,"aid"); g.add(door);
+  g.position.set(-20,-2.5,-82); g.rotation.y=Math.PI/2; groups.base.add(g);
+  const c=document.createElement("canvas"); c.width=128; c.height=96; const x=c.getContext("2d");
+  x.fillStyle="#f4f1e8"; x.fillRect(0,0,128,96); x.fillStyle="#b3261e"; x.fillRect(52,14,24,68); x.fillRect(30,36,68,24);
+  const fx=-14.6, fz=-78.5, fy=hAt(fx,fz);
+  groups.base.add(cyl(0.1,0.1,8,COL.woodDark,fx,fy+4,fz,"aid"));
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.8),mat(0xffffff,{map:new THREE.CanvasTexture(c),side:THREE.DoubleSide})); fl.position.set(fx-1.25,fy+7,fz); tag(fl,"aid"); groups.base.add(fl);
+  const sx=-12.5, sz=-83, sy=hAt(sx,sz)+0.35;
+  [-0.85,0.85].forEach(dz=>{ const p=cyl(0.08,0.08,7.4,COL.wood,sx,sy,sz+dz,"aid"); p.rotation.z=Math.PI/2; groups.base.add(p); });
+  groups.base.add(box(5.6,0.08,1.6,0x8c8468,sx,sy+0.02,sz,"aid"));
+})();
+// German dugout entrances and concrete pillbox
+[-5,33].forEach(x=>{
+  const z=130.75, g=new THREE.Group();
+  g.add(box(0.35,5.6,0.35,COL.woodDark,x-1.6,-3.2,z,"german"));
+  g.add(box(0.35,5.6,0.35,COL.woodDark,x+1.6,-3.2,z,"german"));
+  g.add(box(3.6,0.45,0.4,COL.woodDark,x,-0.3,z,"german"));
+  const d=new THREE.Mesh(new THREE.PlaneGeometry(2.9,5.3),mat(COL.hole)); d.position.set(x,-3.3,z+0.2); d.rotation.y=Math.PI; tag(d,"german"); g.add(d);
+  groups.base.add(g);
+});
+(function(){
+  const x=35, z=113.5, y0=Math.min(hAt(x-5,z-3.5),hAt(x+5,z-3.5),hAt(x,z))-1.5;
+  const g=new THREE.Group();
+  g.add(edges(box(10,6,7,COL.concrete,x,y0+3,z,"pillbox",{roughness:0.95})));
+  g.add(edges(box(11,0.8,8,0x86837a,x,y0+6.3,z,"pillbox",{roughness:0.95})));
+  g.add(box(4.2,0.55,0.4,COL.hole,x,y0+4.6,z-3.4,"pillbox"));
+  groups.base.add(g);
+})();
+
+/* ---- Dugout interior (shown when the ground is cut away) ---- */
+(function(){
+  const U=groups.under, k="dugout", wx=(DG.x0+DG.x1)/2, wz=(DG.z0+DG.z1)/2, hgt=DG.y1-DG.y0;
+  U.add(box(DG.x1-DG.x0,0.3,DG.z1-DG.z0,0x5b4630,wx,DG.y0-0.15,wz,k));
+  U.add(box(DG.x1-DG.x0,0.4,DG.z1-DG.z0,0x3e2f20,wx,DG.y1+0.2,wz,k));
+  for(let x=DG.x0+1;x<DG.x1;x+=2.4) U.add(box(0.5,0.5,DG.z1-DG.z0,COL.woodDark,x,DG.y1-0.25,wz,k));
+  U.add(box(0.3,hgt,DG.z1-DG.z0,0x5e4a34,DG.x0-0.15,(DG.y0+DG.y1)/2,wz,k));
+  U.add(box(DG.x1-DG.x0,hgt,0.3,0x5e4a34,wx,(DG.y0+DG.y1)/2,DG.z0-0.15,k));
+  U.add(box(DG.sx0-DG.x0,hgt,0.3,0x5e4a34,(DG.x0+DG.sx0)/2,(DG.y0+DG.y1)/2,DG.z1+0.15,k));
+  for(let x=DG.x0+1;x<DG.x1;x+=2.4){ U.add(box(0.4,hgt,0.4,COL.woodDark,x,(DG.y0+DG.y1)/2,DG.z0+0.2,k)); if(x<DG.sx0) U.add(box(0.4,hgt,0.4,COL.woodDark,x,(DG.y0+DG.y1)/2,DG.z1-0.2,k)); }
+  // stairs
+  const N=18, run=11/N, rise=13.5/N;
+  for(let i=0;i<N;i++){ const z=-3-(i+0.5)*run, y=-6-(i+1)*rise; U.add(box(DG.sx1-DG.sx0,0.2,run+0.05,0x6e5537,(DG.sx0+DG.sx1)/2,y+0.1,z,k)); }
+  function quad(p){ const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute([...p[0],...p[1],...p[2],...p[0],...p[2],...p[3]],3)); g.computeVertexNormals(); const m=new THREE.Mesh(g,mat(0x5a4632,{side:THREE.DoubleSide})); tag(m,k); U.add(m); }
+  quad([[DG.sx0,-6,-3],[DG.sx0,DG.y0,DG.z1],[DG.sx0,DG.y0+6.3,DG.z1],[DG.sx0,0.3,-3]]);
+  quad([[DG.sx0,0.3,-3],[DG.sx1,0.3,-3],[DG.sx1,DG.y0+6.3,DG.z1],[DG.sx0,DG.y0+6.3,DG.z1]]);
+  for(let z=-4.2;z>DG.z1;z-=2.2){ const lo=stairLo(z); U.add(box(0.35,6.3,0.35,COL.woodDark,DG.sx0+0.2,lo+3.15,z,k)); U.add(box(DG.sx1-DG.sx0,0.35,0.35,COL.woodDark,(DG.sx0+DG.sx1)/2,lo+6.1,z,k)); }
+  // gas curtain at the foot of the stairs
+  U.add(box(DG.sx1-DG.sx0-0.2,2.6,0.08,0x5a5140,(DG.sx0+DG.sx1)/2,DG.y1-1.4,DG.z1-0.25,k));
+  // bunks
+  function bunk(cx,cz,alongX){
+    const L=6, W=2.6; const [lx,lz]=alongX?[L,W]:[W,L];
+    [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>U.add(box(0.25,5.2,0.25,COL.wood,cx+a*(lx/2-0.15),DG.y0+2.6,cz+b*(lz/2-0.15),k)));
+    [DG.y0+1.3,DG.y0+3.9].forEach(y=>{ U.add(box(lx,0.22,lz,0x7d7563,cx,y,cz,k)); U.add(box(lx*0.85,0.25,lz*0.7,0x6b5f4a,cx,y+0.2,cz,k)); });
+  }
+  bunk(4,DG.z0+1.6,true); bunk(DG.x0+1.6,-18.5,false);
+  // table, stools, candle, rum jar
+  U.add(box(3,0.15,2,COL.wood,8.6,DG.y0+2.6,-20.5,k));
+  [[-1.3,-0.8],[1.3,-0.8],[-1.3,0.8],[1.3,0.8]].forEach(([a,b])=>U.add(box(0.15,2.6,0.15,COL.wood,8.6+a,DG.y0+1.3,-20.5+b,k)));
+  [[8.6,-22.4],[10.9,-20.5]].forEach(([x,z])=>U.add(box(1.1,1.5,1.1,0x5e4a34,x,DG.y0+0.75,z,k)));
+  U.add(cyl(0.08,0.08,0.45,0xf1ead4,8.2,DG.y0+2.9,-20.3,k));
+  const flame=new THREE.Mesh(new THREE.SphereGeometry(0.09,8,8),new THREE.MeshBasicMaterial({color:0xffc04a})); flame.position.set(8.2,DG.y0+3.2,-20.3); U.add(flame);
+  const candle=new THREE.PointLight(0xffb15a,0.9,22,1.5); candle.position.set(8.2,DG.y0+3.6,-20.3); U.add(candle);
+  U.add(cyl(0.3,0.35,0.85,0xb79b6c,9.6,DG.y0+3.1,-20.9,k,{roughness:0.6},14));
+})();
+
+/* ---- Night: flare over no man's land ---- */
+const flare=new THREE.Mesh(new THREE.SphereGeometry(0.7,12,12),new THREE.MeshBasicMaterial({color:0xfff4cc}));
+const flareLight=new THREE.PointLight(0xfff0c8,0,230,1);
+flare.add(flareLight); groups.night.add(flare);
+const flareRng=rng(7); let flareT0=0, flareX=0, flareDX=0;
+
+/* ---- Soft shadow under the block ---- */
+(function(){
+  const c=document.createElement("canvas"); c.width=c.height=256; const x=c.getContext("2d");
+  const gr=x.createRadialGradient(128,128,10,128,128,128); gr.addColorStop(0,"rgba(0,0,0,0.35)"); gr.addColorStop(1,"rgba(0,0,0,0)");
+  x.fillStyle=gr; x.fillRect(0,0,256,256);
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(190,330),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+  p.rotation.x=-Math.PI/2; p.position.set(0,BOT-1,30); p.raycast=()=>{}; scene.add(p);
+})();
+
+/* ---------------- Markers ---------------- */
+const ANCHORS = {
+  firebay:[9,-3.2,2], traverse:[-5,2.4,-2], parapet:[-28,1.9,6.5], duckboards:[-43,-5.3,-10],
+  periscope:[-31,3.4,1.8], sniper:[4,1.7,2.0], mg:[-17,1.9,2.6], gas:[-35,-0.9,-1.6], ladder:[-54.2,2.6,3.2],
+  dugout:[7,-13,-16], commtrench:[-39,-5,-36], support:[35,-5,zs(35)], latrine:[7,-3.2,-29.5],
+  aid:[-20,3,-82], sign:[-41.8,0.9,-15.2], mortar:[-33,-0.6,-28.5], rations:[10,-4.2,zs(10)],
+  sap:[-24,-4,26], wire:[8,3.7,23], nml:[12,1,64], shells:[BIG.x,hAt(BIG.x,BIG.z)+1,BIG.z],
+  german:[-5,-4.5,128], pillbox:[35,6,113.5]
+};
+const DOOR=[ (DG.sx0+DG.sx1)/2, -0.5, -3 ];
+const pinsEl=document.getElementById("pins"); const pins={};
+Object.entries(ANCHORS).forEach(([k,p])=>{
+  const b=document.createElement("button"); b.type="button"; b.className="pin";
+  b.innerHTML='<span class="dot"></span><span class="lbl"></span>'; b.querySelector(".lbl").textContent=INFO[k].title;
+  b.setAttribute("aria-label",INFO[k].title); b.addEventListener("click",e=>{e.stopPropagation(); select(k,true);});
+  pinsEl.appendChild(b); pins[k]={el:b,v:new THREE.Vector3(...p)};
+});
+const VIEWS={dugout:[60,15,8]};
+function anchorOf(k){ if(k==="dugout" && !tCut.checked) return new THREE.Vector3(...DOOR); return pins[k]?pins[k].v:null; }
+
+/* ---------------- Part list ---------------- */
+document.querySelectorAll(".parts").forEach(ul=>{
+  const g=ul.dataset.group;
+  ORDER.filter(k=>INFO[k].group===g).forEach(k=>{
+    const li=document.createElement("li"); const b=document.createElement("button"); b.type="button"; b.dataset.key=k; b.textContent=INFO[k].title;
+    b.addEventListener("click",()=>select(k,true)); li.appendChild(b); ul.appendChild(li);
+  });
+});
+document.querySelector(".about-btn").addEventListener("click",()=>select("about",false));
+
+/* ---------------- Info card ---------------- */
+const card=document.getElementById("card"), cardBody=document.getElementById("cardBody");
+document.getElementById("closeCard").addEventListener("click",()=>select(null));
+function el(tag,text,cls){ const e=document.createElement(tag); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+function renderCard(k){
+  cardBody.innerHTML=""; const d=INFO[k];
+  cardBody.appendChild(el("h2",d.title));
+  d.body.forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.quote){ const q=el("blockquote"); q.appendChild(el("span",d.quote.text)); q.appendChild(el("cite",d.quote.cite)); cardBody.appendChild(q); }
+  if(d.hipp){ cardBody.appendChild(el("p",d.hippLabel||"Reading the source with HIPP:")); const dl=el("dl"); d.hipp.forEach(([a,b])=>{dl.appendChild(el("dt",a)); dl.appendChild(el("dd",b));}); cardBody.appendChild(dl); }
+  (d.after||[]).forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.fact) cardBody.appendChild(el("p",d.fact,"fact"));
+  card.scrollTop=0;
+}
+
+/* ---------------- Selection + highlight ---------------- */
+let selected=null, hovered=null;
+const GOLD=new THREE.Color(COL.gold), BLACK=new THREE.Color(0x000000);
+function setGlow(k,amt){
+  (byKey[k]||[]).forEach(o=>{ if(o.material && o.material.emissive && !o.userData.keepEmissive){ o.material.emissive.copy(amt?GOLD:BLACK); o.material.emissiveIntensity=amt||0; }});
+}
+(byKey.rations||[]).forEach(o=>{ if(o.material.emissiveIntensity>0.5) o.userData.keepEmissive=true; });
+const prefersReduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tween=null;
+function select(k,fly){
+  if(selected) setGlow(selected,0);
+  selected=k;
+  document.querySelectorAll(".parts button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+  Object.entries(pins).forEach(([pk,p])=>p.el.classList.toggle("on",pk===k));
+  if(!k){ card.hidden=true; return; }
+  if(k==="night" && !tNight.checked){ tNight.checked=true; applyToggles(); }
+  if(k!=="about") setGlow(k,k==="dugout"?0.15:0.45);
+  renderCard(k); card.hidden=false;
+  if(fly) userMoved=true;
+  if(window.innerWidth<=860){ const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top<-r.height*0.4) stage.scrollIntoView({behavior:prefersReduced?"auto":"smooth",block:"start"}); }
+  const a=anchorOf(k);
+  if(fly && a){
+    let to=a.clone();
+    const from=controls.target.clone(); let offset=camera.position.clone().sub(from);
+    { const len=Math.max(40,Math.min(offset.length(),85)); const hz=new THREE.Vector3(offset.x,0,offset.z); if(hz.lengthSq()<1e-6) hz.set(0.7,0,-0.7);
+      const el=Math.max(0.62,Math.min(1.2,Math.asin(Math.max(-1,Math.min(1,offset.y/offset.length())))));
+      hz.setLength(Math.cos(el)*len); offset.set(hz.x,Math.sin(el)*len,hz.z); }
+    if(VIEWS[k] && !(k==="dugout"&&!tCut.checked)) offset=new THREE.Vector3(...VIEWS[k]);
+    if(window.innerWidth<=860){ const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion); to=to.clone().addScaledVector(up,-0.5*offset.length()*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))); }
+    if(prefersReduced){ controls.target.copy(to); camera.position.copy(to.clone().add(offset)); }
+    else tween={t0:performance.now(),dur:650,from,to,camFrom:camera.position.clone(),camTo:to.clone().add(offset)};
+  }
+}
+
+/* ---------------- Toggles ---------------- */
+const tCut=document.getElementById("tCut"), tNight=document.getElementById("tNight"), tPins=document.getElementById("tPins");
+function applyToggles(){
+  groups.cap.visible=!tCut.checked;
+  groups.section.visible=tCut.checked;
+  groups.under.visible=tCut.checked;
+  const n=tNight.checked;
+  groups.night.visible=n;
+  stage.classList.toggle("night",n);
+  hemi.intensity=n?0.22:0.8; hemi.color.set(n?0x8aa0c8:0xfff6e2);
+  sun.intensity=n?0.05:0.7; fill.intensity=n?0.06:0.25;
+  if(n){ flareT0=performance.now()-9000; }
+  pinsEl.classList.toggle("off",!tPins.checked);
+}
+[tCut,tNight,tPins].forEach(i=>i.addEventListener("change",applyToggles));
+tNight.addEventListener("change",()=>{ if(tNight.checked) select("night",false); else if(selected==="night") select(null); });
+applyToggles();
+document.getElementById("reset").addEventListener("click",()=>{
+  fitHome();
+  if(prefersReduced){ camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+  else tween={t0:performance.now(),dur:700,from:controls.target.clone(),to:HOME.target.clone(),camFrom:camera.position.clone(),camTo:HOME.pos.clone()};
+});
+
+/* ---------------- Picking ---------------- */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function visibleChain(o){ while(o){ if(!o.visible) return false; o=o.parent; } return true; }
+function pick(ev){
+  const r=renderer.domElement.getBoundingClientRect();
+  ndc.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(pickables.filter(visibleChain),false);
+  if(!hits.length) return null;
+  const h=hits[0];
+  return h.object.userData.region ? regionAt(h.point) : h.object.userData.key;
+}
+let down=null;
+renderer.domElement.addEventListener("pointerdown",e=>{down={x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener("pointerup",e=>{
+  if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null;
+  if(moved>6) return;
+  select(pick(e),false);
+});
+renderer.domElement.addEventListener("pointermove",e=>{
+  if(e.pointerType!=="mouse") return;
+  const k=pick(e);
+  if(k!==hovered){
+    if(hovered && hovered!==selected) setGlow(hovered,0);
+    hovered=k;
+    if(k && k!==selected) setGlow(k,0.2);
+    renderer.domElement.style.cursor=k?"pointer":"grab";
+  }
+});
+renderer.domElement.addEventListener("pointerleave",()=>{ if(hovered && hovered!==selected) setGlow(hovered,0); hovered=null; });
+
+/* ---------------- Resize + loop ---------------- */
+function resize(){
+  const w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  if(!userMoved){ fitHome(); camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+}
+let userMoved=false;
+controls.addEventListener("start",()=>{userMoved=true;});
+new ResizeObserver(resize).observe(stage); resize();
+
+const v=new THREE.Vector3();
+function updatePins(){
+  const w=stage.clientWidth, h=stage.clientHeight;
+  Object.entries(pins).forEach(([k,p])=>{
+    const objs=byKey[k]||[]; const shown=!objs.length || objs.some(visibleChain);
+    v.copy(anchorOf(k)).project(camera);
+    if(!shown || v.z>1){ p.el.style.display="none"; return; }
+    p.el.style.display="";
+    const o=window.innerWidth<=860?6.5:9; p.el.style.transform=`translate(${(v.x*0.5+0.5)*w-o}px,${(-v.y*0.5+0.5)*h-o}px)`;
+  });
+}
+function updateFlare(now){
+  const CYCLE=9000; let t=(now-flareT0)%CYCLE;
+  if(now-flareT0>=CYCLE){ flareT0=now-t; flareX=-40+80*flareRng(); flareDX=-10+20*flareRng(); }
+  const s=t/1000; let x,y,z,I;
+  if(s<1.4){ const u=s/1.4; x=flareX+flareDX*0.3*u; z=118-40*u; y=2+60*(1-(1-u)*(1-u)); I=0.6+1.6*u; }
+  else { const u=Math.min(1,(s-1.4)/7.6); x=flareX+flareDX*(0.3+0.7*u); z=78-8*u; y=62-44*u; I=2.2*(u<0.85?1:Math.max(0,(1-u)/0.15)); }
+  flare.position.set(x,y,z); flareLight.intensity=I; flare.visible=I>0.05;
+}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function loop(now){
+  if(tween){
+    const t=Math.min((now-tween.t0)/tween.dur,1), e=ease(t);
+    controls.target.lerpVectors(tween.from,tween.to,e);
+    camera.position.lerpVectors(tween.camFrom,tween.camTo,e);
+    if(t>=1) tween=null;
+  }
+  if(tNight.checked) updateFlare(now);
+  controls.update();
+  renderer.render(scene,camera);
+  updatePins();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+window.__trench={select,controls,camera,regionAt,H,CR};
+}
+})();
+</script>
+</body>
+</html>
