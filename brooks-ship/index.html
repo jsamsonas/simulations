@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inside a Slave Ship: The Brooks, 1788</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F0E1; --panel:#FBF8EF; --stage-a:#EEE7D3; --stage-b:#E2D9C1;
+  --ink:#1B2A4A; --ink-soft:#4C5874; --gold:#C9A227; --gold-ink:#7A6012;
+  --rule:rgba(27,42,74,.16); --card-shadow:0 10px 30px rgba(27,42,74,.18);
+  --pin-bg:#1B2A4A; --pin-fg:#F5F0E1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+    --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+    --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+    --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+  --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+  --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+  --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:"Libre Caslon Text",Georgia,"Times New Roman",serif;font-weight:400;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100%}
+.stage{position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%,var(--stage-a) 0%,var(--stage-b) 78%)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hint{position:absolute;top:14px;left:16px;right:16px;max-width:30em;font-size:.85rem;
+  color:var(--ink-soft);pointer-events:none;margin:0}
+
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;border:0;padding:0;background:none;
+  display:flex;align-items:center;gap:6px;cursor:pointer;transform:translate(-9px,-9px)}
+.pin .dot{width:18px;height:18px;border-radius:50%;background:var(--pin-bg);
+  border:2px solid var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.35);flex:none}
+.pin .lbl{font-size:.8rem;white-space:nowrap;background:var(--panel);color:var(--ink);
+  padding:2px 8px;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.25);
+  opacity:0;transition:opacity .15s}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.on .lbl{opacity:1}
+.pin.on .dot{background:var(--gold)}
+.pins.off .pin:not(.on){display:none}
+
+.card{position:absolute;left:16px;bottom:16px;width:min(460px,calc(100% - 32px));
+  max-height:62%;overflow:auto;background:var(--panel);border-left:4px solid var(--gold);
+  box-shadow:var(--card-shadow);padding:18px 22px 20px;border-radius:2px}
+.card[hidden]{display:none}
+.card h2{font-size:1.45rem;line-height:1.2;margin-bottom:.55rem;padding-right:3.5rem}
+.card p{margin:0 0 .75rem;max-width:62ch}
+.card .close{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--rule);
+  border-radius:3px;padding:2px 10px;font-size:.85rem;cursor:pointer;color:var(--ink-soft)}
+.card .close:hover{color:var(--ink);border-color:var(--ink-soft)}
+.card blockquote{margin:.4rem 0 .9rem;padding:.2rem 0 .2rem 1rem;border-left:2px solid var(--rule);
+  font-style:italic}
+.card blockquote cite{display:block;font-style:normal;font-size:.85rem;color:var(--ink-soft);margin-top:.25rem}
+.card .fact{font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.2rem}
+.card dl{margin:.2rem 0 .9rem;display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;font-size:.95rem}
+.card dt{font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;color:var(--gold-ink)}
+.card dd{margin:0}
+
+.panel{background:var(--panel);border-left:1px solid var(--rule);overflow:auto;padding:28px 26px 40px}
+.panel h1{font-size:1.9rem;line-height:1.15;margin-bottom:.35rem}
+.panel .sub{font-family:"Libre Caslon Text",Georgia,serif;font-style:italic;color:var(--ink-soft);margin:0 0 1.1rem}
+.panel p{margin:0 0 1rem}
+.note{border:1px solid var(--rule);border-left:3px solid var(--gold);padding:12px 14px;font-size:.92rem;margin:0 0 1.4rem}
+.note p{margin:0}
+.panel h3{font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--gold-ink)}
+.toggles{display:grid;gap:.45rem;margin:0}
+.toggles label{display:flex;gap:.6rem;align-items:center;cursor:pointer;font-size:.95rem}
+.toggles input{width:18px;height:18px;accent-color:var(--gold);margin:0}
+.reset{margin-top:.8rem;background:none;border:1px solid var(--ink-soft);border-radius:3px;
+  padding:5px 14px;cursor:pointer;font-size:.92rem}
+.reset:hover{background:var(--ink);color:var(--panel)}
+.parts{list-style:none;margin:0;padding:0}
+.parts li{margin:0}
+.parts button{display:block;width:100%;text-align:left;background:none;border:0;
+  border-bottom:1px solid var(--rule);padding:7px 2px;cursor:pointer;font-size:.97rem}
+.parts button:hover{color:var(--gold-ink)}
+.parts button[aria-current="true"]{color:var(--gold-ink);font-weight:700}
+.about-btn{margin-top:1.4rem;display:block;width:100%;text-align:left;background:none;
+  border:1px solid var(--rule);border-left:3px solid var(--gold);padding:10px 14px;cursor:pointer}
+.about-btn strong{font-family:"Libre Caslon Text",Georgia,serif;font-weight:400;font-size:1.05rem;display:block}
+.about-btn span{font-size:.88rem;color:var(--ink-soft)}
+.fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}
+
+@media (max-width: 860px){
+  html,body{height:auto}
+  .app{grid-template-columns:1fr;height:auto}
+  .stage{height:64svh;min-height:380px}
+  .panel{border-left:0;border-top:1px solid var(--rule);overflow:visible;padding:22px 18px 36px}
+  .card{left:10px;right:10px;bottom:10px;width:auto;max-height:50%;padding:14px 16px 16px}
+  .card h2{font-size:1.25rem}
+  .hint{font-size:.8rem}
+  .pin .dot{width:13px;height:13px;border-width:2px}
+}
+@media (prefers-reduced-motion: reduce){ .pin .lbl{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage" aria-label="3D model of the slave ship Brooks">
+    <p class="hint" id="hint">Drag to turn the ship. Scroll or pinch to zoom. Tap any part to learn about it.</p>
+    <div class="pins" id="pins"></div>
+    <section class="card" id="card" hidden aria-live="polite">
+      <button class="close" id="closeCard" type="button">Close</button>
+      <div id="cardBody"></div>
+    </section>
+  </main>
+
+  <aside class="panel">
+    <h1>Inside a Slave Ship</h1>
+    <p class="sub">The Brooks of Liverpool, as measured for Parliament in 1788</p>
+    <p>This is a cutaway model of a real ship that carried enslaved Africans across the Atlantic. The near side has been removed so you can see the decks, rooms, and hold inside.</p>
+    <div class="note"><p>The model does not show people. Each gold outline below deck marks the space the law allowed one person. Every outline stood for someone with a name, a family, and a home.</p></div>
+
+    <h3>View</h3>
+    <div class="toggles">
+      <label><input type="checkbox" id="tCut" checked> Cut away the near side</label>
+      <label><input type="checkbox" id="tUpper"> Lift off the upper decks</label>
+      <label><input type="checkbox" id="tSpaces" checked> Show allotted spaces</label>
+      <label><input type="checkbox" id="tRig" checked> Show masts and rigging</label>
+      <label><input type="checkbox" id="tPins" checked> Show markers</label>
+    </div>
+    <button class="reset" id="reset" type="button">Reset view</button>
+
+    <h3>On deck</h3>
+    <ul class="parts" data-group="deck"></ul>
+    <h3>Below deck</h3>
+    <ul class="parts" data-group="below"></ul>
+    <h3>The ship</h3>
+    <ul class="parts" data-group="ship"></ul>
+
+    <button class="about-btn" type="button" data-key="about">
+      <strong>About this model and the 1788 print</strong>
+      <span>Where these measurements came from, and how to read the famous abolitionist image</span>
+    </button>
+  </aside>
+</div>
+
+<!-- three.js r128 and OrbitControls, hosted alongside this page so the tour doesn't depend on outside sites -->
+<script src="lib/three.min.js"></script>
+<script src="lib/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------------- Content ---------------- */
+const INFO = {
+  hull:{group:"ship",title:"The Brooks of Liverpool",body:[
+    "The Brooks (often spelled Brookes) was built in Liverpool, England, in 1781. Between 1782 and 1804 it made 11 voyages in the triangular trade: from Liverpool to West Africa, across the Atlantic to the Caribbean, and home again.",
+    "In 1788 a Royal Navy captain named Parrey measured the ship for Parliament. Its lower deck was 100 feet long and 25 feet 4 inches wide. That is about as long as two and a half school buses, and a little wider than a two-car garage. This model is built from those measurements.",
+    "Rated at 297 tons, the Brooks was a large ship for the trade. Abolitionists chose it partly because they had its exact measurements."],
+    fact:"Across the whole Atlantic slave trade, about 12.5 million people were forced onto ships like this one."},
+  masts:{group:"ship",title:"Masts, sails, and the crossing",body:[
+    "The Brooks had three masts: the foremast, the mainmast, and the mizzen. Wind was its only engine, so the length of the Middle Passage depended on the weather. A calm could stretch a voyage for weeks while food and water ran low.",
+    "On one voyage the Brooks left the Gold Coast of Africa on August 14, 1787, and reached Kingston, Jamaica, on October 4: 51 days at sea. Most crossings took one to three months."],
+    fact:"Across the slave trade, roughly 15% of the people forced aboard died during the crossing."},
+  maindeck:{group:"deck",title:"The main deck",body:[
+    "In good weather, captives were brought up from below each morning around eight o'clock. As each pair of chained men climbed up, the crew ran a long chain through their leg irons and locked it to ringbolts in the deck.",
+    "Meals came twice a day, usually beans, rice, or yams. Captives were also forced to \u201cdance\u201d for exercise, because traders wanted them to arrive healthy enough to sell. The Brooks\u2019s own surgeon, Thomas Trotter, told Parliament that people who refused to eat or dance were whipped.",
+    "At night and in bad weather, everyone was forced back below."]},
+  barricado:{group:"deck",title:"The barricado",body:[
+    "This tall wooden wall stretched across the deck and stuck out past both sides of the ship. Holes in it let the crew aim guns at captives on the forward deck, and small swivel guns could be mounted along the top. The crew could retreat behind it if fighting broke out.",
+    "The barricado existed because the crew was badly outnumbered. On the voyage that began in 1786, the Brooks carried 609 captives and a crew of 45. Africans resisted constantly: historians estimate that a revolt broke out on about one voyage in ten."]},
+  netting:{group:"deck",title:"Netting along the sides",body:[
+    "Nets ran along both sides of the deck to stop people from leaping overboard. Some captives chose to jump rather than accept enslavement, especially while the African coast was still in sight.",
+    "To the traders, every person who escaped or died was lost profit. The netting is one of many features showing that the ship itself was built to work as a floating prison."]},
+  gratings:{group:"deck",title:"Gratings and hatches",body:[
+    "These openings, covered with wooden grates, were the main source of air and light for the hundreds of people below. In storms the crew covered them with canvas to keep water out, and the air below became unbearably hot and foul.",
+    "Thomas Trotter, the Brooks\u2019s surgeon, testified that people were packed so tightly that he believed some died from lack of air. Diseases such as dysentery (sailors called it \u201cthe flux\u201d) and smallpox spread quickly in those conditions."]},
+  windsail:{group:"deck",title:"Windsail",body:[
+    "A windsail was a long canvas tube hung from the rigging. Its open top caught the wind and pushed fresh air down through a hatch into the decks below.",
+    "Fittings like this set slave ships apart from ordinary merchant ships. They also show that the crew knew how dangerous the air below had become."]},
+  galley:{group:"deck",title:"Cook room",body:[
+    "A large brick-lined stove on deck held copper kettles big enough to cook for hundreds of people at once. Captives were usually fed beans, rice, or yams, depending on where along the African coast the ship had loaded.",
+    "Food and water were rationed. The traders\u2019 goal was not the well-being of the captives but keeping enough of them alive to sell."]},
+  cabin:{group:"deck",title:"Captain\u2019s cabin and quarterdeck",body:[
+    "The captain and officers lived at the stern, beneath the raised quarterdeck. From here the captain commanded the ship and kept its log, which recorded captives as cargo and often listed deaths by number rather than by name.",
+    "The 1788 law that limited crowding also paid bonuses: \u00a3100 to the captain and \u00a350 to the surgeon if fewer than 2 out of every 100 captives died. Lawmakers tried to reduce deaths by appealing to profit."]},
+  forecastle:{group:"deck",title:"Forecastle and crew quarters",body:[
+    "Ordinary sailors slept in the forecastle at the bow. Slave ships carried much larger crews than other merchant ships of the same size, because extra men were needed to guard the captives.",
+    "Sailors on slave ships also died at high rates, mostly from fevers along the African coast. The abolitionist Thomas Clarkson collected crew records in Liverpool and Bristol and used those deaths as more evidence against the trade."]},
+  mensroom:{group:"below",title:"Men\u2019s room",body:[
+    "The largest compartment ran along the front half of the lower deck. Men were chained in pairs: the right wrist and ankle of one man locked to the left wrist and ankle of another. Every movement, even reaching a tub, had to be made together.",
+    "The 1788 law allowed each man a space 6 feet long and 1 foot 4 inches wide. Sixteen inches is a school ruler plus four more inches. The height between decks was 5 feet 8 inches, too low for most men to stand."],
+    quote:{text:"\u2026so crowded that each had scarcely room to turn himself\u2026",cite:"Olaudah Equiano, describing the ship that carried him as a boy, 1789"}},
+  boysroom:{group:"below",title:"Boys\u2019 room",body:[
+    "Boys were held in a separate compartment. Under the 1788 law, each boy was allowed a space 5 feet long and 1 foot 2 inches wide. Children were usually not chained, but they lived in the same darkness, heat, and crowding as the adults.",
+    "About one in four people carried across the Atlantic was a child."]},
+  womensroom:{group:"below",title:"Women\u2019s room",body:[
+    "Women and girls were held toward the stern, closer to the officers\u2019 quarters. They were usually not chained and sometimes spent more time on deck. Being near the crew also left them exposed to abuse by sailors and officers.",
+    "The 1788 law allowed each woman 5 feet 10 inches by 1 foot 4 inches, and each girl 4 feet 6 inches by 1 foot."]},
+  platforms:{group:"below",title:"Platforms (shelves)",body:[
+    "Halfway between the lower deck and the main deck, wooden shelves stuck out from each side of the ship. The 1789 abolitionist print compared them to \u201cgalleries in a church.\u201d They let traders pack a second layer of people above the first.",
+    "With the shelves in place, the people lying on them and the people underneath had only about 2 feet 7 inches of space, and even less under the deck beams. No one could sit up. The 1789 print showed 130 people on the shelves alone."]},
+  tubs:{group:"below",title:"Necessary tubs",body:[
+    "A few large tubs served as the only toilets for each compartment. Reaching one in the dark meant climbing over other people, and chained pairs had to move together.",
+    "Tubs spilled and overflowed, especially in rough seas. Waste, heat, and crowding spread the diseases that killed so many people on the crossing."]},
+  airports:{group:"below",title:"Air ports",body:[
+    "Many slave ships had small openings cut through their sides between the decks to let in air. In rough weather they had to be shut to keep the sea out, which was exactly when the air below was at its worst."]},
+  hold:{group:"below",title:"The hold",body:[
+    "Below the lower deck, the hold carried water casks, food, and firewood for the crossing. Running out of water was a constant danger on a long voyage.",
+    "On the voyage out from Liverpool, this space held trade goods: cloth, guns and gunpowder, iron bars, brandy, and beads, exchanged on the African coast for captives. On the way home from the Caribbean, it carried sugar and rum to Britain."]},
+  about:{group:null,title:"About this model and the 1788 print",body:[
+    "In 1788 abolitionists in Plymouth, England, used Captain Parrey\u2019s measurements to draw the Brooks\u2019s lower deck packed with people. The next year the London abolition committee published an expanded version, printed by the Quaker printer James Phillips. More than 7,000 copies were printed and handed out, and it became one of the most famous images in the fight against the slave trade.",
+    "The print shows 482 people, arranged in exactly the spaces allowed by the Regulated Slave Trade Act of 1788. That was a deliberate argument: even following the new law, the ship was a nightmare, so regulating the trade was not enough. Before the law, the Brooks had carried as many as 609 people at once, and its records show even higher numbers on other voyages.",
+    "__COUNT__"],
+    hipp:[["Historical context","Parliament was debating whether to regulate the slave trade."],
+          ["Intended audience","The British public and Members of Parliament."],
+          ["Purpose","To persuade readers to end the trade, not just regulate it."],
+          ["Point of view","Abolitionists, many of them Quakers and evangelical Christians."]],
+    after:[
+    "Think about it: what does the print leave out, and why might the abolitionists have made that choice?",
+    "Many abolitionists rested their case on the belief that every person is made in the image of God (Genesis 1:27). Their best-known emblem showed a kneeling, chained African man asking, \u201cAm I not a man and a brother?\u201d"]}
+};
+const ORDER = ["maindeck","barricado","netting","gratings","windsail","galley","cabin","forecastle",
+               "mensroom","boysroom","womensroom","platforms","tubs","airports","hold","hull","masts"];
+
+/* ---------------- Fallback if WebGL/libs unavailable ---------------- */
+const stage = document.getElementById("stage");
+function fail(msg){
+  const d=document.createElement("div"); d.className="fallback"; d.textContent=msg; stage.appendChild(d);
+}
+if(!window.THREE || !THREE.OrbitControls){ fail("The 3D model could not load. Try reloading the page. The descriptions in the side panel still work."); }
+
+/* ---------------- Ship geometry helpers (units: feet) ---------------- */
+const B = 12.7;                 // half-breadth (25 ft 4 in beam)
+const Y_HOLD = 2.6, Y_LOWER = 11.6, Y_PLAT = 14.25, Y_MAIN = 17.3, Y_QD = 21.4, Y_FC = 20.6;
+const X_CABIN = -30, X_FC = 42;
+const MASTS = {mizzen:-38, main:-4, fore:36};
+const xs = y => -50 - 0.10*y;          // stern end (raked)
+const xe = y => 50 + 0.28*y;           // bow end (raked stem)
+function plan(u){
+  if(u<0.25){ const s=u/0.25; return 0.5+0.5*(1-(1-s)*(1-s)); }
+  if(u>0.6){ const s=(u-0.6)/0.4; return Math.pow(Math.max(0,1-s*s),0.62); }
+  return 1;
+}
+function sec(y,u){
+  const end=Math.max((0.25-u)/0.25,(u-0.6)/0.4,0);
+  const e=0.28+0.9*end*end;
+  let f=Math.pow(Math.min(Math.max(y/12,0),1),e);
+  if(y>14) f*=1-0.05*Math.pow((y-14)/7,2);
+  return f;
+}
+function hbU(u,y){ return B*plan(u)*sec(y,u); }
+function hb(x,y){
+  const a=xs(y), b=xe(y); const u=(x-a)/(b-a);
+  if(u<0||u>1) return 0; return hbU(u,y);
+}
+function topY(u){
+  const x=-52+u*(55.8+52);
+  const aft = 1/(1+Math.exp((x+31)/1.2));     // ~1 aft of -31
+  const fwd = 1/(1+Math.exp(-(x-41)/1.2));    // ~1 forward of 41
+  return 21 + 3.6*aft + 2.6*fwd;
+}
+
+if(window.THREE && THREE.OrbitControls) build();
+
+function build(){
+let renderer;
+try{
+  renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+}catch(e){ fail("Your browser could not start 3D graphics (WebGL). Try a different browser or device."); return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x000000,0);
+stage.insertBefore(renderer.domElement, stage.firstChild);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38,1,1,2000);
+const HOME = {pos:new THREE.Vector3(62,46,112), target:new THREE.Vector3(4,30,0)};
+const HOME_DIR = new THREE.Vector3(0.46,0.22,0.86).normalize();
+function fitHome(){
+  const w=stage.clientWidth||1000, h=stage.clientHeight||700, asp=w/h, t=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  const d=Math.max((asp<0.9?56:68)/(t*asp), 44/t);
+  HOME.pos.copy(HOME.target).addScaledVector(HOME_DIR,d);
+}
+camera.position.copy(HOME.pos);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.minDistance = 25; controls.maxDistance = 420;
+controls.maxPolarAngle = Math.PI*0.88;
+controls.update();
+
+scene.add(new THREE.HemisphereLight(0xfff6e2,0x3a2c1e,0.75));
+const sun = new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(60,120,90); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff,0.25); fill.position.set(-80,40,-60); scene.add(fill);
+
+const COL = {hullOut:0x4a3424, hullIn:0x8f6f4c, deck:0xb39268, deckDark:0x9a7a55, plat:0x8a6a47,
+  bulk:0x7b5d3e, barr:0x5c4330, galley:0x6e3b26, cask:0x6e5236, canvas:0xe8dfc8, mast:0x5a4028,
+  ink:0x221a12, gold:0xc9a227, hole:0x120c08};
+
+const pickables = [];             // meshes that can be clicked
+const byKey = {};                 // key -> [objects]
+function tag(obj,key){ obj.userData.key=key; (byKey[key]=byKey[key]||[]).push(obj); if(obj.isMesh) pickables.push(obj); return obj; }
+function mat(color,opts){ return new THREE.MeshStandardMaterial(Object.assign({color,roughness:0.85,metalness:0.0},opts||{})); }
+const inkLine = new THREE.LineBasicMaterial({color:COL.ink,transparent:true,opacity:0.45});
+function edges(mesh,thresh){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,thresh||25),inkLine); e.raycast=()=>{}; mesh.add(e); return mesh; }
+
+const groups = {
+  starboard:new THREE.Group(), upper:new THREE.Group(), spaces:new THREE.Group(), rig:new THREE.Group(), base:new THREE.Group()
+};
+Object.values(groups).forEach(g=>scene.add(g));
+
+/* ---- Hull sides ---- */
+const NU=90, NV=36;
+function hullSide(sgn){
+  const pos=[], idx=[];
+  for(let i=0;i<=NU;i++){
+    const u=i/NU, t=topY(u);
+    for(let j=0;j<=NV;j++){
+      const y=(j/NV)*t; const x=xs(y)+u*(xe(y)-xs(y));
+      pos.push(x,y,sgn*hbU(u,y));
+    }
+  }
+  for(let i=0;i<NU;i++) for(let j=0;j<NV;j++){
+    const a=i*(NV+1)+j, b=a+NV+1;
+    if(sgn>0) idx.push(a,b,a+1, b,b+1,a+1); else idx.push(a,a+1,b, b,a+1,b+1);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const out=new THREE.Mesh(g,mat(COL.hullOut,{side:THREE.FrontSide}));
+  const inn=new THREE.Mesh(g,mat(COL.hullIn,{side:THREE.BackSide}));
+  const grp=new THREE.Group(); grp.add(out); grp.add(inn);
+  tag(out,"hull"); tag(inn,"hull");
+  // strake lines (planking), wale band
+  const lines=[];
+  [3,5.5,8,10.5,13,15.5,17.6,18.3,19.6].forEach(yl=>{
+    let prev=null;
+    for(let i=0;i<=NU;i++){
+      const u=i/NU; if(topY(u)<yl+0.1){prev=null;continue;}
+      const x=xs(yl)+u*(xe(yl)-xs(yl)); const p=[x,yl,sgn*(hbU(u,yl)+0.04)];
+      if(prev) lines.push(...prev,...p); prev=p;
+    }
+  });
+  const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.Float32BufferAttribute(lines,3));
+  const ls=new THREE.LineSegments(lg,inkLine); ls.raycast=()=>{}; grp.add(ls);
+  // gunwale top line
+  const tl=[]; let pv=null;
+  for(let i=0;i<=NU;i++){const u=i/NU,y=topY(u),x=xs(y)+u*(xe(y)-xs(y)),p=[x,y,sgn*hbU(u,y)]; if(pv) tl.push(...pv,...p); pv=p;}
+  const tg=new THREE.BufferGeometry(); tg.setAttribute("position",new THREE.Float32BufferAttribute(tl,3));
+  const tls=new THREE.LineSegments(tg,inkLine); tls.raycast=()=>{}; grp.add(tls);
+  return grp;
+}
+groups.base.add(hullSide(-1));
+groups.starboard.add(hullSide(1));
+
+/* transom */
+(function(){
+  const t=topY(0), pos=[], idx=[]; const N=24;
+  for(let j=0;j<=N;j++){ const y=(j/N)*t, x=xs(y), h=hbU(0,y); pos.push(x,y,-h, x,y,h); }
+  for(let j=0;j<N;j++){ const a=j*2; idx.push(a,a+1,a+2, a+1,a+3,a+2); }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const m=new THREE.Mesh(g,mat(COL.hullOut,{side:THREE.DoubleSide})); tag(m,"hull"); groups.base.add(m);
+  // stern windows
+  [-6,-2,2,6].forEach(z=>{
+    const w=new THREE.Mesh(new THREE.BoxGeometry(0.5,1.8,2.2),mat(COL.hole)); w.position.set(xs(19.4)-0.1,19.4,z); tag(w,"cabin"); groups.base.add(w);
+  });
+})();
+
+/* keel, stem, rudder */
+(function(){
+  const k=new THREE.Mesh(new THREE.BoxGeometry(100,1.2,1.1),mat(COL.hullOut)); k.position.set(0.5,-0.4,0); tag(k,"hull"); groups.base.add(k);
+  const r=new THREE.Mesh(new THREE.BoxGeometry(3.2,19,1.0),mat(COL.hullOut)); r.position.set(xs(9)-1.6,9,0); r.rotation.z=-0.1; tag(r,"hull"); edges(r); groups.base.add(r);
+})();
+
+/* ---- Deck builder ---- */
+function deckGeom(y,x0,x1,thick,holes){
+  const a=Math.max(x0,xs(y)+0.02), b=Math.min(x1,xe(y)-0.02), N=60, s=new THREE.Shape();
+  for(let i=0;i<=N;i++){ const x=a+(b-a)*i/N, h=Math.max(hb(x,y)-0.05,0.01); i?s.lineTo(x,h):s.moveTo(x,h); }
+  for(let i=N;i>=0;i--){ const x=a+(b-a)*i/N, h=Math.max(hb(x,y)-0.05,0.01); s.lineTo(x,-h); }
+  (holes||[]).forEach(hh=>{ const p=new THREE.Path(); p.moveTo(hh[0],hh[1]); p.lineTo(hh[2],hh[1]); p.lineTo(hh[2],hh[3]); p.lineTo(hh[0],hh[3]); p.lineTo(hh[0],hh[1]); s.holes.push(p); });
+  const g=new THREE.ExtrudeGeometry(s,{depth:thick,bevelEnabled:false,curveSegments:4});
+  g.rotateX(-Math.PI/2); g.translate(0,y-thick,0); return g;
+}
+function deck(y,x0,x1,thick,color,key,parent,holes){
+  const m=new THREE.Mesh(deckGeom(y,x0,x1,thick,holes),mat(color)); tag(m,key); edges(m,30); parent.add(m); return m;
+}
+function sectionGeom(x,y0,y1,thick){
+  const N=20, s=new THREE.Shape();
+  for(let j=0;j<=N;j++){ const y=y0+(y1-y0)*j/N, h=Math.max(hb(x,y)-0.05,0.01); j?s.lineTo(h,y):s.moveTo(h,y); }
+  for(let j=N;j>=0;j--){ const y=y0+(y1-y0)*j/N, h=Math.max(hb(x,y)-0.05,0.01); s.lineTo(-h,y); }
+  const g=new THREE.ExtrudeGeometry(s,{depth:thick,bevelEnabled:false}); g.rotateY(Math.PI/2); g.translate(x-thick/2,0,0); return g;
+}
+
+/* Hatches (main deck openings) */
+const HATCHES=[[-19,0],[8,0],[22,0]]; const HW=6, HD=5;
+const holes=HATCHES.map(([x,z])=>[x-HW/2,z-HD/2,x+HW/2,z+HD/2]);
+
+/* main deck */
+deck(Y_MAIN,X_CABIN-0.01,X_FC+0.01,0.5,COL.deck,"maindeck",groups.upper,holes);
+/* main deck plank lines */
+(function(){
+  const pts=[];
+  for(let z=-11;z<=11;z+=1.6){
+    let a=X_CABIN, b=X_FC; // clip around hatches
+    const segs=[[a,b]];
+    holes.forEach(h=>{ if(z>h[1]&&z<h[3]){ for(let k=segs.length-1;k>=0;k--){ const [s0,s1]=segs[k]; if(h[0]<s1&&h[2]>s0){ segs.splice(k,1); if(h[0]>s0) segs.push([s0,h[0]]); if(h[2]<s1) segs.push([h[2],s1]); } } } });
+    segs.forEach(([s0,s1])=>{ const lim=x=>hb(x,Y_MAIN)-0.2; let x0=s0,x1=s1; while(x0<x1 && Math.abs(z)>lim(x0)) x0+=0.5; while(x1>x0 && Math.abs(z)>lim(x1)) x1-=0.5; if(x1-x0>1) pts.push(x0,Y_MAIN+0.02,z, x1,Y_MAIN+0.02,z); });
+  }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pts,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:COL.ink,transparent:true,opacity:0.18})); l.raycast=()=>{}; groups.upper.add(l);
+})();
+
+/* gratings */
+(function(){
+  const gm=mat(COL.deckDark), coam=mat(COL.bulk);
+  HATCHES.forEach(([x,z])=>{
+    const grp=new THREE.Group();
+    const y=Y_MAIN+0.55;
+    [[HW+0.8,0.9,0.5,0,HD/2+0.25],[HW+0.8,0.9,0.5,0,-HD/2-0.25],[0.5,0.9,HD,HW/2+0.25,0],[0.5,0.9,HD,-HW/2-0.25,0]].forEach(c=>{
+      const m=new THREE.Mesh(new THREE.BoxGeometry(c[0],c[1],c[2]),coam); m.position.set(x+c[3],Y_MAIN+0.25,z+c[4]); tag(m,"gratings"); edges(m); grp.add(m);
+    });
+    for(let i=-HW/2+0.4;i<HW/2;i+=0.8){ const m=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.25,HD),gm); m.position.set(x+i,y,z); tag(m,"gratings"); grp.add(m); }
+    for(let k=-HD/2+0.4;k<HD/2;k+=0.8){ const m=new THREE.Mesh(new THREE.BoxGeometry(HW,0.25,0.22),gm); m.position.set(x,y+0.02,z+k); tag(m,"gratings"); grp.add(m); }
+    groups.upper.add(grp);
+  });
+})();
+
+/* lower deck: three rooms + ends */
+const ROOMS = {womensroom:[-30,-8], boysroom:[-8,4], mensroom:[4,40]};
+deck(Y_LOWER,-60,-30,0.4,COL.deckDark,"hull",groups.base);
+deck(Y_LOWER,-30,-8,0.4,COL.deck,"womensroom",groups.base);
+deck(Y_LOWER,-8,4,0.4,COL.deck,"boysroom",groups.base);
+deck(Y_LOWER,4,40,0.4,COL.deck,"mensroom",groups.base);
+deck(Y_LOWER,40,70,0.4,COL.deckDark,"hull",groups.base);
+/* bulkheads between rooms */
+[-30,-8,4,40].forEach(x=>{
+  const key = x===-30?"womensroom":x===-8?"boysroom":x===4?"mensroom":"mensroom";
+  const m=new THREE.Mesh(sectionGeom(x,Y_LOWER,Y_MAIN-0.5,0.35),mat(COL.bulk)); tag(m,key); edges(m,30); groups.base.add(m);
+});
+/* hold floor */
+deck(Y_HOLD,-60,70,0.4,COL.deckDark,"hold",groups.base);
+
+/* platforms */
+const PLAT_W=6;
+function platformGeom(x0,x1,side){
+  const N=40, s=new THREE.Shape(), y=Y_PLAT;
+  for(let i=0;i<=N;i++){ const x=x0+(x1-x0)*i/N, h=hb(x,y)-0.05; i?s.lineTo(x,-side*h):s.moveTo(x,-side*h); }
+  for(let i=N;i>=0;i--){ const x=x0+(x1-x0)*i/N, h=hb(x,y)-0.05-PLAT_W; s.lineTo(x,-side*h); }
+  const g=new THREE.ExtrudeGeometry(s,{depth:0.3,bevelEnabled:false}); g.rotateX(-Math.PI/2); g.translate(0,y-0.3,0); return g;
+}
+[-1,1].forEach(side=>{
+  Object.values(ROOMS).forEach(([x0,x1])=>{
+    const m=new THREE.Mesh(platformGeom(x0+0.2,x1-0.2,side),mat(COL.plat)); tag(m,"platforms"); edges(m,30); groups.base.add(m);
+    // support posts
+    for(let x=x0+3;x<x1-1;x+=6){
+      const h=hb(x,Y_PLAT)-PLAT_W+0.2;
+      const p=new THREE.Mesh(new THREE.BoxGeometry(0.35,Y_PLAT-Y_LOWER-0.3,0.35),mat(COL.bulk)); p.position.set(x,(Y_PLAT+Y_LOWER)/2-0.15,side*h); tag(p,"platforms"); groups.base.add(p);
+    }
+  });
+});
+
+/* deck beams under main deck (visible in section) */
+(function(){
+  const bm=mat(COL.bulk);
+  for(let x=-28;x<40;x+=5){
+    if(holes.some(h=>x>h[0]-0.3&&x<h[2]+0.3)) continue;
+    const w=2*hb(x,Y_MAIN-0.9)-0.2;
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.7,w),bm); m.position.set(x,Y_MAIN-0.85,0); tag(m,"maindeck"); groups.upper.add(m);
+  }
+})();
+
+/* tubs */
+const TUBS=[[16,0],[30,0],[1,0],[-20,0]];
+TUBS.forEach(([x,z])=>{
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.0,2.0,16),mat(0x5b4430)); m.position.set(x,Y_LOWER+1,z); tag(m,"tubs"); edges(m,40); groups.base.add(m);
+  const r=new THREE.Mesh(new THREE.TorusGeometry(1.15,0.08,6,20),mat(0x2b2b2b,{metalness:0.4})); r.rotation.x=Math.PI/2; r.position.set(x,Y_LOWER+1.5,z); r.raycast=()=>{}; groups.base.add(r);
+});
+
+/* air ports (through both hull sides) */
+[-1,1].forEach(side=>{
+  for(let x=-24;x<=36;x+=10){
+    const y=15.3, h=hb(x,y);
+    const m=new THREE.Mesh(new THREE.BoxGeometry(1.3,1.1,0.9),mat(COL.hole)); m.position.set(x,y,side*(h)); tag(m,"airports");
+    (side>0?groups.starboard:groups.base).add(m);
+  }
+});
+
+/* allotted spaces */
+let spaceCount=0;
+(function(){
+  const pts=[];
+  const dims={mensroom:[6,1.333],boysroom:[5,1.167],womensroom:[5.833,1.333]};
+  const obstacles=[...TUBS.map(t=>t[0]),MASTS.main,MASTS.fore];
+  function rect(x,z0,z1,w,y){ const i=0.09; const a=x+i,b=x+w-i,c=z0+i,d=z1-i;
+    pts.push(a,y,c, b,y,c,  b,y,c, b,y,d,  b,y,d, a,y,d,  a,y,d, a,y,c); spaceCount++; }
+  Object.entries(ROOMS).forEach(([key,[x0,x1]])=>{
+    const [len,w]=dims[key];
+    for(let x=x0+0.4;x+w<=x1-0.3;x+=w){
+      const xc=x+w/2;
+      // floor rows
+      const hf=Math.min(hb(x,Y_LOWER+0.3),hb(x+w,Y_LOWER+0.3))-0.2;
+      const n=Math.floor((2*hf)/len); const start=-n*len/2;
+      for(let r=0;r<n;r++){
+        const z0=start+r*len, z1=z0+len;
+        const nearCenter = z0< 2.2 && z1> -2.2;
+        if(nearCenter && obstacles.some(o=>Math.abs(o-xc)<1.9)) continue;
+        rect(x,z0,z1,w,Y_LOWER+0.04);
+      }
+      // platform rows (one each side)
+      const hp=Math.min(hb(x,Y_PLAT),hb(x+w,Y_PLAT))-0.25;
+      [-1,1].forEach(s=>{ const z0=s>0?hp-len:-hp, z1=s>0?hp:-hp+len; rect(x,z0,z1,w,Y_PLAT+0.04); });
+    }
+  });
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pts,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:COL.gold})); l.raycast=()=>{}; groups.spaces.add(l);
+})();
+
+/* hold casks */
+(function(){
+  const geo=new THREE.CylinderGeometry(1.45,1.45,3.6,14); geo.rotateX(Math.PI/2);
+  const list=[];
+  [[4.2,[-7.6,-3.8,0,3.8,7.6]],[7.3,[-5.7,-1.9,1.9,5.7]]].forEach(([y,zs])=>{
+    for(let x=-38;x<=40;x+=3.2){ zs.forEach(z=>{ if(Math.abs(z)+2.0 < hb(x,y-1.4)-0.2) list.push([x,y,z]); }); }
+  });
+  const im=new THREE.InstancedMesh(geo,mat(COL.cask),list.length);
+  const d=new THREE.Object3D();
+  list.forEach((p,i)=>{ d.position.set(p[0],p[1],p[2]); d.updateMatrix(); im.setMatrixAt(i,d.matrix); });
+  tag(im,"hold"); groups.base.add(im);
+  // hoops
+  const hp=[]; list.forEach(p=>{ [-1.1,1.1].forEach(dz=>{ const N=12; for(let k=0;k<N;k++){ const a0=k/N*Math.PI*2,a1=(k+1)/N*Math.PI*2; hp.push(p[0]+1.47*Math.cos(a0),p[1]+1.47*Math.sin(a0),p[2]+dz, p[0]+1.47*Math.cos(a1),p[1]+1.47*Math.sin(a1),p[2]+dz); } }); });
+  const hg=new THREE.BufferGeometry(); hg.setAttribute("position",new THREE.Float32BufferAttribute(hp,3));
+  const hl=new THREE.LineSegments(hg,inkLine); hl.raycast=()=>{}; groups.base.add(hl);
+})();
+
+/* cabin + quarterdeck */
+(function(){
+  deck(Y_QD,-60,X_CABIN,0.45,COL.deck,"cabin",groups.upper);
+  deck(Y_MAIN,-60,X_CABIN,0.5,COL.deckDark,"cabin",groups.upper);
+  const wall=new THREE.Mesh(sectionGeom(X_CABIN,Y_MAIN,Y_QD-0.45,0.4),mat(COL.bulk)); tag(wall,"cabin"); edges(wall,30); groups.upper.add(wall);
+  [[0,1.4,2.6],[-6,2.2,1.6],[6,2.2,1.6]].forEach(([z,yy,w])=>{
+    const h = z===0?3.4:1.4;
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.5,h,w),mat(COL.hole)); m.position.set(X_CABIN+0.05,Y_MAIN+(z===0?1.7:2.4),z); tag(m,"cabin"); groups.upper.add(m);
+  });
+})();
+
+/* forecastle */
+(function(){
+  deck(Y_FC,X_FC,70,0.45,COL.deck,"forecastle",groups.upper);
+  deck(Y_MAIN,X_FC,70,0.5,COL.deckDark,"forecastle",groups.upper);
+  const wall=new THREE.Mesh(sectionGeom(X_FC,Y_MAIN,Y_FC-0.45,0.4),mat(COL.bulk)); tag(wall,"forecastle"); edges(wall,30); groups.upper.add(wall);
+  [-4,4].forEach(z=>{ const d=new THREE.Mesh(new THREE.BoxGeometry(0.5,2.6,1.8),mat(COL.hole)); d.position.set(X_FC-0.05,Y_MAIN+1.3,z); tag(d,"forecastle"); groups.upper.add(d); });
+})();
+
+/* barricado */
+(function(){
+  const X=-9, H=9, grp=new THREE.Group();
+  const half=hb(X,21)+2.2;
+  const doorW=3;
+  [[-half,-doorW/2],[doorW/2,half]].forEach(([z0,z1])=>{
+    const m=new THREE.Mesh(new THREE.BoxGeometry(0.8,H,z1-z0),mat(COL.barr)); m.position.set(X,Y_MAIN+H/2,(z0+z1)/2); tag(m,"barricado"); edges(m); grp.add(m);
+  });
+  const lin=new THREE.Mesh(new THREE.BoxGeometry(0.8,H-6.5,doorW),mat(COL.barr)); lin.position.set(X,Y_MAIN+6.5+(H-6.5)/2,0); tag(lin,"barricado"); edges(lin); grp.add(lin);
+  // loopholes
+  for(let z=-half+2;z<half-1;z+=3.2){ if(Math.abs(z)<doorW) continue; const h=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.7,0.7),mat(COL.hole)); h.position.set(X,Y_MAIN+5.2,z); tag(h,"barricado"); grp.add(h); }
+  // swivel guns on top
+  [-8,0,8].forEach(z=>{
+    const g=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.32,3,10),mat(0x2b2b2b,{metalness:0.5,roughness:0.5}));
+    g.rotation.z=-Math.PI/2; g.position.set(X+1.2,Y_MAIN+H+0.4,z); tag(g,"barricado"); grp.add(g);
+  });
+  groups.upper.add(grp);
+})();
+
+/* galley */
+(function(){
+  const X=29, grp=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.BoxGeometry(4.5,4,4.5),mat(COL.galley)); b.position.set(X,Y_MAIN+2,0); tag(b,"galley"); edges(b); grp.add(b);
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.55,4.5,10),mat(0x3a3a3a,{metalness:0.4})); c.position.set(X-1,Y_MAIN+6.2,1.2); tag(c,"galley"); grp.add(c);
+  [[0.9,-1.1],[0.9,1.0]].forEach(([dx,dz])=>{ const k=new THREE.Mesh(new THREE.CylinderGeometry(1.0,0.9,0.9,16),mat(0xb26a3b,{metalness:0.6,roughness:0.4})); k.position.set(X+dx,Y_MAIN+4.45,dz); tag(k,"galley"); grp.add(k); });
+  groups.upper.add(grp);
+})();
+
+/* netting */
+const netPicks = {port:null, star:null};
+function netting(side,parent){
+  const x0=X_CABIN+1, x1=X_FC-1, yb=21, yt=26, pts=[];
+  const zf=x=>side*(hb(x,yb)+0.05);
+  for(let x=x0;x<=x1;x+=1.2) pts.push(x,yb,zf(x), x,yt,zf(x));
+  for(let y=yb;y<=yt+0.01;y+=0.8){ for(let x=x0;x<x1;x+=1.2){ const xn=Math.min(x+1.2,x1); pts.push(x,y,zf(x), xn,y,zf(xn)); } }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pts,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0x3b2f22,transparent:true,opacity:0.7})); l.raycast=()=>{}; parent.add(l);
+  for(let x=x0;x<=x1;x+=7){ const p=new THREE.Mesh(new THREE.BoxGeometry(0.3,yt-yb+0.5,0.3),mat(COL.mast)); p.position.set(x,(yb+yt)/2,zf(x)); tag(p,"netting"); parent.add(p); }
+  // invisible pick surface
+  const pg=new THREE.PlaneGeometry(x1-x0,yt-yb); const pm=new THREE.Mesh(pg,new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}));
+  pm.position.set((x0+x1)/2,(yb+yt)/2,side*(hb((x0+x1)/2,yb)+0.05)); tag(pm,"netting"); parent.add(pm);
+}
+const netPort=new THREE.Group(), netStar=new THREE.Group();
+netting(-1,netPort); netting(1,netStar); groups.upper.add(netPort); groups.starboard.add(netStar);
+// keep starboard netting tied to the "upper" toggle too
+netStar.userData.upperToo=true;
+
+/* masts, yards, rigging, windsail */
+(function(){
+  const mm=mat(COL.mast), cm=mat(COL.canvas);
+  const spec=[
+    {x:MASTS.mizzen, base:Y_LOWER, top:58, yards:[[33,26],[45,19]]},
+    {x:MASTS.main,   base:Y_HOLD,  top:80, yards:[[37,46],[52,36],[66,26]]},
+    {x:MASTS.fore,   base:Y_HOLD,  top:72, yards:[[35,40],[49,32],[61,22]]}
+  ];
+  const lines=[];
+  spec.forEach(s=>{
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.45,1.0,s.top-s.base,12),mm); m.position.set(s.x,(s.top+s.base)/2,0); tag(m,"masts"); groups.rig.add(m);
+    const ty=s.base+(s.top-s.base)*0.5;
+    const top=new THREE.Mesh(new THREE.BoxGeometry(4,0.5,7),mm); top.position.set(s.x,ty,0); tag(top,"masts"); edges(top); groups.rig.add(top);
+    s.yards.forEach(([y,w])=>{
+      const yd=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,w,8),mm); yd.rotation.x=Math.PI/2; yd.position.set(s.x,y,0); tag(yd,"masts"); groups.rig.add(yd);
+      const sl=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,w*0.82,10),cm); sl.rotation.x=Math.PI/2; sl.position.set(s.x+0.6,y-0.7,0); tag(sl,"masts"); groups.rig.add(sl);
+      lines.push(s.x,y,-w/2, s.x,s.top,0,  s.x,y,w/2, s.x,s.top,0);
+    });
+    // shrouds
+    const rail = s.x===MASTS.mizzen?24.6:21;
+    [-1,1].forEach(side=>{ for(let k=-2;k<=2;k++){ const x=s.x+k*1.6-2; lines.push(s.x,ty,side*3.2, x,rail,side*hb(x,rail)); } });
+  });
+  // bowsprit
+  const bs=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.8,30,10),mm);
+  bs.position.set(64,27,0); bs.rotation.z=-Math.PI/2+0.45; tag(bs,"masts"); groups.rig.add(bs);
+  // stays
+  lines.push(MASTS.main,80,0, MASTS.fore,38,0,  MASTS.fore,72,0, 77,33.5,0,  MASTS.mizzen,58,0, MASTS.main,40,0,  MASTS.main,62,0, 8.6,46.5,0);
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(lines,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0x3b2f22,transparent:true,opacity:0.6})); l.raycast=()=>{}; groups.rig.add(l);
+  // windsail into the middle hatch
+  const ws=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.95,26,14,1,true),mat(0xd9cfb6,{side:THREE.DoubleSide}));
+  ws.position.set(8,Y_MAIN+13,0); tag(ws,"windsail"); groups.rig.add(ws);
+  const wt=new THREE.Mesh(new THREE.CylinderGeometry(1.9,0.75,3.5,14,1,true),mat(0xd9cfb6,{side:THREE.DoubleSide}));
+  wt.position.set(8,Y_MAIN+27.7,0); wt.rotation.z=0.5; tag(wt,"windsail"); groups.rig.add(wt);
+})();
+
+/* soft shadow under ship */
+(function(){
+  const c=document.createElement("canvas"); c.width=c.height=256; const x=c.getContext("2d");
+  const gr=x.createRadialGradient(128,128,10,128,128,128); gr.addColorStop(0,"rgba(0,0,0,0.35)"); gr.addColorStop(1,"rgba(0,0,0,0)");
+  x.fillStyle=gr; x.fillRect(0,0,256,256);
+  const t=new THREE.CanvasTexture(c);
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(170,70),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));
+  p.rotation.x=-Math.PI/2; p.position.set(2,-3,0); p.raycast=()=>{}; scene.add(p);
+})();
+
+/* ---------------- Markers ---------------- */
+const ANCHORS = {
+  hull:[53,9,0], masts:[MASTS.main,62,0], maindeck:[-1,Y_MAIN+0.3,7], barricado:[-9,Y_MAIN+9.6,-6],
+  netting:[14,25,-hb(14,21)], gratings:[-19,Y_MAIN+1,0], windsail:[8,Y_MAIN+20,0], galley:[29,Y_MAIN+4.6,-1.8],
+  cabin:[-42,Y_QD+0.3,0], forecastle:[49,Y_FC+0.3,0], mensroom:[22,Y_LOWER+0.4,3], boysroom:[-1,Y_LOWER+0.4,5.5],
+  womensroom:[-20,Y_LOWER+0.4,5], platforms:[10,Y_PLAT+0.3,hb(10,Y_PLAT)-3], tubs:[16,Y_LOWER+2.4,0],
+  airports:[-4,15.3,-hb(-4,15.3)+0.6], hold:[-10,7,6]
+};
+const pinsEl=document.getElementById("pins"); const pins={};
+Object.entries(ANCHORS).forEach(([k,p])=>{
+  const b=document.createElement("button"); b.type="button"; b.className="pin";
+  b.innerHTML='<span class="dot"></span><span class="lbl"></span>'; b.querySelector(".lbl").textContent=INFO[k].title;
+  b.setAttribute("aria-label",INFO[k].title); b.addEventListener("click",e=>{e.stopPropagation(); select(k,true);});
+  pinsEl.appendChild(b); pins[k]={el:b,v:new THREE.Vector3(...p)};
+});
+
+/* ---------------- Part list ---------------- */
+document.querySelectorAll(".parts").forEach(ul=>{
+  const g=ul.dataset.group;
+  ORDER.filter(k=>INFO[k].group===g).forEach(k=>{
+    const li=document.createElement("li"); const b=document.createElement("button"); b.type="button"; b.dataset.key=k; b.textContent=INFO[k].title;
+    b.addEventListener("click",()=>select(k,true)); li.appendChild(b); ul.appendChild(li);
+  });
+});
+document.querySelector(".about-btn").addEventListener("click",()=>select("about",false));
+
+/* ---------------- Info card ---------------- */
+const card=document.getElementById("card"), cardBody=document.getElementById("cardBody");
+document.getElementById("closeCard").addEventListener("click",()=>select(null));
+function el(tag,text,cls){ const e=document.createElement(tag); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+function renderCard(k){
+  cardBody.innerHTML=""; const d=INFO[k];
+  cardBody.appendChild(el("h2",d.title));
+  d.body.forEach(t=>{
+    if(t==="__COUNT__") t="This model does not show people. The gold outlines mark the spaces the 1788 law allowed, one outline per person, and the model shows "+spaceCount+" of them in the three rooms and on the shelves. That is fewer than the print\u2019s 482, because the print also crowded people into rooms at the stern and into leftover corners that this model leaves empty. Each one stood for a person with a name, a family, and a home.";
+    cardBody.appendChild(el("p",t));
+  });
+  if(d.quote){ const q=el("blockquote"); q.appendChild(el("span",d.quote.text)); q.appendChild(el("cite",d.quote.cite)); cardBody.appendChild(q); }
+  if(d.hipp){ cardBody.appendChild(el("p","Reading the print with HIPP:")); const dl=el("dl"); d.hipp.forEach(([a,b])=>{dl.appendChild(el("dt",a)); dl.appendChild(el("dd",b));}); cardBody.appendChild(dl); }
+  (d.after||[]).forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.fact) cardBody.appendChild(el("p",d.fact,"fact"));
+  card.scrollTop=0;
+}
+
+/* ---------------- Selection + highlight ---------------- */
+let selected=null, hovered=null;
+const GOLD=new THREE.Color(COL.gold), BLACK=new THREE.Color(0x000000);
+function setGlow(k,amt){
+  (byKey[k]||[]).forEach(o=>{ if(o.material && o.material.emissive){ o.material.emissive.copy(amt?GOLD:BLACK); o.material.emissiveIntensity=amt||0; }});
+}
+const prefersReduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tween=null;
+function select(k,fly){
+  if(selected) setGlow(selected,0);
+  selected=k;
+  document.querySelectorAll(".parts button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+  Object.entries(pins).forEach(([pk,p])=>p.el.classList.toggle("on",pk===k));
+  if(!k){ card.hidden=true; return; }
+  if(k!=="about") setGlow(k,0.45);
+  renderCard(k); card.hidden=false;
+  if(fly) userMoved=true;
+  if(window.innerWidth<=860){ const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top<-r.height*0.4) stage.scrollIntoView({behavior:prefersReduced?"auto":"smooth",block:"start"}); }
+  if(fly && ANCHORS[k]){
+    let to=new THREE.Vector3(...ANCHORS[k]);
+    // keep upper decks visible state sensible: if picking a lower-deck item, nothing changes; just retarget
+    const from=controls.target.clone(), offset=camera.position.clone().sub(from);
+    const dist=Math.min(offset.length(),140);
+    offset.setLength(dist);
+    if(window.innerWidth<=860){ const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion); to=to.clone().addScaledVector(up,-0.5*dist*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))); }
+    if(prefersReduced){ controls.target.copy(to); camera.position.copy(to.clone().add(offset)); }
+    else tween={t0:performance.now(),dur:650,from,to,camFrom:camera.position.clone(),camTo:to.clone().add(offset)};
+  }
+}
+
+/* ---------------- Toggles ---------------- */
+const tCut=document.getElementById("tCut"), tUpper=document.getElementById("tUpper"), tSpaces=document.getElementById("tSpaces"), tRig=document.getElementById("tRig"), tPins=document.getElementById("tPins");
+function applyToggles(){
+  groups.starboard.visible=!tCut.checked;
+  netStar.visible=!tUpper.checked;
+  groups.upper.visible=!tUpper.checked;
+  groups.spaces.visible=tSpaces.checked;
+  groups.rig.visible=tRig.checked;
+  // windsail lives in rig group but belongs on deck; hide it with upper decks too
+  (byKey.windsail||[]).forEach(o=>o.visible=!tUpper.checked);
+  pinsEl.classList.toggle("off",!tPins.checked);
+}
+[tCut,tUpper,tSpaces,tRig,tPins].forEach(i=>i.addEventListener("change",applyToggles));
+applyToggles();
+document.getElementById("reset").addEventListener("click",()=>{
+  fitHome();
+  if(prefersReduced){ camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+  else tween={t0:performance.now(),dur:700,from:controls.target.clone(),to:HOME.target.clone(),camFrom:camera.position.clone(),camTo:HOME.pos.clone()};
+});
+
+/* ---------------- Picking ---------------- */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function visibleChain(o){ while(o){ if(!o.visible) return false; o=o.parent; } return true; }
+function pick(ev){
+  const r=renderer.domElement.getBoundingClientRect();
+  ndc.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(pickables.filter(visibleChain),false);
+  return hits.length?hits[0].object.userData.key:null;
+}
+let down=null;
+renderer.domElement.addEventListener("pointerdown",e=>{down={x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener("pointerup",e=>{
+  if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null;
+  if(moved>6) return;
+  const k=pick(e); select(k,false);
+});
+renderer.domElement.addEventListener("pointermove",e=>{
+  if(e.pointerType!=="mouse") return;
+  const k=pick(e);
+  if(k!==hovered){
+    if(hovered && hovered!==selected) setGlow(hovered,0);
+    hovered=k;
+    if(k && k!==selected) setGlow(k,0.2);
+    renderer.domElement.style.cursor=k?"pointer":"grab";
+  }
+});
+renderer.domElement.addEventListener("pointerleave",()=>{ if(hovered && hovered!==selected) setGlow(hovered,0); hovered=null; });
+
+/* ---------------- Resize + loop ---------------- */
+function resize(){
+  const w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  if(!userMoved){ fitHome(); camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+}
+let userMoved=false;
+controls.addEventListener("start",()=>{userMoved=true;});
+new ResizeObserver(resize).observe(stage); resize();
+
+const v=new THREE.Vector3();
+function updatePins(){
+  const w=stage.clientWidth, h=stage.clientHeight;
+  Object.entries(pins).forEach(([k,p])=>{
+    const objs=byKey[k]||[]; const shown=objs.some(visibleChain);
+    v.copy(p.v).project(camera);
+    if(!shown || v.z>1){ p.el.style.display="none"; return; }
+    p.el.style.display="";
+    const o=window.innerWidth<=860?6.5:9; p.el.style.transform=`translate(${(v.x*0.5+0.5)*w-o}px,${(-v.y*0.5+0.5)*h-o}px)`;
+  });
+}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function loop(now){
+  if(tween){
+    const t=Math.min((now-tween.t0)/tween.dur,1), e=ease(t);
+    controls.target.lerpVectors(tween.from,tween.to,e);
+    camera.position.lerpVectors(tween.camFrom,tween.camTo,e);
+    if(t>=1) tween=null;
+  }
+  controls.update();
+  renderer.render(scene,camera);
+  updatePins();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+window.__ship={select,spaceCount,controls,camera};
+}
+})();
+</script>
+</body>
+</html>
