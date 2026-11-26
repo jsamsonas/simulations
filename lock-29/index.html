@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lock 29 at Peninsula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F0E1; --panel:#FBF8EF; --stage-a:#EEF0E6; --stage-b:#D8DCCB;
+  --ink:#1B2A4A; --ink-soft:#4C5874; --gold:#C9A227; --gold-ink:#7A6012;
+  --rule:rgba(27,42,74,.16); --card-shadow:0 10px 30px rgba(27,42,74,.18);
+  --pin-bg:#1B2A4A; --pin-fg:#F5F0E1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+    --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+    --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+    --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+  --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+  --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+  --pin-bg:#C9A227; --pin-fg:#0F1A2E;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:"Libre Caslon Text",Georgia,"Times New Roman",serif;font-weight:400;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100%}
+.stage{position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%,var(--stage-a) 0%,var(--stage-b) 78%)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hint{position:absolute;top:14px;left:16px;right:16px;max-width:30em;font-size:.85rem;
+  color:var(--ink-soft);pointer-events:none;margin:0}
+.caption{position:absolute;top:14px;right:16px;width:min(380px,calc(100% - 32px));background:var(--panel);
+  border-left:4px solid var(--gold);box-shadow:var(--card-shadow);padding:10px 14px;font-size:.95rem;border-radius:2px}
+.caption[hidden]{display:none}
+.caption .n{display:block;font-size:.8rem;color:var(--gold-ink);font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;letter-spacing:.02em}
+
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;border:0;padding:0;background:none;
+  display:flex;align-items:center;gap:6px;cursor:pointer;transform:translate(-9px,-9px)}
+.pin .dot{width:18px;height:18px;border-radius:50%;background:var(--pin-bg);
+  border:2px solid var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.35);flex:none}
+.pin .lbl{font-size:.8rem;white-space:nowrap;background:var(--panel);color:var(--ink);
+  padding:2px 8px;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.25);
+  opacity:0;transition:opacity .15s}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.on .lbl{opacity:1}
+.pin.on .dot{background:var(--gold)}
+.pins.off .pin:not(.on){display:none}
+
+.card{position:absolute;left:16px;bottom:16px;width:min(460px,calc(100% - 32px));
+  max-height:62%;overflow:auto;background:var(--panel);border-left:4px solid var(--gold);
+  box-shadow:var(--card-shadow);padding:18px 22px 20px;border-radius:2px}
+.card[hidden]{display:none}
+.card h2{font-size:1.45rem;line-height:1.2;margin-bottom:.55rem;padding-right:3.5rem}
+.card p{margin:0 0 .75rem;max-width:62ch}
+.card .close{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--rule);
+  border-radius:3px;padding:2px 10px;font-size:.85rem;cursor:pointer;color:var(--ink-soft)}
+.card .close:hover{color:var(--ink);border-color:var(--ink-soft)}
+.card blockquote{margin:.4rem 0 .9rem;padding:.2rem 0 .2rem 1rem;border-left:2px solid var(--rule);
+  font-style:italic;white-space:pre-line}
+.card blockquote cite{display:block;font-style:normal;font-size:.85rem;color:var(--ink-soft);margin-top:.25rem;white-space:normal}
+.card .fact{font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.2rem}
+.card dl{margin:.2rem 0 .9rem;display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;font-size:.95rem}
+.card dt{font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;color:var(--gold-ink)}
+.card dd{margin:0}
+
+.panel{background:var(--panel);border-left:1px solid var(--rule);overflow:auto;padding:28px 26px 40px}
+.panel h1{font-size:1.9rem;line-height:1.15;margin-bottom:.35rem}
+.panel .sub{font-family:"Libre Caslon Text",Georgia,serif;font-style:italic;color:var(--ink-soft);margin:0 0 1.1rem}
+.panel p{margin:0 0 1rem}
+.note{border:1px solid var(--rule);border-left:3px solid var(--gold);padding:12px 14px;font-size:.92rem;margin:0 0 1.4rem}
+.note p{margin:0}
+.panel h3{font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--gold-ink)}
+.run{display:grid;gap:.5rem}
+.run button{background:var(--ink);color:var(--panel);border:0;border-radius:3px;padding:9px 14px;cursor:pointer;text-align:left;font-size:.95rem}
+.run button:hover{opacity:.9}
+.run button:disabled{opacity:.45;cursor:default}
+.run .small{font-size:.85rem;color:var(--ink-soft);margin:0}
+.toggles{display:grid;gap:.45rem;margin:0}
+.toggles label{display:flex;gap:.6rem;align-items:center;cursor:pointer;font-size:.95rem}
+.toggles input{width:18px;height:18px;accent-color:var(--gold);margin:0}
+.reset{margin-top:.8rem;background:none;border:1px solid var(--ink-soft);border-radius:3px;
+  padding:5px 14px;cursor:pointer;font-size:.92rem}
+.reset:hover{background:var(--ink);color:var(--panel)}
+.parts{list-style:none;margin:0;padding:0}
+.parts li{margin:0}
+.parts button{display:block;width:100%;text-align:left;background:none;border:0;
+  border-bottom:1px solid var(--rule);padding:7px 2px;cursor:pointer;font-size:.97rem}
+.parts button:hover{color:var(--gold-ink)}
+.parts button[aria-current="true"]{color:var(--gold-ink);font-weight:700}
+.about-btn{margin-top:1.4rem;display:block;width:100%;text-align:left;background:none;
+  border:1px solid var(--rule);border-left:3px solid var(--gold);padding:10px 14px;cursor:pointer}
+.about-btn strong{font-family:"Libre Caslon Text",Georgia,serif;font-weight:400;font-size:1.05rem;display:block}
+.about-btn span{font-size:.88rem;color:var(--ink-soft)}
+.fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}
+
+@media (max-width: 860px){
+  html,body{height:auto}
+  .app{grid-template-columns:1fr;height:auto}
+  .stage{height:64svh;min-height:380px}
+  .panel{border-left:0;border-top:1px solid var(--rule);overflow:visible;padding:22px 18px 36px}
+  .card{left:10px;right:10px;bottom:10px;width:auto;max-height:50%;padding:14px 16px 16px}
+  .card h2{font-size:1.25rem}
+  .hint{font-size:.8rem}
+  .caption{top:auto;bottom:10px;left:10px;right:10px;width:auto;font-size:.88rem}
+  .pin .dot{width:13px;height:13px;border-width:2px}
+}
+@media (prefers-reduced-motion: reduce){ .pin .lbl{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage" aria-label="3D model of Lock 29 and the Peninsula aqueduct on the Ohio and Erie Canal">
+    <p class="hint" id="hint">Drag to turn the model. Scroll or pinch to zoom. Tap any part to learn about it.</p>
+    <div class="pins" id="pins"></div>
+    <div class="caption" id="caption" hidden aria-live="polite"><span class="n" id="capN"></span><span id="capT"></span></div>
+    <section class="card" id="card" hidden aria-live="polite">
+      <button class="close" id="closeCard" type="button">Close</button>
+      <div id="cardBody"></div>
+    </section>
+  </main>
+
+  <aside class="panel">
+    <h1>Lock 29 at Peninsula</h1>
+    <p class="sub">The Ohio &amp; Erie Canal in the Cuyahoga Valley, mid-1800s</p>
+    <p>For about 80 years, canal boats climbed and dropped through this stone lock in Peninsula, Ohio, then crossed the Cuyahoga River on a wooden aqueduct. The lock is still there, along the Towpath Trail in Cuyahoga Valley National Park.</p>
+    <div class="note"><p>North is toward Cleveland and Lake Erie, downhill. South is toward Akron, uphill. A lock is how a boat climbed that hill.</p></div>
+
+    <h3>Lock a boat through</h3>
+    <div class="run">
+      <button type="button" id="runUp">Raise a boat (southbound, toward Akron)</button>
+      <button type="button" id="runDown">Lower a boat (northbound, toward Cleveland)</button>
+      <p class="small">Watch the gates, the wickets, and the water level. Each step is explained as it happens.</p>
+    </div>
+
+    <h3>View</h3>
+    <div class="toggles">
+      <label><input type="checkbox" id="tPins" checked> Show markers</label>
+    </div>
+    <button class="reset" id="reset" type="button">Reset view</button>
+
+    <h3>The lock</h3>
+    <ul class="parts" data-group="lock"></ul>
+    <h3>Along the canal</h3>
+    <ul class="parts" data-group="canal"></ul>
+    <h3>Peninsula</h3>
+    <ul class="parts" data-group="pen"></ul>
+    <h3>The canal era</h3>
+    <ul class="parts" data-group="era"></ul>
+
+    <button class="about-btn" type="button" data-key="about">
+      <strong>About this model</strong>
+      <span>What is real, what is reconstructed, and how to visit Lock 29</span>
+    </button>
+  </aside>
+</div>
+
+<!-- three.js r128 and OrbitControls, shared with the Brooks tour so this page doesn't depend on outside sites -->
+<script src="../brooks-ship/lib/three.min.js"></script>
+<script src="../brooks-ship/lib/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------------- Content ---------------- */
+const INFO = {
+  lock:{group:"lock",title:"How a lock works",body:[
+    "A canal has to be nearly level, or its water would all run downhill. But the land between Lake Erie and the Ohio River is not level. Locks solved the problem by moving boats up and down the hill in steps.",
+    "A lock is a stone chamber with watertight gates at each end. To raise a boat, the crew shuts the gates behind it and lets in water from the higher canal. As the lock fills, the boat floats up. To lower a boat, they let the water out into the lower canal. There are no pumps or engines, only gravity.",
+    "Most locks on the Ohio & Erie Canal raised or lowered boats about 8 to 10 feet. Between Akron and Cleveland, 44 locks stepped boats down almost 400 feet.",
+    "Try it: use the buttons in the side panel to raise or lower a boat."],
+    fact:"A lock 90 feet long and 15 feet wide, filled 9 feet deeper, holds about 90,000 gallons. Every time a boat went through, that much water flowed downhill toward Lake Erie."},
+  gates:{group:"lock",title:"Gates and wickets",body:[
+    "Each end of the lock has a pair of wooden gates that meet in a V pointing toward the higher water. The weight of the water presses the two gates together and seals them. That is why the gates cannot be opened until the water on both sides is level.",
+    "The long timbers on top are balance beams. Pushing a beam swings its gate open or shut. Small doors low in the gates, called wickets or sluice gates, let water in or out slowly to fill or empty the lock.",
+    "Lock tenders, who often lived right beside their locks, worked the gates for passing boats, day or night, and boat crews pitched in."]},
+  stone:{group:"lock",title:"Sandstone walls",body:[
+    "The lock walls are huge blocks of Berea sandstone, quarried just south of the village at what is now Deep Lock Quarry Metro Park. Each block weighed two to four tons and was lifted into place with ropes and pulleys. The walls were about five feet thick at the bottom.",
+    "Lock 29 was rebuilt in 1880. In the canal repairs of the early 1900s, many locks were faced with concrete, but this one was not, so its sandstone is still exposed. Today you can walk down inside the lock and touch the walls.",
+    "Peninsula’s quarries kept working after the canal was finished, shipping stone out by canal boat. Ferdinand Schumacher of Akron, whose oat mills later became part of Quaker Oats, used Berea sandstone for millstones."]},
+  builders:{group:"lock",title:"Canal builders",body:[
+    "Work began in 1825. Laborers dug the canal by hand with picks, shovels, and wheelbarrows, from sunup to sundown, while oxen dragged away stumps and stones. More than 2,000 men were at work by September 1825.",
+    "Many were Irish and German immigrants; others were local farmers who needed cash. They earned about 30 cents a day, plus meals, a place to sleep, and a daily ration of whiskey.",
+    "Swampy ground bred mosquitoes, and malaria, which the workers called “canal fever,” killed many of them. People later said an Irishman was buried for every mile of canal. No one can prove the saying, but it shows how dangerous the work was."],
+    fact:"The whole canal cost about $4.2 million, a little under $14,000 a mile."},
+  canal:{group:"canal",title:"The Ohio & Erie Canal",body:[
+    "The State of Ohio built the canal from 1825 to 1832. It ran 308 miles, from Cleveland on Lake Erie to Portsmouth on the Ohio River. It was about 40 feet wide at the water line and only 4 feet deep.",
+    "Before the canal, a farmer in the middle of Ohio had few good ways to get crops to market, because roads were mud for much of the year. Now a boat could carry his wheat or flour north to Lake Erie and on to the East, or south to the Ohio River and New Orleans.",
+    "Along the way were 146 lift locks, 14 aqueducts, and 14 dams. Locks north of Akron were numbered starting there, so Lock 29 is the 29th lock on the way down to Cleveland."]},
+  boat:{group:"canal",title:"Canal boat",body:[
+    "Canal boats were built to fit the locks: about 80 feet long and 14 feet wide, with only inches to spare. Many were built right here, in Peninsula’s boatyards.",
+    "Freight boats, called line boats, carried wheat, flour, coal, lumber, stone, pork, cheese, and whiskey north, and brought back coffee, tea, sugar, and china from the East. A family or a small crew often lived aboard, in a cramped cabin at the back of the boat.",
+    "Passenger boats, called packets, were pulled by horses at up to 4 miles an hour. By 1832, travelers were promised a trip from Cleveland to Cincinnati in about 80 hours, a journey that had taken weeks."],
+    fact:"Freight boats averaged about 3 miles an hour, about the speed of a person walking."},
+  towpath:{group:"canal",title:"Towpath and mules",body:[
+    "Canal boats had no engines. Mules or horses walked along the towpath beside the canal, pulling the boat on a long towline. Mules were a favorite for freight boats because they were strong, steady, and sure-footed.",
+    "The driver who walked with them was often a boy. James A. Garfield, who grew up near Cleveland and later became the 20th president, ran off at 16 to work on canal boats running between Cleveland and Pittsburgh. Boats on that route came up this valley toward Akron, so his boat likely passed through this very lock. In about six weeks he fell overboard 14 times, caught a fever, and went home, and then went back to school.",
+    "Today the old towpath is the Towpath Trail, used by hikers and bikers all the way through Cuyahoga Valley National Park."]},
+  aqueduct:{group:"canal",title:"The aqueduct",body:[
+    "Right past the lock, a wooden aqueduct carried the canal over the Cuyahoga River: a long trough full of water, set on stone piers, with a walkway alongside for the mules.",
+    "It was a trouble spot. Curves at both ends of the lock and the narrow aqueduct made a bottleneck for boats. The wooden trough leaked, which made it hard to keep the water level right in summer. In winter, freezing water pushed out its sides and hung curtains of icicles underneath; one historian called it “a frozen waterfall.”",
+    "The aqueduct is gone, but its sandstone foundations can still be seen beside the river. The aqueduct in this model is a reconstruction."]},
+  river:{group:"canal",title:"The Cuyahoga River",body:[
+    "Between Akron and Cleveland, the canal follows the Cuyahoga River valley. The river and its branches fed the canal its water, but the river was also a threat. Locks and aqueducts built this close to it could be wrecked by a flood.",
+    "In March 1913, a huge flood swept across Ohio. Reservoirs spilled into the canal, destroying aqueducts, washing out banks, and wrecking locks. In Akron, Lock 1 was blown up with dynamite to let the floodwater through. The state decided the canal was not worth rebuilding."]},
+
+  mill:{group:"pen",title:"Gristmill and dam",body:[
+    "Across the river stood a gristmill, built in 1832, the year the canal was finished. A dam across the Cuyahoga held back water to turn the mill’s waterwheel, which turned heavy millstones that ground farmers’ grain into flour.",
+    "The canal made the mill pay. Flour could go straight onto a boat bound for Cleveland and markets beyond.",
+    "In 1885 Charles Thomas and Chandler Moody bought the mill, and in 1902 they replaced it with a much larger one, Peninsula Mills. It burned on December 26, 1931. Only its sandstone foundation remains, across the river from Lock 29."]},
+  village:{group:"pen",title:"Village of Peninsula",body:[
+    "Hermon Bronson founded Peninsula in 1824 and offered free land to help bring the canal through. When the canal opened in 1827, the village boomed.",
+    "Peninsula became a shipping center, with warehouses, mills, stone quarries, and boatyards where canal boats were built. Boatmen and travelers kept 14 bars and five hotels in business.",
+    "The Valley Railway arrived in 1880. Today the village sits in the middle of Cuyahoga Valley National Park, and many of its 1800s buildings still stand."],
+    fact:"The buildings in this model stand in for the kinds of buildings that lined the canal. They are not copies of real ones."},
+
+  opening:{group:"era",title:"Opening day, 1827",body:[
+    "The first part of the canal to open ran from Akron to Cleveland, right down this valley. On July 3, 1827, the boat State of Ohio left Akron, passed through Peninsula, and stopped for the night at Boston, the next village north. It reached Cleveland the next day, the Fourth of July, to cannon salutes and celebrations.",
+    "Ohio’s governor, Allen Trimble, later reported to the legislature on the opening:"],
+    quote:{text:"The boats were cheered by thousands assembled from the adjacent country at different points",cite:"Governor Allen Trimble, annual message to the Ohio General Assembly, 1827 (as quoted in the Cleveland Plain Dealer, 1943)"},
+    hippLabel:"Reading the governor’s report with HIPP:",
+    hipp:[["Historical context","Only the stretch from Akron to Cleveland was open. Most of the canal was still being dug, and the state had borrowed millions of dollars to pay for it."],
+          ["Intended audience","Members of the Ohio legislature, who would vote on more money to keep building."],
+          ["Purpose","To show that the canal was already a success and worth what it cost."],
+          ["Point of view","The governor of the state that was building the canal, and a supporter of it."]],
+    after:["Think about it: why might a governor describe the opening this way? What other source would you want to check his report against?"]},
+  impact:{group:"era",title:"What the canal changed",body:[
+    "Before the canal, Cleveland merchants shipped about 1,000 barrels of flour to Buffalo. Six years after it opened, 250,000 barrels of flour moved through Cleveland.",
+    "Land along the canal rose in value, by as much as 360 percent in the first ten years. Towns like Akron, Massillon, and Peninsula grew up around locks, basins, and mills, and Cleveland grew from a village into a busy port. By 1850, Ohio had the third-largest population of any state.",
+    "News from New York, which had taken about 30 days to reach Ohio, now arrived in about 10."]},
+  decline:{group:"era",title:"The end of the canal era",body:[
+    "The canal earned its most money in the early 1850s. As railroads spread across Ohio, they took most of the canal’s freight business, and by the 1860s the canal mainly supplied water to mills, factories, and towns.",
+    "In 1880 the Valley Railway was built through the Cuyahoga Valley, right past Peninsula. The flood of 1913 finished off the canal.",
+    "In 1974 Congress set aside the valley as a national park area, with the old towpath as its spine. It became Cuyahoga Valley National Park in 2000."]},
+
+  about:{group:null,title:"About this model",body:[
+    "This model shows Lock 29 and the Peninsula aqueduct as they might have looked in the canal’s busiest years, the mid-1800s. The lock follows the canal’s standard plan, a chamber 90 feet long and 15 feet wide with sandstone walls, and the surviving lock in Peninsula. The aqueduct, mill, and village buildings are reconstructions: the aqueduct and mill are gone, and the buildings stand in for the kinds that were here.",
+    "Distances are shortened, and the real curves at each end of the lock are straightened. The lift is shown as 9 feet, within the usual 8 to 10 feet for the canal’s locks.",
+    "Visit: Lock 29 is at the Lock 29 Trailhead on Mill Street in Peninsula, in Cuyahoga Valley National Park. You can walk down inside the lock, and the foundations of the aqueduct and the mill are close by."],
+    after:["Think about it: the people who dug this canal were poorly paid, and many died doing it. How should a community remember the people whose work built it?"]}
+};
+const ORDER=["lock","gates","stone","builders","canal","boat","towpath","aqueduct","river","mill","village","opening","impact","decline"];
+
+/* ---------------- Fallback ---------------- */
+const stage=document.getElementById("stage");
+function fail(msg){ const d=document.createElement("div"); d.className="fallback"; d.textContent=msg; stage.appendChild(d); }
+if(!window.THREE || !THREE.OrbitControls){ fail("The 3D model could not load. Try reloading the page. The descriptions in the side panel still work."); }
+
+/* ---------------- Ground (units: feet; north = +z, toward Cleveland) ---------------- */
+const X0=-150, X1=150, Z0=-280, Z1=250, BOT=-24;
+const LIFT=9, LOW=0, HIGH=LIFT;                 // water levels below and above the lock
+const WALL_TOP=12.4, Z_UP=-44, Z_LO=44, Z_WALL0=-80, Z_WALL1=46;
+const AQ0=-130, AQ1=-80;                         // aqueduct trough, south and north ends
+const TOWX=17;
+const sm=t=>{ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); };
+function rng(seed){ return ()=>{ seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function G(x,z){
+  let base = z>=45 ? 3 : z<=-45 ? 12 : 12-9*sm((z+45)/90);
+  base += 0.25*Math.sin(x*0.07+0.4)*Math.cos(z*0.05)+0.15*Math.sin(x*0.19+z*0.11);
+  base += Math.max(0,Math.abs(x)-85)*(x<0?0.32:0.22);              // valley sides
+  const dz=Math.abs(z+105);
+  const emb = Math.abs(x)<26 && dz>=22;                            // canal embankments at each end of the aqueduct
+  if(!emb){
+    if(dz<24) base=-16+0.3*Math.sin(x*0.1);
+    else if(dz<46) base=-16+(base+16)*sm((dz-24)/22);
+  }
+  // wheel pit and millrace by the mill
+  if(x>-118&&x<-102&&z>-146&&z<-134) return -13;
+  if(x>-142&&x<-102&&z>-142&&z<-136) return Math.min(base,-11);
+  // lock footprint (walls and floors are built separately)
+  if(Math.abs(x)<12.5 && z>=Z_WALL0 && z<=Z_WALL1) return Math.min(base,-6);
+  // canal prism
+  let hw=null, bot=null;
+  if(z>Z_WALL1){ hw=7.5+5.5*sm((z-Z_WALL1)/25); bot=LOW-4; }
+  else if(z<AQ0+2){ hw=7.5+5.5*sm((AQ0+2-z)/30); bot=HIGH-4; }
+  if(hw!==null){
+    const ax=Math.abs(x);
+    if(ax<hw) return bot;
+    if(ax<hw+7) return Math.min(base, bot+(base-bot)*((ax-hw)/7));
+  }
+  return base;
+}
+function regionAt(p){
+  const x=p.x,z=p.z;
+  if(p.y<-8 && z>-145 && z<-65) return "river";
+  if(Math.abs(x-TOWX)<3.5 && z>Z1*-1 && z<Z1) return "towpath";
+  if(Math.abs(x)<20 && (z>Z_WALL1 || z<AQ0)) return "canal";
+  if(x<-85 && z<-120 && z>-185) return "mill";
+  if(x>25 && z<-160) return "village";
+  return null;
+}
+
+if(window.THREE && THREE.OrbitControls) build();
+
+function build(){
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); }
+catch(e){ fail("Your browser could not start 3D graphics (WebGL). Try a different browser or device."); return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.setClearColor(0x000000,0);
+stage.insertBefore(renderer.domElement, stage.firstChild);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(38,1,1,3000);
+const HOME={pos:new THREE.Vector3(), target:new THREE.Vector3(-5,0,-45)};
+const HOME_DIR=new THREE.Vector3(0.78,0.62,0.62).normalize();
+function fitHome(){
+  const w=stage.clientWidth||1000, h=stage.clientHeight||700, asp=w/h, t=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  const d=Math.max((asp<0.9?120:150)/(t*asp), 95/t);
+  HOME.pos.copy(HOME.target).addScaledVector(HOME_DIR,d);
+}
+fitHome(); camera.position.copy(HOME.pos);
+const controls=new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping=true; controls.dampingFactor=0.08;
+controls.minDistance=12; controls.maxDistance=700;
+controls.maxPolarAngle=Math.PI*0.49;
+controls.update();
+
+scene.add(new THREE.HemisphereLight(0xfffbe8,0x4a3f2a,0.8));
+const sun=new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(80,140,60); scene.add(sun);
+const fillLight=new THREE.DirectionalLight(0xffffff,0.25); fillLight.position.set(-90,50,-80); scene.add(fillLight);
+
+const COL={wood:0x7a6146, woodDark:0x4f3d2b, stone:0xb9a27a, ink:0x221a12, gold:0xc9a227, hole:0x120d08, water:0x52706b};
+const pickables=[], byKey={};
+function tag(obj,key){ obj.userData.key=key; (byKey[key]=byKey[key]||[]).push(obj); if(obj.isMesh) pickables.push(obj); return obj; }
+function mat(color,opts){ return new THREE.MeshStandardMaterial(Object.assign({color,roughness:0.9,metalness:0},opts||{})); }
+const inkLine=new THREE.LineBasicMaterial({color:COL.ink,transparent:true,opacity:0.4});
+function edges(m,th){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry,th||25),inkLine); e.raycast=()=>{}; m.add(e); return m; }
+function box(w,h,d,color,x,y,z,key,opts){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color,opts)); m.position.set(x,y,z); if(key) tag(m,key); return m; }
+function boxAt(x0,x1,y0,y1,z0,z1,color,key,opts){ return box(x1-x0,y1-y0,z1-z0,color,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,key,opts); }
+function cyl(rt,rb,h,color,x,y,z,key,opts,seg){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||12),mat(color,opts)); m.position.set(x,y,z); if(key) tag(m,key); return m; }
+
+/* ---- terrain ---- */
+const DX=1, NX=Math.round((X1-X0)/DX), NZ=Math.round((Z1-Z0)/DX);
+const HGT=new Float32Array((NX+1)*(NZ+1));
+(function(){
+  const nv=(NX+1)*(NZ+1), pos=new Float32Array(nv*3), idx=[];
+  for(let j=0;j<=NZ;j++) for(let i=0;i<=NX;i++){ const k=j*(NX+1)+i, x=X0+i*DX, z=Z0+j*DX, y=G(x,z); HGT[k]=y; pos[k*3]=x; pos[k*3+1]=y; pos[k*3+2]=z; }
+  for(let j=0;j<NZ;j++) for(let i=0;i<NX;i++){ const a=j*(NX+1)+i, b=a+1, c=a+NX+1, d=c+1; idx.push(a,c,b, b,c,d); }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const nrm=g.getAttribute("normal"), col=new Float32Array(nv*3);
+  const GRASS=new THREE.Color(0x7b8f53), GRASS2=new THREE.Color(0x6a8048), DIRT=new THREE.Color(0xa08a63), MUD=new THREE.Color(0x5b4a37), BANK=new THREE.Color(0x6e5c43), c=new THREE.Color();
+  for(let k=0;k<nv;k++){
+    const x=pos[k*3], y=pos[k*3+1], z=pos[k*3+2], ny=nrm.getY(k);
+    c.copy(GRASS).lerp(GRASS2,0.5+0.5*Math.sin(x*0.05+z*0.04)*Math.cos(z*0.07));
+    if(Math.abs(x-TOWX)<3.2) c.copy(DIRT);
+    if(z<-160 && x>26 && Math.abs(z+238)<5) c.copy(DIRT);                         // village street
+    const inCanal=(Math.abs(x)<20&&(z>Z_WALL1||z<AQ0));
+    if(inCanal && y<(z>0?LOW:HIGH)+0.5) c.copy(MUD);
+    if(y<-9) c.copy(MUD);
+    c.lerp(BANK,Math.min(1,Math.max(0,(0.88-ny)/0.5))*0.7);
+    col[k*3]=c.r; col[k*3+1]=c.g; col[k*3+2]=c.b;
+  }
+  g.setAttribute("color",new THREE.BufferAttribute(col,3));
+  const m=new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,roughness:1})); m.userData.region=true; pickables.push(m); scene.add(m);
+})();
+function hAt(x,z){
+  const fi=Math.max(0,Math.min(NX-1e-4,(x-X0)/DX)), fj=Math.max(0,Math.min(NZ-1e-4,(z-Z0)/DX));
+  const i=Math.floor(fi), j=Math.floor(fj), u=fi-i, v=fj-j, k=j*(NX+1)+i;
+  return (HGT[k]*(1-u)+HGT[k+1]*u)*(1-v)+(HGT[k+NX+1]*(1-u)+HGT[k+NX+2]*u)*v;
+}
+/* soil sides of the block */
+(function(){
+  const pos=[],col=[]; const top=new THREE.Color(0x4a3826), deep=new THREE.Color(0x8b6b46);
+  function strip(P,a0,a1,hf){
+    for(let a=a0;a<a1;a+=2){ const b=Math.min(a+2,a1), t0=hf(a), t1=hf(b);
+      [[BOT,BOT,Math.min(t0,t1)-1.5,Math.min(t0,t1)-1.5,deep],[Math.min(t0,t1)-1.5,Math.min(t0,t1)-1.5,t0,t1,top]].forEach(([ya,yb,yc,yd,cc])=>{
+        const q=[P(a,ya),P(b,yb),P(b,yd),P(a,ya),P(b,yd),P(a,yc)]; q.forEach(v=>{pos.push(...v); col.push(cc.r,cc.g,cc.b);});
+      });
+    }
+  }
+  strip((a,y)=>[X0,y,a],Z0,Z1,a=>hAt(X0,a)); strip((a,y)=>[X1,y,a],Z0,Z1,a=>hAt(X1,a));
+  strip((a,y)=>[a,y,Z0],X0,X1,a=>hAt(a,Z0)); strip((a,y)=>[a,y,Z1],X0,X1,a=>hAt(a,Z1));
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); g.setAttribute("color",new THREE.Float32BufferAttribute(col,3)); g.computeVertexNormals();
+  scene.add(new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,side:THREE.DoubleSide,roughness:1})));
+})();
+
+/* ---- water ---- */
+const waterMat=(op)=>mat(COL.water,{roughness:0.6,metalness:0,transparent:true,opacity:op||0.92});
+function waterPlane(x0,x1,z0,z1,y,key){ const m=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0),waterMat()); m.rotation.x=-Math.PI/2; m.position.set((x0+x1)/2,y,(z0+z1)/2); tag(m,key); scene.add(m); return m; }
+waterPlane(-20,20,Z_WALL1,Z1,LOW,"canal");
+waterPlane(-20,20,Z0,AQ0+4,HIGH,"canal");
+waterPlane(-7.5,7.5,AQ0,Z_UP,HIGH,"aqueduct");
+const chamberWater=waterPlane(-7.5,7.5,Z_UP,Z_WALL1,LOW,"lock");
+waterPlane(-138,X1,-142,-68,-12,"river");
+waterPlane(X0,-138,-142,-68,-9.5,"river");
+
+/* ---- stone texture ---- */
+function stoneTexture(rx,ry){
+  const c=document.createElement("canvas"); c.width=512; c.height=256; const x=c.getContext("2d"); const r=rng(5);
+  x.fillStyle="#7a6a50"; x.fillRect(0,0,512,256);
+  for(let row=0;row<4;row++){ let px=-(row%2)*60;
+    while(px<512){ const w=96+Math.floor(r()*96), l=58+Math.floor(r()*30);
+      x.fillStyle=`hsl(${36+r()*8},${28+r()*10}%,${l}%)`; x.fillRect(px+2,row*64+2,w-4,60); px+=w; } }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry); return t;
+}
+const wallMat=mat(0xffffff,{map:stoneTexture((Z_WALL1-Z_WALL0)/16,(WALL_TOP+5)/8)});
+const capMat=mat(0xa4916d);
+
+/* ---- lock walls, floor, breast wall ---- */
+[-1,1].forEach(s=>{
+  const w=new THREE.Mesh(new THREE.BoxGeometry(5,WALL_TOP+5,Z_WALL1-Z_WALL0),wallMat); w.position.set(s*10,(WALL_TOP-5)/2,(Z_WALL0+Z_WALL1)/2); tag(w,"stone"); scene.add(w);
+  const cp=new THREE.Mesh(new THREE.BoxGeometry(5.6,0.6,Z_WALL1-Z_WALL0+0.6),capMat); cp.position.set(s*10,WALL_TOP+0.3,(Z_WALL0+Z_WALL1)/2); tag(cp,"stone"); scene.add(cp);
+});
+scene.add(boxAt(-7.5,7.5,LOW-4.6,LOW-4,Z_UP,Z_WALL1,0x6b5a44,"lock"));
+scene.add(boxAt(-7.5,7.5,HIGH-4.6,HIGH-4,Z_WALL0,Z_UP,0x6b5a44,"lock"));
+(function(){ const b=new THREE.Mesh(new THREE.BoxGeometry(15,HIGH-LOW,2),wallMat); b.position.set(0,(LOW-4+HIGH-4)/2,Z_UP+1); tag(b,"lock"); scene.add(b); })();
+
+/* ---- gates ---- */
+const DIR_C=(s)=>Math.atan2(3,-s*7.5);   // closed: leaf points to the middle and upstream (-z)
+const DIR_O=Math.PI/2;                    // open: folded flat against the wall, pointing upstream
+const LEAF=Math.hypot(7.5,3)+0.25;
+function makeGate(s,zh,bot,key){
+  const pivot=new THREE.Group(); pivot.position.set(s*7.5,0,zh);
+  const H=WALL_TOP-bot;
+  const leaf=new THREE.Mesh(new THREE.BoxGeometry(LEAF,H,1),mat(COL.woodDark)); leaf.position.set(LEAF/2,bot+H/2,0); tag(leaf,key); edges(leaf); pivot.add(leaf);
+  for(let y=bot+2;y<WALL_TOP-0.5;y+=2.5){ const r=box(LEAF,0.35,1.15,0x3a2c1f,LEAF/2,y,0,key); pivot.add(r); }
+  const beam=box(14,0.9,0.9,COL.wood,-6.6,WALL_TOP+0.9,0,key); pivot.add(beam);
+  const wick=box(2.2,1.6,0.3,0x2d241a,LEAF*0.55,bot+1.6,0.7,key); pivot.add(wick);
+  const rod=box(0.18,H-1.5,0.18,0x222222,LEAF*0.55,bot+H/2+0.8,0.75,key,{metalness:0.5}); pivot.add(rod);
+  pivot.rotation.y=DIR_C(s); scene.add(pivot);
+  return {set(open,wk){ pivot.rotation.y=DIR_C(s)+(DIR_O-DIR_C(s))*open; wick.position.y=bot+1.6+1.8*wk; }};
+}
+const lowerGates=[makeGate(-1,Z_LO,LOW-4,"gates"),makeGate(1,Z_LO,LOW-4,"gates")];
+const upperGates=[makeGate(-1,Z_UP,HIGH-4,"gates"),makeGate(1,Z_UP,HIGH-4,"gates")];
+
+/* foam where water pours in or out */
+const foamMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false});
+const foam=[]; [-3.5,3.5].forEach(x=>{ const f=new THREE.Mesh(new THREE.CircleGeometry(2.2,20),foamMat); f.rotation.x=-Math.PI/2; f.raycast=()=>{}; foam.push(f); scene.add(f); });
+
+/* ---- aqueduct ---- */
+(function(){
+  const k="aqueduct";
+  scene.add(boxAt(-8.4,8.4,HIGH-4.8,HIGH-4,AQ0,AQ1,COL.wood,k));
+  [-1,1].forEach(s=>{
+    scene.add(edges(boxAt(s>0?7.5:-8.4,s>0?8.4:-7.5,HIGH-4.8,WALL_TOP-0.4,AQ0,AQ1,0x806a4e,k)));
+    for(let z=AQ0+2;z<AQ1;z+=5) scene.add(box(0.6,8.6,0.6,COL.woodDark,s*8.7,HIGH-0.6,z,k));
+  });
+  scene.add(boxAt(8.4,22,HIGH+1.9,HIGH+2.5,AQ0,AQ1,0x8a7353,k));                    // mule walkway
+  for(let z=AQ0+1;z<AQ1;z+=6){ scene.add(box(0.35,3,0.35,COL.woodDark,21.7,HIGH+4,z,k)); }
+  scene.add(boxAt(21.5,21.9,HIGH+5.2,HIGH+5.5,AQ0,AQ1,COL.wood,k));
+  [-1,1].forEach(s=>{ for(let z=AQ0+3;z<AQ1;z+=6) scene.add(box(Math.abs(s)>0?0.5:0.5,6.4,0.5,COL.woodDark,s>0?15:-6,HIGH-0.9,z,k)); });
+  const st=mat(0xffffff,{map:stoneTexture(1.8,2.6)});
+  [[-115],[-95]].forEach(([z])=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(32,20.6,5),st); p.position.set(6.5,-16+10.3,z); tag(p,k); scene.add(p); });
+  [[AQ1-6,AQ1+6],[AQ0-6,AQ0+6]].forEach(([z0,z1])=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(36,21.4,z1-z0),st); p.position.set(5,-16+10.7,(z0+z1)/2); tag(p,k); scene.add(p); });
+  // stringers under the trough
+  [-6,0,6,12,18].forEach(x=>scene.add(boxAt(x-0.5,x+0.5,HIGH-6,HIGH-4.8,AQ0,AQ1,COL.woodDark,k)));
+})();
+
+/* ---- stone pile and tools (builders) ---- */
+(function(){
+  const k="builders", y=hAt(-30,4), st=mat(0xffffff,{map:stoneTexture(0.5,0.6)});
+  [[-31,0,0],[-27,0,1.5],[-29,2.2,0.8],[-34,0,4.5],[-26,0,-4]].forEach(([x,dy,dz])=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(5,2.2,3),st); b.position.set(x,y+1.1+dy,4+dz); b.rotation.y=(x%3)*0.2; tag(b,k); edges(b); scene.add(b); });
+  const wb=new THREE.Group(); wb.add(box(2.4,1,2.2,0x6b5235,0,1.3,0,k)); wb.add(cyl(0.6,0.6,0.3,0x333333,0,0.6,-1.6,k)); wb.children[1].rotation.z=Math.PI/2;
+  [-0.8,0.8].forEach(x=>{ const h=box(0.2,0.2,3.4,COL.wood,x,1.2,1.8,k); wb.add(h); });
+  wb.position.set(-37,hAt(-37,-3),-3); wb.rotation.y=0.6; scene.add(wb);
+  const pick=box(0.2,0.2,4,COL.wood,-23,y+0.3,10,k); pick.rotation.y=1.1; scene.add(pick);
+  const sh=box(0.2,0.2,4.5,COL.wood,-24,y+0.3,12.5,k); sh.rotation.y=0.3; scene.add(sh);
+})();
+
+/* ---- mill, dam, wheel ---- */
+let wheel;
+(function(){
+  const k="mill", st=mat(0xffffff,{map:stoneTexture(2,3)});
+  const f=new THREE.Mesh(new THREE.BoxGeometry(32,26,22),st); f.position.set(-110,-12+13,-157); tag(f,k); scene.add(f);
+  scene.add(edges(boxAt(-126,-94,14,36,-168,-146,0x8f8a7c,k)));
+  const roof=new THREE.Mesh(prism(33,12,23),mat(0x5a4a3c)); roof.position.set(-110,36,-157); tag(roof,k); scene.add(roof);
+  for(let fl=0;fl<2;fl++) for(let x=-122;x<-96;x+=6) scene.add(box(2,2.6,0.3,0x2a241c,x,20+fl*8,-145.8,k));
+  scene.add(box(3,5,0.3,0x2a241c,-110,16.5,-168.2,k));
+  // waterwheel
+  wheel=new THREE.Group(); wheel.position.set(-110,-5,-142);
+  const rimM=mat(COL.woodDark);
+  [-2.2,2.2].forEach(dz=>{ const r=new THREE.Mesh(new THREE.TorusGeometry(7.5,0.35,6,32),rimM); r.position.z=dz; tag(r,k); wheel.add(r); });
+  for(let i=0;i<16;i++){ const a=i/16*Math.PI*2; const p=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.3,4.6),mat(COL.wood)); p.position.set(Math.cos(a)*7.4,Math.sin(a)*7.4,0); p.rotation.z=a; tag(p,k); wheel.add(p);
+    if(i%2===0){ const sp=new THREE.Mesh(new THREE.BoxGeometry(14.6,0.35,0.35),rimM); sp.rotation.z=a; tag(sp,k); wheel.add(sp); } }
+  const ax=cyl(0.6,0.6,8,0x2a2a2a,0,0,0,k); ax.rotation.x=Math.PI/2; wheel.add(ax);
+  scene.add(wheel);
+  // race (flume) from the dam pool to the wheel
+  scene.add(boxAt(-142,-116,-11,-10.4,-141,-137,COL.woodDark,k));
+  [-141,-137].forEach(z=>scene.add(boxAt(-142,-116,-11,-8.4,z-0.25,z+0.25,COL.wood,k)));
+  const rw=new THREE.Mesh(new THREE.PlaneGeometry(26,3.5),waterMat()); rw.rotation.x=-Math.PI/2; rw.position.set(-129,-9.3,-139); tag(rw,k); scene.add(rw);
+  // dam
+  scene.add(edges(boxAt(-140,-136,-16,-9.2,-131,-79,0x6e5a40,k)));
+  const spg=new THREE.PlaneGeometry(6,52); spg.rotateX(-Math.PI/2); spg.rotateZ(-0.5);
+  const sp=new THREE.Mesh(spg,new THREE.MeshStandardMaterial({color:0xcfdcd6,transparent:true,opacity:0.6,roughness:0.5}));
+  sp.position.set(-133.3,-10.8,-105); tag(sp,k); scene.add(sp);
+})();
+function prism(w,h,d){
+  const s=new THREE.Shape(); s.moveTo(-w/2,0); s.lineTo(w/2,0); s.lineTo(0,h); s.lineTo(-w/2,0);
+  const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:false}); g.translate(0,0,-d/2); return g;
+}
+
+/* ---- village ---- */
+(function(){
+  const k="village";
+  function bldg(x,z,w,d,h,col,roof,ry){
+    const y=Math.min(hAt(x-w/2,z-d/2),hAt(x+w/2,z-d/2),hAt(x-w/2,z+d/2),hAt(x+w/2,z+d/2))-0.5;
+    const g=new THREE.Group(); g.position.set(x,y,z); g.rotation.y=ry||0;
+    g.add(edges(box(w,h,d,col,0,h/2,0,k)));
+    const r=new THREE.Mesh(prism(w+1.2,w*0.38,d+1.2),mat(roof)); r.position.y=h; tag(r,k); g.add(r);
+    for(let xx=-w/2+3;xx<w/2-1;xx+=5) for(let yy=3;yy<h-2;yy+=7){ g.add(box(1.8,2.6,0.2,0x2a241c,xx,yy+1,d/2+0.05,k)); }
+    scene.add(g); return g;
+  }
+  bldg(42,-195,24,40,18,0x8b7d68,0x4d4036);                       // canal warehouse
+  bldg(82,-212,30,22,22,0xe6dfcc,0x5a4a3c);                       // hotel
+  const porch=boxAt(67,97,0,0.6,-200,-196,COL.wood,k); porch.position.y+=hAt(82,-198)+9; scene.add(porch);
+  bldg(80,-262,20,26,15,0x8c4a36,0x40352c);                       // store
+  bldg(122,-200,18,22,14,0xe9e3d2,0x4a3e34);                      // house
+  const ch=bldg(124,-252,20,34,18,0xf0ebde,0x4a4a4a);             // church
+  ch.add(box(8,12,8,0xf0ebde,0,24,17,k)); const sp=new THREE.Mesh(new THREE.ConeGeometry(5.6,14,4),mat(0x4a4a4a)); sp.position.set(0,37,17); sp.rotation.y=Math.PI/4; tag(sp,k); ch.add(sp);
+  // crane at the warehouse dock
+  const cx=25, cz=-185, cy=hAt(cx,cz);
+  scene.add(box(0.8,16,0.8,COL.woodDark,cx,cy+8,cz,k)); const jib=box(12,0.6,0.6,COL.wood,cx-5,cy+15.5,cz,k); scene.add(jib);
+  // barrels waiting on the dock
+  for(let i=0;i<6;i++) scene.add(cyl(1,1,2.6,0x8a6a44,26+ (i%3)*2.2,cy+1.3,-195+Math.floor(i/3)*2.2,k));
+})();
+
+/* ---- trees ---- */
+(function(){
+  const R=rng(11), T=[], avoid=(x,z)=> (Math.abs(x)<34) || (x>20&&z<-170&&x<140) || (x<-85&&z<-125&&z>-185) || (Math.abs(z+105)<30) || (x<-40&&x>-60&&z>-5&&z<20);
+  let n=0; while(n<90){ const x=X0+6+R()*(X1-X0-12), z=Z0+6+R()*(Z1-Z0-12); if(avoid(x,z)) continue; T.push([x,z,0.8+R()*0.6]); n++; }
+  const tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.7,0.9,8,6),mat(0x4b3a29),T.length);
+  const cr=new THREE.InstancedMesh(new THREE.ConeGeometry(6,16,7),mat(0x4f6b3b),T.length);
+  const d=new THREE.Object3D();
+  T.forEach(([x,z,s],i)=>{ const y=hAt(x,z); d.position.set(x,y+4*s,z); d.scale.set(s,s,s); d.updateMatrix(); tr.setMatrixAt(i,d.matrix); d.position.set(x,y+14*s,z); d.updateMatrix(); cr.setMatrixAt(i,d.matrix); });
+  tr.raycast=()=>{}; cr.raycast=()=>{}; scene.add(tr); scene.add(cr);
+})();
+
+/* ---- canal boat ---- */
+const boat=new THREE.Group(); let boatPost;
+(function(){
+  const k="boat";
+  const s=new THREE.Shape();
+  s.moveTo(-7,37); s.lineTo(-7,-30); s.quadraticCurveTo(-7,-40,0,-40); s.quadraticCurveTo(7,-40,7,-30); s.lineTo(7,37); s.quadraticCurveTo(7,40,4,40); s.lineTo(-4,40); s.quadraticCurveTo(-7,40,-7,37);
+  const g=new THREE.ExtrudeGeometry(s,{depth:6,bevelEnabled:false,curveSegments:10}); g.rotateX(Math.PI/2); g.translate(0,6,0);
+  const hull=new THREE.Mesh(g,mat(0x3b2a1e)); tag(hull,k); edges(hull,30); boat.add(hull);
+  [-1,1].forEach(sd=>{ boat.add(box(0.12,0.6,64,0x8a2b20,sd*7.02,5.0,4,k)); boat.add(box(0.12,0.45,64,0xe8e0c8,sd*7.02,5.6,4,k)); });
+  boat.add(box(13.2,0.15,76,0x7a5f40,0,6.05,0,k));
+  boat.add(edges(box(12,4.4,15,0xe9e2cf,0,8.25,29,k)));
+  boat.add(box(12.8,0.4,15.8,0x7a2e22,0,10.65,29,k));
+  [-6.05,6.05].forEach(x=>{ [25,30].forEach(z=>boat.add(box(0.1,1.2,1.6,0x2a241c,x,8.8,z,k))); });
+  boat.add(box(3,3.4,0.1,0x4a3a2a,0,7.9,21.45,k));
+  [-22,-8,6].forEach(z=>boat.add(edges(box(11.6,1.2,10,0x5b4632,0,6.7,z,k))));
+  [[-3,-33],[0,-34],[3,-33]].forEach(([x,z])=>boat.add(cyl(0.9,0.9,2.6,0x8a6a44,x,7.4,z,k)));
+  boatPost=cyl(0.3,0.3,3,0x3a2c1f,4.5,7.5,-28,k); boat.add(boatPost);
+  boat.add(box(0.4,5,5,0x3a2c1f,0,3.5,42.5,k));
+  const til=box(0.3,0.3,8,COL.wood,0,11.3,38,k); boat.add(til);
+  scene.add(boat);
+})();
+
+/* ---- mules ---- */
+function makeMule(){
+  const k="towpath", g=new THREE.Group(), c=0x5e4a3a, legs=[];
+  g.add(box(1.7,1.9,4.4,c,0,3.5,0,k));
+  [[-0.55,1.6],[0.55,1.6],[-0.55,-1.6],[0.55,-1.6]].forEach(([x,z])=>{ const p=new THREE.Group(); p.position.set(x,2.7,z); p.add(box(0.38,2.6,0.38,0x4a3a2e,0,-1.3,0,k)); g.add(p); legs.push(p); });
+  const neck=box(0.9,1.9,1.0,c,0,4.7,-2.3,k); neck.rotation.x=-0.6; g.add(neck);
+  const head=box(0.75,0.85,2.0,c,0,5.3,-3.4,k); head.rotation.x=0.45; g.add(head);
+  [-0.25,0.25].forEach(x=>{ const e=box(0.15,0.9,0.22,c,x,6.0,-2.75,k); e.rotation.x=-0.2; g.add(e); });
+  const tail=box(0.15,1.5,0.15,0x3a2e24,0,3.2,2.35,k); tail.rotation.x=0.3; g.add(tail);
+  g.add(box(1.95,0.5,0.55,0x2b2118,0,4.35,-1.95,k));
+  scene.add(g); return {g,legs};
+}
+const mules=[makeMule(),makeMule()];
+const lineGeo=new THREE.BufferGeometry(); lineGeo.setAttribute("position",new THREE.Float32BufferAttribute(new Array(6).fill(0),3));
+const towline=new THREE.Line(lineGeo,new THREE.LineBasicMaterial({color:0x2b2118})); towline.raycast=()=>{}; scene.add(towline);
+
+/* ---------------- Lock state and the boat's trip ---------------- */
+const S={yc:LOW, lo:0, up:0, wkU:0, wkL:0, zb:110, dir:-1, walking:false};
+function levelAt(z){ return z>Z_WALL1 ? LOW : z<Z_UP ? HIGH : S.yc; }
+function muleY(z){ return (z>AQ0&&z<AQ1) ? HIGH+2.5 : hAt(TOWX,z); }
+const _v=new THREE.Vector3();
+function applyState(now){
+  chamberWater.position.y=S.yc;
+  lowerGates.forEach(g=>g.set(S.lo,S.wkL)); upperGates.forEach(g=>g.set(S.up,S.wkU));
+  const pour=Math.max(S.wkU,S.wkL);
+  foamMat.opacity=pour*(0.55+0.2*Math.sin(now/120));
+  foam.forEach((f,i)=>{ if(S.wkU>S.wkL) f.position.set(f.position.x||(i?3.5:-3.5),S.yc+0.08,Z_UP+4); else f.position.set(i?3.5:-3.5,LOW+0.08,Z_LO+8); f.scale.setScalar(0.8+0.3*Math.sin(now/90+i)); });
+  boat.position.set(0,levelAt(S.zb)-3,S.zb); boat.rotation.y=S.dir<0?0:Math.PI;
+  const lead=S.zb+S.dir*85;
+  mules.forEach((m,i)=>{ const z=lead-S.dir*7.5*i; m.g.position.set(TOWX,muleY(z),z); m.g.rotation.y=S.dir<0?0:Math.PI;
+    m.legs.forEach((l,j)=>{ l.rotation.x = S.walking ? 0.45*Math.sin(now/170+(j%2?Math.PI:0)+(j>1?Math.PI/2:0)) : 0; }); });
+  const m2=mules[1].g.position; boatPost.getWorldPosition(_v);
+  const a=lineGeo.getAttribute("position"); a.setXYZ(0,m2.x,m2.y+4.3,m2.z+S.dir*1.9); a.setXYZ(1,_v.x,_v.y+1.2,_v.z); a.needsUpdate=true;
+}
+
+const capEl=document.getElementById("caption"), capN=document.getElementById("capN"), capT=document.getElementById("capT");
+const runUp=document.getElementById("runUp"), runDown=document.getElementById("runDown");
+let seq=null;
+function step(text,dur,fn,init){ return {text,dur,fn,init}; }
+function closeAll(){ const lo0=S.lo, up0=S.up; return step("Getting the lock ready: both pairs of gates are shut.",1500,t=>{ S.lo=lo0*(1-t); S.up=up0*(1-t); }); }
+const pulse=t=> t<0.12 ? t/0.12 : t>0.88 ? (1-t)/0.12 : 1;
+function fill(text){ return step(text,7000,t=>{ S.wkU=pulse(t); S.yc=LOW+(HIGH-LOW)*sm(t); }); }
+function drain(text){ return step(text,7000,t=>{ S.wkL=pulse(t); S.yc=HIGH-(HIGH-LOW)*sm(t); }); }
+function move(text,z0,z1,dur){ return step(text,dur,t=>{ S.zb=z0+(z1-z0)*sm(t); S.walking=t>0&&t<1; },()=>{ S.zb=z0; }); }
+function gate(text,which,to){ let from; return step(text,3000,t=>{ S[which]=from+(to-from)*sm(t); },()=>{ from=S[which]; }); }
+function start(kind){
+  if(seq) return;
+  const steps=[];
+  if(S.lo>0.01||S.up>0.01) steps.push(closeAll());
+  if(kind==="up"){
+    steps.push(step("A southbound boat from Cleveland waits below the lock.",1500,()=>{},()=>{ S.dir=-1; S.zb=110; }));
+    if(S.yc>LOW+0.01) steps.push(drain("The lock is full, so it has to be emptied first. The wickets in the lower gates open, and water drains out into the lower canal."));
+    steps.push(gate("The water in the lock is level with the lower canal, so the lower gates can swing open.","lo",1));
+    steps.push(move("The mules tow the boat into the lock. With only about six inches to spare on each side, the steersman has to line it up carefully.",110,0,8000));
+    steps.push(gate("The lower gates close behind the boat.","lo",0));
+    steps.push(fill("The wickets in the upper gates open. Water from the higher canal pours in, and the boat rises about 9 feet."));
+    steps.push(gate("The lock is now level with the upper canal, so the upper gates can open.","up",1));
+    steps.push(move("The mules pull the boat out of the lock and across the aqueduct over the Cuyahoga River, on toward Akron.",0,-180,11000));
+    steps.push(step("Done. The boat climbed 9 feet with no engine and no pump, only gravity and the water of the canal.",0,()=>{}));
+  }else{
+    steps.push(step("A northbound boat from Akron comes across the aqueduct.",1500,()=>{},()=>{ S.dir=1; S.zb=-180; }));
+    if(S.yc<HIGH-0.01) steps.push(fill("The lock is empty, so it has to be filled first. The wickets in the upper gates open, and water pours in until the lock is level with the upper canal."));
+    steps.push(gate("Now the upper gates can swing open.","up",1));
+    steps.push(move("The mules tow the boat off the aqueduct and into the lock.",-180,0,10000));
+    steps.push(gate("The upper gates close behind the boat.","up",0));
+    steps.push(drain("The wickets in the lower gates open. Water drains out into the lower canal, and the boat sinks about 9 feet."));
+    steps.push(gate("The lock is now level with the lower canal, so the lower gates can open.","lo",1));
+    steps.push(move("The mules pull the boat out, north toward Cleveland and Lake Erie.",0,150,9000));
+    steps.push(step("Done. Lowering this one boat sent about 90,000 gallons of water downhill toward Lake Erie.",0,()=>{}));
+  }
+  seq={steps,i:-1,t0:0};
+  runUp.disabled=runDown.disabled=true;
+  next(performance.now());
+}
+function next(now){
+  seq.i++;
+  const s=seq.steps[seq.i];
+  if(!s){ seq=null; runUp.disabled=runDown.disabled=false; return; }
+  if(s.init) s.init();
+  seq.t0=now;
+  const n=seq.steps.length, i=seq.i;
+  capN.textContent = s.dur===0 ? "" : `Step ${i+1} of ${n-1}`;
+  capT.textContent=s.text; capEl.hidden=false;
+  if(prefersReduced || s.dur===0){ s.fn(1); S.walking=false; if(s.dur===0){ seq=null; runUp.disabled=runDown.disabled=false; } }
+}
+function tickSeq(now){
+  if(!seq) return;
+  const s=seq.steps[seq.i]; if(!s) return;
+  const dur=prefersReduced?600:s.dur;
+  const t=Math.min(1,(now-seq.t0)/dur);
+  s.fn(t);
+  if(t>=1){ S.walking=false; next(now); }
+}
+runUp.addEventListener("click",()=>start("up"));
+runDown.addEventListener("click",()=>start("down"));
+
+/* ---------------- Markers ---------------- */
+const ANCHORS={
+  lock:[-10,WALL_TOP+1.2,0], gates:[0,WALL_TOP+1.5,Z_LO], stone:[-12.8,9,32], builders:[-30,hAt(-30,4)+5,4],
+  canal:[0,LOW+1,150], boat:null, towpath:null, aqueduct:[15,HIGH+3,-105], river:[-55,-11,-105],
+  mill:[-110,44,-157], village:[82,hAt(82,-212)+26,-212]
+};
+const pinsEl=document.getElementById("pins"), pins={};
+Object.keys(ANCHORS).forEach(k=>{
+  const b=document.createElement("button"); b.type="button"; b.className="pin";
+  b.innerHTML='<span class="dot"></span><span class="lbl"></span>'; b.querySelector(".lbl").textContent=INFO[k].title;
+  b.setAttribute("aria-label",INFO[k].title); b.addEventListener("click",e=>{e.stopPropagation(); select(k,true);});
+  pinsEl.appendChild(b); pins[k]={el:b};
+});
+const _a=new THREE.Vector3();
+function anchorOf(k){
+  if(k==="boat") return _a.set(0,levelAt(S.zb)+9,S.zb).clone();
+  if(k==="towpath"){ const p=mules[0].g.position; return _a.set(p.x,p.y+7,p.z).clone(); }
+  return ANCHORS[k] ? new THREE.Vector3(...ANCHORS[k]) : null;
+}
+
+/* ---------------- Part list ---------------- */
+document.querySelectorAll(".parts").forEach(ul=>{
+  ORDER.filter(k=>INFO[k].group===ul.dataset.group).forEach(k=>{
+    const li=document.createElement("li"), b=document.createElement("button"); b.type="button"; b.dataset.key=k; b.textContent=INFO[k].title;
+    b.addEventListener("click",()=>select(k,true)); li.appendChild(b); ul.appendChild(li);
+  });
+});
+document.querySelector(".about-btn").addEventListener("click",()=>select("about",false));
+
+/* ---------------- Card ---------------- */
+const card=document.getElementById("card"), cardBody=document.getElementById("cardBody");
+document.getElementById("closeCard").addEventListener("click",()=>select(null));
+function el(t,text,cls){ const e=document.createElement(t); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+function renderCard(k){
+  cardBody.innerHTML=""; const d=INFO[k];
+  cardBody.appendChild(el("h2",d.title));
+  d.body.forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.quote){ const q=el("blockquote"); q.appendChild(el("span",d.quote.text)); q.appendChild(el("cite",d.quote.cite)); cardBody.appendChild(q); }
+  if(d.hipp){ cardBody.appendChild(el("p",d.hippLabel||"Reading the source with HIPP:")); const dl=el("dl"); d.hipp.forEach(([a,b])=>{dl.appendChild(el("dt",a)); dl.appendChild(el("dd",b));}); cardBody.appendChild(dl); }
+  (d.after||[]).forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.fact) cardBody.appendChild(el("p",d.fact,"fact"));
+  card.scrollTop=0;
+}
+
+/* ---------------- Selection ---------------- */
+let selected=null, hovered=null;
+const GOLD=new THREE.Color(COL.gold), BLACK=new THREE.Color(0x000000);
+function setGlow(k,amt){ (byKey[k]||[]).forEach(o=>{ if(o.material&&o.material.emissive){ o.material.emissive.copy(amt?GOLD:BLACK); o.material.emissiveIntensity=amt||0; } }); }
+const prefersReduced=window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tween=null, userMoved=false;
+const BIG={canal:1,river:1,village:1,mill:1,stone:1,lock:1,aqueduct:1};
+function select(k,fly){
+  if(selected) setGlow(selected,0);
+  selected=k;
+  document.querySelectorAll(".parts button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+  Object.entries(pins).forEach(([pk,p])=>p.el.classList.toggle("on",pk===k));
+  if(!k){ card.hidden=true; return; }
+  if(k!=="about") setGlow(k, BIG[k]?0.22:0.45);
+  renderCard(k); card.hidden=false;
+  if(fly) userMoved=true;
+  if(window.innerWidth<=860){ const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top<-r.height*0.4) stage.scrollIntoView({behavior:prefersReduced?"auto":"smooth",block:"start"}); }
+  const a=anchorOf(k);
+  if(fly && a){
+    let to=a.clone();
+    const from=controls.target.clone(); const offset=camera.position.clone().sub(from);
+    { const len=Math.max(70,Math.min(offset.length(),170)); const hz=new THREE.Vector3(offset.x,0,offset.z); if(hz.lengthSq()<1e-6) hz.set(0.7,0,0.7);
+      const el2=Math.max(0.5,Math.min(1.2,Math.asin(Math.max(-1,Math.min(1,offset.y/offset.length())))));
+      hz.setLength(Math.cos(el2)*len); offset.set(hz.x,Math.sin(el2)*len,hz.z); }
+    if(window.innerWidth<=860){ const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion); to.addScaledVector(up,-0.5*offset.length()*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))); }
+    if(prefersReduced){ controls.target.copy(to); camera.position.copy(to.clone().add(offset)); }
+    else tween={t0:performance.now(),dur:650,from,to,camFrom:camera.position.clone(),camTo:to.clone().add(offset)};
+  }
+}
+
+/* ---------------- Toggles ---------------- */
+const tPins=document.getElementById("tPins");
+tPins.addEventListener("change",()=>pinsEl.classList.toggle("off",!tPins.checked));
+document.getElementById("reset").addEventListener("click",()=>{
+  fitHome();
+  if(prefersReduced){ camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+  else tween={t0:performance.now(),dur:700,from:controls.target.clone(),to:HOME.target.clone(),camFrom:camera.position.clone(),camTo:HOME.pos.clone()};
+});
+
+/* ---------------- Picking ---------------- */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function visibleChain(o){ while(o){ if(!o.visible) return false; o=o.parent; } return true; }
+function pick(ev){
+  const r=renderer.domElement.getBoundingClientRect();
+  ndc.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(pickables.filter(visibleChain),false);
+  if(!hits.length) return null;
+  return hits[0].object.userData.region ? regionAt(hits[0].point) : hits[0].object.userData.key;
+}
+let down=null;
+renderer.domElement.addEventListener("pointerdown",e=>{down={x:e.clientX,y:e.clientY};});
+renderer.domElement.addEventListener("pointerup",e=>{ if(!down) return; const mv=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null; if(mv>6) return; select(pick(e),false); });
+renderer.domElement.addEventListener("pointermove",e=>{
+  if(e.pointerType!=="mouse") return;
+  const k=pick(e);
+  if(k!==hovered){ if(hovered&&hovered!==selected) setGlow(hovered,0); hovered=k; if(k&&k!==selected) setGlow(k,BIG[k]?0.1:0.2); renderer.domElement.style.cursor=k?"pointer":"grab"; }
+});
+renderer.domElement.addEventListener("pointerleave",()=>{ if(hovered&&hovered!==selected) setGlow(hovered,0); hovered=null; });
+
+/* ---------------- Resize + loop ---------------- */
+function resize(){
+  const w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  if(!userMoved){ fitHome(); camera.position.copy(HOME.pos); controls.target.copy(HOME.target); }
+}
+controls.addEventListener("start",()=>{userMoved=true;});
+new ResizeObserver(resize).observe(stage); resize();
+
+const v=new THREE.Vector3();
+function updatePins(){
+  const w=stage.clientWidth, h=stage.clientHeight;
+  Object.entries(pins).forEach(([k,p])=>{
+    v.copy(anchorOf(k)).project(camera);
+    if(v.z>1){ p.el.style.display="none"; return; }
+    p.el.style.display="";
+    const o=window.innerWidth<=860?6.5:9; p.el.style.transform=`translate(${(v.x*0.5+0.5)*w-o}px,${(-v.y*0.5+0.5)*h-o}px)`;
+  });
+}
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function loop(now){
+  tickSeq(now);
+  applyState(now);
+  if(!prefersReduced) wheel.rotation.z=-now/2600;
+  if(tween){ const t=Math.min((now-tween.t0)/tween.dur,1), e=ease(t); controls.target.lerpVectors(tween.from,tween.to,e); camera.position.lerpVectors(tween.camFrom,tween.camTo,e); if(t>=1) tween=null; }
+  controls.update();
+  renderer.render(scene,camera);
+  updatePins();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+window.__lock={select,start,S,controls,camera,regionAt};
+}
+})();
+</script>
+</body>
+</html>
