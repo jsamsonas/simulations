@@ -1,0 +1,1084 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Be Wilberforce: The Campaign Against the Slave Trade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#D8DDD0;
+  --paper:#EFF2E9;
+  --paper-2:#E4E8DC;
+  --ink:#22251E;
+  --ink-soft:#565B4F;
+  --rule:#B5BBA9;
+  --river:#3B6987;
+  --seal:#952A2A;
+  --on-seal:#FBF7F2;
+  --brass:#7E5D1C;
+  --brass-fill:#C9A04A;
+  --map:#E6EADD;
+  --halo:#E6EADD;
+  --sea:#D3DFDD;
+  --leaf:#5C7A48;
+  --wood:#8A5A34;
+  --snow:#FBFCF8;
+  --shadow:0 1px 0 rgba(34,37,30,.06), 0 18px 40px -24px rgba(34,37,30,.5);
+  --display:"IM Fell English","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --text:"Alegreya Sans","Gill Sans","Segoe UI","Trebuchet MS",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+    --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+    --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F140F; --paper:#192019; --paper-2:#20281F; --ink:#E3E7DA; --ink-soft:#A8AF9D;
+  --rule:#3A4537; --river:#8BB5CF; --seal:#DB7261; --on-seal:#1B0D0B; --brass:#DFBD6B;
+  --brass-fill:#BE9641; --map:#1D251D; --halo:#1D251D; --sea:#1A2A2D; --leaf:#8DB07A; --wood:#C08A5E; --snow:#DCE4E2;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.8);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.125rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--river);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:18px clamp(12px,3vw,32px) 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;min-height:34px}
+.brand{font-family:var(--display);font-size:1.2rem;color:var(--ink-soft)}
+.seals{display:flex;gap:7px;list-style:none;margin:0;padding:0}
+.seal{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);display:grid;place-items:center;font-family:var(--display);font-size:.9rem;color:var(--ink-soft)}
+.seal.current{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 14%,transparent)}
+.seal.match{background:var(--brass-fill);border-color:var(--brass-fill);color:#2A1E05}
+.seal.diff{background:var(--ink-soft);border-color:var(--ink-soft);color:var(--paper)}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);padding:clamp(16px,3.4vw,40px)}
+.content{max-width:740px;margin:clamp(20px,3vw,32px) auto 0}
+
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .45em}
+h1{font-size:clamp(3rem,9vw,5.8rem);letter-spacing:-.01em;line-height:.95}
+h2{font-size:clamp(2rem,4.6vw,3rem)}
+h3{font-size:1.6rem}
+.sub{font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,1.5rem);color:var(--ink-soft);margin:.25em 0 1em}
+.dateline{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.1rem;margin:0 0 .3em}
+.prose p{margin:0 0 .9em;max-width:64ch}
+.prose p:last-child{margin-bottom:0}
+
+/* map */
+figure.map{margin:0}
+figure.map svg{display:block;width:100%;height:auto;background:var(--map);border:1px solid var(--rule);border-radius:2px}
+figure.map figcaption{font-family:var(--display);font-style:italic;color:var(--ink-soft);font-size:1.02rem;margin-top:8px}
+.m-frame{fill:none;stroke:var(--ink-soft);stroke-width:1}
+.m-sea{fill:var(--sea)}
+.m-coast{fill:none;stroke:var(--ink-soft);stroke-width:.9}
+.m-ridge{fill:none;stroke:var(--ink-soft);stroke-width:.9;opacity:.6;stroke-linecap:round;stroke-linejoin:round}
+.m-river{fill:none;stroke:var(--river);stroke-linecap:round;stroke-linejoin:round}
+.m-rlabel{fill:var(--river);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-region{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:12px;opacity:.85}
+.m-label{fill:var(--ink);font-family:var(--display);font-size:11px;paint-order:stroke;stroke:var(--halo);stroke-width:3.5px;stroke-linejoin:round}
+.m-note{fill:var(--ink-soft);font-family:var(--display);font-style:italic;font-size:9.5px}
+.m-dot{fill:var(--ink)}
+.m-fort{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.m-road{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m-here{fill:var(--seal)}
+.m-ring{fill:none;stroke:var(--seal);stroke-width:1.8}
+.m-cart{fill:var(--paper);stroke:var(--ink-soft);stroke-width:.9}
+.m-title{fill:var(--ink);font-family:var(--display);font-size:12px}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease-in-out .2s forwards}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.35}}
+
+/* title */
+.field{display:grid;gap:6px;margin:20px 0 12px;max-width:420px}
+.field label{font-weight:700}
+.field input{font:inherit;padding:11px 12px;border:1.5px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink)}
+.field input:focus{border-color:var(--river)}
+.hint{color:var(--seal);font-size:1rem;min-height:1.5em;margin:0}
+.welcome{margin:18px 0 6px;font-family:var(--display);font-size:1.3rem}
+.titlegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end;margin-bottom:clamp(20px,3vw,30px)}
+@media (max-width:800px){.titlegrid{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.05rem;border-radius:3px;padding:11px 20px;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink)}
+.btn:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.btn.primary{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--seal) 88%,black)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* intro */
+.parties{display:grid;margin-top:6px}
+.party{display:grid;grid-template-columns:9rem 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.party:last-child{border-bottom:1px solid var(--rule)}
+.party strong{font-family:var(--display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.party p{margin:0}
+@media (max-width:520px){.party{grid-template-columns:1fr;gap:2px}}
+.commission{margin:22px 0 0;border:1px solid var(--rule);background:var(--paper-2);padding:18px 20px;border-radius:2px}
+.commission h3{font-size:1.35rem;margin-bottom:.5em}
+.commission dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.commission dt{color:var(--ink-soft)}
+.commission dd{margin:0;font-weight:500}
+
+/* decisions */
+.question{font-family:var(--display);font-size:1.55rem;line-height:1.2;margin:1.1em 0 .6em}
+.orders{display:grid;gap:10px}
+.order{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--paper-2);border:1px solid var(--rule);border-left:5px solid var(--rule);border-radius:3px;padding:13px 16px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
+.order:hover:not(:disabled){border-left-color:var(--ink-soft)}
+.order[aria-pressed="true"]{border-color:var(--seal);border-left-color:var(--seal);background:color-mix(in srgb,var(--seal) 9%,var(--paper-2))}
+.order:disabled{cursor:default}
+.order:disabled:not([aria-pressed="true"]){opacity:.5}
+.mark{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink-soft);display:grid;place-items:center;font-family:var(--display);font-size:1.05rem;color:var(--ink-soft);margin-top:-1px}
+.order[aria-pressed="true"] .mark{background:var(--seal);border-color:var(--seal);color:var(--on-seal)}
+.panel{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
+.verdict{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.stamp{width:88px;height:88px;flex:none;border-radius:50%;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:.82rem;line-height:1.08;padding:10px;border:2px solid;transform:rotate(-9deg);animation:stamp .4s cubic-bezier(.2,.9,.3,1.25)}
+.stamp.match{color:var(--brass);border-color:var(--brass);box-shadow:inset 0 0 0 3px var(--paper),inset 0 0 0 4.5px var(--brass)}
+.stamp.diff{color:var(--ink-soft);border-color:var(--ink-soft);border-style:dashed}
+@keyframes stamp{from{transform:scale(1.7) rotate(-9deg);opacity:0}to{transform:scale(1) rotate(-9deg);opacity:1}}
+.verdict p{margin:0;font-size:1.15rem}
+.think{margin-top:20px;border-left:3px solid var(--river);padding:2px 0 2px 16px}
+.think h4{font-family:var(--display);font-weight:400;font-size:1.25rem;margin:0 0 2px;color:var(--river)}
+.think p{margin:0;font-style:italic}
+
+/* results */
+.score{font-family:var(--display);font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:.1em 0 .15em}
+.tablewrap{overflow-x:auto;margin:22px 0 8px}
+table.ledger{width:100%;border-collapse:collapse;min-width:560px;font-size:1.02rem}
+.ledger th{font-family:var(--display);font-weight:400;font-style:italic;text-align:left;color:var(--ink-soft);padding:6px 10px;border-bottom:1.5px solid var(--ink-soft)}
+.ledger td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td.n{font-family:var(--display);font-size:1.15rem;width:2.5rem}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;padding:1px 8px;border-radius:999px;margin-top:4px}
+.tag.match{background:var(--brass-fill);color:#2A1E05}
+.tag.diff{border:1px solid var(--ink-soft);color:var(--ink-soft)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,44px);margin-top:30px}
+@media (max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.styles{display:grid;grid-template-columns:auto auto auto;gap:8px 18px;align-items:center;justify-content:start;margin-top:14px}
+.styles .h{font-family:var(--display);font-style:italic;color:var(--ink-soft)}
+.pips{display:flex;gap:4px}
+.pip{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--rule)}
+.pip.on{background:var(--ink);border-color:var(--ink)}
+.pips.gw .pip.on{background:var(--seal);border-color:var(--seal)}
+textarea.summary{width:100%;min-height:300px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9rem;line-height:1.5;padding:14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper-2);color:var(--ink);resize:vertical}
+.status{margin:0;color:var(--ink-soft)}
+
+.m-nation{fill:color-mix(in srgb,var(--brass-fill) 26%,transparent);stroke:var(--brass);stroke-width:1;stroke-dasharray:4 3}
+.m-nlabel{fill:var(--brass);font-family:var(--display);font-style:italic;font-size:12.5px}
+.m-land{fill:var(--map);stroke:var(--ink-soft);stroke-width:.9}
+.m-water{fill:var(--sea)}
+.m-us{fill:var(--river);stroke:var(--paper);stroke-width:1}
+.m-csa{fill:var(--seal);stroke:var(--paper);stroke-width:1}
+.m-fire{fill:none;stroke:var(--seal);stroke-width:1.8;stroke-dasharray:4 3}
+.m-ship{fill:var(--ink)}
+.m-sea-route{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 3}
+.m-rail{fill:none;stroke:var(--ink);stroke-width:1.6}
+.m-ties{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 6}
+.m-x{fill:none;stroke:var(--seal);stroke-width:2}
+.m-border{fill:none;stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:6 4}
+.fadein{opacity:0;animation:fade .9s ease .6s forwards}
+@keyframes fade{to{opacity:1}}
+/* pictures (drawn in SVG) */
+.visuals{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.visuals{grid-template-columns:minmax(0,1fr)}}
+.scene{margin:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--paper-2)}
+.scene.wide{margin:0 0 6px}
+.scene svg{display:block;width:100%;height:auto}
+svg .ink{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .thin{stroke-width:1.3}
+svg .dash{stroke-dasharray:5 5}
+svg .red{stroke:var(--seal)}
+svg .f-none{fill:none} svg .f-paper{fill:var(--paper)} svg .f-wood{fill:var(--wood)} svg .f-gold{fill:var(--brass-fill)}
+svg .f-green{fill:var(--leaf)} svg .f-blue{fill:var(--river)} svg .f-red{fill:var(--seal)} svg .f-ink{fill:var(--ink)}
+svg .f-snow{fill:var(--snow)} svg .f-sky{fill:var(--paper-2);stroke:none}
+svg .f-soft{fill:color-mix(in srgb,var(--ink) 15%,var(--paper-2))}
+svg .f-water{fill:color-mix(in srgb,var(--river) 26%,var(--paper-2))}
+svg .f-clear{fill:color-mix(in srgb,var(--river) 48%,var(--paper-2))}
+svg .f-mud{fill:color-mix(in srgb,var(--wood) 48%,var(--paper-2))}
+svg .f-ground{fill:color-mix(in srgb,var(--leaf) 26%,var(--paper-2))}
+svg .f-sand{fill:color-mix(in srgb,var(--brass-fill) 34%,var(--paper-2))}
+svg .f-brick{fill:color-mix(in srgb,var(--seal) 50%,var(--paper-2))}
+.sv-label{font-family:var(--text);font-weight:700;fill:var(--ink)}
+.sv-tag{font-size:13px}
+.sv-tiny{font-size:8px}
+.sv-quote,.sv-hand{font-family:var(--display);font-style:italic;font-weight:400;font-size:15px}
+.sv-poster-sm{font-family:var(--display);font-weight:400;font-size:14px}
+.sv-poster{font-family:var(--display);font-weight:400;font-size:24px}
+.sv-poster-lg{font-family:var(--display);font-weight:400;font-size:42px;fill:var(--seal)}
+
+/* advisors */
+.advisors{margin:22px 0 4px;padding:16px 18px;background:var(--paper-2);border:1px solid var(--rule);border-radius:3px}
+.adv-h{font-size:1.35rem;margin:0 0 .15em}
+.adv-hint{margin:0 0 12px;color:var(--ink-soft);font-size:1rem}
+.adv-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.adv{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--river);border-radius:3px}
+.adv strong{font-family:var(--display);font-weight:400;font-size:1.15rem;line-height:1.15}
+.adv span{font-size:.92rem;color:var(--ink-soft);line-height:1.3}
+.adv:hover{border-color:var(--ink-soft);border-top-color:var(--river)}
+.adv[aria-pressed="true"]{border-color:var(--river);background:color-mix(in srgb,var(--river) 10%,var(--paper))}
+.quote{margin:14px 0 0;padding:12px 16px;border-left:4px solid var(--river);background:var(--paper)}
+.quote p{margin:0;font-family:var(--display);font-style:italic;font-size:1.2rem;line-height:1.35}
+.quote footer{margin-top:6px;font-size:.95rem;color:var(--ink-soft)}
+.m-lake{fill:var(--sea);stroke:var(--ink-soft);stroke-width:.7}
+.m-nlabel.csa{fill:var(--seal)}
+
+.m-france{fill:color-mix(in srgb,var(--brass-fill) 20%,var(--map));stroke:none}
+.m-city{fill:color-mix(in srgb,var(--ink) 9%,var(--map));stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:4 3}
+@media (prefers-reduced-motion: reduce){
+  .fadein{opacity:1}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .draw{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand" id="brand"></div>
+    <ol class="seals" id="seals" aria-label="Decision progress"></ol>
+  </header>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ======================================================================
+   GAME SETTINGS
+   ====================================================================== */
+const GAME = {
+  title: "Be Wilberforce",
+  subtitle: "The Campaign Against the Slave Trade, 1785–1807",
+  reportTitle: "BE WILBERFORCE: The Campaign Against the Slave Trade",
+  blurb: "Face seven real decisions William Wilberforce made in his long fight to end Britain’s slave trade. Hear from the people around you, make the call, then find out what really happened. There are no right answers. You don’t know how the story ends.",
+  leader: "Wilberforce",
+  leaderPoss: "Wilberforce’s",
+  leaderLabel: "Wilberforce",
+  storageKey: "beWilberforce.v1",
+  titleMap: {kind:"atlantic", pins:[{at:"london", here:true}], route:"triangle", caption:"Britain and the Atlantic world in 1785"}
+};
+
+const STYLES = ["conscience", "strategy", "public"];
+
+/* ======================================================================
+   STORY CONTENT
+   ====================================================================== */
+const INTRO = {
+  heading: "A trade in human beings",
+  paras: [
+    "In the 1780s, Britain is the world’s leading slave-trading nation. Every year, British ships carry tens of thousands of captive Africans across the Atlantic to work on sugar plantations in the West Indies. The trade has made ports like Liverpool and Bristol rich, and sugar has become part of everyday British life.",
+    "Most Britons have never seen a slave ship or a plantation. To many, the trade seems like a normal part of the economy, and it is defended by powerful merchants, plantation owners, and members of Parliament. A small group disagrees: Quakers, who have opposed slavery for years, and a growing number of evangelical Christians."
+  ],
+  listHeading: "Who wants what?",
+  list: [
+    {name:"West India planters and merchants", text:"Want to protect the trade. They warn that ending it would ruin the colonies, the ports, and even the navy, which trains many of its sailors on merchant ships."},
+    {name:"The slave-trading ports", text:"Liverpool, Bristol, and London depend on the trade for jobs and wealth. Their members of Parliament will fight any change."},
+    {name:"The abolitionists", text:"Quakers and evangelicals who believe the trade is a terrible sin. They have moral passion but almost no power in Parliament."}
+  ],
+  after: "You are a young member of Parliament who has just become a devout Christian. You’ll try to turn a moral conviction into a law. Each turning point forces you to choose between conscience, strategy, and public pressure.",
+  map: {kind:"atlantic", pins:[{at:"liverpool"}, {at:"bonny"}, {at:"jamaica"}], route:"triangle", caption:"The triangular trade: goods to Africa, captives to the Americas, sugar back to Britain"}
+};
+
+const START = {
+  heading: "You are William Wilberforce",
+  paras: [
+    "It is late 1785. You are 26 years old, the member of Parliament for Yorkshire, the largest county in England. You are wealthy, witty, famous for your singing at dinner parties, and a close friend of the prime minister, William Pitt the Younger.",
+    "But something has changed. Over the past year, you have gone through what you call your “great change”: a deep conversion to Christian faith. Now you wonder whether a man of faith belongs in politics at all. In the next twenty-two years, you’ll face seven decisions. Before each one, you can hear from the people around you. Then the choice is yours."
+  ],
+  factsHeading: "Your situation",
+  facts: [
+    ["Born", "1759, in the port of Hull, to a wealthy merchant family"],
+    ["Education", "St John’s College, Cambridge"],
+    ["Seat", "Member of Parliament for Yorkshire"],
+    ["Friends", "Prime Minister William Pitt; Isaac Milner, who taught you as a boy and traveled with you through Europe"],
+    ["Biggest question", "What does God want you to do with your life?"]
+  ],
+  button: "Begin decision 1"
+};
+
+const DECISIONS = [
+  {
+    title:"Pulpit or Parliament?", when:"December 1785", where:"London",
+    setup:[
+      "Your new faith has turned your life upside down. You rise early to pray and read the Bible, and you have given up the gambling and late nights of your old life. But you are not sure you can stay in politics. Parliament is full of ambition, bribery, and compromise. Some of your evangelical friends think a true Christian should leave that world behind.",
+      "You decide to seek advice from John Newton, an elderly minister in London. Years ago, Newton was the captain of a slave ship. Today he is a well-known preacher and the author of a popular book of hymns that includes “Amazing Grace.”"
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"John Newton", role:"Former slave-ship captain, now a minister", advice:"God may have raised you up for the good of the nation. Stay where you are, and serve Him there."},
+      {name:"William Pitt", role:"Prime minister, your closest friend", advice:"Surely your faith teaches you to act, not to retreat. Don’t throw away the talents God gave you."},
+      {name:"Your evangelical friends", role:"Fellow believers", advice:"A true Christian should come out from the world. Leave Parliament and serve God as a clergyman."}
+    ],
+    options:[
+      {text:"Leave Parliament and become a clergyman, so you can serve God with your whole life.", short:"Become a clergyman", style:"conscience", historical:false,
+       outcome:"You resign your seat and study for the ministry. You become a fine preacher. But the House of Commons loses one of its most gifted speakers, and no one there takes up the causes you care about."},
+      {text:"Stay in Parliament, and look for a cause where your faith and your political gifts can do the most good.", short:"Stay in Parliament", style:"strategy", historical:true,
+       outcome:"You keep your seat, and Pitt is delighted. Now you begin looking for work worthy of your new convictions."},
+      {text:"Leave politics and devote yourself to writing and organizing Christian charities instead.", short:"Leave and organize charities", style:"public", historical:false,
+       outcome:"Your charities do real good. But you no longer have a vote in Parliament, where the laws of the empire are made."}
+    ],
+    history:[
+      "In December 1785, Wilberforce visited Newton in secret. Newton urged him to stay in politics, telling him that God might have raised him up for the good of the church and of the nation. Pitt wrote him a long letter urging the same.",
+      "In 1787, after a talk with Pitt beneath an old oak tree at Pitt’s estate in Kent, Wilberforce agreed to lead the fight against the slave trade in Parliament. That October he wrote in his journal: “God Almighty has set before me two great objects, the suppression of the Slave Trade and the Reformation of Manners.”"
+    ],
+    think:"Why did Newton, a former slave-ship captain, matter so much as an advisor? How might his own past have shaped his advice?",
+    map:{kind:"britain", pins:[{at:"london", here:true}, {at:"hull"}, {at:"cambridge"}], caption:"London, Cambridge, and Hull, where Wilberforce was born"}
+  },
+  {
+    title:"The Trade, or Slavery Itself?", when:"May 1787", where:"London",
+    setup:[
+      "On May 22, 1787, twelve men meet at a printing shop in London to form the Society for Effecting the Abolition of the Slave Trade. Most are Quakers. Among them are Granville Sharp, a veteran fighter against slavery, and Thomas Clarkson, a young Cambridge graduate who has vowed to devote his life to the cause.",
+      "They want you to be their voice in Parliament. First, though, the movement must decide what it is fighting for. Should it attack slavery itself, or only the trade that carries new captives from Africa?"
+    ],
+    question:"What should the campaign aim for?",
+    advisors:[
+      {name:"Granville Sharp", role:"Founding member of the Society", advice:"Slavery itself is a crime against God’s law. Don’t settle for half a victory. Demand freedom for every enslaved person."},
+      {name:"Thomas Clarkson", role:"Founding member of the Society", advice:"Stop the ships first. If planters can’t buy new captives, they will have to treat the people they hold better, and slavery will begin to die."},
+      {name:"A friendly member of Parliament", role:"House of Commons", advice:"Under British law, the enslaved are the planters’ property. Attack their property and you will lose every vote. The trade is a target you can hit."}
+    ],
+    options:[
+      {text:"Demand the end of slavery itself: freedom for every enslaved person in the British colonies.", short:"End slavery itself", style:"conscience", historical:false,
+       outcome:"Planters and merchants unite against you, calling it theft of their property. Even many sympathetic members of Parliament say it goes too far."},
+      {text:"Focus on ending the slave trade first, and expect slavery itself to wither once the supply of captives is cut off.", short:"End the trade first", style:"strategy", historical:true,
+       outcome:"The Society adopts the plan. Its goal is narrow but clear, and it begins to win supporters who would never vote to free the enslaved outright."},
+      {text:"Don’t ask Parliament for anything yet. Spend the first years building public outrage across the country.", short:"Build public outrage first", style:"public", historical:false,
+       outcome:"Pamphlets and sermons spread across Britain. But without a bill in Parliament, the trade goes on, and supporters wonder when anything will change."}
+    ],
+    history:[
+      "The Society chose to target the trade, not slavery itself. Granville Sharp wanted to condemn slavery outright but was outvoted. Most members believed ending the trade was more achievable and that slavery would eventually die out without new captives.",
+      "Clarkson set off for Bristol and Liverpool to gather evidence. He interviewed thousands of sailors, collected shackles, thumbscrews, and branding irons, and was nearly killed by a gang of sailors on a Liverpool pier."
+    ],
+    think:"Was ending the trade first a wise strategy or a moral compromise? Could it be both?",
+    map:{kind:"britain", pins:[{at:"london", here:true}, {at:"bristol"}, {at:"liverpool"}], caption:"London, where the Society met, and the slave-trading ports of Bristol and Liverpool"}
+  },
+  {
+    title:"The First Great Speech", when:"May 1789", where:"The House of Commons",
+    setup:[
+      "After two years of gathering evidence, you are ready to bring the case to the House of Commons. Clarkson’s research is overwhelming. A diagram of the slave ship <em>Brookes</em>, showing 482 people packed into its hold like cargo, is being printed and sold all over Britain.",
+      "Now you must give the speech that opens the debate. The West India interests are ready to answer every charge. How you frame your argument may decide whether moderate members listen or tune you out."
+    ],
+    question:"How do you make your case?",
+    advisors:[
+      {name:"A Quaker committee member", role:"Society for the Abolition of the Slave Trade", advice:"Name the guilty. These men buy and sell human beings. Call it what it is."},
+      {name:"William Pitt", role:"Prime minister, your closest friend", advice:"Many members have friends and family in the trade. Make them feel responsible without making them feel accused."},
+      {name:"Thomas Clarkson", role:"The Society’s researcher", advice:"My records show the trade kills British sailors by the thousands, and Africa could buy our goods instead. Give them arguments their wallets will understand."}
+    ],
+    options:[
+      {text:"Denounce the slave traders and planters as guilty men, and demand that Parliament punish them.", short:"Denounce the traders", style:"conscience", historical:false,
+       outcome:"Members connected to the trade walk out in anger. Moderates who were listening feel attacked and close ranks with the traders."},
+      {text:"Present the evidence, but share the blame with everyone, including yourself, for allowing the trade to continue.", short:"Share the guilt", style:"public", historical:true,
+       outcome:"The House listens in silence for more than three hours. Even your opponents praise the speech. For a moment, it seems possible that the trade could end quickly."},
+      {text:"Focus on Britain’s interests: the trade kills British sailors, and honest trade with Africa could be more profitable.", short:"Argue from self-interest", style:"strategy", historical:false,
+       outcome:"Merchants listen politely, then produce their own numbers. The debate becomes an argument about money, and the human beings at its center fade from view."}
+    ],
+    history:[
+      "On May 12, 1789, Wilberforce spoke for about three and a half hours. He laid out the evidence but refused to blame the traders alone. “I mean not to accuse any one,” he said, “but to take the shame upon myself, in common, indeed, with the whole Parliament of Great Britain.”",
+      "The speech was widely praised. But opponents insisted that the Commons hear its own evidence before voting, and the hearings dragged on for two years. When the vote finally came in April 1791, Wilberforce’s motion was defeated, 163 to 88."
+    ],
+    think:"Why might sharing the blame have been more persuasive than accusing the traders? Who was Wilberforce trying to win over?",
+    map:{kind:"britain", pins:[{at:"london", here:true}, {at:"liverpool"}, {at:"bristol"}], caption:"Westminster in London, where Parliament met, and the ports whose members fought abolition"}
+  },
+  {
+    title:"Taking the Case to the People", when:"Early 1792", where:"London",
+    setup:[
+      "The defeat of 1791 was crushing, but it has stirred the country. All over Britain, ordinary people are refusing to buy sugar grown by enslaved people. Clarkson estimates that about 300,000 people have joined the boycott.",
+      "Meanwhile, revolution is shaking France, and some British radicals are demanding liberty and equality at home. They would welcome you as an ally. You must decide how to use this moment before your next motion in Parliament."
+    ],
+    question:"What is your main strategy for 1792?",
+    advisors:[
+      {name:"Thomas Clarkson", role:"The Society’s researcher", advice:"Let the nation speak. Send petitions to every town in Britain and bury Parliament in signatures."},
+      {name:"A radical reformer", role:"London Corresponding Society", advice:"Your cause is our cause: the rights of man! Join us, and we will bring thousands into the streets."},
+      {name:"William Pitt", role:"Prime minister, your closest friend", advice:"Don’t stir up crowds while France is in turmoil. Work quietly with members of Parliament, one vote at a time."}
+    ],
+    options:[
+      {text:"Join forces with the radical reformers who are demanding liberty and equality for all.", short:"Ally with the radicals", style:"conscience", historical:false,
+       outcome:"Huge crowds cheer you. But the government and most members of Parliament now see abolition as part of a dangerous revolutionary movement, and moderate supporters back away."},
+      {text:"Organize a nationwide petition campaign so that Parliament can see how many Britons want the trade ended.", short:"Flood Parliament with petitions", style:"public", historical:true,
+       outcome:"Volunteers carry petitions from town to town. Hundreds arrive at Parliament, signed by many thousands of people from every corner of Britain."},
+      {text:"Keep the campaign inside Parliament: lobby members privately and avoid stirring up the public.", short:"Lobby quietly", style:"strategy", historical:false,
+       outcome:"You win over a few members in private. But without public pressure, most see no reason to change their votes."}
+    ],
+    history:[
+      "In the spring of 1792, the House of Commons received 519 petitions against the slave trade, more than it had ever received on a single subject. The petition from Manchester alone carried about 20,000 names. Women, who could not vote, were among the leaders of the sugar boycott.",
+      "Wilberforce kept his distance from the radicals. He feared that tying abolition to the French Revolution would destroy the cause in Parliament."
+    ],
+    think:"Why might petitions have been more effective than joining the radicals, even though the radicals could bring bigger crowds?",
+    map:{kind:"britain", pins:[{at:"london", here:true}, {at:"manchester"}, {at:"york"}], caption:"Petitions poured into London from towns and cities across Britain"}
+  },
+  {
+    title:"One Word: “Gradually”", when:"April 1792", where:"The House of Commons",
+    setup:[
+      "On April 2, 1792, you move that the slave trade be abolished. The debate runs all night. Then Henry Dundas, one of the most powerful ministers in the government, proposes adding a single word to your motion: “gradually.”",
+      "Dundas says gradual abolition is the sensible, practical path. You suspect it is a way to delay abolition forever. But if you reject it, your motion may fail entirely, as it did last year."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"Henry Dundas", role:"Home Secretary", advice:"Be reasonable. A gradual end protects the colonies and still ends the trade. Half a loaf is better than none."},
+      {name:"Thomas Clarkson", role:"The Society’s researcher", advice:"“Gradually” means never. Every year of delay means tens of thousands more people in chains."},
+      {name:"A friendly member of Parliament", role:"House of Commons", advice:"Take what the House will give you tonight. You can fight about the date later."}
+    ],
+    options:[
+      {text:"Oppose the amendment. Insist on immediate abolition, even if you lose.", short:"Oppose “gradually”", style:"conscience", historical:true,
+       outcome:"You and Pitt argue against the amendment until dawn. The House votes for it anyway, by a wide margin."},
+      {text:"Accept the amendment. A promise to end the trade gradually is better than nothing.", short:"Accept “gradually”", style:"strategy", historical:false,
+       outcome:"Your supporters are dismayed, but the motion passes easily. Now everything depends on what “gradually” turns out to mean."},
+      {text:"Withdraw your motion and take the fight back to the country for another year.", short:"Withdraw and regroup", style:"public", historical:false,
+       outcome:"The petitioners are bewildered. After all their work, Parliament never even votes."}
+    ],
+    history:[
+      "Wilberforce and Pitt opposed the amendment, and Pitt gave one of the greatest speeches of his career as the sun came up. But the House of Commons voted 230 to 85 for gradual abolition and later set January 1, 1796, as the date for the trade to end.",
+      "Then the House of Lords, full of the trade’s supporters, insisted on holding its own hearings. The measure stalled there. 1796 came and went, and the trade continued."
+    ],
+    think:"Was Wilberforce right to oppose the word “gradually”? What does the result of 1792 suggest?",
+    map:{kind:"britain", pins:[{at:"london", here:true}], caption:"Westminster, where the Commons and the Lords both had to approve any law"}
+  },
+  {
+    title:"The War Years", when:"1793–1796", where:"London",
+    setup:[
+      "Everything has turned against you. In 1791, enslaved people in the French colony of Saint-Domingue rose up in a massive revolt. In 1793, revolutionary France executed its king and declared war on Britain. Now many Britons see anyone who talks about freedom for enslaved people as a dangerous radical.",
+      "Your supporters are melting away. Thomas Clarkson, exhausted and ill, will soon have to give up his work. Each year your motion loses, and critics mock you."
+    ],
+    question:"What do you do?",
+    advisors:[
+      {name:"William Pitt", role:"Prime minister, your closest friend", advice:"The country is at war. Let the matter rest until peace returns and men can think clearly again."},
+      {name:"John Newton", role:"Former slave-ship captain, now a minister", advice:"Do not grow weary in doing good. God’s timing is not ours."},
+      {name:"A Quaker supporter", role:"Society for the Abolition of the Slave Trade", advice:"Go back to the people. Revive the boycott and let the nation’s conscience speak again."}
+    ],
+    options:[
+      {text:"Keep introducing your motion every year, no matter how often you lose.", short:"Keep bringing the motion", style:"conscience", historical:true,
+       outcome:"Year after year, you rise in the Commons and lose. But you keep the issue alive, and your opponents can never declare victory."},
+      {text:"Set the campaign aside until the war ends, so abolition isn’t confused with revolution.", short:"Wait for peace", style:"strategy", historical:false,
+       outcome:"The issue fades from Parliament. When you finally return to it, many of your old supporters have moved on."},
+      {text:"Revive the boycott and the petitions to rebuild public pressure during the war.", short:"Rebuild public pressure", style:"public", historical:false,
+       outcome:"In wartime, the government treats mass meetings with suspicion. New laws limit public gatherings, and the campaign struggles to grow."}
+    ],
+    history:[
+      "Wilberforce kept bringing motions and bills against the slave trade almost every year through the 1790s. In 1796, a bill to abolish the trade came close in the House of Commons but lost by four votes, 74 to 70. Several supporters had skipped the vote to attend a comic opera.",
+      "The war made Parliament even more fearful of anything that sounded revolutionary. But Wilberforce’s persistence kept abolition from disappearing."
+    ],
+    think:"Why might losing again and again still have helped the cause in the long run?",
+    map:{kind:"atlantic", pins:[{at:"london", here:true}, {at:"saintdomingue"}], caption:"Saint-Domingue, where the revolt of 1791 shook the Atlantic world"}
+  },
+  {
+    title:"A Back Door", when:"1806", where:"London",
+    setup:[
+      "After nearly twenty years, the political world has changed. Pitt has died, and a new government led by Lord Grenville and Charles James Fox is in power. Both men support abolition. Britain is still at war with Napoleon’s France.",
+      "Your brother-in-law, the lawyer James Stephen, has an idea. A large share of the British slave trade now supplies captives to foreign colonies, including lands Britain has captured from its enemies. A bill banning that part of the trade could be presented as a war measure to hurt France, not as abolition at all."
+    ],
+    question:"How do you go forward?",
+    advisors:[
+      {name:"James Stephen", role:"Lawyer, your brother-in-law", advice:"Call it a war measure. Say as little as possible about morality. Let the bill pass before the West India interests realize what it means."},
+      {name:"Charles James Fox", role:"Foreign Secretary", advice:"Bring in full abolition now, with all your eloquence. We finally have a government on your side."},
+      {name:"Thomas Clarkson", role:"Back in the campaign", advice:"Rally the country one more time. Let the government feel the nation’s will."}
+    ],
+    options:[
+      {text:"Bring in a bill for total abolition at once, and make the moral case with all your strength.", short:"Push full abolition now", style:"conscience", historical:false,
+       outcome:"The West India interests gather every vote they have. The bill passes the Commons but dies in the House of Lords, as so many have before."},
+      {text:"Support Stephen’s plan: a quiet bill banning the trade to foreign colonies, presented as a war measure, with you in the background.", short:"Use the back door", style:"strategy", historical:true,
+       outcome:"The bill moves through Parliament with little fuss. Before its opponents fully grasp what is happening, a large part of the British slave trade has been outlawed."},
+      {text:"Relaunch a national petition campaign before bringing any bill.", short:"Rally the country again", style:"public", historical:false,
+       outcome:"Petitions begin to arrive, but it takes months. Then, in September, Fox dies, and your strongest ally in the government is gone."}
+    ],
+    history:[
+      "Wilberforce backed Stephen’s plan and kept a low profile. The Foreign Slave Trade Act passed in May 1806, cutting off a large share of Britain’s slave trade. In June, both houses of Parliament passed resolutions promising to end the trade entirely.",
+      "In early 1807, Grenville brought in a bill to abolish the British slave trade, starting in the House of Lords. It passed. When it reached the Commons, members rose to cheer Wilberforce, who sat with his head in his hands, weeping. The bill passed 283 to 16 and became law on March 25, 1807."
+    ],
+    think:"Was Stephen’s back-door strategy clever politics or a betrayal of the moral argument? Use evidence from more than one decision.",
+    map:{kind:"atlantic", pins:[{at:"london", here:true}, {at:"jamaica"}, {at:"bonny"}], caption:"The 1807 act banned British ships from carrying captives anywhere in the Atlantic"}
+  }
+];
+
+const EPILOGUE = {
+  heading: "What happened next",
+  paras: [
+    "The 1807 act made it illegal for British ships to carry enslaved people. Britain’s navy formed a squadron to patrol the coast of West Africa and capture slave ships, though other nations kept the trade going for decades.",
+    "Ending the trade did not end slavery. Hundreds of thousands of people remained enslaved in Britain’s colonies, and Wilberforce spent the rest of his career fighting for their freedom, along with causes from education to the reform of public morals.",
+    "Wilberforce retired from Parliament in 1825. In July 1833, he learned that the House of Commons had passed the bill to abolish slavery in most of the British Empire. He died three days later and was buried in Westminster Abbey. The act freed about 800,000 people, but it paid £20 million in compensation to slave owners. The people who had been enslaved received nothing."
+  ],
+  map: {kind:"britain", pins:[{at:"london", here:true}, {at:"hull"}], caption:"Westminster Abbey in London, where Wilberforce is buried"}
+};
+
+const PROFILES = {
+  conscience:["The Voice of Conscience","You refuse to bargain with wrong, even when it costs you. Wilberforce did the same when he fought the word “gradually” and kept losing year after year."],
+  strategy:["The Strategist","You look for the path that can actually win. Wilberforce made the same kind of choice when he targeted the trade first and backed Stephen’s quiet bill in 1806."],
+  public:["The Persuader","You believe change comes when ordinary people demand it. Wilberforce counted on this when he shared the nation’s guilt in 1789 and when the petitions poured in."],
+  balanced:["The Reformer","You balance conscience, strategy, and public pressure depending on the moment, as Wilberforce did. It took all three, and twenty years, to end the trade."]
+};
+
+
+/* ======================================================================
+   MAPS: the Atlantic world, and Britain (simplified)
+   ====================================================================== */
+function makeProj(B){ return ([lon, lat]) => [+((lon - B.lonMin) * B.kx).toFixed(1), +((B.latMax - lat) * B.ky).toFixed(1)]; }
+const ATB = {lonMin:-95, lonMax:15, latMin:-35, latMax:60, kx:4.5, ky:5};
+const BRB = {lonMin:-6.5, lonMax:2.2, latMin:49.8, latMax:56.0, kx:56, ky:80};
+const MAPS = {atlantic: ATB, britain: BRB};
+
+// ---- Atlantic world ----
+const AT_AFRICA = [[-5.8,35.8],[-2,35.1],[1,36.5],[3.5,36.8],[7.5,37.0],[10.2,37.2],[11,36.9],[10.1,34.2],[11.5,33.1],[13.2,32.9],[15.4,31.8],[19,30.3],
+  [25,31.7],[32.3,31.3],[32.5,29.9],[35.5,24],[37.4,18.7],[39.45,15.6],[43.3,12.5],[51.25,11.8],[46,2.2],[39.7,-4.0],[40.5,-10.5],[40.7,-15.0],[35.3,-22.0],
+  [31,-29.9],[25.6,-34.0],[20,-34.8],[18.4,-34.0],[15,-27],[14.5,-22.9],[11.8,-17.3],[12.6,-12.6],[13.2,-8.8],[12.3,-6.0],[9.3,-1.5],[9.6,3.0],[9.7,4.0],[8.5,4.5],
+  [6.0,4.3],[3.4,6.4],[-0.2,5.6],[-2.0,4.7],[-4.0,5.3],[-7.7,4.4],[-10.8,6.3],[-13.2,8.5],[-15.5,11.5],[-17.4,14.7],[-16.5,19.4],[-17.1,20.8],
+  [-14.5,26.1],[-12.9,27.9],[-9.8,29.9],[-9.6,32.5],[-7.6,33.6],[-6.8,34.0]];
+const AT_EUROPE = [[-5.6,36.0],[-9.0,37.0],[-8.9,38.7],[-9.5,40.0],[-8.8,42.0],[-9.3,43.0],[-7.7,43.75],[-4.0,43.45],[-1.8,43.4],[-1.2,44.8],[-1.15,46.15],
+  [-2.2,47.27],[-4.5,47.95],[-4.75,48.4],[-3.0,48.8],[-1.6,48.65],[-1.6,49.65],[0.1,49.49],[1.6,50.7],[2.5,51.1],[4.0,51.9],[5.0,53.3],[8.6,53.9],
+  [8.6,55.0],[8.1,56.8],[10.5,57.7],[10.6,56.5],[12.5,55.9],[15,55.5],
+  [15,40.1],[14.3,40.8],[12.5,41.4],[11,42.4],[10.2,43.9],[8.9,44.4],[6.6,43.2],[4.1,43.55],[3.17,42.43],[3.2,41.9],[0.9,41.0],[-0.3,39.5],
+  [0.2,38.8],[-0.5,38.3],[-2.0,36.7]];
+const AT_SCANDINAVIA = [[5,60],[5,58.5],[7,58],[10,59],[11.5,58.2],[12.7,56.3],[14.2,55.4],[15,55.6],[15,60]];
+const AT_GB = [[-5.7,50.05],[-3.5,50.6],[-1.3,50.8],[0.97,50.92],[1.38,51.15],[1.75,52.45],[1.7,52.75],[0.3,53.3],[-0.1,54.1],[-1.45,54.95],[-2.0,55.77],
+  [-2.6,56.0],[-1.8,57.5],[-3.0,58.6],[-5.0,58.6],[-5.7,57.0],[-5.6,56.0],[-4.9,55.9],[-5.15,55.0],[-3.4,54.9],[-3.0,53.45],[-4.6,53.3],[-4.1,52.4],
+  [-5.3,51.75],[-3.0,51.5],[-4.2,51.2]];
+const AT_IRELAND = [[-6.2,55.2],[-5.5,54.5],[-6.1,53.3],[-6.35,52.2],[-8.5,51.6],[-10.3,51.8],[-9.9,53.4],[-10.0,54.2],[-8.5,55.2],[-7.3,55.35]];
+const AT_NAMERICA = [[-95,60],[-64,60],[-61.5,56.5],[-57,52],[-60,50.2],[-66,50],[-64.5,48.9],[-64,46.5],[-61,45.6],[-63.5,44.6],[-66,43.8],[-70.2,43.6],
+  [-70.6,42.6],[-70.0,41.8],[-71.5,41.4],[-74.0,40.5],[-74.2,39.4],[-75.5,38.4],[-76.0,37.0],[-75.6,35.2],[-77.9,33.9],[-80.9,32.0],[-81.4,30.4],
+  [-80.1,26.8],[-80.4,25.2],[-81.8,26.3],[-82.8,28.0],[-82.7,29.4],[-84.3,30.0],[-86.5,30.4],[-89.6,30.2],[-89.3,29.0],[-90.5,29.1],[-94,29.6],[-95,29.4]];
+const AT_NEWFOUNDLAND = [[-59.4,47.6],[-56,49.7],[-55.6,51.6],[-53.5,49.5],[-52.7,47.6],[-55.5,46.9]];
+const AT_LATAM = [[-95,19.0],[-94,18.2],[-91.5,18.6],[-90.4,21.0],[-87,21.5],[-87.5,18.4],[-88.2,16.0],[-84,15.9],[-83.3,15.0],[-83.7,11.0],[-82,9.0],
+  [-79.6,9.6],[-77.5,8.6],[-75.5,10.6],[-71.6,12.4],[-70,11.5],[-68,10.6],[-64,10.6],[-61.8,10.2],[-60,8.5],[-57.2,6.0],[-54,5.8],[-51.5,4.3],[-50,1.7],
+  [-48.5,-1.3],[-44.5,-2.6],[-40,-2.9],[-37,-4.9],[-35.2,-5.8],[-35,-8.9],[-37,-11],[-38.9,-13.5],[-39,-17.7],[-40.5,-20.5],[-41.9,-22.9],[-44.5,-23.2],
+  [-48,-25.9],[-48.7,-28.5],[-50.5,-31],[-53,-34],[-54.5,-35],[-72,-35],[-71.5,-30],[-70.3,-18.5],[-75.5,-15],[-77,-12],[-79.5,-7],[-81.3,-4.5],
+  [-80.0,-2.2],[-80.4,0.5],[-78.8,1.6],[-77.3,4.0],[-77.4,7.0],[-80,7.5],[-83,8.4],[-85.7,10.0],[-87.5,13.0],[-91.5,14.0],[-94,16.0],[-95,16.2]];
+const AT_CUBA = [[-84.9,21.9],[-82,23.1],[-80,23.0],[-77.2,21.6],[-74.2,20.2],[-77.5,19.9],[-80.5,21.8],[-82.5,21.6]];
+const AT_HISPANIOLA = [[-74.4,19.8],[-72.6,19.9],[-69.9,19.6],[-68.4,18.6],[-71.4,17.6],[-74.4,18.4]];
+const AT_JAMAICA = [[-78.3,18.4],[-76.3,18.2],[-76.8,17.85],[-78.2,18.15]];
+const AT_PR = [[-67.2,18.5],[-65.6,18.4],[-65.7,18.0],[-67.2,18.0]];
+const AT_LESSER = [[-61.7,17.1],[-61.0,14.6],[-61.2,13.2],[-59.55,13.15],[-61.75,12.1]];
+// The triangular trade, drawn across open sea
+const LEG_OUT = [[-3.0,53.2],[-6,50],[-14,42],[-20,28],[-21,15],[-14,6],[-2,2],[6.5,3.2]];
+const LEG_MIDDLE = [[7,3.8],[0,0],[-20,4],[-40,10],[-55,13.5],[-62,15],[-70,16.5],[-77,17.6]];
+const LEG_HOME = [[-77.2,18.6],[-79.8,23.6],[-76,30],[-62,38],[-40,46],[-20,50],[-9,51.5],[-4.0,53.0]];
+
+// ---- Britain ----
+const BR_GB = [[-2.0,55.77],[-1.6,55.3],[-1.45,54.95],[-1.2,54.6],[-0.6,54.48],[-0.1,54.1],[0.12,53.6],[0.3,53.3],[0.0,52.9],[0.4,52.85],[1.0,52.95],
+  [1.7,52.75],[1.75,52.45],[1.6,52.1],[1.25,51.85],[0.9,51.65],[0.8,51.5],[1.4,51.38],[1.38,51.15],[0.97,50.92],[0.25,50.75],[-0.8,50.75],[-1.3,50.8],
+  [-2.0,50.6],[-2.45,50.6],[-3.5,50.6],[-3.6,50.25],[-4.2,50.35],[-5.05,50.0],[-5.7,50.05],[-5.0,50.4],[-4.55,50.95],[-4.2,51.2],[-3.4,51.2],
+  [-2.95,51.4],[-2.7,51.5],[-3.2,51.45],[-4.0,51.6],[-4.9,51.65],[-5.3,51.75],[-4.6,52.1],[-4.1,52.4],[-4.1,52.8],[-4.75,52.8],[-4.4,53.1],
+  [-4.6,53.3],[-3.9,53.3],[-3.1,53.3],[-3.0,53.45],[-3.05,53.8],[-2.9,54.0],[-3.2,54.1],[-3.6,54.5],[-3.4,54.9],[-4.4,54.7],[-5.0,54.65],
+  [-5.15,55.0],[-4.6,55.5],[-4.9,55.9],[-5.3,56.0],[-2.6,56.0],[-2.5,55.95]];
+const BR_IRELAND = [[-6.5,55.25],[-6.0,55.2],[-5.5,54.5],[-6.1,54.0],[-6.1,53.3],[-6.0,52.9],[-6.35,52.2],[-6.5,52.15]];
+const BR_FRANCE = [[2.2,51.05],[1.85,50.95],[1.6,50.73],[1.55,50.2],[1.08,49.93],[0.6,49.85],[0.2,49.8],[2.2,49.8]];
+const BR_THAMES = [[-1.9,51.7],[-1.25,51.75],[-0.9,51.55],[-0.5,51.45],[-0.12,51.5],[0.3,51.47],[0.8,51.5]];
+const BR_SEVERN = [[-3.4,52.5],[-2.75,52.7],[-2.2,52.2],[-2.25,51.85],[-2.7,51.6]];
+const BR_MERSEY = [[-2.2,53.45],[-2.6,53.38],[-3.0,53.45]];
+const BR_HUMBER = [[-1.5,53.75],[-0.9,53.7],[-0.33,53.72],[0.12,53.6]];
+
+const PLACES = {
+  london:{at:[-0.12,51.5], name:"London", dx:8, dy:4, anchor:"start"},
+  bristol:{at:[-2.59,51.45], name:"Bristol", dx:-8, dy:14, anchor:"end"},
+  liverpool:{at:[-2.98,53.41], name:"Liverpool", dx:-8, dy:4, anchor:"end"},
+  manchester:{at:[-2.24,53.48], name:"Manchester", dx:8, dy:12, anchor:"start"},
+  york:{at:[-1.08,53.96], name:"York", dx:8, dy:-4, anchor:"start"},
+  hull:{at:[-0.33,53.74], name:"Hull", dx:8, dy:4, anchor:"start"},
+  cambridge:{at:[0.12,52.2], name:"Cambridge", dx:8, dy:4, anchor:"start"},
+  jamaica:{at:[-77.3,18.1], name:"Jamaica", dx:-2, dy:16, anchor:"middle"},
+  bonny:{at:[7.15,4.43], name:"Bonny", dx:6, dy:14, anchor:"start"},
+  saintdomingue:{at:[-72.3,19.0], name:"Saint-Domingue", dx:0, dy:-12, anchor:"middle"}
+};
+
+function mapCore(cfg, animate){
+  const kind = cfg.kind || "atlantic";
+  const B = MAPS[kind], P = makeProj(B);
+  const W = Math.round((B.lonMax - B.lonMin) * B.kx), H = Math.round((B.latMax - B.latMin) * B.ky);
+  const path = (lls, close) => `M${lls.map(P).map(q => q.join(" ")).join(" L")}${close ? " Z" : ""}`;
+  const T = (ll, txt, cls, anchor = "middle", dx = 0, dy = 0) => { const [x, y] = P(ll); return `<text x="${x + dx}" y="${y + dy}" text-anchor="${anchor}" class="${cls}">${txt}</text>`; };
+  const route = pts => `<path class="m-sea-route${animate ? " draw" : ""}" pathLength="1" d="${path(pts)}"/>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Map${cfg.caption ? ": " + cfg.caption : ""}">`;
+  s += `<rect class="m-sea" x="0" y="0" width="${W}" height="${H}"/>`;
+  if (kind === "atlantic") {
+    s += [AT_AFRICA, AT_EUROPE, AT_NAMERICA, AT_NEWFOUNDLAND, AT_LATAM, AT_CUBA, AT_HISPANIOLA, AT_JAMAICA, AT_PR, AT_IRELAND, AT_SCANDINAVIA].map(p => `<path class="m-land" d="${path(p, true)}"/>`).join("");
+    s += `<path class="m-france" d="${path(AT_GB, true)}"/><path class="m-coast" d="${path(AT_GB, true)}"/>`;
+    s += AT_LESSER.map(ll => { const [x, y] = P(ll); return `<circle class="m-land" cx="${x}" cy="${y}" r="1.6"/>`; }).join("");
+    s += T([-7.5,57.5], "BRITAIN", "m-nlabel", "end");
+    s += T([0,22], "AFRICA", "m-region") + T([-60,-12], "SOUTH AMERICA", "m-region") + T([-84,45], "NORTH AMERICA", "m-region");
+    s += T([-40,30], "Atlantic Ocean", "m-region") + T([-63,24.5], "West Indies", "m-note") + T([8,46.5], "EUROPE", "m-region");
+    if (cfg.route === "triangle") {
+      s += route(LEG_OUT) + route(LEG_MIDDLE) + route(LEG_HOME);
+      s += T([-25,34], "goods: cloth, guns, metalware", "m-note") + T([-30,4], "captives: the Middle Passage", "m-note") + T([-44,49], "sugar, rum, cotton", "m-note");
+    }
+  } else {
+    s += [BR_GB, BR_IRELAND, BR_FRANCE].map(p => `<path class="m-land" d="${path(p, true)}"/>`).join("");
+    s += [BR_THAMES, BR_SEVERN, BR_MERSEY, BR_HUMBER].map(r => `<path class="m-river" stroke-width="1.6" d="${path(r)}"/>`).join("");
+    s += T([-1.6,52.6], "ENGLAND", "m-nlabel") + T([-3.75,52.05], "WALES", "m-region") + T([-3.5,55.75], "SCOTLAND", "m-region");
+    s += T([-6.05,53.7], "IRELAND", "m-region", "start", -14, 0) + T([1.2,50.05], "FRANCE", "m-region") + T([1.15,54.6], "North Sea", "m-region");
+    s += T([-1.0,50.25], "English Channel", "m-region") + T([-5.1,52.7], "Irish", "m-region") + T([-5.1,52.5], "Sea", "m-region");
+    s += T([-0.9,51.62], "Thames R.", "m-rlabel");
+  }
+  (cfg.pins || []).forEach(p => {
+    const pl = PLACES[p.at]; const [x, y] = P(pl.at);
+    if (p.here) s += `<circle class="m-ring${animate ? " pulse" : ""}" cx="${x}" cy="${y}" r="9"/><circle class="m-here" cx="${x}" cy="${y}" r="4.5"/>`;
+    else s += `<circle class="m-dot" cx="${x}" cy="${y}" r="3.2"/>`;
+    const k = p.here && Math.abs(pl.dx) < 12 && pl.dx !== 0 ? 12 / Math.abs(pl.dx) : 1;
+    s += `<text x="${x + pl.dx * k}" y="${y + pl.dy}" text-anchor="${pl.anchor}" class="m-label">${pl.name}</text>`;
+  });
+  s += `<rect class="m-frame" x=".5" y=".5" width="${W - 1}" height="${H - 1}"/></svg>`;
+  return s;
+}
+function mapSVG(cfg, animate){
+  cfg = cfg || {};
+  return `<figure class="map">${mapCore(cfg, animate)}${cfg.caption ? `<figcaption>${cfg.caption}</figcaption>` : ""}</figure>`;
+}
+
+/* ======================================================================
+   PICTURES: shared drawing helpers (SVG, theme-aware, no downloads)
+   ====================================================================== */
+const DRAW = (() => {
+  const P = (c, d) => `<path class="ink ${c}" d="${d}"/>`;
+  const R = (c, x, y, w, h, rx = 0) => `<rect class="ink ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C = (c, x, y, r) => `<circle class="ink ${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const E = (c, x, y, rx, ry) => `<ellipse class="ink ${c}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const L = (d, extra = "") => `<path class="ink f-none${extra}" d="${d}"/>`;
+  const T = (x, y, txt, cls = "", anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="sv-label ${cls}">${txt}</text>`;
+  const g = (x, y, s, inner) => `<g transform="translate(${x} ${y}) scale(${s})">${inner}</g>`;
+  const sun = (x, y, r) => C("f-gold", x, y, r) + L(Array.from({length:8}, (_, i) => {
+    const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a);
+    return `M${(x + c*(r+5)).toFixed(1)} ${(y + s*(r+5)).toFixed(1)} L${(x + c*(r+12)).toFixed(1)} ${(y + s*(r+12)).toFixed(1)}`; }).join(" "));
+  const waves = (x0, x1, y) => { let d = `M${x0} ${y}`; for (let x = x0; x < x1; x += 24) d += ` q6 -5 12 0 t12 0`; return L(d); };
+  const pine = (x, y, s = 1, snow = false) => g(x, y, s, R("f-wood", -3, -10, 6, 10) + P("f-green", "M0 -58 L16 -30 L8 -30 L20 -10 L-20 -10 L-8 -30 L-16 -30 Z") + (snow ? P("f-snow", "M0 -58 L7 -46 L2 -44 L-3 -47 L-7 -46 Z") : ""));
+  const tree = (x, y, s = 1) => g(x, y, s, R("f-wood", -3, -18, 6, 18) + C("f-green", 0, -30, 16) + C("f-green", -9, -22, 10) + C("f-green", 9, -22, 10));
+  const mtn = (x, y, w, h, snow = true) => P("f-soft", `M${x - w/2} ${y} L${x} ${y - h} L${x + w/2} ${y} Z`) +
+    (snow ? P("f-snow", `M${x - w*0.15} ${y - h*0.7} L${x} ${y - h} L${x + w*0.15} ${y - h*0.7} L${x + w*0.06} ${y - h*0.64} L${x} ${y - h*0.72} L${x - w*0.07} ${y - h*0.63} Z`) : "");
+  const flakes = (pts) => L(pts.map(([x, y]) => `M${x-3} ${y} L${x+3} ${y} M${x} ${y-3} L${x} ${y+3}`).join(" "), " thin");
+  const puff = (x, y, s = 1) => g(x, y, s, C("f-soft", 0, 0, 12) + C("f-soft", 14, -8, 10) + C("f-soft", 22, 4, 9));
+  const usFlag = (x, y, s = 1) => g(x, y, s, L("M0 0 L0 -70") + R("f-red", 0, -70, 36, 22) +
+    `<path d="M0 -63.7 L36 -63.7 M0 -57.4 L36 -57.4 M0 -51.1 L36 -51.1" stroke="var(--paper)" stroke-width="3.1" fill="none"/>` +
+    R("f-blue", 0, -70, 15, 12) + R("f-none", 0, -70, 36, 22));
+  const canoe = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-38 -6 Q0 14 38 -6 Q0 4 -38 -6 Z"));
+  const barrel = (x, y, s = 1) => g(x, y, s, R("f-wood", -10, -26, 20, 26, 5) + L("M-10 -19 L10 -19 M-10 -7 L10 -7"));
+  const quill = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 Q30 -70 62 -96 Q30 -50 0 0 Z") + L("M0 0 L50 -82"));
+  const frame = (w, h, inner, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${R("f-sky", -2, -2, w + 4, h + 4)}${inner}</svg>`;
+  return {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame};
+})();
+
+
+const ART = (() => {
+  const {P, R, C, E, L, T, g, sun, waves, pine, tree, mtn, flakes, puff, usFlag, canoe, barrel, quill, frame} = DRAW;
+  const W = 520, H = 380;
+  const person = (x, y, s = 1, coat = "f-ink") => g(x, y, s, C("f-paper", 0, -38, 8) + P(coat, "M-11 0 L-9 -26 Q0 -32 9 -26 L11 0 Z"));
+  // Georgian gentleman with a tall hat
+  const gent = (x, y, s = 1, coat = "f-ink") => g(x, y, s, person(0, 0, 1, coat) + R("f-ink", -7, -60, 14, 14, 1) + R("f-ink", -11, -48, 22, 3));
+  const candle = (x, y, s = 1) => g(x, y, s, R("f-paper", -5, -34, 10, 34, 2) + P("f-gold", "M0 -48 q-6 -2 0 -14 q6 12 0 14 Z") + R("f-gold", -12, -2, 24, 4, 2));
+  const book = (x, y, s = 1) => g(x, y, s, P("f-paper", "M0 0 L-40 -8 L-40 -36 L0 -28 Z") + P("f-paper", "M0 0 L40 -8 L40 -36 L0 -28 Z") +
+    L("M-34 -16 L-6 -11 M-34 -22 L-6 -17 M6 -11 L34 -16 M6 -17 L34 -22", " thin"));
+  const chair = (x, y, s = 1, flip = false) => g(x, y, flip ? -s : s, R("f-wood", -16, -60, 6, 60) + R("f-wood", -16, -24, 34, 6) + R("f-wood", 12, -24, 6, 24));
+  const sheet = (x, y, w, h, rot = 0, inner = "") => `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})">${R("f-paper", x, y, w, h)}${inner}</g>`;
+  // Rolled petition with a label
+  const roll = (x, y, w, label) => R("f-paper", x, y - 18, w, 18, 9) + E("f-soft", x + w - 4, y - 9, 5, 9) + T(x + w / 2 - 4, y - 5, label, "sv-tiny");
+  // Westminster Abbey's twin west towers
+  const abbey = (x, y, s = 1) => g(x, y, s,
+    R("f-paper", -80, -150, 50, 150) + R("f-paper", 30, -150, 50, 150) + R("f-paper", -30, -100, 60, 100) +
+    P("f-paper", "M-30 -100 L0 -128 L30 -100 Z") + [-80, -63, -46, 30, 47, 64].map(xx => R("f-paper", xx, -162, 9, 12)).join("") +
+    P("f-ink", "M-14 0 L-14 -34 Q0 -50 14 -34 L14 0 Z") + C("f-soft", 0, -72, 14) + L("M0 -86 L0 -58 M-14 -72 L14 -72") +
+    [-66, -50, 44, 60].map(xx => R("f-soft", xx, -126, 8, 26, 4)).join("") + [-66, -50, 44, 60].map(xx => R("f-soft", xx, -80, 8, 26, 4)).join(""));
+  // Commons benches seen from the floor
+  const benches = () => [0, 1, 2].map(k => R("f-green", 20 + k * 14, 150 + k * 46, 180 - k * 14, 26, 3) + R("f-green", 320, 150 + k * 46, 180 - k * 14, 26, 3)).join("");
+  const ship = (x, y, s = 1) => g(x, y, s, P("f-wood", "M-60 0 L60 0 L48 18 L-48 18 Z") + L("M-20 0 L-20 -80 M20 0 L20 -70") +
+    P("f-paper", "M-20 -76 L-50 -40 L-20 -40 Z") + P("f-paper", "M-18 -76 L10 -46 L-18 -46 Z") + P("f-paper", "M22 -66 L48 -30 L22 -30 Z") +
+    P("f-red", "M20 -70 L34 -66 L20 -62 Z"));
+
+  const start = frame(640, 220,
+    R("f-sky", -2, -2, 644, 224) + puff(470, 60, 1.2) + puff(120, 40, 1) +
+    abbey(320, 176, .95) + tree(80, 178, 1) + tree(140, 182, .8) + tree(560, 178, 1) +
+    P("f-ground", "M-2 176 L642 176 L642 186 L-2 186 Z") + R("f-water", -2, 186, 644, 36) + waves(0, 640, 204),
+    "The twin towers of Westminster Abbey above the River Thames in London");
+
+  const scenes = [
+    // 1. Pulpit or Parliament?
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 260) + R("f-wood", -2, 256, 524, 126) +
+      R("f-water", 380, 50, 90, 120) + L("M425 50 L425 170 M380 110 L470 110") + R("f-none", 380, 50, 90, 120) +
+      R("f-wood", 150, 236, 220, 14, 3) + L("M170 250 L164 330 M350 250 L356 330") +
+      book(260, 232, 1) + candle(330, 236, 1) +
+      chair(108, 304, 1.1) + person(130, 300, 1.1, "f-blue") + chair(414, 304, 1.1, true) + g(392, 300, 1.1, person(0, 0, 1, "f-ink") + C("f-paper", 0, -48, 10)) +
+      T(260, 34, "London, December 1785", "sv-tag"),
+      "Two men seated across a table by candlelight, with an open Bible between them"),
+    // 2. The Trade, or Slavery Itself?
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 230) + R("f-wood", -2, 230, 524, 152) +
+      [40, 100, 160].map(x => R("f-paper", x, 40, 44, 150) + [0, 1, 2, 3, 4].map(k => R("f-soft", x + 4, 48 + k * 28, 36, 20)).join("")).join("") +
+      R("f-wood", 90, 250, 340, 16, 3) +
+      sheet(130, 214, 110, 40, -3, T(185, 236, "Abolition", "sv-hand")) + sheet(270, 216, 110, 40, 2, T(325, 238, "Society", "sv-hand")) + quill(380, 248, .5) +
+      [120, 190, 330, 400].map((x, k) => person(x, 330, 1.1, k % 2 ? "f-soft" : "f-ink")).join("") +
+      T(360, 80, "2 George Yard", "sv-hand") + T(360, 102, "James Phillips, Printer", "sv-hand") +
+      T(260, 360, "May 22, 1787", "sv-tag"),
+      "Men gathered around a table covered with papers in a printing shop lined with shelves"),
+    // 3. The First Great Speech
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 384) + benches() +
+      [0, 1, 2].map(k => { let s = ""; for (let x = 34 + k * 14; x < 190 - k * 14; x += 22) s += C("f-paper", x, 146 + k * 46, 7); for (let x = 334; x < 490 - k * 14; x += 22) s += C("f-paper", x, 146 + k * 46, 7); return s; }).join("") +
+      R("f-wood", 230, 120, 60, 200) + R("f-gold", 236, 126, 48, 16) +
+      gent(260, 330, 1.2) + T(260, 40, "The House of Commons, May 12, 1789", "sv-tag"),
+      "A speaker standing on the floor of the House of Commons between rows of green benches crowded with members"),
+    // 4. Taking the Case to the People
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 240) + R("f-wood", -2, 236, 524, 146) +
+      roll(40, 270, 120, "MANCHESTER") + roll(60, 250, 110, "EDINBURGH") + roll(190, 272, 130, "YORKSHIRE") + roll(210, 252, 100, "BRISTOL") +
+      roll(350, 270, 120, "GLASGOW") + roll(330, 250, 110, "NORWICH") + roll(80, 230, 140, "LONDON") + roll(300, 230, 130, "LEEDS") +
+      sheet(150, 40, 220, 150, -2, T(260, 72, "PETITION", "sv-poster") + T(260, 98, "against the", "sv-hand") + T(260, 120, "Slave Trade", "sv-hand") +
+        L("M176 140 L344 140 M176 156 L330 156 M176 172 L340 172", " thin")) +
+      T(260, 356, "519 petitions, spring 1792", "sv-tag"),
+      "A large petition against the slave trade above piles of rolled petitions from towns across Britain"),
+    // 5. One Word: Gradually
+    frame(W, H,
+      R("f-wood", -2, -2, 524, 384) +
+      sheet(70, 50, 380, 260, -1,
+        T(260, 92, "RESOLVED", "sv-poster") + L("M100 108 L420 108") +
+        T(260, 146, "That the Trade carried on by British", "sv-hand") + T(260, 172, "subjects, for the purpose of obtaining", "sv-hand") +
+        T(260, 198, "Slaves on the Coast of Africa,", "sv-hand") + T(260, 238, "ought to be abolished.", "sv-hand") +
+        L("M256 244 L267 230 L278 244", " red") + T(267, 224, "gradually", "sv-hand") ) + quill(420, 330, .7) +
+      T(260, 356, "April 2, 1792", "sv-tag"),
+      "A written resolution to abolish the slave trade, with the word gradually inserted above the line"),
+    // 6. The War Years
+    frame(W, H,
+      R("f-soft", -2, -2, 524, 384) +
+      sheet(40, 40, 200, 280, -3, T(140, 82, "WAR", "sv-poster-lg") + T(140, 112, "with France", "sv-hand") + L("M60 124 L220 124") +
+        L("M64 150 L216 150 M64 170 L210 170 M64 190 L216 190 M64 210 L200 210 M64 230 L214 230 M64 250 L206 250 M64 270 L210 270", " thin") + T(140, 300, "February 1793", "sv-tiny")) +
+      sheet(270, 60, 210, 140, 2, T(375, 96, "COMIC OPERA", "sv-poster-sm") + T(375, 126, "Tonight", "sv-hand") + T(375, 176, "March 15, 1796", "sv-tiny")) +
+      sheet(290, 220, 170, 110, -2, T(375, 252, "Third reading", "sv-hand") + T(330, 286, "Ayes 70", "sv-hand") + T(420, 286, "Noes 74", "sv-hand")),
+      "A newspaper announcing war with France beside an opera playbill and a vote tally showing 70 ayes to 74 noes"),
+    // 7. A Back Door
+    frame(W, H,
+      R("f-sky", -2, -2, 524, 240) + sun(440, 70, 20) + puff(120, 60, 1) +
+      R("f-water", -2, 236, 524, 146) + waves(0, 520, 270) + waves(0, 520, 310) +
+      ship(150, 250, 1.2) + ship(380, 262, .9) +
+      sheet(250, 120, 200, 110, -3, T(350, 150, "A BILL", "sv-poster-sm") + T(350, 174, "to prevent the supply", "sv-hand") + T(350, 196, "of slaves to foreign", "sv-hand") + T(350, 218, "colonies", "sv-hand")) +
+      T(260, 360, "1806: the Foreign Slave Trade Bill", "sv-tag"),
+      "Sailing ships at sea under a drafted bill to stop the supply of enslaved people to foreign colonies")
+  ];
+  return {start, scenes};
+})();
+
+/* ======================================================================
+   STATE
+   ====================================================================== */
+const blank = () => ({name:"", screen:"title", d:0, phase:"choose", sel:null, adv:null, records:[]});
+let state = blank();
+let saved = null;
+try { const raw = localStorage.getItem(GAME.storageKey); if (raw) saved = JSON.parse(raw); } catch(e) {}
+function persist(){ try { localStorage.setItem(GAME.storageKey, JSON.stringify(state)); } catch(e) {} }
+function clearSaved(){ try { localStorage.removeItem(GAME.storageKey); } catch(e) {} saved = null; }
+
+const app = document.getElementById("app");
+document.getElementById("brand").textContent = GAME.title;
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = arr => arr.map(p => `<p>${p}</p>`).join("");
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+function go(screen, extra = {}){
+  Object.assign(state, {screen}, extra);
+  persist();
+  render(true);
+  window.scrollTo({top:0, behavior: reduceMotion ? "auto" : "smooth"});
+}
+
+/* ======================================================================
+   RENDER
+   ====================================================================== */
+function renderSeals(){
+  document.getElementById("seals").innerHTML = DECISIONS.map((d, i) => {
+    const r = state.records[i];
+    let cls = "seal", label = `Decision ${i+1}: ${d.title}`;
+    if (r) { cls += r.matched ? " match" : " diff"; label += r.matched ? `, same as ${GAME.leader}` : `, different from ${GAME.leader}`; }
+    else if (state.screen === "decision" && state.d === i) { cls += " current"; label += ", current"; }
+    return `<li class="${cls}" aria-label="${label}">${i+1}</li>`;
+  }).join("");
+}
+
+function render(fresh){
+  renderSeals();
+  const s = state.screen;
+  if (s === "title") renderTitle();
+  else if (s === "intro") renderIntro();
+  else if (s === "start") renderStart();
+  else if (s === "decision") renderDecision(fresh);
+  else if (s === "epilogue") renderEpilogue(fresh);
+  else if (s === "results") renderResults();
+  if (fresh) { const h = app.querySelector("h1, h2"); if (h) { h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+}
+
+function renderTitle(){
+  const canResume = saved && saved.name && saved.screen && saved.screen !== "title";
+  app.innerHTML = `
+  <section class="card">
+    <div class="titlegrid">
+      <div>
+        <h1>${GAME.title}</h1>
+        <p class="sub">${GAME.subtitle}</p>
+      </div>
+      <div class="prose"><p>${GAME.blurb}</p></div>
+    </div>
+    ${mapSVG(GAME.titleMap, false)}
+    <div class="content" style="margin-left:0">
+      ${canResume ? `
+        <p class="welcome">Welcome back, ${esc(saved.name)}.</p>
+        <div class="actions">
+          <button class="btn primary" id="resume">Continue where you left off</button>
+          <button class="btn" id="fresh">Start over</button>
+        </div>` : `
+        <div class="field">
+          <label for="nm">Your first and last name</label>
+          <input id="nm" autocomplete="name" value="${esc(state.name)}">
+        </div>
+        <p class="hint" id="hint"></p>
+        <div class="actions" style="margin-top:6px"><button class="btn primary" id="begin">Begin</button></div>`}
+    </div>
+  </section>`;
+  if (canResume){
+    document.getElementById("resume").onclick = () => { state = Object.assign(blank(), saved); saved = null; render(true); };
+    document.getElementById("fresh").onclick = () => { const n = saved.name; clearSaved(); state = blank(); state.name = n; renderTitle(); };
+  } else {
+    const input = document.getElementById("nm");
+    const begin = () => {
+      const n = input.value.trim();
+      if (!n) { document.getElementById("hint").textContent = "Type your name to begin."; input.focus(); return; }
+      state = blank(); state.name = n; go("intro");
+    };
+    document.getElementById("begin").onclick = begin;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") begin(); });
+  }
+}
+
+function renderIntro(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(INTRO.map, false)}
+    <div class="content">
+      <h2>${INTRO.heading}</h2>
+      <div class="prose">${paras(INTRO.paras)}</div>
+      <h3 style="margin-top:1.1em">${INTRO.listHeading}</h3>
+      <div class="parties">${INTRO.list.map(p => `<div class="party"><strong>${p.name}</strong><p>${p.text}</p></div>`).join("")}</div>
+      <div class="prose" style="margin-top:1em"><p>${INTRO.after}</p></div>
+      <div class="actions"><button class="btn primary" id="next">Continue</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("start");
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <section class="card">
+    <figure class="scene wide">${ART.start}</figure>
+    <div class="content">
+      <h2>${START.heading}</h2>
+      <div class="prose">${paras(START.paras)}</div>
+      <div class="commission">
+        <h3>${START.factsHeading}</h3>
+        <dl>${START.facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+      <div class="actions"><button class="btn primary" id="next">${START.button}</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("decision", {d:0, phase:"choose", sel:null, adv:null});
+}
+
+function renderDecision(fresh){
+  const i = state.d, d = DECISIONS[i], phase = state.phase, sel = state.sel;
+  const locked = phase !== "choose";
+  const chosen = sel != null ? d.options[sel] : null;
+  const actual = d.options.find(o => o.historical);
+  const letters = ["A","B","C","D"];
+  const last = i === DECISIONS.length - 1;
+
+  let html = `
+  <section class="card">
+    <div class="visuals"><figure class="scene">${ART.scenes[i]}</figure>${mapSVG(d.map, fresh)}</div>
+    <div class="content">
+      <p class="dateline">Decision ${i+1} of ${DECISIONS.length}. ${d.when}. ${d.where.replace(/\.$/, "")}.</p>
+      <h2>${d.title}</h2>
+      <div class="prose">${paras(d.setup)}</div>
+      <div class="advisors">
+        <h3 class="adv-h">Consult your advisors</h3>
+        <p class="adv-hint">Click an advisor to hear their advice. You don’t have to follow it.</p>
+        <div class="adv-row" role="group" aria-label="Advisors">${d.advisors.map((a, k) => `
+          <button class="adv" data-a="${k}" aria-pressed="${state.adv === k}"><strong>${a.name}</strong><span>${a.role}</span></button>`).join("")}
+        </div>
+        <div class="advice" id="advice" aria-live="polite">${state.adv != null ? adviceHTML(d.advisors[state.adv]) : ""}</div>
+      </div>
+      <p class="question" id="q">${d.question}</p>
+      <div class="orders" role="group" aria-labelledby="q">
+        ${d.options.map((o, k) => `
+          <button class="order" data-k="${k}" aria-pressed="${sel === k}" ${locked ? "disabled" : ""}>
+            <span class="mark" aria-hidden="true">${letters[k]}</span><span>${o.text}</span>
+          </button>`).join("")}
+      </div>
+      ${!locked ? `<div class="actions"><button class="btn primary" id="lock" ${sel == null ? "disabled" : ""}>Lock in this decision</button></div>` : ""}`;
+
+  if (locked){
+    html += `
+      <div class="panel" id="p-outcome">
+        <h3 tabindex="-1">What happens</h3>
+        <div class="prose"><p>${chosen.outcome}</p></div>
+        ${phase === "outcome" ? `<div class="actions"><button class="btn primary" id="reveal">See what ${GAME.leader} did</button></div>` : ""}
+      </div>`;
+  }
+  if (phase === "history"){
+    html += `
+      <div class="panel" id="p-history">
+        <div class="verdict">
+          <div class="stamp ${chosen.historical ? "match" : "diff"}" aria-hidden="true">${chosen.historical ? `Same as ${GAME.leader}` : "A different path"}</div>
+          <p>${chosen.historical ? `You made the same choice as ${GAME.leader}.` : `${cap(GAME.leader)} chose differently: <strong>${actual.short}</strong>.`}</p>
+        </div>
+        <h3 tabindex="-1">What really happened</h3>
+        <div class="prose">${paras(d.history)}</div>
+        <div class="think"><h4>Think about it</h4><p>${d.think}</p></div>
+        <div class="actions"><button class="btn primary" id="next">${last ? "See what happened next" : `Go to decision ${i+2}`}</button></div>
+      </div>`;
+  }
+  html += `</div></section>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".adv").forEach(b => b.onclick = () => {
+    state.adv = +b.dataset.a; persist();
+    app.querySelectorAll(".adv").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.a === state.adv)));
+    document.getElementById("advice").innerHTML = adviceHTML(d.advisors[state.adv]);
+  });
+  app.querySelectorAll(".order").forEach(b => b.onclick = () => {
+    state.sel = +b.dataset.k; persist();
+    app.querySelectorAll(".order").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.k === state.sel)));
+    document.getElementById("lock").disabled = false;
+  });
+  const lock = document.getElementById("lock");
+  if (lock) lock.onclick = () => {
+    if (state.sel == null) return;
+    state.phase = "outcome"; persist(); render(false); reveal("p-outcome");
+  };
+  const rev = document.getElementById("reveal");
+  if (rev) rev.onclick = () => {
+    const c = d.options[state.sel];
+    state.records[i] = {title:d.title, student:c.short, leader:actual.short, matched:c.historical, style:c.style};
+    state.phase = "history"; persist(); render(false); reveal("p-history");
+  };
+  const nx = document.getElementById("next");
+  if (nx) nx.onclick = () => last ? go("epilogue") : go("decision", {d:i+1, phase:"choose", sel:null, adv:null});
+}
+
+function adviceHTML(a){
+  return `<blockquote class="quote"><p>“${a.advice}”</p><footer>${a.name}, ${a.role}</footer></blockquote>`;
+}
+
+function reveal(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"});
+  const h = el.querySelector("h3"); if (h) h.focus({preventScroll:true});
+}
+
+function renderEpilogue(){
+  app.innerHTML = `
+  <section class="card">
+    ${mapSVG(EPILOGUE.map, false)}
+    <div class="content">
+      <h2>${EPILOGUE.heading}</h2>
+      <div class="prose">${paras(EPILOGUE.paras)}</div>
+      <div class="actions"><button class="btn primary" id="next">See your results</button></div>
+    </div>
+  </section>`;
+  document.getElementById("next").onclick = () => go("results");
+}
+
+function tally(list){ const c = {}; STYLES.forEach(k => c[k] = 0); list.forEach(s => c[s]++); return c; }
+function profileKey(c){ const top = Math.max(...STYLES.map(k => c[k])); const lead = Object.keys(c).filter(k => c[k] === top); return lead.length === 1 ? lead[0] : "balanced"; }
+function matchComment(m, t){
+  if (m === t) return `You think exactly like ${GAME.leader}. (Is that a good thing?)`;
+  if (m >= t - 2) return `You think a lot like ${GAME.leader}.`;
+  if (m >= Math.floor(t / 3)) return `You and ${GAME.leader} saw things differently at key moments.`;
+  return "You would have taken a very different path. Would history have turned out better, or worse?";
+}
+const pips = (n, cls = "") => `<span class="pips ${cls}">${Array.from({length:DECISIONS.length}, (_, k) => `<span class="pip${k < n ? " on" : ""}"></span>`).join("")}</span>`;
+
+function buildReport(recs, m, t, key, c){
+  const when = new Date().toLocaleString([], {dateStyle:"long", timeStyle:"short"});
+  const lines = [GAME.reportTitle, `Student: ${state.name}`, `Completed: ${when}`, "", "DECISIONS"];
+  recs.forEach((r, i) => {
+    lines.push(`${i+1}. ${r.title} [${r.matched ? "MATCH" : "DIFFERENT"}]`);
+    lines.push(`   Me: ${r.student}`);
+    lines.push(`   ${GAME.leaderLabel}: ${r.leader}`);
+  });
+  lines.push("", `Matched ${GAME.leader}: ${m} of ${t}`,
+    `Leadership style: ${PROFILES[key][0]} (${STYLES.map(k => `${c[k]} ${k}`).join(", ")})`);
+  return lines.join("\n");
+}
+
+function renderResults(){
+  const recs = state.records, t = recs.length, m = recs.filter(r => r.matched).length;
+  const c = tally(recs.map(r => r.style));
+  const gw = tally(DECISIONS.map(d => d.options.find(o => o.historical).style));
+  const key = profileKey(c), [pName, pText] = PROFILES[key];
+  const report = buildReport(recs, m, t, key, c);
+
+  app.innerHTML = `
+  <section class="card">
+    <p class="dateline">Your results, ${esc(state.name)}</p>
+    <h2>You matched ${GAME.leader}</h2>
+    <p class="score">${m} of ${t}</p>
+    <div class="prose"><p>${matchComment(m, t)}</p></div>
+
+    <div class="tablewrap">
+      <table class="ledger">
+        <thead><tr><th></th><th>Decision</th><th>Your choice</th><th>${GAME.leaderPoss} choice</th></tr></thead>
+        <tbody>${recs.map((r, i) => `
+          <tr><td class="n">${i+1}</td><td>${r.title}<br><span class="tag ${r.matched ? "match" : "diff"}">${r.matched ? "Same" : "Different"}</span></td>
+          <td>${r.student}</td><td>${r.leader}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cols">
+      <div>
+        <p class="dateline">Your leadership style</p>
+        <h3>${pName}</h3>
+        <div class="prose"><p>${pText}</p></div>
+        <div class="styles" aria-label="Your choices compared with ${GAME.leaderPoss}">
+          <span></span><span class="h">You</span><span class="h">${cap(GAME.leader)}</span>
+          ${STYLES.map(k => `
+            <span>${cap(k)}</span>
+            <span aria-label="You: ${c[k]}">${pips(c[k])}</span>
+            <span aria-label="${cap(GAME.leader)}: ${gw[k]}">${pips(gw[k], "gw")}</span>`).join("")}
+        </div>
+      </div>
+      <div>
+        <p class="dateline">For your Canvas assignment</p>
+        <h3>Your summary</h3>
+        <textarea class="summary" id="sum" readonly aria-label="Summary report">${esc(report)}</textarea>
+        <div class="actions">
+          <button class="btn primary" id="copy">Copy summary</button>
+          <button class="btn" id="again">Play again</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const ta = document.getElementById("sum");
+  ta.addEventListener("focus", () => ta.select());
+  document.getElementById("copy").onclick = async () => {
+    const st = document.getElementById("status");
+    try { await navigator.clipboard.writeText(report); st.textContent = "Copied. Paste it into your Canvas assignment."; }
+    catch (e) {
+      ta.focus(); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e2) {}
+      st.textContent = ok ? "Copied. Paste it into your Canvas assignment." : "The text is selected. Press Ctrl+C (or Cmd+C on a Mac) to copy it.";
+    }
+  };
+  document.getElementById("again").onclick = () => { const n = state.name; clearSaved(); state = blank(); state.name = n; go("title"); };
+}
+
+render(false);
+</script>
+</body>
+</html>
+
+</body></html>
