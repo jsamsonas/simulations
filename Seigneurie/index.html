@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La seigneurie: a noble's estate before 1789</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon:ital@0;1&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EEF1F5; --panel:#FFFFFF; --ink:#151A2E; --muted:#555C72; --rule:#D9DDE5;
+  --chip:#F1F3F7; --chip-off:#FAFBFC; --navy:#14213D; --crimson:#9E1B32;
+  --c-lord:#A3172F; --c-king:#1F4E89; --c-church:#6A4C93; --c-noble:#96690F;
+  --aside:#F7EEF0; --focus:#E8A317;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1324; --panel:#131B31; --ink:#E8EBF3; --muted:#A2A9BF; --rule:#28314E;
+    --chip:#1B2440; --chip-off:#151D35; --navy:#C9D4EE; --crimson:#E46A7E;
+    --c-lord:#E8687C; --c-king:#80A9E6; --c-church:#B79DE3; --c-noble:#E3B654;
+    --aside:#221A2C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1324; --panel:#131B31; --ink:#E8EBF3; --muted:#A2A9BF; --rule:#28314E;
+  --chip:#1B2440; --chip-off:#151D35; --navy:#C9D4EE; --crimson:#E46A7E;
+  --c-lord:#E8687C; --c-king:#80A9E6; --c-church:#B79DE3; --c-noble:#E3B654;
+  --aside:#221A2C;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+.app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 420px}
+.stage{position:relative;overflow:hidden;background:#CBD9E2;min-height:0}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.pins{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pin{position:absolute;left:0;top:0;margin:-11px 0 0 -11px;pointer-events:auto;display:flex;align-items:center;gap:6px;
+  background:none;border:0;padding:0;cursor:pointer;will-change:transform}
+.pin .dot{flex:none;width:22px;height:22px;border-radius:50%;background:var(--pc);border:3px solid #fff;
+  box-shadow:0 1px 4px rgba(10,15,30,.45);transition:transform .15s}
+.pin .lab{background:rgba(255,255,255,.93);color:#151A2E;font-size:12.5px;font-weight:600;line-height:1;
+  padding:5px 8px;border-radius:3px;white-space:nowrap;box-shadow:0 1px 3px rgba(10,15,30,.25)}
+.pin:hover .dot{transform:scale(1.15)}
+.pin.sel .dot{transform:scale(1.3)}
+.pin.sel .lab{background:var(--pc);color:#fff}
+.pin:focus-visible{outline:none}
+.pin:focus-visible .dot{outline:3px solid var(--focus);outline-offset:2px}
+.pin[hidden]{display:none}
+.tools{position:absolute;left:12px;bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none}
+.tools > *{pointer-events:auto}
+.btn-ghost{background:rgba(255,255,255,.94);color:#151A2E;border:0;border-radius:4px;padding:7px 12px;font-size:13px;font-weight:600;
+  box-shadow:0 1px 3px rgba(10,15,30,.25);cursor:pointer}
+.btn-ghost:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.hint{font-size:12.5px;color:#26304A;background:rgba(255,255,255,.75);padding:6px 10px;border-radius:4px}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:#26304A;font-size:14px}
+
+.panel{background:var(--panel);border-left:1px solid var(--rule);display:flex;flex-direction:column;min-height:0}
+.phead{padding:22px 26px 0}
+.title{font-family:'IM Fell French Canon','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;font-style:italic;
+  font-weight:400;font-size:44px;line-height:1;margin:0;color:var(--navy);letter-spacing:-.01em}
+.title-sub{margin:8px 0 0;color:var(--muted);font-size:14px}
+.tabs{display:flex;gap:22px;margin-top:18px;border-bottom:1px solid var(--rule)}
+.tab{background:none;border:0;padding:8px 0 10px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;
+  border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--crimson)}
+.tab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.pbody{flex:1;overflow:auto;padding:18px 26px 28px;min-height:0}
+.lede{margin:0 0 16px;max-width:60ch}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;padding:0;border:0}
+.filters legend{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;padding:0}
+.chip{display:flex;align-items:center;gap:7px;background:var(--chip);border:1px solid var(--rule);border-radius:999px;
+  padding:5px 12px 5px 8px;font-size:13px;cursor:pointer}
+.chip .sw{width:12px;height:12px;border-radius:50%;background:var(--sc)}
+.chip[aria-pressed="false"]{background:var(--chip-off);color:var(--muted);text-decoration:line-through}
+.chip[aria-pressed="false"] .sw{background:transparent;box-shadow:inset 0 0 0 2px var(--sc)}
+.chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.group{margin:0 0 20px}
+.group h3{font-size:13px;font-weight:700;margin:0 0 6px;color:var(--gc);display:flex;align-items:center;gap:8px}
+.group h3::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gc)}
+.sitelist{list-style:none;margin:0;padding:0}
+.siteitem{width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:12px;text-align:left;background:none;border:0;
+  border-top:1px solid var(--rule);padding:9px 2px;cursor:pointer}
+.siteitem:hover .sn{color:var(--crimson)}
+.siteitem:focus-visible{outline:3px solid var(--focus);outline-offset:-2px}
+.sn{font-weight:600}
+.sf{font-family:'IM Fell French Canon',Georgia,serif;font-style:italic;color:var(--muted);font-size:15px;text-align:right}
+.group[hidden],.siteli[hidden]{display:none}
+
+.back{background:none;border:0;padding:0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+.back:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.catline{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--dc);margin:0 0 4px}
+.catline::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--dc)}
+.dname{font-family:'IM Fell French Canon',Georgia,serif;font-weight:400;font-size:31px;line-height:1.1;margin:0;color:var(--ink)}
+.dfr{font-family:'IM Fell French Canon',Georgia,serif;font-style:italic;font-size:19px;color:var(--muted);margin:4px 0 16px}
+.who{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 16px;padding:12px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:14px}
+.who dt{font-weight:600;color:var(--muted)}
+.who dd{margin:0}
+.dbody p{margin:0 0 12px;max-width:62ch}
+.impact{background:var(--aside);border-left:4px solid var(--crimson);padding:12px 14px;margin:16px 0 12px}
+.impact h4,.after h4{margin:0 0 4px;font-size:13px;font-weight:700}
+.impact p,.after p{margin:0}
+.after{border-left:4px solid var(--rule);padding:4px 14px;margin:14px 0 0;color:var(--ink)}
+.stepper{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
+.stepper button{background:var(--chip);border:1px solid var(--rule);border-radius:4px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;max-width:48%}
+.stepper button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin:0 0 18px}
+.seg button{background:var(--chip-off);border:0;padding:8px 14px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--navy);color:var(--panel)}
+.seg button:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.bar{display:flex;height:46px;border-radius:4px;overflow:hidden;margin:0 0 6px;background:var(--chip)}
+.bar span{display:block;height:100%;transition:flex-basis .5s ease;min-width:0;border-right:1px solid var(--panel)}
+.bar span:last-child{border-right:0}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:0 0 16px}
+.hlist{list-style:none;margin:0 0 16px;padding:0}
+.hlist li{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--rule)}
+.hlist .sw{width:14px;height:14px;border-radius:3px;margin-top:3px}
+.hlist .hl{font-weight:600}
+.hlist .hn{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.hlist .hv{font-variant-numeric:tabular-nums;font-weight:700}
+.hlist li.kept{border-top:2px solid var(--ink)}
+.note{font-size:13px;color:var(--muted);max-width:62ch}
+
+@media (max-width:820px){
+  .app{grid-template-columns:1fr;grid-template-rows:52% 48%}
+  .panel{border-left:0;border-top:1px solid var(--rule)}
+  .phead{padding:14px 18px 0}
+  .title{font-size:34px}
+  .pbody{padding:14px 18px 24px}
+  .pin .lab{display:none}
+  .pin.sel .lab,.pin:hover .lab,.pin:focus-visible .lab{display:block}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .bar span,.pin .dot{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage" aria-label="3D model of a French noble's estate">
+    <div class="loading" id="loading">Building the estate…</div>
+    <div class="pins" id="pins"></div>
+    <div class="tools">
+      <button class="btn-ghost" id="reset" type="button">Reset view</button>
+      <span class="hint">Drag to turn the estate. Scroll or pinch to zoom. Right-drag to pan.</span>
+    </div>
+  </main>
+  <aside class="panel" aria-label="Information panel">
+    <div class="phead">
+      <h1 class="title">La seigneurie</h1>
+      <p class="title-sub">A noble's estate in northern France, the 1780s</p>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-estate" aria-selected="true" aria-controls="pbody">The estate</button>
+        <button class="tab" role="tab" id="tab-harvest" aria-selected="false" aria-controls="pbody">Where a harvest went</button>
+      </div>
+    </div>
+    <div class="pbody" id="pbody" role="tabpanel" tabindex="-1"></div>
+  </aside>
+</div>
+
+<!-- three.js r128 and OrbitControls, shared with the Brooks tour so this page doesn't depend on outside sites -->
+<script src="../brooks-ship/lib/three.min.js"></script>
+<script src="../brooks-ship/lib/OrbitControls.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ---------------- Content ---------------- */
+const CAT = {
+  lord:   {label:'Dues paid to the lord',  short:'Paid to the lord',   pin:'#A3172F', css:'--c-lord'},
+  king:   {label:'Taxes paid to the king', short:'Paid to the king',   pin:'#1F4E89', css:'--c-king'},
+  church: {label:'Paid to the Church',     short:'Paid to the Church', pin:'#6A4C93', css:'--c-church'},
+  noble:  {label:'Rights of the nobility', short:'A noble right',      pin:'#B8860B', css:'--c-noble'}
+};
+const CAT_ORDER = ['lord','king','church','noble'];
+const xs = z => 25 + 5*Math.sin(z/22);   // stream centerline
+
+const SITES = [
+ {id:'mill', cat:'lord', tags:['lord'], name:"The lord's mill", fr:'le moulin banal',
+  pos:[xs(-15)-6,-15], h:11, dist:48,
+  who:[['Collected by','The lord, through the miller who leased the mill'],['Paid by','Every household that ate bread']],
+  body:["The mill was a banalité, one of the lord's monopolies. Peasants were required to grind their grain here and nowhere else, and they paid with a share of the grain, often around one-sixteenth.",
+        "Taking grain to a cheaper mill in a neighboring lordship, or grinding at home with a hand mill, was forbidden and could bring fines and confiscation."],
+  impact:"With no competition, the miller had little reason to work quickly or honestly. Villagers widely suspected millers of keeping more than their legal share."},
+ {id:'oven', cat:'lord', tags:['lord'], name:"The lord's oven", fr:'le four banal',
+  pos:[49,11], h:7, dist:40,
+  who:[['Collected by','The lord, through the baker who leased the oven'],['Paid by','Households in the village']],
+  body:["In many lordships the large village oven was another banalité. Families shaped their dough at home and carried it here to bake, paying a fee in bread or dough each time.",
+        "Building a private oven could be forbidden, so the fee was paid week after week, year after year."],
+  impact:"Bread made up most of what a poor family ate, so the oven fee was a charge on the most basic food there was."},
+ {id:'press', cat:'lord', tags:['lord'], name:"The lord's wine press", fr:'le pressoir banal',
+  pos:[74,44], h:8, dist:45,
+  who:[['Collected by','The lord'],['Paid by','Village grape growers']],
+  body:["In wine regions, growers had to press their grapes at the lord's press and pay a share of the wine.",
+        "Many lords also held the banvin, the right to sell their own wine before anyone else in the village for a set period each year."],
+  impact:"Growers waited their turn at the press while grapes spoiled, and then could not sell their own wine until the lord's had gone to market."},
+ {id:'demesne', cat:'lord', tags:['lord'], name:"The lord's fields", fr:'la réserve et la corvée',
+  pos:[-46,1], h:5, dist:60,
+  who:[['Benefited','The lord'],['Paid by','Peasant families, in unpaid labor']],
+  body:["The lord kept some land for himself, called the demesne or réserve. He might farm it with hired workers, rent it out, or call on his peasants to work it.",
+        "The corvée was unpaid labor owed to the lord: a set number of days each year plowing, harvesting, or hauling, often with the peasant's own tools and animals. The number of days varied widely, and by the 1700s many lords had converted it to a cash payment."],
+  impact:"Corvée days often fell at planting and harvest, the very weeks when a family's own crops most needed attention."},
+ {id:'strips', cat:'lord', tags:['lord'], name:'Peasant fields', fr:'la censive',
+  pos:[74,-64], h:4, dist:70,
+  who:[['Collected by','The lord'],['Paid by','Peasants holding land in the lordship']],
+  body:["Peasants held a large share of France's farmland, but their land was not truly free. It was a censive, land held from the lord and permanently burdened with dues.",
+        "The cens was a small yearly rent in cash, more a sign of the lord's ownership than a heavy cost. The champart was heavier: a share of the harvest, often around one-twelfth to one-eighth, taken right from the field.",
+        "When land changed hands, the lord took a fee called the lods et ventes, often around one-twelfth of the sale price. In some regions, especially in the east, peasants under mainmorte also owed fees to marry outside the lordship and could lose their property to the lord if they died without heirs living with them."],
+  impact:"A family could farm the same strips for generations and still owe dues on them. Selling the land or passing it on cost money too."},
+ {id:'bridge', cat:'lord', tags:['lord','king'], name:'The toll bridge and road', pin:'Toll bridge', fr:'le péage et la corvée royale',
+  pos:[xs(20),20], h:6, dist:45,
+  who:[['Collected by','The lord (tolls) and the king (road labor)'],['Paid by','Anyone moving goods to market']],
+  body:["Many lords collected tolls on the bridges, roads, and rivers of their lordship. Carts of grain, wine, or livestock paid at each one, so goods moving any distance paid again and again, which raised prices.",
+        "Peasants also owed the royal corvée: unpaid days building and repairing the king's roads. Reformers attacked it, and in 1787 it was replaced by a money tax, another bill for the same people."],
+  impact:"Taking a cart of grain to a town market could mean paying tolls along the way, on roads that had been built with peasants' unpaid labor."},
+
+ {id:'homes', cat:'king', tags:['king'], name:'Peasant homes', fr:'la taille',
+  pos:[77,8], h:8, dist:50,
+  who:[['Collected by',"The king's government"],['Paid by','The Third Estate, overwhelmingly peasants']],
+  body:["The taille was the main direct royal tax, charged on land or income. Nobles and clergy were exempt, so its full weight fell on commoners, and on peasants most of all.",
+        "Each village was assigned a total, and villagers themselves had to serve as collectors. If neighbors could not pay, the collectors could be held responsible for the shortfall.",
+        "Newer taxes, the capitation (a head tax) and the vingtième (one-twentieth of income), were meant to fall on everyone. In practice, nobles and the Church negotiated reductions and paid far less than their share. Young men also faced militia service, chosen by lot."],
+  impact:"Visible signs of prosperity, like a new roof or another cow, could raise a family's assessment, so families had good reason to look poorer than they were."},
+ {id:'tavern', cat:'king', tags:['king'], name:'The village tavern', fr:'les aides et la gabelle',
+  pos:[40,30], h:9, dist:45,
+  who:[['Collected by','Tax farmers, private financiers who bought the right to collect'],['Paid by','Ordinary consumers']],
+  body:["The aides were royal taxes on wine and other drinks, charged as they were made, moved, and sold. A cup of wine in the tavern carried tax from every step.",
+        "The gabelle, the salt tax, was the most hated tax of all. Salt was essential for preserving food. In much of northern France, every household had to buy a minimum amount of salt each year at a high government price, whether it needed that much or not. Rates varied enormously from province to province, so smuggling was common and punishments were severe.",
+        "These taxes were collected by tax farmers, private financiers who paid the crown in advance and kept whatever extra they could squeeze out."],
+  impact:"Because these taxes were built into the price of basic goods, the poorest families paid the most compared with what they had."},
+
+ {id:'church', cat:'church', tags:['church','noble'], name:'The parish church and tithe barn', pin:'Church and tithe barn', fr:'la dîme',
+  pos:[60,-19], h:23, dist:65,
+  who:[['Collected by','The Church, the First Estate'],['Paid by','Nearly everyone who farmed']],
+  body:["The tithe was a share of the harvest owed to the Church. In name it was one-tenth, but in practice it was often less, roughly one-twelfth or one-thirteenth on average. Collectors took sheaves straight from the field before the farmer took his own share, and stored them in the tithe barn.",
+        "Much of the tithe went to distant bishops, abbeys, or other holders rather than the village priest, who often lived on a small fixed allowance. The Church owned about a tenth of the land in France and paid no regular taxes, offering the king a voluntary \u201cfree gift\u201d instead.",
+        "The lord had honors here too: a reserved pew at the front, the right to be buried inside the church, and a place of honor in processions and prayers."],
+  impact:"Villagers watched their grain leave for the tithe barn while their own priest stayed poor. Many parish priests sympathized with the Third Estate in 1789."},
+
+ {id:'chateau', cat:'noble', tags:['noble'], name:'The château', fr:'le château seigneurial',
+  pos:[-25,-27], h:21, dist:85,
+  who:[['Home of','The seigneur (lord) and his family'],['Supported by','Rents, dues, and fees from everyone in the lordship']],
+  body:["The château was the seat of the seigneurie: the lord's estate and the web of rights attached to it. Many nobles drew much of their income not from farming themselves but from what peasants owed them.",
+        "Noble status brought legal privileges: exemption from the taille, the main royal tax; the right to be tried in separate courts; the right to wear a sword and display a coat of arms; and near-exclusive access to the top posts in the army, the Church, and royal government. Nobles did pay some newer taxes, but usually far less than their share.",
+        "Somewhere in the château sat the terrier, the lord's register listing every plot in the lordship and exactly what each household owed."],
+  impact:"The terrier was the paper proof behind every due. In the 1700s many lords hired experts to comb old records for forgotten dues, then demanded them again, sometimes with years of back payments."},
+ {id:'court', cat:'noble', tags:['noble'], name:"The lord's court and gallows", pin:'Court and gallows', fr:'la justice seigneuriale',
+  pos:[-80,36], h:9, dist:45,
+  who:[['Held by','The seigneur, through a judge he appointed'],['Judged','Peasants of the lordship']],
+  body:["Many lords held the right to run their own court. It usually met in the château or a small village courtroom, where the lord's judge settled boundary disputes, minor offenses, and arguments over unpaid dues.",
+        "Gallows at the edge of the estate advertised the lord's right of high justice. By the 1700s serious crimes had mostly passed to royal courts, but the gallows still announced who held power here.",
+        "Nobles themselves were tried in separate, higher courts, not alongside commoners."],
+  impact:"A peasant who disputed a due often had to argue the case before a judge the lord had hired and could dismiss."},
+ {id:'hunt', cat:'noble', tags:['noble'], name:'The hunting forest', fr:'le droit de chasse',
+  pos:[-62,-66], h:13, dist:60,
+  who:[['Reserved for','The lord and his guests'],['Cost borne by','Peasants whose crops fed the game']],
+  body:["Hunting was a noble privilege. Deer, wild boar, hares, and rabbits were protected for the lord's sport, and gamekeepers patrolled the woods.",
+        "Peasants could not kill animals that ate their crops. In many places they were forbidden to fence their fields, or to cut hay before nesting birds had hatched, so the game could roam and breed freely. Poaching brought heavy fines or, for repeat offenders, the galleys.",
+        "Lords also restricted peasants' traditional use of the woods for firewood and for grazing pigs."],
+  impact:"A family could watch deer strip a field of wheat overnight and have no legal way to stop it."},
+ {id:'dovecote', cat:'noble', tags:['noble'], name:'The dovecote', fr:'le colombier',
+  pos:[-4,-28], h:14, dist:42,
+  who:[['Reserved for','The lord, in most regions'],['Cost borne by','Peasants whose fields fed the birds']],
+  body:["A large round dovecote was a mark of noble rank. It could hold hundreds or even thousands of pigeons, raised for the lord's table and for their droppings, a valuable fertilizer.",
+        "The birds fed freely on the peasants' fields, especially on newly sown seed. Peasants were not allowed to kill them."],
+  impact:"Pigeons eating the seed meant a smaller harvest months later, on top of every other due the family owed.",
+  after:"Complaints about pigeons and game appear again and again in the cahiers de doléances, the lists of grievances villages drew up for the Estates-General in 1789."},
+ {id:'commons', cat:'noble', tags:['noble'], name:'The village commons', fr:'les communaux',
+  pos:[-4,62], h:4, dist:55,
+  who:[['Used by','The whole village, for grazing'],['Claimed by','The lord, more and more']],
+  body:["Common pasture let poor families keep a cow or a few sheep they could never have fed on their own small plots.",
+        "Under a royal law of 1669, a lord could claim up to a third of a village's commons for himself, a right called triage. In the later 1700s some lords pressed these claims or fenced off common land, and many could graze large flocks of their own on village pasture."],
+  impact:"Losing the commons could mean losing the family cow, and with it milk, manure, and a small cushion against hunger."}
+];
+const byId = Object.fromEntries(SITES.map(s=>[s.id,s]));
+
+const HARVEST = {
+  peasant:{
+    rows:[
+      ['seed','Seed saved for next year',20,'#8D93A3','Yields were low, so about a fifth of the grain had to be kept for planting.'],
+      ['tithe','Tithe to the Church',8,'#6A4C93','Taken in sheaves at the field.'],
+      ['champart','Champart to the lord',8,'#A3172F','A share of the crop, where the lord held this right.'],
+      ['mill','Mill fees to the lord',3,'#C4475B','Paid in grain each time the family ground flour.'],
+      ['cens','Cens and other dues to the lord',2,'#DE8A97','Small cash rents, converted to grain here.'],
+      ['taille','Taille, capitation, vingtième',14,'#1F4E89','Royal direct taxes, paid in cash. Shown in grain.'],
+      ['salt','Salt and drink taxes',5,'#6C93C7','The gabelle and the aides, built into prices.'],
+      ['kept','Left to feed the family',40,'#4E8A5B','To last until the next harvest. Many families ran short and had to buy grain or borrow.']
+    ],
+    note:"This is an illustrative model, not data from a real farm. Burdens varied enormously by region, by year, and by how land was held, and many peasants rented extra land or worked for wages to get by."
+  },
+  noble:{
+    rows:[
+      ['seed','Seed saved for next year',20,'#8D93A3','The same low yields.'],
+      ['tithe','Tithe to the Church',8,'#6A4C93','Nobles generally owed the tithe on their land too.'],
+      ['taille','Capitation and vingtième',4,'#1F4E89','No taille. The newer taxes, often reduced by negotiation.'],
+      ['kept','Kept by the lord',68,'#4E8A5B','No champart, no mill fees, no cens. He owned those rights.']
+    ],
+    note:"On top of his own harvest, the lord collected the champart, mill fees, cens, and other dues from every peasant household in the lordship. Illustrative model; real figures varied widely."
+  }
+};
+
+/* ---------------- Panel ---------------- */
+const pbody = document.getElementById('pbody');
+const tabEstate = document.getElementById('tab-estate');
+const tabHarvest = document.getElementById('tab-harvest');
+const filters = {lord:true, king:true, church:true, noble:true};
+let view = {tab:'estate', site:null, harvest:'peasant'};
+
+function siteVisible(s){ return s.tags.some(t=>filters[t]); }
+
+function renderEstateList(){
+  let h = `<p class="lede">Choose a marker on the estate, or a place below, to see who collected, who paid, and what it cost a peasant family.</p>
+  <fieldset class="filters"><legend>Show on the map</legend>`;
+  for(const c of CAT_ORDER){
+    h += `<button type="button" class="chip" data-filter="${c}" aria-pressed="${filters[c]}" style="--sc:${CAT[c].pin}"><span class="sw"></span>${CAT[c].label}</button>`;
+  }
+  h += `</fieldset>`;
+  for(const c of CAT_ORDER){
+    const items = SITES.filter(s=>s.cat===c);
+    h += `<section class="group" style="--gc:var(${CAT[c].css})" ${filters[c]?'':'hidden'}><h3>${CAT[c].label}</h3><ul class="sitelist">`;
+    for(const s of items){
+      h += `<li class="siteli"><button type="button" class="siteitem" data-site="${s.id}"><span class="sn">${s.name}</span><span class="sf">${s.fr}</span></button></li>`;
+    }
+    h += `</ul></section>`;
+  }
+  pbody.innerHTML = h;
+}
+
+function renderDetail(s){
+  const i = SITES.indexOf(s);
+  const prev = SITES[(i-1+SITES.length)%SITES.length], next = SITES[(i+1)%SITES.length];
+  const extra = s.tags.filter(t=>t!==s.cat).map(t=>CAT[t].short.toLowerCase());
+  let h = `<button type="button" class="back" id="back">\u2190 All places</button>
+  <p class="catline" style="--dc:var(${CAT[s.cat].css})">${CAT[s.cat].short}${extra.length?' and '+extra.join(', '):''}</p>
+  <h2 class="dname" id="dname" tabindex="-1">${s.name}</h2>
+  <p class="dfr" lang="fr">${s.fr}</p>
+  <dl class="who">${s.who.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+  <div class="dbody">${s.body.map(p=>`<p>${p}</p>`).join('')}</div>
+  <div class="impact"><h4>For a peasant family</h4><p>${s.impact}</p></div>`;
+  if(s.after) h += `<div class="after"><h4>${s.id==='dovecote'?'In 1789':'What came next'}</h4><p>${s.after}</p></div>`;
+  h += `<div class="stepper"><button type="button" data-site="${prev.id}">Previous: ${prev.name}</button><button type="button" data-site="${next.id}">Next: ${next.name}</button></div>`;
+  pbody.innerHTML = h;
+  pbody.scrollTop = 0;
+}
+
+function renderHarvest(){
+  const d = HARVEST[view.harvest];
+  let h = `<p class="lede">Follow 100 sacks of grain from a small farm, and see how much a peasant family kept compared with a noble harvesting his own fields.</p>
+  <div class="seg" role="group" aria-label="Whose harvest">
+    <button type="button" data-h="peasant" aria-pressed="${view.harvest==='peasant'}">Peasant family</button>
+    <button type="button" data-h="noble" aria-pressed="${view.harvest==='noble'}">Noble's own fields</button>
+  </div>
+  <div class="bar" role="img" aria-label="${d.rows.map(r=>r[1]+': '+r[2]+' sacks').join('; ')}">`;
+  // keep a stable set of segment keys so widths animate between views
+  const keys = ['seed','tithe','champart','mill','cens','taille','salt','kept'];
+  const colorFor = {}; HARVEST.peasant.rows.forEach(r=>colorFor[r[0]]=r[3]);
+  for(const k of keys){
+    const r = d.rows.find(x=>x[0]===k);
+    h += `<span data-k="${k}" style="flex:0 0 ${r?r[2]:0}%;background:${r?r[3]:colorFor[k]}"></span>`;
+  }
+  h += `</div><div class="scale"><span>0</span><span>50</span><span>100 sacks</span></div><ul class="hlist">`;
+  for(const r of d.rows){
+    h += `<li class="${r[0]==='kept'?'kept':''}"><span class="sw" style="background:${r[3]}"></span><span><span class="hl">${r[1]}</span><span class="hn">${r[4]}</span></span><span class="hv">${r[2]}</span></li>`;
+  }
+  h += `</ul><p class="note">${d.note}</p>`;
+  return h;
+}
+
+function setTab(t){
+  view.tab = t;
+  tabEstate.setAttribute('aria-selected', t==='estate');
+  tabHarvest.setAttribute('aria-selected', t==='harvest');
+  if(t==='harvest'){ pbody.innerHTML = renderHarvest(); }
+  else if(view.site){ renderDetail(byId[view.site]); }
+  else renderEstateList();
+}
+
+function switchHarvest(which){
+  if(which===view.harvest) return;
+  view.harvest = which;
+  // animate bar in place, then replace list
+  const d = HARVEST[which];
+  pbody.querySelectorAll('.bar span').forEach(sp=>{
+    const r = d.rows.find(x=>x[0]===sp.dataset.k);
+    sp.style.flexBasis = (r?r[2]:0)+'%';
+    if(r) sp.style.background = r[3];
+  });
+  pbody.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.h===which));
+  const tmp = document.createElement('div'); tmp.innerHTML = renderHarvest();
+  pbody.querySelector('.hlist').replaceWith(tmp.querySelector('.hlist'));
+  pbody.querySelector('.note').replaceWith(tmp.querySelector('.note'));
+  pbody.querySelector('.bar').setAttribute('aria-label', tmp.querySelector('.bar').getAttribute('aria-label'));
+}
+
+tabEstate.addEventListener('click', ()=>setTab('estate'));
+tabHarvest.addEventListener('click', ()=>setTab('harvest'));
+[tabEstate,tabHarvest].forEach(t=>t.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const o = t===tabEstate?tabHarvest:tabEstate; o.focus(); o.click(); }
+}));
+
+pbody.addEventListener('click', e=>{
+  const sb = e.target.closest('[data-site]');
+  if(sb){ selectSite(sb.dataset.site, true); return; }
+  const fb = e.target.closest('[data-filter]');
+  if(fb){ const c = fb.dataset.filter; filters[c] = !filters[c]; fb.setAttribute('aria-pressed', filters[c]);
+          const grp = pbody.querySelectorAll('.group')[CAT_ORDER.indexOf(c)]; if(grp) grp.hidden = !filters[c];
+          updatePinVisibility(); return; }
+  if(e.target.closest('#back')){ deselect(); return; }
+  const hb = e.target.closest('[data-h]');
+  if(hb){ switchHarvest(hb.dataset.h); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && view.site) deselect(); });
+
+/* ---------------- 3D scene ---------------- */
+const stage = document.getElementById('stage');
+if(typeof THREE==='undefined' || !THREE.OrbitControls){
+  document.getElementById('loading').textContent = 'The 3D view could not load. Try reloading the page. The descriptions in the side panel still work.';
+  renderEstateList();
+  return;
+}
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try{ renderer = new THREE.WebGLRenderer({antialias:true}); }
+catch(e){ document.getElementById('loading').textContent = 'Your browser could not start 3D graphics (WebGL). The descriptions in the side panel still work.'; renderEstateList(); return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.insertBefore(renderer.domElement, stage.firstChild);
+document.getElementById('loading').remove();
+
+const scene = new THREE.Scene();
+const SKY = 0xCBD9E2;
+scene.background = new THREE.Color(SKY);
+scene.fog = new THREE.Fog(SKY, 320, 620);
+
+const camera = new THREE.PerspectiveCamera(38, 1, 1, 1200);
+const HOME = {pos:new THREE.Vector3(12,175,170), target:new THREE.Vector3(6,0,2)};
+const homePos = () => { const a = camera.aspect||1.3; const f = a<1.7 ? Math.min(1.8,1.7/a*0.82) : 1; return HOME.target.clone().add(HOME.pos.clone().sub(HOME.target).multiplyScalar(Math.max(1,f))); };
+camera.position.copy(HOME.pos);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI*0.45; controls.minDistance = 22; controls.maxDistance = 330;
+controls.screenSpacePanning = false;
+
+scene.add(new THREE.HemisphereLight(0xEEF4FF, 0x6E7D4C, 0.72));
+const sun = new THREE.DirectionalLight(0xFFF2DE, 0.85);
+sun.position.set(-90,150,80);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera, {left:-150,right:150,top:150,bottom:-150,near:10,far:450});
+sun.shadow.bias = -0.0006;
+scene.add(sun);
+
+// rng
+let seed = 1789;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed>>>15, 1|seed);
+  t = t + Math.imul(t ^ t>>>7, 61|t) ^ t; return ((t ^ t>>>14)>>>0)/4294967296; };
+const rr = (a,b) => a + rnd()*(b-a);
+
+const mats = {};
+const mat = c => mats[c] || (mats[c] = new THREE.MeshLambertMaterial({color:c}));
+function M(geo, color, x=0, y=0, z=0, parent=scene){
+  const m = new THREE.Mesh(geo, typeof color==='number'?mat(color):color);
+  m.position.set(x,y,z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+}
+const box = (w,h,d,c,x,y,z,p) => M(new THREE.BoxGeometry(w,h,d), c, x, y+h/2, z, p);
+function gableGeo(w,d,h){
+  const s = new THREE.Shape(); s.moveTo(-w/2,0); s.lineTo(w/2,0); s.lineTo(0,h); s.lineTo(-w/2,0);
+  const g = new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:false}); g.translate(0,0,-d/2); return g;
+}
+function hipGeo(w,d,h){
+  let g = new THREE.ConeGeometry(Math.SQRT1_2,1,4,1); g.rotateY(Math.PI/4); g.translate(0,.5,0); g.scale(w,h,d);
+  g = g.toNonIndexed(); g.computeVertexNormals(); return g;
+}
+function group(site, x=0, z=0, rot=0){
+  const g = new THREE.Group(); g.position.set(x,0,z); g.rotation.y = rot; if(site) g.userData.site = site; scene.add(g); return g;
+}
+function house(p, x, z, w, d, h, wall, roof, rh){
+  box(w,h,d,wall,x,0,z,p);
+  M(gableGeo(w+0.7,d+0.7,rh||h*0.85), roof, x, h, z, p);
+}
+function windows(p, x0, x1, n, ys, z, face=1){
+  for(let i=0;i<n;i++){ const x = x0 + (x1-x0)*(i/(n-1));
+    for(const y of ys) box(1.1,1.9,0.2,0x3B4459,x,y,z+face*0.05,p); }
+}
+
+// palette
+const C = {grass:0x8FA96B, stone:0xE6DDC8, stone2:0xD4C8AE, slate:0x4C5568, tile:0xA2543A, thatch:0xC6A55B,
+           wood:0x6E5034, water:0x5D8DAE, road:0xC2AB84, wheat:0xCDB062, hedge:0x4D7337};
+
+// ground + distant hills
+const ground = M(new THREE.PlaneGeometry(700,700), C.grass, 0,0,0); ground.rotation.x = -Math.PI/2; ground.castShadow = false;
+for(let i=0;i<14;i++){
+  const a = i/14*Math.PI*2, r = rr(235,270);
+  const hill = M(new THREE.SphereGeometry(rr(55,85),16,10), 0x93AA74, Math.cos(a)*r, -6, Math.sin(a)*r);
+  hill.scale.y = rr(0.16,0.26); hill.castShadow = false;
+}
+
+// furrow texture
+const fc = document.createElement('canvas'); fc.width = 16; fc.height = 64;
+{ const g = fc.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,16,64);
+  for(let i=0;i<8;i++){ g.fillStyle = i%2?'#d9d9d9':'#f4f4f4'; g.fillRect(0,i*8,16,8); } }
+const furrowBase = new THREE.CanvasTexture(fc);
+let fieldLayer = 0;
+function field(x0,z0,x1,z1,color,alongZ,site){
+  const w = x1-x0, d = z1-z0;
+  const t = furrowBase.clone(); t.needsUpdate = true; t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  if(alongZ){ t.center.set(.5,.5); t.rotation = Math.PI/2; t.repeat.set(d/4, w/4); } else { t.repeat.set(w/4, d/4); }
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w,d), new THREE.MeshLambertMaterial({color, map:t}));
+  m.rotation.x = -Math.PI/2; m.position.set(x0+w/2, 0.04 + (fieldLayer++%5)*0.004, z0+d/2); m.receiveShadow = true;
+  if(site) m.userData.site = site; scene.add(m); return m;
+}
+function flat(x0,z0,x1,z1,color,y=0.03,site){
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0), mat(color));
+  m.rotation.x = -Math.PI/2; m.position.set((x0+x1)/2, y, (z0+z1)/2); m.receiveShadow = true;
+  if(site) m.userData.site = site; scene.add(m); return m;
+}
+
+// stream
+{ const pos = [], idx = []; let n = 0;
+  for(let z=-260; z<=260; z+=4){ const x = xs(z); pos.push(x-3.2,0.1,z, x+3.2,0.1,z);
+    if(n>0){ const a=(n-1)*2; idx.push(a,a+2,a+1, a+1,a+2,a+3); } n++; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshLambertMaterial({color:C.water, emissive:0x1A2E40, emissiveIntensity:0.25}));
+  m.receiveShadow = true; scene.add(m);
+}
+
+// roads
+function road(x0,z0,x1,z1,w=4){
+  const len = Math.hypot(x1-x0,z1-z0);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(len,w), mat(C.road));
+  m.rotation.x = -Math.PI/2; m.rotation.z = -Math.atan2(z1-z0,x1-x0);
+  m.position.set((x0+x1)/2, 0.07, (z0+z1)/2); m.receiveShadow = true; scene.add(m);
+}
+road(-300,20,300,20,4.2);
+road(-25,20,-25,-19,5);
+road(55,20,55,-8,3);
+road(70,20,70,40,3);
+road(-25,20,-75,30,2.4);
+
+/* --- Château --- */
+{ const g = group('chateau');
+  flat(-46,-62,-4,-44,0xC9BFA4,0.05,'chateau');            // gravel garden
+  for(let i=0;i<4;i++) for(let j=0;j<2;j++) box(7.5,0.9,6,C.hedge,-40.5+i*10.3,0,-58+j*9,g);
+  flat(-42,-22,-8,-12,0xC9BFA4,0.06,'chateau');            // forecourt
+  box(26,10,10,C.stone,-25,0,-38,g);  M(hipGeo(26.6,10.6,6.5),C.slate,-25,10,-38,g);
+  windows(g,-35,-15,9,[2.2,6.3],-32.9);
+  for(const sx of [-1,1]){
+    box(8,9,15,C.stone,-25+sx*16,0,-31,g); M(hipGeo(8.6,15.6,5.5),C.slate,-25+sx*16,9,-31,g);
+    M(new THREE.CylinderGeometry(2.8,2.8,12,18),C.stone2,-25+sx*20.5,6,-23.5,g);
+    M(new THREE.ConeGeometry(3.3,6.5,18),C.slate,-25+sx*20.5,15.25,-23.5,g);
+    box(1.2,3.2,1.2,C.stone2,-25+sx*7.5,13,-38,g);                 // chimneys
+    box(14,2.2,0.8,C.stone2,-25+sx*10,0,-17.5,g);                  // forecourt wall
+    box(1.4,3.6,1.4,C.stone2,-25+sx*3,0,-17.5,g);                  // gate piers
+  }
+  box(3,1.6,1.4,C.stone2,-25,10,-32.5,g); M(gableGeo(3.4,1.8,1.6),C.slate,-25,11.6,-32.5,g); // pediment
+}
+/* --- Dovecote --- */
+const pigeons = [];
+{ const g = group('dovecote');
+  M(new THREE.CylinderGeometry(2.7,2.9,7.5,20),0xEDE6D4,-4,3.75,-28,g);
+  M(new THREE.ConeGeometry(3.4,4.5,20),C.slate,-4,9.75,-28,g);
+  box(0.9,1.4,0.9,0xEDE6D4,-4,11.9,-28,g);
+  box(1.6,0.25,0.3,0x2D3445,-4,4.5,-25.2,g);
+  const pg = new THREE.BoxGeometry(0.45,0.12,1.3);
+  for(let i=0;i<16;i++){ const p = M(pg,0x4F5464,0,0,0); p.castShadow = false;
+    pigeons.push({m:p, r:rr(6,13), h:rr(15,21), s:rr(0.35,0.7)*(rnd()<.5?-1:1), a:rr(0,Math.PI*2)}); }
+}
+/* --- Court & gallows --- */
+{ const g = group('court');
+  const mound = M(new THREE.ConeGeometry(8,2,20),0x86A062,-80,1,36,g); mound.castShadow = false;
+  for(const sx of [-1.8,1.8]) box(0.9,6,0.9,C.stone2,-80+sx,1.6,36,g);
+  box(5,0.6,0.6,C.wood,-80,7.2,36,g);
+  box(0.4,2.2,0.4,C.wood,-74,0,30,g); box(1.8,0.5,0.5,C.wood,-74,1.8,30,g); // pillory
+}
+/* --- Forest & game --- */
+const trunkGeo = new THREE.CylinderGeometry(0.3,0.45,2.6,6);
+const crownGeo = new THREE.IcosahedronGeometry(2.3,0);
+const coneGeo = new THREE.ConeGeometry(1.9,5.5,7);
+const greens = [0x4D7A3A,0x5B8A45,0x3F6A33,0x67924F,0x547F3E];
+function tree(x,z,s=1,p=scene,kind){
+  const g = new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s); p.add(g);
+  M(trunkGeo,C.wood,0,1.3,0,g);
+  if(kind==='c' || (!kind && rnd()<.25)) M(coneGeo,greens[2],0,4.6,0,g);
+  else { const c = M(crownGeo,greens[(rnd()*greens.length)|0],0,4.1,0,g); c.rotation.set(rnd(),rnd(),rnd()); }
+  return g;
+}
+{ const g = group('hunt');
+  for(let i=0;i<190;i++){ const x = rr(-130,-34), z = rr(-125,-50);
+    if(z > -58 && x > -48) continue; tree(x,z,rr(0.9,1.5),g); }
+  function deer(x,z,r){ const d = new THREE.Group(); d.position.set(x,0,z); d.rotation.y = r; g.add(d);
+    box(1.7,0.75,0.6,0x8A5A33,0,1.05,0,d); for(const [lx,lz] of [[-.65,-.2],[-.65,.2],[.65,-.2],[.65,.2]]) box(0.14,1.05,0.14,0x6B4426,lx,0,lz,d);
+    box(0.3,0.9,0.3,0x8A5A33,0.8,1.5,0,d); box(0.6,0.32,0.32,0x8A5A33,1.05,2.3,0,d); }
+  deer(-44,-50,0.6); deer(-40,-47,2.2); deer(-48,-46,-0.4);
+}
+/* --- Demesne fields with corvée workers --- */
+function person(x,z,color,p=scene){ M(new THREE.CylinderGeometry(0.32,0.5,1.35,8),color,x,0.68,z,p); M(new THREE.SphereGeometry(0.3,8,6),0xD9B08C,x,1.6,z,p); }
+{ const g = group('demesne');
+  field(-64,-12,-31,14,C.wheat,false,'demesne');
+  field(-19,-12,6,14,0xC2A456,false,'demesne');
+  for(const [x,z] of [[-50,2],[-47,4],[-44,1.5],[-41,3.5],[-53,5],[-38,1]]) person(x,z,[0x7A6A55,0x5C6E80,0x8C4B3A][(x|0)%3&3]||0x7A6A55,g);
+  for(const [x,z] of [[-57,-6],[-60,-2],[-10,-5]]) M(new THREE.ConeGeometry(1.6,2.6,10),0xC9A54E,x,1.3,z,g);
+  M(new THREE.BoxGeometry(2.4,1,1.2),C.wood,-34,0.9,8,g);
+}
+/* --- Peasant strip fields --- */
+{ const g = group('strips');
+  const cols = [0xD6B65B,0x9DB65B,0xA88A64,0xCAA64F,0x8FAE58,0xB09166];
+  let k=0; for(let x=32; x<96; x+=5.4){ field(x,-82,x+5,-36,cols[k%cols.length],true,'strips'); k++; }
+  person(48,-50,0x6A5B49,g); person(70,-62,0x5C6E80,g); person(83,-45,0x7A4E3A,g);
+}
+/* --- Mill on the stream --- */
+let wheel;
+{ const z = -15, x = xs(z); const g = group('mill');
+  house(g, x-8.5, z, 8, 7, 6, C.stone2, C.tile, 4.5);
+  box(1.2,2.4,0.2,0x3B4459,x-8.5,0,z+3.55,g);
+  wheel = new THREE.Group(); wheel.position.set(x-3.2,2.4,z); g.add(wheel);
+  const rim = M(new THREE.TorusGeometry(2.7,0.22,6,24),C.wood,0,0,0,wheel); rim.rotation.y = Math.PI/2;
+  for(let i=0;i<12;i++){ const a = i/12*Math.PI*2; const pd = M(new THREE.BoxGeometry(0.9,0.12,1.1),0x7D5E3F,0,Math.cos(a)*2.7,Math.sin(a)*2.7,wheel); pd.rotation.x = -a; }
+  M(new THREE.CylinderGeometry(0.2,0.2,2.4,8),0x4A3A2A,0,0,0,wheel).rotation.z = Math.PI/2;
+  box(3,0.4,2,C.stone2,x-12.5,0,z+5,g); // grain sacks platform
+  for(const dx of [-0.7,0.6]) M(new THREE.CylinderGeometry(0.45,0.5,1,8),0xD8C9A5,x-12.5+dx,0.9,z+5,g);
+}
+/* --- Bridge & toll --- */
+{ const z = 20, x = xs(z); const g = group('bridge');
+  box(12,0.7,5,C.stone2,x,0.5,z,g);
+  for(const sx of [-1,1]){ const r = box(4.2,0.5,5,C.stone2,x+sx*7.6,0,z,g); r.rotation.z = sx*0.16; r.position.y = 0.45; }
+  for(const sz of [-1,1]) box(12,0.8,0.4,C.stone,x,1.2,z+sz*2.3,g);
+  house(g, x+10, z+5.5, 3.2, 3.2, 3, C.stone, C.tile, 2.2);
+  box(0.4,1.6,0.4,C.wood,x+8.5,0,z-2.3,g);
+  const bar = box(5,0.28,0.28,0xA3172F,x+6.2,1.5,z-2.3,g); bar.castShadow = true;
+}
+/* --- Village homes --- */
+{ const g = group('homes');
+  const spots = [[38,9,0.1,C.thatch],[44,5,-0.15,C.thatch],[62,7,0.1,C.tile],[67,13,-0.08,C.thatch],[75,7,0.2,C.thatch],[82,12,0,C.tile],
+                 [48,31,0.05,C.thatch],[57,34,-0.1,C.thatch],[64,29,0.12,C.tile],[77,31,-0.2,C.thatch],[85,35,0.1,C.thatch]];
+  for(const [x,z,r,roof] of spots){
+    const hg = new THREE.Group(); hg.position.set(x,0,z); hg.rotation.y = r; g.add(hg);
+    house(hg,0,0,5.5,4.2,3.2,[0xE2D6BC,0xD8CBAE,0xE8DEC8][(x|0)%3],roof,2.8);
+    box(0.9,1.7,0.15,0x5A4430,0,0,2.12,hg);
+  }
+  for(const [x0,z0] of [[60,-2],[72,-1],[80,0],[52,38],[70,39]]){ const kg = flat(x0,z0,x0+6,z0+5,0x6E8E46,0.05,'homes'); }
+  person(59,17,0x6A5B49,g); person(73,24,0x8C4B3A,g);
+}
+/* --- Oven --- */
+{ const g = group('oven');
+  box(5,2.4,4,C.stone2,49,0,11,g);
+  const v = M(new THREE.CylinderGeometry(2,2,4,14,1,false,0,Math.PI),C.stone2,49,2.4,11,g); v.rotation.z = Math.PI/2; v.rotation.y = Math.PI/2;
+  box(0.8,2.6,0.8,0x9C8F78,50.6,2.4,10,g);
+  person(46.5,13.5,0x5C6E80,g);
+}
+/* --- Tavern --- */
+{ const g = group('tavern');
+  house(g,40,30,8,6,4.4,0xE4D8BE,C.tile,3.6);
+  box(0.25,3.6,0.25,C.wood,44.6,0,26.2,g); box(1.6,1,0.12,0x14213D,44.6,2.6,26.2,g);
+  for(const dx of [0,1.2]) M(new THREE.CylinderGeometry(0.5,0.5,1.1,10),C.wood,36+dx,0.55,26,g);
+}
+/* --- Church & tithe barn --- */
+{ const g = group('church');
+  box(9,8,20,C.stone,55,0,-22,g); M(gableGeo(9.8,20.6,5),C.slate,55,8,-22,g);
+  const apse = M(new THREE.CylinderGeometry(4.5,4.5,8,16,1,false,0,Math.PI),C.stone,55,4,-32,g); apse.rotation.y = Math.PI;
+  M(new THREE.ConeGeometry(4.7,3.5,16,1,false,0,Math.PI),C.slate,55,9.75,-32,g).rotation.y = Math.PI;
+  box(6,15,6,C.stone2,55,0,-10,g); M(hipGeo(6.4,6.4,10),C.slate,55,15,-10,g);
+  box(1.6,3,0.2,0x3B4459,55,0,-6.95,g);
+  for(const z of [-26,-21,-16]) for(const sx of [-1,1]) box(0.2,2.8,1,0x3B4459,55+sx*4.55,3.5,z,g);
+  house(g,73,-22,10,22,6,0xD6C7A6,C.tile,7);
+  box(3.6,4.5,0.2,C.wood,73,0,-10.95,g);
+  // cart of sheaves heading to the barn
+  box(3,0.9,1.8,C.wood,72,0.6,-6,g); M(new THREE.ConeGeometry(1.4,1.6,8),C.wheat,72,2.3,-6,g);
+  for(const sx of [-1,1]) { const w = M(new THREE.CylinderGeometry(0.6,0.6,0.2,12),0x4A3A2A,72,0.6,-6+sx*1,g); w.rotation.x = Math.PI/2; }
+  for(let i=0;i<5;i++){ box(0.5,0.8,0.25,0xB8B4A8,63+ (i%3)*1.6,0,-28+Math.floor(i/3)*2.2,g); } // churchyard markers
+}
+/* --- Wine press & vineyard --- */
+{ const g = group('press');
+  for(const [dx,dz] of [[-3,-2.5],[3,-2.5],[-3,2.5],[3,2.5]]) box(0.35,3.4,0.35,C.wood,74+dx,0,44+dz,g);
+  M(hipGeo(7.4,6.4,2.6),C.tile,74,3.4,44,g);
+  box(2.6,1.2,2.6,0x5B3E27,74,0,44,g); M(new THREE.CylinderGeometry(0.25,0.25,2.4,8),0x4A3A2A,74,2.2,44,g);
+  for(const [dx,dz] of [[-2.2,1.5],[2.2,1.6],[2.3,-1.4]]) M(new THREE.CylinderGeometry(0.55,0.55,1.2,12),0x7D5A3A,74+dx,0.6,44+dz,g);
+  flat(60,51,96,82,0x9C8462,0.035,'press');
+  for(let z=53; z<81; z+=2.3) box(34,1.1,0.55,0x4F6B34,78,0,z,g);
+  person(66,58,0x7A4E3A,g); person(88,72,0x5C6E80,g);
+}
+/* --- Commons with sheep --- */
+{ const g = group('commons');
+  flat(-24,40,16,84,0x9AAF6C,0.03,'commons');
+  for(let i=0;i<14;i++){ const x = rr(-20,12), z = rr(44,80), r = rr(0,Math.PI*2);
+    const s = new THREE.Group(); s.position.set(x,0,z); s.rotation.y = r; g.add(s);
+    box(1.3,0.85,0.8,0xF2EEE4,0,0.45,0,s); box(0.4,0.4,0.4,0x3A3530,0.8,0.95,0,s); }
+  person(-8,58,0x6A5B49,g); M(new THREE.CylinderGeometry(0.06,0.06,2.2,5),C.wood,-7.5,1.1,58,g);
+  const cow = new THREE.Group(); cow.position.set(4,0,70); cow.rotation.y = 0.8; g.add(cow);
+  box(2.2,1.1,1,0x8A6A4C,0,0.8,0,cow); box(0.6,0.6,0.6,0x8A6A4C,1.3,1.4,0,cow);
+}
+/* --- scattered trees: stream banks, village, hedgerows --- */
+for(let z=-110; z<120; z+=rr(7,13)){ if(Math.abs(z-20)<9 || Math.abs(z+15)<8) continue;
+  tree(xs(z)+(rnd()<.5?-6:6)+rr(-1,1), z, rr(0.8,1.2), scene, 'd'); }
+for(const [x,z] of [[33,-5],[86,-8],[92,22],[30,40],[90,45],[-12,30],[-34,30],[-60,24],[-90,10],[-95,40],[20,-50],[10,-70],[-10,-60],[100,-20],[-40,60],[-60,70],[30,85],[100,60]])
+  tree(x,z,rr(0.9,1.3));
+for(let x=-62;x<8;x+=4.5){ if(Math.abs(x+25)<5) continue; tree(x,16.5,0.55,scene,'d'); }
+
+/* ---------------- Pins ---------------- */
+const pinsEl = document.getElementById('pins');
+const pinEls = {};
+for(const s of SITES){
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'pin'; b.style.setProperty('--pc', CAT[s.cat].pin);
+  b.setAttribute('aria-label', `${s.name}: ${CAT[s.cat].short}`);
+  b.innerHTML = `<span class="dot"></span><span class="lab">${s.pin||s.name}</span>`;
+  b.addEventListener('click', ()=>selectSite(s.id, false));
+  pinsEl.appendChild(b); pinEls[s.id] = b;
+}
+function updatePinVisibility(){ for(const s of SITES) pinEls[s.id].dataset.filtered = siteVisible(s) ? '' : '1'; }
+
+const ring = new THREE.Mesh(new THREE.RingGeometry(3.2,4,48), new THREE.MeshBasicMaterial({color:0xC2213D, transparent:true, opacity:0.9, depthWrite:false}));
+ring.rotation.x = -Math.PI/2; ring.visible = false; scene.add(ring);
+
+/* ---------------- Camera moves ---------------- */
+let anim = null;
+const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+function flyTo(pos, target){
+  if(reduceMotion){ camera.position.copy(pos); controls.target.copy(target); return; }
+  anim = {t0:performance.now(), dur:1100, p0:camera.position.clone(), p1:pos, q0:controls.target.clone(), q1:target};
+}
+function flyToSite(s){
+  const target = new THREE.Vector3(s.pos[0], 2, s.pos[1]);
+  const dir = camera.position.clone().sub(controls.target); dir.y = 0;
+  if(dir.lengthSq() < 1) dir.set(0,0,1);
+  dir.normalize();
+  const pos = target.clone().add(dir.multiplyScalar(s.dist*0.85)); pos.y = s.dist*0.66 + 4;
+  flyTo(pos, target);
+}
+
+function selectSite(id, fromPanel){
+  const s = byId[id]; if(!s) return;
+  if(view.site) pinEls[view.site].classList.remove('sel');
+  view.site = id; pinEls[id].classList.add('sel');
+  ring.position.set(s.pos[0], 0.2, s.pos[1]); ring.visible = true;
+  flyToSite(s);
+  if(view.tab !== 'estate'){ view.tab='estate'; tabEstate.setAttribute('aria-selected',true); tabHarvest.setAttribute('aria-selected',false); }
+  renderDetail(s);
+  if(fromPanel){ const d = document.getElementById('dname'); if(d) d.focus({preventScroll:true}); }
+}
+function deselect(){
+  if(view.site) pinEls[view.site].classList.remove('sel');
+  view.site = null; ring.visible = false;
+  renderEstateList();
+}
+document.getElementById('reset').addEventListener('click', ()=>{ flyTo(homePos(), HOME.target.clone()); });
+
+// click on buildings
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let down = null;
+renderer.domElement.addEventListener('pointerdown', e=>{ down = {x:e.clientX, y:e.clientY}; anim = null; });
+renderer.domElement.addEventListener('pointerup', e=>{
+  if(!down || Math.hypot(e.clientX-down.x, e.clientY-down.y) > 5) return;
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc, camera);
+  for(const hit of ray.intersectObjects(scene.children, true)){
+    let o = hit.object; while(o && !o.userData.site) o = o.parent;
+    if(o){ const s = byId[o.userData.site]; if(siteVisible(s)) { selectSite(s.id,false); } return; }
+    if(hit.object === ground) return;
+  }
+});
+
+/* ---------------- Loop ---------------- */
+let resized = false;
+function resize(){
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix();
+  if(!resized){ resized = true; camera.position.copy(homePos()); }
+}
+new ResizeObserver(resize).observe(stage); resize();
+
+const v = new THREE.Vector3();
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(0.05,(now-last)/1000); last = now;
+  if(anim){
+    const t = Math.min(1,(now-anim.t0)/anim.dur), k = ease(t);
+    camera.position.lerpVectors(anim.p0, anim.p1, k); controls.target.lerpVectors(anim.q0, anim.q1, k);
+    if(t>=1) anim = null;
+  }
+  controls.update();
+  if(!reduceMotion){
+    wheel.rotation.x -= dt*0.9;
+    for(const p of pigeons){ p.a += dt*p.s; p.m.position.set(-4+Math.cos(p.a)*p.r, p.h+Math.sin(p.a*3)*0.6, -28+Math.sin(p.a)*p.r); p.m.rotation.y = -p.a - (p.s>0?0:Math.PI); }
+    if(ring.visible){ const s = 1 + 0.12*Math.sin(now/260); ring.scale.set(s,s,s); }
+  } else if(pigeons[0].m.position.y===0){
+    for(const p of pigeons) p.m.position.set(-4+Math.cos(p.a)*p.r, p.h, -28+Math.sin(p.a)*p.r);
+  }
+  renderer.render(scene, camera);
+  const W = stage.clientWidth, H = stage.clientHeight;
+  for(const s of SITES){
+    const el = pinEls[s.id];
+    v.set(s.pos[0], s.h, s.pos[1]).project(camera);
+    const off = el.dataset.filtered==='1' || v.z>1 || v.x<-1.1 || v.x>1.1 || v.y<-1.1 || v.y>1.1;
+    if(off){ if(!el.hidden) el.hidden = true; continue; }
+    if(el.hidden) el.hidden = false;
+    el.style.transform = `translate(${(v.x*.5+.5)*W}px,${(-v.y*.5+.5)*H}px)`;
+    el.style.zIndex = el.classList.contains('sel') ? 2000 : String(1000-Math.round(v.z*900));
+  }
+  requestAnimationFrame(frame);
+}
+updatePinVisibility();
+renderEstateList();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
