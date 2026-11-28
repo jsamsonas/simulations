@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Transportation Revolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Same paper, navy and gold system as the Lock 29 and Brooks tours. Stage on the left, reading panel on the right. */
+:root{
+  --paper:#F5F0E1; --panel:#FBF8EF; --stage-a:#EEF0E6; --stage-b:#D8DCCB;
+  --ink:#1B2A4A; --ink-soft:#4C5874; --gold:#C9A227; --gold-ink:#7A6012;
+  --rule:rgba(27,42,74,.16); --card-shadow:0 10px 30px rgba(27,42,74,.18);
+  --pin-bg:#1B2A4A; --pin-fg:#F5F0E1; --sel:rgba(201,162,39,.14);
+  --land:#E7E0C9; --land-oh:#DDD1AA; --water:#B9CBC6; --water-ink:#5E7F82; --ridge:rgba(122,96,18,.15);
+  --r-road:#8A4B1F; --r-steam:#B8901A; --r-canal:#2C6B8C; --r-rail:#1B2A4A; --r-tele:#7A6012; --halo:#E7E0C9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+    --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+    --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+    --pin-bg:#C9A227; --pin-fg:#0F1A2E; --sel:rgba(201,162,39,.16);
+    --land:#1B2A45; --land-oh:#243759; --water:#0B1424; --water-ink:#6F8FA6; --ridge:rgba(201,162,39,.12);
+    --r-road:#D9955A; --r-steam:#E3C55E; --r-canal:#6BB4D6; --r-rail:#F2EDDD; --r-tele:#E3C55E; --halo:#1B2A45;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1A2E; --panel:#14213A; --stage-a:#1A2A47; --stage-b:#0F1A2E;
+  --ink:#F2EDDD; --ink-soft:#B7BFCF; --gold:#C9A227; --gold-ink:#E3C55E;
+  --rule:rgba(242,237,221,.14); --card-shadow:0 10px 30px rgba(0,0,0,.45);
+  --pin-bg:#C9A227; --pin-fg:#0F1A2E; --sel:rgba(201,162,39,.16);
+  --land:#1B2A45; --land-oh:#243759; --water:#0B1424; --water-ink:#6F8FA6; --ridge:rgba(201,162,39,.12);
+  --r-road:#D9955A; --r-steam:#E3C55E; --r-canal:#6BB4D6; --r-rail:#F2EDDD; --r-tele:#E3C55E; --halo:#1B2A45;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:"Libre Caslon Text",Georgia,"Times New Roman",serif;font-weight:400;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+[hidden]{display:none!important}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:100%}
+.stage{position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%,var(--stage-a) 0%,var(--stage-b) 78%)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hint{position:absolute;top:14px;left:16px;right:16px;max-width:30em;font-size:.85rem;
+  color:var(--ink-soft);pointer-events:none;margin:0;z-index:2}
+.caption{position:absolute;top:14px;right:16px;width:min(380px,calc(100% - 32px));background:var(--panel);
+  border-left:4px solid var(--gold);box-shadow:var(--card-shadow);padding:10px 14px;font-size:.95rem;border-radius:2px;z-index:3}
+.caption .n{display:block;font-size:.8rem;color:var(--gold-ink);font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;letter-spacing:.02em}
+
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;left:0;top:0;pointer-events:auto;border:0;padding:0;background:none;
+  display:flex;align-items:center;gap:6px;cursor:pointer;transform:translate(-9px,-9px)}
+.pin .dot{width:18px;height:18px;border-radius:50%;background:var(--pin-bg);
+  border:2px solid var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.35);flex:none}
+.pin .lbl{font-size:.8rem;white-space:nowrap;background:var(--panel);color:var(--ink);
+  padding:2px 8px;border-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.25);
+  opacity:0;transition:opacity .15s}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.on .lbl{opacity:1}
+.pin.on .dot{background:var(--gold)}
+.pins.off .pin:not(.on){display:none}
+
+.card{position:absolute;left:16px;bottom:16px;width:min(460px,calc(100% - 32px));
+  max-height:62%;overflow:auto;background:var(--panel);border-left:4px solid var(--gold);
+  box-shadow:var(--card-shadow);padding:18px 22px 20px;border-radius:2px;z-index:3}
+.card h2{font-size:1.45rem;line-height:1.2;margin-bottom:.55rem;padding-right:3.5rem}
+.card p{margin:0 0 .75rem;max-width:62ch}
+.card .close{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--rule);
+  border-radius:3px;padding:2px 10px;font-size:.85rem;cursor:pointer;color:var(--ink-soft)}
+.card .close:hover{color:var(--ink);border-color:var(--ink-soft)}
+.card blockquote{margin:.4rem 0 .9rem;padding:.2rem 0 .2rem 1rem;border-left:2px solid var(--rule);
+  font-style:italic;white-space:pre-line}
+.card blockquote cite{display:block;font-style:normal;font-size:.85rem;color:var(--ink-soft);margin-top:.25rem;white-space:normal}
+.card dl{margin:.2rem 0 .9rem;display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;font-size:.95rem}
+.card dt{font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;color:var(--gold-ink)}
+.card dd{margin:0}
+.card .fact{font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.2rem}
+.card .eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 .2rem}
+.card .go{background:var(--ink);color:var(--panel);border:0;border-radius:3px;padding:8px 16px;cursor:pointer;font-size:.95rem}
+.card .go:hover{opacity:.9}
+.card .soon{font-size:.9rem;color:var(--ink-soft);font-style:italic;margin:0}
+
+.map{position:absolute;inset:0;width:100%;height:100%;display:block}
+.map .land{fill:var(--land)}
+.map .oh{fill:var(--land-oh)}
+.map .frame{fill:none;stroke:var(--ink-soft);stroke-width:1.5;opacity:.5}
+.map .water{fill:var(--water)}
+.map .river{fill:none;stroke:var(--water-ink);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;opacity:.8}
+.map .ridge{fill:none;stroke:var(--ridge);stroke-width:34;stroke-linecap:round;stroke-linejoin:round}
+.rt{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.r-turn{stroke:var(--r-road);stroke-width:2.5;stroke-dasharray:7 6}
+.r-road{stroke:var(--r-road);stroke-width:4.5}
+.r-steam{stroke:var(--r-steam);stroke-width:6;opacity:.9}
+.r-canal{stroke:var(--r-canal);stroke-width:4}
+.r-rail{stroke:var(--r-rail);stroke-width:2.2}
+.r-ties{stroke:var(--r-rail);stroke-width:8;stroke-dasharray:1.6 7;stroke-linecap:butt}
+.r-tele{stroke:var(--r-tele);stroke-width:2.2;stroke-dasharray:2 5}
+.map text{font-family:Georgia,"Times New Roman",serif;fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:4px;stroke-linejoin:round}
+.map .city{font-size:15px}
+.map .cdot{fill:var(--ink)}
+.map .region{font-size:14px;letter-spacing:.2em;fill:var(--ink-soft);stroke:none}
+.map .waterlbl{font-size:15px;font-style:italic;letter-spacing:.12em;fill:var(--water-ink);stroke:none}
+.map .ridgelbl{font-size:13px;letter-spacing:.3em;fill:var(--gold-ink);stroke:none}
+.map .stop{cursor:pointer}
+.map .stop circle{fill:var(--pin-bg);stroke:var(--gold);stroke-width:3}
+.map .stop .num{fill:var(--pin-fg);stroke:none;font-weight:700;font-size:17px;text-anchor:middle;dominant-baseline:central}
+.map .stop .slbl{font-size:16px;font-weight:700}
+.map .stop.soon circle{stroke-dasharray:4 3}
+.map .stop:hover circle,.map .stop:focus-visible circle,.map .stop.on circle{fill:var(--gold)}
+.map .stop:hover .num,.map .stop:focus-visible .num,.map .stop.on .num{fill:#1B2A4A}
+.map .stop:focus{outline:none}
+
+.panel{background:var(--panel);border-left:1px solid var(--rule);overflow:auto;padding:28px 26px 40px}
+.panel h1{font-size:1.9rem;line-height:1.15;margin-bottom:.35rem}
+.panel .sub{font-family:"Libre Caslon Text",Georgia,serif;font-style:italic;color:var(--ink-soft);margin:0 0 1.1rem}
+.panel p{margin:0 0 1rem}
+.note{border:1px solid var(--rule);border-left:3px solid var(--gold);padding:12px 14px;font-size:.92rem;margin:0 0 1.4rem}
+.note p{margin:0}
+.panel h3{font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--gold-ink)}
+.back{background:none;border:1px solid var(--rule);border-radius:3px;padding:4px 12px;cursor:pointer;font-size:.9rem;color:var(--ink-soft);margin:0 0 1rem}
+.back:hover{color:var(--ink);border-color:var(--ink-soft)}
+.stopn{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 .25rem!important}
+.run{display:grid;gap:.5rem}
+.run button{background:var(--ink);color:var(--panel);border:0;border-radius:3px;padding:9px 14px;cursor:pointer;text-align:left;font-size:.95rem}
+.run button:hover{opacity:.9}
+.run button:disabled{opacity:.45;cursor:default}
+.run .small{font-size:.85rem;color:var(--ink-soft);margin:0}
+.toggles{display:grid;gap:.45rem;margin:0}
+.toggles label{display:flex;gap:.6rem;align-items:center;cursor:pointer;font-size:.95rem}
+.toggles input{width:18px;height:18px;accent-color:var(--gold);margin:0}
+.reset{margin-top:.8rem;background:none;border:1px solid var(--ink-soft);border-radius:3px;
+  padding:5px 14px;cursor:pointer;font-size:.92rem}
+.reset:hover{background:var(--ink);color:var(--panel)}
+.parts{list-style:none;margin:0;padding:0}
+.parts li{margin:0}
+.parts button{display:block;width:100%;text-align:left;background:none;border:0;
+  border-bottom:1px solid var(--rule);padding:7px 2px;cursor:pointer;font-size:.97rem}
+.parts button:hover{color:var(--gold-ink)}
+.parts button[aria-current="true"]{color:var(--gold-ink);font-weight:700}
+.about-btn{margin-top:1.4rem;display:block;width:100%;text-align:left;background:none;
+  border:1px solid var(--rule);border-left:3px solid var(--gold);padding:10px 14px;cursor:pointer}
+.about-btn strong{font-family:"Libre Caslon Text",Georgia,serif;font-weight:400;font-size:1.05rem;display:block}
+.about-btn span{font-size:.88rem;color:var(--ink-soft)}
+.tg{display:grid;gap:.5rem;margin:0}
+.tglabel{font-size:.9rem;color:var(--ink-soft)}
+.tgrow{display:flex;gap:.5rem}
+.tgrow input{flex:1;min-width:0;font:inherit;padding:7px 10px;border:1px solid var(--ink-soft);border-radius:3px;background:var(--paper);color:var(--ink);text-transform:uppercase}
+.tgrow button{background:var(--ink);color:var(--panel);border:0;border-radius:3px;padding:7px 16px;cursor:pointer;font-size:.95rem}
+.tgsound{display:flex;gap:.6rem;align-items:center;font-size:.92rem;cursor:pointer}
+.tgsound input{width:18px;height:18px;accent-color:var(--gold);margin:0}
+.morse{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;letter-spacing:.03em;margin:0!important;min-height:1.6em;overflow-wrap:anywhere;color:var(--gold-ink)}
+.nextstop{margin-top:1rem;font-size:.92rem;color:var(--ink-soft)}
+.nextstop button{background:none;border:0;padding:0;color:var(--gold-ink);text-decoration:underline;cursor:pointer;font-size:inherit}
+
+.stops{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
+.stops button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:.8rem;align-items:center;width:100%;
+  text-align:left;background:none;border:1px solid var(--rule);border-left:3px solid var(--gold);padding:10px 12px;cursor:pointer;border-radius:2px}
+.stops button:hover,.stops button[aria-current="true"]{background:var(--sel)}
+.stops .num{grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--pin-bg);color:var(--pin-fg);
+  display:grid;place-items:center;font-family:"Libre Caslon Text",Georgia,serif;font-weight:700;font-size:.95rem;border:2px solid var(--gold)}
+.stops .nm{font-family:"Libre Caslon Text",Georgia,serif;font-size:1.05rem;line-height:1.25}
+.stops .wh{grid-column:2;font-size:.85rem;color:var(--ink-soft);line-height:1.3}
+.stops .chip{grid-column:3;grid-row:1 / span 2;font-size:.75rem;padding:2px 9px;border-radius:10px;border:1px solid var(--rule);color:var(--ink-soft);white-space:nowrap}
+.stops .chip.open{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.key{list-style:none;margin:0;padding:0;display:grid;gap:.35rem;font-size:.9rem}
+.key li{display:flex;align-items:center;gap:.7rem}
+.key svg{flex:none}
+
+.fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;z-index:1}
+
+@media (max-width: 860px){
+  html,body{height:auto}
+  .app{grid-template-columns:1fr;height:auto}
+  .stage{height:64svh;min-height:380px}
+  .panel{border-left:0;border-top:1px solid var(--rule);overflow:visible;padding:22px 18px 36px}
+  .card{left:10px;right:10px;bottom:10px;width:auto;max-height:50%;padding:14px 16px 16px}
+  .card h2{font-size:1.25rem}
+  .hint{font-size:.8rem}
+  .caption{top:auto;bottom:10px;left:10px;right:10px;width:auto;font-size:.88rem}
+  .pin .dot{width:13px;height:13px;border-width:2px}
+  .stage.mapmode{height:auto;min-height:0}
+  .stage.mapmode .map{position:relative;inset:auto;height:auto}
+  .stage.mapmode .card{position:relative;left:auto;right:auto;bottom:auto;margin:0 10px 12px;max-height:none}
+}
+@media (prefers-reduced-motion: reduce){ .pin .lbl{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <main class="stage mapmode" id="stage" aria-label="Route map of the Transportation Revolution">
+    <svg class="map" id="map" aria-hidden="false"></svg>
+    <p class="hint" id="hint">Tap a numbered stop to learn about it.</p>
+    <div class="pins" id="pins"></div>
+    <div class="caption" id="caption" hidden aria-live="polite"><span class="n" id="capN"></span><span id="capT"></span></div>
+    <section class="card" id="card" hidden aria-live="polite">
+      <button class="close" id="closeCard" type="button">Close</button>
+      <div id="cardBody"></div>
+    </section>
+  </main>
+
+  <aside class="panel" id="panel">
+    <div id="hubPanel">
+      <h1>The Transportation Revolution</h1>
+      <p class="sub">How Americans got moving, 1807 to the 1850s</p>
+      <p>In 1800, hauling goods across the Appalachian Mountains meant weeks of slow, muddy travel by wagon. Your notes call what came next the Transportation Revolution: a period of fast growth in how people and goods moved across the United States. Thanks to new inventions, travel became fast, cheap, and reliable for the first time.</p>
+      <p>This tour visits the four big developments from your notes. Start with stop 1 and work your way through, or pick any stop on the map.</p>
+      <div class="note"><p>Each stop opens its own 3D model. Use the Route map button at the top of a stop to come back here.</p></div>
+      <h3>Stops on the tour</h3>
+      <ol class="stops" id="stopList"></ol>
+      <h3>Map key</h3>
+      <ul class="key" id="mapKey"></ul>
+    </div>
+    <div id="stationPanel" hidden></div>
+  </aside>
+</div>
+
+<!-- three.js r128 and OrbitControls, shared with the Brooks tour so this page doesn't depend on outside sites -->
+<script src="../brooks-ship/lib/three.min.js"></script>
+<script src="../brooks-ship/lib/OrbitControls.js"></script>
+<!-- Backup copies, used only if the shared files above are missing -->
+<script>if(!window.THREE){document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>');}</script>
+<script>if(window.THREE&&!THREE.OrbitControls){document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');}</script>
+<!-- The Clermont model (from the 3D print file), used at stop 2 -->
+<script src="clermont-model.js"></script>
+<script>
+(function(){
+"use strict";
+
+const $=id=>document.getElementById(id);
+const stage=$("stage"), mapEl=$("map"), pinsEl=$("pins"), card=$("card"), cardBody=$("cardBody"),
+      capEl=$("caption"), capN=$("capN"), capT=$("capT"), hintEl=$("hint"),
+      hubPanel=$("hubPanel"), stPanel=$("stationPanel"), panel=$("panel");
+const prefersReduced=!!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const HAS3D=!!(window.THREE && THREE.OrbitControls);
+const sm=t=>{ t=Math.max(0,Math.min(1,t)); return t*t*(3-2*t); };
+function rng(seed){ return ()=>{ seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function el(t,text,cls){ const e=document.createElement(t); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+
+/* =====================================================================
+   The four stops
+   ===================================================================== */
+const STOPS=[
+  {key:"road",n:1,name:"The National Road",short:"National Road",where:"Eastern Ohio, 1830s",dev:"Development 1: Roads and turnpikes",ready:true,
+   at:[39.99,-81.8],lbl:[0,30,"middle"],
+   body:["Private stone roads called turnpikes charged tolls to pay for their upkeep. The National Road was different. The federal government paid to build it, starting in 1811. It crossed the Appalachian Mountains and ran right across Ohio.",
+         "At this stop: an S-bridge, a tollgate, a tavern, and the wagons and stagecoaches that crowded the road."]},
+  {key:"clermont",n:2,name:"Robert Fulton’s Clermont",short:"Clermont",where:"Hudson River, New York, 1807",dev:"Development 2: Steamboats",ready:true,
+   at:[42.08,-73.93],lbl:[22,5,"start"],
+   body:["Robert Fulton built the first commercially successful (money-making) steamboat in 1807. Steamboats could travel upstream against river currents.",
+         "At this stop: Fulton’s steamboat, built from a 3D-print model, steams up the Hudson against the wind and current and passes a sailing sloop."]},
+  {key:"canal",n:3,name:"Canal and lock",short:"Canal & lock",where:"Ohio & Erie Canal, Peninsula, Ohio",dev:"Development 3: Canals",ready:true,
+   at:[41.24,-81.55],lbl:[22,5,"start"],
+   body:["The Erie Canal connected the Great Lakes directly to New York City and cut shipping costs by 95%. Ohio’s canals linked Ohio farms to Lake Erie, the Erie Canal, and the Ohio River.",
+         "At this stop: Lock 29 at Peninsula, where you can raise or lower a canal boat, and how Ohio’s canals connected to the Erie Canal and New York City."]},
+  {key:"rail",n:4,name:"Railroad and telegraph",short:"Railroad & telegraph",where:"Baltimore & Ohio Railroad, 1850s",dev:"Development 4: Railroads",ready:true,
+   at:[39.27,-77.2],lbl:[16,30,"start"],
+   body:["Railroads gave fast land transportation that worked all year and quickly replaced canals. Peter Cooper built the first railroad locomotive in the U.S. in 1830.",
+         "At this stop: an 1850s station with trains meeting at a siding by telegraph, a flashback to the Tom Thumb race, and a chance to send your own message in Morse code."]}
+];
+const stopByKey=k=>STOPS.find(s=>s.key===k);
+
+/* =====================================================================
+   Route map (drawn from latitude and longitude)
+   ===================================================================== */
+const LON0=-91, LON1=-71.5, LAT0=45, LAT1=37, MK=90, CL=Math.cos(41*Math.PI/180);
+const MW=Math.round((LON1-LON0)*CL*MK), MH=(LAT0-LAT1)*MK;
+const pr=(la,lo)=>[(lo-LON0)*CL*MK,(LAT0-la)*MK];
+const dP=(a,close)=>a.map(([la,lo],i)=>{ const [x,y]=pr(la,lo); return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1); }).join("")+(close?"Z":"");
+
+const GEO={
+  ocean:[[41.45,-71.5],[41.3,-72.3],[41.25,-72.9],[41.0,-73.6],[40.75,-73.95],[40.5,-74.05],[40.1,-74.05],[39.6,-74.2],[39.35,-74.45],[38.95,-74.9],
+         [39.05,-74.95],[39.25,-75.2],[39.45,-75.45],[39.62,-75.52],[39.7,-75.56],[39.45,-75.55],[39.2,-75.4],[38.95,-75.25],[38.78,-75.1],
+         [38.45,-75.05],[38.05,-75.25],[37.6,-75.6],[37.13,-75.97],[37.6,-75.95],[38.0,-75.95],[38.3,-76.1],[38.7,-76.3],[39.0,-76.2],[39.35,-76.1],[39.55,-76.05],
+         [39.3,-76.45],[39.26,-76.58],[39.15,-76.45],[38.95,-76.47],[38.6,-76.5],[38.3,-76.42],[38.0,-76.33],[37.6,-76.3],[37.0,-76.3],[37.0,-71.5]],
+  erie:[[41.7,-83.45],[41.5,-82.9],[41.45,-82.7],[41.5,-82.0],[41.5,-81.7],[41.75,-81.25],[41.95,-80.6],[42.13,-80.08],[42.5,-79.4],[42.88,-78.9],
+        [42.85,-79.6],[42.6,-80.4],[42.65,-81.2],[42.4,-81.9],[42.05,-82.6],[42.05,-83.1]],
+  ontario:[[43.25,-79.07],[43.3,-78.4],[43.3,-77.6],[43.35,-77.0],[43.46,-76.5],[43.9,-76.2],[44.2,-76.45],[44.0,-77.2],[43.95,-78.2],[43.65,-79.4],[43.3,-79.8]],
+  michigan:[[45.2,-87.65],[44.5,-87.55],[44.0,-87.75],[43.4,-87.9],[42.9,-87.85],[42.4,-87.82],[41.9,-87.62],[41.62,-87.35],[41.63,-87.0],[41.75,-86.7],[42.1,-86.48],
+            [42.5,-86.25],[43.0,-86.22],[43.5,-86.45],[44.0,-86.5],[44.5,-86.25],[45.2,-85.9]],
+  huron:[[45.2,-83.4],[45.06,-83.43],[44.6,-83.3],[44.25,-83.5],[43.95,-83.85],[43.62,-83.85],[44.0,-83.4],[44.05,-82.95],[43.6,-82.6],[43.0,-82.42],
+         [43.25,-81.75],[43.75,-81.72],[44.3,-81.5],[44.8,-81.3],[45.2,-81.3]],
+  ohio:[[41.73,-83.45],[41.5,-82.9],[41.45,-82.7],[41.5,-82.0],[41.5,-81.7],[41.75,-81.25],[41.98,-80.52],[40.64,-80.52],[40.4,-80.6],[40.07,-80.72],[39.7,-80.85],
+        [39.42,-81.46],[39.27,-81.56],[38.95,-81.75],[38.84,-82.14],[38.42,-82.6],[38.73,-82.99],[38.65,-83.6],[38.64,-83.74],[38.75,-84.1],[39.1,-84.51],[39.1,-84.82],[41.7,-84.81]],
+  ohioR:[[40.44,-80.0],[40.65,-80.4],[40.64,-80.52],[40.4,-80.6],[40.07,-80.72],[39.7,-80.85],[39.42,-81.46],[39.27,-81.56],[38.95,-81.75],[38.84,-82.14],[38.42,-82.6],
+         [38.73,-82.99],[38.65,-83.6],[38.64,-83.74],[38.75,-84.1],[39.1,-84.51],[39.1,-84.82],[38.85,-85.0],[38.25,-85.76],[37.95,-86.5],[37.97,-87.57],[37.7,-88.05],[37.3,-88.45],[37.0,-89.17]],
+  missR:[[37.0,-89.17],[37.3,-89.5],[37.8,-89.95],[38.25,-90.3],[38.63,-90.2],[38.9,-90.15],[39.3,-90.8],[39.6,-91.2]],
+  hudson:[[40.7,-74.02],[41.05,-73.9],[41.4,-73.97],[41.75,-73.94],[42.1,-73.92],[42.45,-73.79],[42.65,-73.75],[42.78,-73.68]],
+  potomac:[[38.0,-76.33],[38.25,-76.9],[38.5,-77.25],[38.9,-77.06],[39.27,-77.54],[39.32,-77.73],[39.55,-78.2],[39.65,-78.76]],
+  ridge:[[37.1,-81.4],[38.0,-80.4],[39.0,-79.35],[39.8,-78.35],[40.45,-77.35],[41.15,-76.25],[41.75,-75.25],[42.2,-74.5]],
+  turnpike:[[39.29,-76.61],[39.41,-77.41],[39.64,-77.72],[39.7,-78.18],[39.65,-78.76]],
+  natroad:[[39.65,-78.76],[39.9,-79.72],[40.02,-79.89],[40.17,-80.25],[40.07,-80.72],[40.08,-80.9],[40.03,-81.59],[39.94,-82.01],[39.96,-83.0],[39.92,-83.81],[39.83,-84.89],[39.77,-86.16],[39.47,-87.41],[38.96,-89.09]],
+  steam:[[40.7,-74.02],[41.05,-73.9],[41.4,-73.97],[41.75,-73.94],[42.1,-73.92],[42.45,-73.79],[42.65,-73.75]],
+  erieC:[[42.65,-73.75],[42.81,-73.94],[42.94,-74.19],[43.04,-74.86],[43.1,-75.23],[43.21,-75.46],[43.05,-76.15],[43.06,-77.0],[43.16,-77.61],[43.2,-78.0],[43.17,-78.69],[43.0,-78.85],[42.89,-78.88]],
+  ohioErie:[[41.5,-81.69],[41.38,-81.62],[41.24,-81.55],[41.08,-81.52],[40.8,-81.52],[40.52,-81.47],[40.27,-81.86],[40.06,-82.4],[39.87,-82.75],[39.6,-82.95],[39.33,-82.98],[38.95,-83.0],[38.73,-83.0]],
+  bando:[[39.29,-76.61],[39.27,-76.8],[39.27,-77.54],[39.32,-77.73],[39.46,-77.96],[39.6,-78.25],[39.65,-78.76],[39.41,-79.4],[39.34,-80.02],[39.48,-80.14],[39.53,-80.34],[39.92,-80.74],[40.07,-80.72]],
+  tele:[[38.9,-77.04],[39.29,-76.61]]
+};
+const CITIES=[["New York",40.71,-74.0,10,18,"start"],["Albany",42.65,-73.75,10,5,"start"],["Buffalo",42.89,-78.88,-8,-10,"end"],["Cleveland",41.5,-81.69,-6,-10,"end"],
+  ["Columbus",39.96,-83.0,0,22,"middle"],["Wheeling",40.07,-80.72,9,-8,"start"],["Pittsburgh",40.44,-80.0,10,-4,"start"],["Cumberland",39.65,-78.76,0,-11,"middle"],
+  ["Baltimore",39.29,-76.61,10,5,"start"],["Washington",38.9,-77.04,-10,8,"end"],["Cincinnati",39.1,-84.51,0,22,"middle"],["Vandalia",38.96,-89.09,0,22,"middle"],["Portsmouth",38.73,-83.0,8,16,"start"]];
+const REGIONS=[["OHIO",40.55,-82.95],["PENNSYLVANIA",41.5,-79.0],["NEW YORK",42.55,-75.9],["VIRGINIA",37.75,-79.4],["KENTUCKY",37.6,-85.2],["INDIANA",40.6,-86.3],["ILLINOIS",40.1,-89.9],["MICHIGAN",43.2,-84.7],["MARYLAND",39.82,-77.25]];
+const WATERS=[["Lake Erie",42.25,-81.0],["Lake Ontario",43.68,-77.7],["Atlantic Ocean",38.2,-73.2],["Ohio River",38.35,-85.65]];
+
+(function buildMap(){
+  mapEl.setAttribute("viewBox",`-6 -48 ${MW+12} ${MH+56}`);
+  mapEl.setAttribute("preserveAspectRatio","xMidYMin meet");
+  mapEl.setAttribute("role","group");
+  mapEl.setAttribute("aria-label","Map of the eastern United States showing the four stops on the tour");
+  let s=`<defs><clipPath id="mapClip"><rect x="0" y="0" width="${MW}" height="${MH}"/></clipPath></defs><g clip-path="url(#mapClip)"><rect class="land" x="0" y="0" width="${MW}" height="${MH}"/>`;
+  s+=`<path class="oh" d="${dP(GEO.ohio,1)}"/>`;
+  s+=`<path id="ridgePath" class="ridge" d="${dP(GEO.ridge)}"/>`;
+  s+=`<path class="water" d="${dP(GEO.ocean,1)}"/>`;
+  ["erie","ontario","michigan","huron"].forEach(k=>{ s+=`<path class="water" d="${dP(GEO[k],1)}"/>`; });
+  ["ohioR","missR","hudson","potomac"].forEach(k=>{ s+=`<path class="river" d="${dP(GEO[k])}"/>`; });
+  s+=`<text class="ridgelbl" dy="-22"><textPath href="#ridgePath" startOffset="80%" text-anchor="middle">APPALACHIAN MOUNTAINS</textPath></text>`;
+  REGIONS.forEach(([n,la,lo])=>{ const [x,y]=pr(la,lo); s+=`<text class="region" x="${x.toFixed(0)}" y="${y.toFixed(0)}" text-anchor="middle">${n}</text>`; });
+  WATERS.forEach(([n,la,lo])=>{ const [x,y]=pr(la,lo); s+=`<text class="waterlbl" x="${x.toFixed(0)}" y="${y.toFixed(0)}" text-anchor="middle">${n}</text>`; });
+  s+=`<path class="rt r-turn" d="${dP(GEO.turnpike)}"/>`;
+  s+=`<path class="rt r-road" d="${dP(GEO.natroad)}"/>`;
+  s+=`<path class="rt r-steam" d="${dP(GEO.steam)}"/>`;
+  s+=`<path class="rt r-canal" d="${dP(GEO.erieC)}"/><path class="rt r-canal" d="${dP(GEO.ohioErie)}"/>`;
+  s+=`<path class="rt r-ties" d="${dP(GEO.bando)}"/><path class="rt r-rail" d="${dP(GEO.bando)}"/>`;
+  s+=`<path class="rt r-tele" d="${dP(GEO.tele)}"/>`;
+  s+=`</g><rect class="frame" x="0" y="0" width="${MW}" height="${MH}"/>`;
+  CITIES.forEach(([n,la,lo,dx,dy,anc])=>{ const [x,y]=pr(la,lo); s+=`<circle class="cdot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2"/><text class="city" x="${(x+dx).toFixed(1)}" y="${(y+dy).toFixed(1)}" text-anchor="${anc}">${n}</text>`; });
+  STOPS.forEach(st=>{ const [x,y]=pr(...st.at), [dx,dy,anc]=st.lbl;
+    s+=`<g class="stop${st.ready?"":" soon"}" data-key="${st.key}" tabindex="0" role="button" aria-label="Stop ${st.n}: ${st.name}">`+
+       `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="15"/><text class="num" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${st.n}</text>`+
+       `<text class="slbl" x="${(x+dx).toFixed(1)}" y="${(y+dy).toFixed(1)}" text-anchor="${anc}">${st.short}</text></g>`; });
+  mapEl.innerHTML=s;
+  mapEl.querySelectorAll(".stop").forEach(g=>{
+    g.addEventListener("click",()=>selectStop(g.dataset.key));
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectStop(g.dataset.key); } });
+  });
+})();
+
+/* stop list and map key in the side panel */
+(function buildHubPanel(){
+  const ol=$("stopList");
+  STOPS.forEach(st=>{
+    const li=el("li"), b=el("button"); b.type="button"; b.dataset.key=st.key;
+    b.appendChild(el("span",String(st.n),"num")); b.appendChild(el("span",st.name,"nm"));
+    b.appendChild(el("span",st.ready?"Open":"Coming soon","chip"+(st.ready?" open":""))); b.appendChild(el("span",st.where,"wh"));
+    b.addEventListener("click",()=>{ if(st.ready) location.hash=st.key; else selectStop(st.key); });
+    li.appendChild(b); ol.appendChild(li);
+  });
+  const KEY=[["r-road","The National Road (paid for by the federal government)"],["r-turn","Turnpikes from Baltimore to Cumberland"],["r-steam","The Clermont’s route on the Hudson"],
+             ["r-canal","Erie Canal and Ohio & Erie Canal"],["rail","Baltimore & Ohio Railroad (reached Wheeling in 1853)"],["r-tele","First telegraph line (1844)"]];
+  const ul=$("mapKey");
+  KEY.forEach(([c,t])=>{ const li=el("li"); const sw=c==="rail"
+      ? `<svg width="38" height="12" viewBox="0 0 38 12" class="sw"><path class="rt r-ties" d="M3 6H35"/><path class="rt r-rail" d="M3 6H35"/></svg>`
+      : `<svg width="38" height="12" viewBox="0 0 38 12" class="sw"><path class="rt ${c}" d="M3 6H35"/></svg>`;
+    li.innerHTML=sw; li.appendChild(el("span",t)); ul.appendChild(li); });
+})();
+
+let mapSel=null;
+function selectStop(k){
+  mapSel=k;
+  mapEl.querySelectorAll(".stop").forEach(g=>g.classList.toggle("on",g.dataset.key===k));
+  $("stopList").querySelectorAll("button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+  if(!k){ card.hidden=true; return; }
+  const st=stopByKey(k);
+  cardBody.innerHTML="";
+  cardBody.appendChild(el("p",`Stop ${st.n} · ${st.dev}`,"eyebrow"));
+  cardBody.appendChild(el("h2",st.name));
+  cardBody.appendChild(el("p",st.where,"fact"));
+  st.body.forEach(t=>cardBody.appendChild(el("p",t)));
+  if(st.ready){ const b=el("button",`Go to stop ${st.n}`,"go"); b.type="button"; b.addEventListener("click",()=>{ location.hash=st.key; }); cardBody.appendChild(b); }
+  else cardBody.appendChild(el("p","This stop is still being built.","soon"));
+  card.hidden=false; card.scrollTop=0;
+}
+
+/* =====================================================================
+   3D toolkit (shared by every station)
+   ===================================================================== */
+let SC=null, PK=null, BK=null, INK=null;
+const COL={wood:0x7a6146, woodDark:0x4f3d2b, ink:0x221a12, gold:0xc9a227};
+function tag(o,k){ o.userData.key=k; (BK[k]=BK[k]||[]).push(o); if(o.isMesh) PK.push(o); return o; }
+function mat(c,o){ return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.9,metalness:0},o||{})); }
+function edges(m,th){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry,th||25),INK); e.raycast=()=>{}; m.add(e); return m; }
+function box(w,h,d,c,x,y,z,k,o){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c,o)); m.position.set(x,y,z); if(k) tag(m,k); return m; }
+function boxAt(x0,x1,y0,y1,z0,z1,c,k,o){ return box(x1-x0,y1-y0,z1-z0,c,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,k,o); }
+function cyl(rt,rb,h,c,x,y,z,k,o,seg){ const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||12),mat(c,o)); m.position.set(x,y,z); if(k) tag(m,k); return m; }
+function prism(w,h,d){ const s=new THREE.Shape(); s.moveTo(-w/2,0); s.lineTo(w/2,0); s.lineTo(0,h); s.lineTo(-w/2,0);
+  const g=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:false}); g.translate(0,0,-d/2); return g; }
+function stoneTexture(rx,ry,base){
+  const c=document.createElement("canvas"); c.width=512; c.height=256; const x=c.getContext("2d"); const r=rng(5);
+  x.fillStyle=base||"#7a6a50"; x.fillRect(0,0,512,256);
+  for(let row=0;row<4;row++){ let px=-(row%2)*60;
+    while(px<512){ const w=96+Math.floor(r()*96), l=58+Math.floor(r()*30);
+      x.fillStyle=`hsl(${36+r()*8},${28+r()*10}%,${l}%)`; x.fillRect(px+2,row*64+2,w-4,60); px+=w; } }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry); return t;
+}
+function brickTexture(rx,ry){
+  const c=document.createElement("canvas"); c.width=256; c.height=256; const x=c.getContext("2d"); const r=rng(9);
+  x.fillStyle="#d8ccb4"; x.fillRect(0,0,256,256);
+  for(let row=0;row<16;row++){ const off=(row%2)*16; for(let px=-off;px<256;px+=32){ x.fillStyle=`hsl(${10+r()*8},${42+r()*12}%,${30+r()*9}%)`; x.fillRect(px+1,row*16+1,30,14); } }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry); return t;
+}
+function textTexture(lines,w,h,bg,fg){
+  const c=document.createElement("canvas"); c.width=w; c.height=h; const x=c.getContext("2d");
+  x.fillStyle=bg; x.fillRect(0,0,w,h); x.fillStyle=fg; x.textAlign="center"; x.textBaseline="middle";
+  lines.forEach(([t,size,y])=>{ x.font=`bold ${size}px Georgia, serif`; if(t==="~"){ x.fillRect(w*0.14,y,w*0.72,3); } else x.fillText(t,w/2,y); });
+  return new THREE.CanvasTexture(c);
+}
+function textPlane(tex,w,h){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshStandardMaterial({map:tex,roughness:1})); return m; }
+
+/* simple figures, all built facing +x */
+function person(coat,k,seated){
+  const g=new THREE.Group();
+  if(seated) g.add(box(1.4,0.5,0.8,0x3a3026,0.45,0.25,0,k));
+  else g.add(box(0.7,2.5,0.55,0x3a3026,0,1.25,0,k));
+  const b=seated?0.5:2.5;
+  g.add(cyl(0.5,0.62,2.2,coat,0,b+1.1,0,k));
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.42,10,8),mat(0xd9b38c)); head.position.y=b+2.6; tag(head,k); g.add(head);
+  g.add(cyl(0.78,0.78,0.08,0x1e1a16,0,b+2.95,0,k));
+  g.add(cyl(0.38,0.42,0.75,0x1e1a16,0,b+3.35,0,k));
+  return g;
+}
+function horse(c,k){
+  const g=new THREE.Group(), legs=[], dark=0x2b2118;
+  g.add(box(4.4,2.0,1.6,c,0,4.3,0,k));
+  [[1.6,0.5],[1.6,-0.5],[-1.6,0.5],[-1.6,-0.5]].forEach(([x,z])=>{ const p=new THREE.Group(); p.position.set(x,3.4,z); p.add(box(0.42,3.3,0.42,c,0,-1.65,0,k)); p.add(box(0.5,0.4,0.5,dark,0,-3.15,0,k)); g.add(p); legs.push(p); });
+  const neck=box(1.0,2.3,0.9,c,2.35,5.35,0,k); neck.rotation.z=-0.65; g.add(neck);
+  const mane=box(1.1,0.3,0.3,dark,2.0,6.1,0,k); mane.rotation.z=-0.65; g.add(mane);
+  const head=box(2.0,0.85,0.75,c,3.2,6.05,0,k); head.rotation.z=-0.55; g.add(head);
+  [-0.22,0.22].forEach(z=>g.add(box(0.15,0.55,0.15,c,2.55,6.75,z,k)));
+  const tail=box(0.22,1.9,0.22,dark,-2.35,3.8,0,k); tail.rotation.z=0.3; g.add(tail);
+  g.add(box(0.5,1.7,1.85,dark,1.85,4.95,0,k));
+  g.add(box(0.25,0.25,1.9,0x2a2118,-0.2,5.35,0,k));
+  return {g,legs};
+}
+function wheel(r,w,rimC,spokeC,k){
+  const g=new THREE.Group();
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(r-0.14,0.17,6,28),mat(rimC)); rim.scale.z=w/0.34; tag(rim,k); g.add(rim);
+  const hub=cyl(0.34,0.34,w+0.5,spokeC,0,0,0,k); hub.rotation.x=Math.PI/2; g.add(hub);
+  const n=r>2.2?14:12;
+  for(let i=0;i<n;i++){ const a=i/n*Math.PI*2; const sp=box(0.17,r-0.3,0.17,spokeC,-Math.sin(a)*(r-0.3)/2,Math.cos(a)*(r-0.3)/2,0,k); sp.rotation.z=a; g.add(sp); }
+  return g;
+}
+function cow(c,k){
+  const g=new THREE.Group();
+  g.add(box(5.2,2.5,2.2,c,0,3.3,0,k));
+  [[1.9,0.7],[1.9,-0.7],[-1.9,0.7],[-1.9,-0.7]].forEach(([x,z])=>g.add(box(0.5,2.2,0.5,c,x,1.1,z,k)));
+  g.add(box(1.6,1.3,1.2,c,3.1,3.8,0,k));
+  g.add(box(0.2,0.2,1.9,0xe8e0c8,2.8,4.55,0,k));
+  const t=box(0.2,1.8,0.2,0x2b2118,-2.65,3.2,0,k); t.rotation.z=0.2; g.add(t);
+  return g;
+}
+function hog(k){
+  const g=new THREE.Group(), c=0xcf9f8d;
+  g.add(box(3.2,1.6,1.7,c,0,1.75,0,k));
+  [[1.1,0.5],[1.1,-0.5],[-1.1,0.5],[-1.1,-0.5]].forEach(([x,z])=>g.add(box(0.35,1.0,0.35,c,x,0.5,z,k)));
+  g.add(box(1.0,1.1,1.2,c,2.0,1.9,0,k)); g.add(box(0.35,0.5,0.6,0xb98676,2.6,1.75,0,k));
+  return g;
+}
+
+/* =====================================================================
+   Stations
+   ===================================================================== */
+const STATIONS={};
+
+/* ---------------------- Stop 1: The National Road ---------------------- */
+STATIONS.road={
+  n:1, title:"The National Road", sub:"Eastern Ohio, 1830s",
+  aria:"3D model of a stretch of the National Road in eastern Ohio, with an S-bridge, a tollgate, a tavern, and traffic",
+  intro:["The National Road was the first highway paid for by the federal government. It climbed over the Appalachian Mountains from Cumberland, Maryland, and ran straight across Ohio. In the 1830s and 1840s it was one of the busiest roads in America."],
+  note:"East, toward Wheeling and Baltimore, is on the right as the model opens. West, toward Zanesville and Columbus, is on the left.",
+  runs:[["west","Ride a stagecoach west (toward Columbus)"],["east","Drive a freight wagon east (toward Wheeling)"]],
+  runNote:"Watch the tollgate, the S-bridge, and the tavern. Each step is explained as it happens.",
+  groups:[["road","On the road"],["traffic","Traffic"],["story","The road’s story"]],
+  INFO:{
+    road:{group:"road",title:"A road of broken stone",body:[
+      "Most American roads in 1800 were dirt tracks. In spring they turned to mud deep enough to swallow a wagon wheel. In summer they were dust and ruts.",
+      "The National Road was built to last. Workers dug a roadbed and filled it with layers of broken stone: big stones about 7 inches across on the bottom, then smaller stones mixed with gravel on top. Traffic packed it down hard.",
+      "The surface was rounded in the middle so rain ran off into ditches on both sides. In Ohio, the road was 30 feet wide."],
+      fact:"This way of building roads with layers of broken stone was worked out in Britain by John McAdam. Roads built this way were called macadam roads."},
+    sbridge:{group:"road",title:"The S-bridge",body:[
+      "Where the road met a creek at a slant, the builders did something clever. Instead of a long bridge built on an angle, they built a short stone arch straight across the creek and curved the road at each end to meet it. From above, the road and bridge make the shape of an S.",
+      "Crossing straight on is the shortest possible span, so the bridge took less stone and less work to build.",
+      "Ohio once had many S-bridges. Most were torn out when U.S. Route 40 was built over the old road, but four still stand in Belmont, Guernsey, and Muskingum Counties. The Fox Creek S-bridge, near New Concord, was finished in 1828."],
+      fact:"The S-bridges were built of local sandstone, like the walls of Lock 29 in Peninsula."},
+    marker:{group:"road",title:"Mile marker",body:[
+      "On the north side of the road, a stone marker stood at every mile. Each one told travelers how far they were from Cumberland, Maryland, where the road began.",
+      "For stagecoach drivers and wagoners, the markers worked like a schedule. They knew how many miles they had to cover before dark and how far it was to the next tavern.",
+      "More than 80 of Ohio’s stone markers are still standing beside U.S. 40."],
+      fact:"The numbers on this marker are an example of what a traveler would have read in eastern Ohio, about 65 miles west of Wheeling."},
+    tollgate:{group:"road",title:"Tollgate and tollhouse",body:[
+      "The federal government paid to build the National Road, and at first it was free. But heavy traffic wore it down fast, and Congress did not want to keep paying for repairs. In the early 1830s it handed the road over to the states it ran through.",
+      "The states put up tollgates to pay for repairs. Ohio built a tollhouse about every 20 miles. The keeper collected a toll from each traveler, based on how much wear they put on the road.",
+      "A long pole called a pike blocked the road until the toll was paid. Then the keeper swung it out of the way. That is where the word turnpike comes from.",
+      "Tolls were small, but they added up. At Searight’s tollhouse in Pennsylvania, a drover paid 6 cents for every 20 sheep. In Ohio, wagons with wheels more than 6 inches wide rode free, because wide wheels did less damage to the road."],
+      fact:"Ohio collected about $1.25 million in tolls on the National Road between 1831 and 1877."},
+    wagon:{group:"traffic",title:"Conestoga wagon",body:[
+      "The big freight haulers of the road were Conestoga wagons, first built in Lancaster County, Pennsylvania. A wagon was 17 to 19 feet long and weighed about 3,500 pounds empty. It usually carried about 6,000 pounds of freight, and some hauled up to 10,000.",
+      "The wagon bed sagged in the middle and rose at each end, so the load would not slide out on steep hills. A white canvas cover stretched over wooden hoops kept the freight dry.",
+      "Six big draft horses pulled it, many of them wearing sets of bells. Wagons often traveled together in groups of four or five. One traveler counted 133 six-horse wagons passing in a single day."],
+      fact:"Wagons heading east carried farm goods from Ohio and the West. Wagons heading west carried factory goods from Eastern cities."},
+    stage:{group:"traffic",title:"Stagecoach",body:[
+      "Stagecoaches carried passengers and the mail. Nine people squeezed inside on three benches, and one more could ride up top beside the driver.",
+      "Four horses pulled the coach at 6 to 10 miles an hour, the fastest way to travel on land. To keep up that pace, stage companies kept fresh horses waiting every 12 to 15 miles. Passengers often rode 12 to 14 hours a day.",
+      "Rival companies with names like the Good Intent Line and the June Bug Line competed for passengers. Coaches carrying the U.S. mail did not have to pay tolls."],
+      fact:"By 1837, 14 of Ohio’s 32 stagecoach routes connected to the National Road."},
+    drovers:{group:"traffic",title:"Drovers and livestock",body:[
+      "Not everything on the road rode in a wagon. Drovers walked herds of cattle, hogs, and sheep east, hundreds of miles, to sell in cities like Baltimore.",
+      "Herds could number in the hundreds or even the thousands. One traveler described the line of animals on the road as “almost endless.”",
+      "At night, drovers stopped at taverns with pens and fields where their animals could eat and rest. Before the railroad, walking animals to market was how Western farmers got their meat to Eastern cities."],
+      fact:"Drovers paid tolls too, counted by the animal or by the score, a group of 20."},
+    tavern:{group:"traffic",title:"Taverns",body:[
+      "Every few miles, travelers found a tavern for a meal and a bed. Some served stagecoach passengers, who paid more for better food and rooms. Others served wagoners and drovers, with big yards for wagons, stables for horses, and pens for livestock.",
+      "Wagoners often slept on the barroom floor, rolled up in their blankets near the fire.",
+      "Towns along the road, like Cambridge, Zanesville, and Springfield, filled up with taverns, stables, and blacksmith shops that served the traffic."]},
+    building:{group:"story",title:"Building the National Road",body:[
+      "In 1806, President Thomas Jefferson signed a law to build a road from Cumberland, Maryland, over the mountains to Ohio. It was the first highway paid for by the federal government. Money from selling public land in Ohio, land that had belonged to Native nations, helped pay for it.",
+      "Work began in 1811. The road reached Wheeling, on the Ohio River, in 1818. Work in Ohio started on July 4, 1825. The road reached Zanesville in 1830, Columbus in 1833, and Springfield about 1838. It finally ended at Vandalia, Illinois.",
+      "For Ohio farmers, the road was a link to Eastern markets. For families moving west, it was the main way across the mountains."],
+      fact:"Today, U.S. Route 40 follows the old National Road across Ohio."},
+    turnpikes:{group:"story",title:"Roads and turnpikes",body:[
+      "Your notes describe turnpikes as private stone roads that charged tolls to pay for upkeep. One of the first was the Lancaster Turnpike in Pennsylvania, opened in 1795. A private company built it and charged everyone who used it.",
+      "The National Road started out differently. The federal government built it, and at first it was free. Once the states took it over and put up tollgates in the 1830s, it worked much like a turnpike.",
+      "Better roads made travel faster and more reliable. But hauling heavy freight by wagon was still slow and expensive, which is why steamboats, canals, and railroads came next."]},
+    whopays:{group:"story",title:"Who should pay for roads?",body:[
+      "Americans argued about whether the federal government should pay for roads, canals, and other “internal improvements.” Some said the Constitution did not give Congress that power. Others said a growing country needed good roads to hold it together.",
+      "In 1830, President Andrew Jackson vetoed a bill to help build the Maysville Road in Kentucky. He said the road ran entirely within one state, so it was not the federal government’s job. Yet Jackson kept signing bills to extend the National Road, which crossed several states."],
+      after:["Think about it: who should pay for a road? The people who use it, the state it runs through, or the whole country?"]},
+    decline:{group:"story",title:"Railroads take over",body:[
+      "In the 1830s and 1840s, the National Road was one of the busiest roads in the country. By one estimate, about 200,000 people used it every year.",
+      "Then came the railroads. In 1853 the Baltimore & Ohio Railroad reached Wheeling, the same spot the road had reached in 1818. A train could haul more freight, faster, in any weather. Wagon and stagecoach traffic dried up, and busy road towns became quiet villages.",
+      "The road came back to life in the 1900s, when automobiles needed paved highways. It became part of U.S. Route 40."]},
+    about:{group:null,title:"About this model",body:[
+      "This model shows a stretch of the National Road in eastern Ohio in the 1830s, when the road was at its busiest. The scene is a composite. The S-bridge, mile marker, tollhouse, and tavern are the kinds of things a traveler would have passed, but they are not copies of one real place.",
+      "The S-bridge is based on the stone S-bridges that still stand in eastern Ohio. The tollhouse is modeled on the many-sided tollhouses that survive in Pennsylvania. The mileage on the marker is an example.",
+      "Distances are shortened, and the creek, road, and buildings are closer together than they would really be. The mile marker is drawn a little larger than life so it is easier to find."],
+      after:["Think about it: the road was paid for partly by selling land that had belonged to Native nations. Who gained from the National Road, and who paid for it?"]}
+  },
+  ORDER:["road","sbridge","marker","tollgate","wagon","stage","drovers","tavern","building","turnpikes","whopays","decline"],
+  build:buildRoad
+};
+
+function buildRoad(){
+  const scene=SC;
+  const X0=-250, X1=250, Z0=-150, Z1=150, BOT=-22;
+  const CA=0.6947, CS=Math.cos(CA), SN=Math.sin(CA);         // bridge axis b=(CS,0,-SN); creek runs along c=(SN,0,CS)
+  const uOf=(x,z)=>x*CS-z*SN;                                  // distance along the bridge axis = distance from the creek's center line
+  const bfOf=(x,z)=>sm((34-Math.abs(uOf(x,z)))/10);            // 1 on the bridge, 0 away from it
+
+  /* ---- the road's center line: straight, then an S through the bridge, then straight (east = +x, north = -z) ---- */
+  const PTS=[[-262,0],[-170,0],[-112,14],[-66,31],[-30.8,25.6],[-18.5,15.4],[0,0],[18.5,-15.4],[30.8,-25.6],[66,-31],[112,-14],[170,0],[262,0]];
+  const curve=new THREE.CatmullRomCurve3(PTS.map(([x,z])=>new THREE.Vector3(x,0,z)),false,"centripetal");
+  const L=curve.getLength(), N=900;
+  const SXa=new Float32Array(N+1), SZa=new Float32Array(N+1), TXa=new Float32Array(N+1), TZa=new Float32Array(N+1);
+  (function(){ const p=new THREE.Vector3(), t=new THREE.Vector3();
+    for(let i=0;i<=N;i++){ curve.getPointAt(i/N,p); curve.getTangentAt(i/N,t); const l=Math.hypot(t.x,t.z)||1; SXa[i]=p.x; SZa[i]=p.z; TXa[i]=t.x/l; TZa[i]=t.z/l; } })();
+  function idxAtX(x){ let lo=0,hi=N; while(lo<hi){ const m=(lo+hi)>>1; if(SXa[m]<x) lo=m+1; else hi=m; } return lo; }
+  function nearest(x,z){ const c=idxAtX(x); let best=1e12,bi=c; for(let i=Math.max(0,c-90);i<=Math.min(N,c+90);i++){ const dx=SXa[i]-x, dz=SZa[i]-z, d=dx*dx+dz*dz; if(d<best){best=d;bi=i;} } return {d:Math.sqrt(best),i:bi}; }
+  const sAtX=x=>idxAtX(x)/N*L;
+  function at(s){ const f=Math.max(0,Math.min(N-1e-6,s/L*N)), i=Math.floor(f), a=f-i;
+    return {x:SXa[i]+(SXa[i+1]-SXa[i])*a, z:SZa[i]+(SZa[i+1]-SZa[i])*a, tx:TXa[i]+(TXa[i+1]-TXa[i])*a, tz:TZa[i]+(TZa[i+1]-TZa[i])*a}; }
+
+  /* ---- ground ---- */
+  function G(x,z){
+    const d=nearest(x,z).d, u=uOf(x,z), au=Math.abs(u);
+    const bf=sm((34-au)/10), hw=15-4*bf, ry=0.35+0.95*bf;
+    let y=(2.4*Math.sin(x*0.017+0.6)*Math.cos(z*0.02+0.2)+1.0*Math.sin(x*0.045+z*0.031))*sm((d-34)/60);
+    if(au<9) y=-11+0.3*Math.sin(x*0.13+z*0.07);                  // creek bed
+    else if(au<27) y=-11+(y+11)*sm((au-9)/18);                   // creek banks
+    if(au>=23){
+      if(d<hw+0.6) y=ry-0.45;                                     // roadbed
+      else if(d<hw+10) y=Math.max(y,(ry-0.45)-(d-hw-0.6)*0.55);   // fill slopes at the bridge approaches
+    }
+    if(au>36 && d>hw+2.5 && d<hw+8.5) y-=1.1*Math.sin(Math.PI*(d-hw-2.5)/6);   // side ditches
+    return y;
+  }
+  const DX=2, NX=(X1-X0)/DX, NZ=(Z1-Z0)/DX;
+  const HGT=new Float32Array((NX+1)*(NZ+1));
+  (function(){
+    const nv=(NX+1)*(NZ+1), pos=new Float32Array(nv*3), idx=[];
+    for(let j=0;j<=NZ;j++) for(let i=0;i<=NX;i++){ const k=j*(NX+1)+i, x=X0+i*DX, z=Z0+j*DX, y=G(x,z); HGT[k]=y; pos[k*3]=x; pos[k*3+1]=y; pos[k*3+2]=z; }
+    for(let j=0;j<NZ;j++) for(let i=0;i<NX;i++){ const a=j*(NX+1)+i, b=a+1, c=a+NX+1, d=c+1; idx.push(a,c,b, b,c,d); }
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+    const nrm=g.getAttribute("normal"), col=new Float32Array(nv*3);
+    const GRASS=new THREE.Color(0x7b8f53), GRASS2=new THREE.Color(0x6a8048), MUD=new THREE.Color(0x5b4a37), BANK=new THREE.Color(0x6e5c43),
+          WHEAT=new THREE.Color(0xa08b4b), WHEAT2=new THREE.Color(0x88763d), CORN=new THREE.Color(0x5f7a3a), CORN2=new THREE.Color(0x4a5f2d),
+          YARD=new THREE.Color(0x9a835d), c=new THREE.Color();
+    for(let k=0;k<nv;k++){
+      const x=pos[k*3], y=pos[k*3+1], z=pos[k*3+2], ny=nrm.getY(k);
+      c.copy(GRASS).lerp(GRASS2,0.5+0.5*Math.sin(x*0.05+z*0.04)*Math.cos(z*0.07));
+      if(x<-117 && z>60) c.copy(WHEAT).lerp(WHEAT2,0.5+0.5*Math.sin(x*1.2));
+      if(x>86 && z<-66) c.copy(Math.sin(z*1.15)>0?CORN:CORN2);
+      if(x>-196 && x<-108 && z>-88 && z<-24) c.lerp(YARD,0.85);
+      if(x>-238 && x<-200 && z>-82 && z<-32) c.lerp(YARD,0.45);
+      if(y<-6.5) c.copy(MUD);
+      c.lerp(BANK,Math.min(1,Math.max(0,(0.88-ny)/0.5))*0.7);
+      col[k*3]=c.r; col[k*3+1]=c.g; col[k*3+2]=c.b;
+    }
+    g.setAttribute("color",new THREE.BufferAttribute(col,3));
+    const m=new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,roughness:1})); m.userData.region=true; PK.push(m); scene.add(m);
+  })();
+  function hAt(x,z){
+    const fi=Math.max(0,Math.min(NX-1e-4,(x-X0)/DX)), fj=Math.max(0,Math.min(NZ-1e-4,(z-Z0)/DX));
+    const i=Math.floor(fi), j=Math.floor(fj), u=fi-i, v=fj-j, k=j*(NX+1)+i;
+    return (HGT[k]*(1-u)+HGT[k+1]*u)*(1-v)+(HGT[k+NX+1]*(1-u)+HGT[k+NX+2]*u)*v;
+  }
+  /* soil sides of the block */
+  (function(){
+    const pos=[],col=[]; const top=new THREE.Color(0x4a3826), deep=new THREE.Color(0x8b6b46);
+    function strip(P,a0,a1,hf){
+      for(let a=a0;a<a1;a+=2){ const b=Math.min(a+2,a1), t0=hf(a), t1=hf(b);
+        [[BOT,BOT,Math.min(t0,t1)-1.5,Math.min(t0,t1)-1.5,deep],[Math.min(t0,t1)-1.5,Math.min(t0,t1)-1.5,t0,t1,top]].forEach(([ya,yb,yc,yd,cc])=>{
+          const q=[P(a,ya),P(b,yb),P(b,yd),P(a,ya),P(b,yd),P(a,yc)]; q.forEach(v=>{pos.push(...v); col.push(cc.r,cc.g,cc.b);});
+        });
+      }
+    }
+    strip((a,y)=>[X0,y,a],Z0,Z1,a=>hAt(X0,a)); strip((a,y)=>[X1,y,a],Z0,Z1,a=>hAt(X1,a));
+    strip((a,y)=>[a,y,Z0],X0,X1,a=>hAt(a,Z0)); strip((a,y)=>[a,y,Z1],X0,X1,a=>hAt(a,Z1));
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); g.setAttribute("color",new THREE.Float32BufferAttribute(col,3)); g.computeVertexNormals();
+    scene.add(new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,side:THREE.DoubleSide,roughness:1})));
+  })();
+
+  /* ---- creek water: one sheet across the block; the ground hides it everywhere but the creek ---- */
+  (function(){ const m=new THREE.Mesh(new THREE.PlaneGeometry(X1-X0,Z1-Z0),mat(0x52706b,{roughness:0.55,transparent:true,opacity:0.9}));
+    m.rotation.x=-Math.PI/2; m.position.set(0,-8.6,0); tag(m,"sbridge"); scene.add(m); })();
+
+  /* ---- road surface ---- */
+  (function(){
+    const LAT=[-1,-0.75,-0.42,0,0.42,0.75,1], NL=LAT.length, pos=[], col=[], idx=[];
+    const cA=new THREE.Color(0x9c8c6e), cB=new THREE.Color(0x7d6e54), cE=new THREE.Color(0x857a5f), c=new THREE.Color(); let rows=0;
+    for(let i=0;i<=N;i++){
+      const x=SXa[i], z=SZa[i]; if(x<X0||x>X1) continue;
+      const rx=-TZa[i], rz=TXa[i], bf=bfOf(x,z), hw=15-4*bf, ry=0.35+0.95*bf, nz=0.5+0.5*Math.sin(i*0.37)*Math.sin(i*0.11);
+      LAT.forEach(l=>{ pos.push(x+rx*l*hw, ry+0.2*(1-l*l), z+rz*l*hw); const a=Math.abs(l); c.copy(cA); if(a>0.3&&a<0.55) c.lerp(cB,0.5); if(a>0.9) c.lerp(cE,0.6); c.offsetHSL(0,0,(nz-0.5)*0.05); col.push(c.r,c.g,c.b); });
+      rows++;
+    }
+    for(let r=0;r<rows-1;r++) for(let j=0;j<NL-1;j++){ const a=r*NL+j, b=a+1, cc=a+NL, d=cc+1; idx.push(a,b,cc, b,d,cc); }
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); g.setAttribute("color",new THREE.Float32BufferAttribute(col,3)); g.setIndex(idx); g.computeVertexNormals();
+    const m=new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,roughness:1})); tag(m,"road"); scene.add(m);
+  })();
+
+  /* ---- S-bridge ---- */
+  (function(){
+    const k="sbridge";
+    const s=new THREE.Shape(); s.moveTo(-24,-12); s.lineTo(-8.5,-12); s.lineTo(-8.5,-9); s.absarc(0,-9,8.5,Math.PI,0,true); s.lineTo(8.5,-12); s.lineTo(24,-12); s.lineTo(24,1.1); s.lineTo(-24,1.1); s.lineTo(-24,-12);
+    const g=new THREE.ExtrudeGeometry(s,{depth:26,bevelEnabled:false,curveSegments:18}); g.translate(0,0,-13);
+    const m=new THREE.Mesh(g,mat(0xffffff,{map:stoneTexture(1/16,1/8)})); m.rotation.y=CA; tag(m,k); edges(m,35); scene.add(m);
+    const pm=mat(0xffffff,{map:stoneTexture(3,0.45)}), wm=mat(0xffffff,{map:stoneTexture(0.7,0.8)});
+    [-1,1].forEach(sd=>{ const v=sd*12.3;
+      const p=new THREE.Mesh(new THREE.BoxGeometry(48,3.2,1.4),pm); p.position.set(SN*v,1.1+1.6,CS*v); p.rotation.y=CA; tag(p,k); edges(p); scene.add(p);
+      const cap=box(48.6,0.45,1.9,0xa4916d,SN*v,4.5,CS*v,k); cap.rotation.y=CA; scene.add(cap);
+      [-1,1].forEach(e=>{
+        const ex=CS*24*e+SN*v, ez=-SN*24*e+CS*v, ang=0.5;
+        const wx=CS*e*Math.cos(ang)+SN*sd*Math.sin(ang), wz=-SN*e*Math.cos(ang)+CS*sd*Math.sin(ang);
+        const w=new THREE.Mesh(new THREE.BoxGeometry(10.5,6,1.4),wm); w.position.set(ex+wx*5,1.3,ez+wz*5); w.rotation.y=Math.atan2(-wz,wx); tag(w,k); edges(w); scene.add(w);
+      });
+    });
+  })();
+
+  /* ---- mile marker (north side) ---- */
+  (function(){
+    const k="marker", x=-205, z=-17.2, y=hAt(x,z);
+    scene.add(edges(box(1.8,3.8,1.4,0xcdb994,x,y+1.9,z,k)));
+    const top=new THREE.Mesh(prism(2.0,0.9,1.6),mat(0xc4b08a)); top.rotation.y=Math.PI/2; top.position.set(x,y+3.8,z); tag(top,k); scene.add(top);
+    const pl=textPlane(textTexture([["CUMBERLAND",34,64],["196 M",58,150]],256,200,"#cdb994","#3b2f22"),1.6,1.25); pl.position.set(x,y+2.5,z+0.71); tag(pl,k); scene.add(pl);
+  })();
+
+  /* ---- tollhouse, toll board, gate ---- */
+  const GX=204; let gatePivot;
+  (function(){
+    const k="tollgate", hx=196, hz=34;
+    const y0=Math.min(hAt(hx-8,hz-8),hAt(hx+8,hz+8),hAt(hx-8,hz+8),hAt(hx+8,hz-8),hAt(hx,hz+14))-0.4;
+    const bm=mat(0xffffff,{map:brickTexture(4,2)});
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(7.2,7.2,12,7),bm); body.position.set(hx,y0+6,hz); tag(body,k); edges(body); scene.add(body);
+    const roof=new THREE.Mesh(new THREE.ConeGeometry(8.4,5,7),mat(0x4a3b30)); roof.position.set(hx,y0+14.5,hz); tag(roof,k); scene.add(roof);
+    const wing=new THREE.Mesh(new THREE.BoxGeometry(12,10.5,11),mat(0xffffff,{map:brickTexture(3,2)})); wing.position.set(hx,y0+5.25,hz+9); tag(wing,k); edges(wing); scene.add(wing);
+    const wr=new THREE.Mesh(prism(13,4.5,12),mat(0x4a3b30)); wr.position.set(hx,y0+10.5,hz+9); wr.rotation.y=Math.PI/2; tag(wr,k); scene.add(wr);
+    scene.add(box(1.6,5,1.6,0x6e3426,hx+3,y0+15,hz+11,k));
+    const ap=7.2*Math.cos(Math.PI/7);
+    scene.add(box(2.6,6.2,0.3,0x3a2c1f,hx,y0+3.1,hz-ap-0.1,k));
+    [Math.PI-2*Math.PI/7,Math.PI+2*Math.PI/7].forEach(th=>{ const w=box(2.2,3,0.3,0x2a241c,hx+Math.sin(th)*(ap+0.1),y0+6.5,hz+Math.cos(th)*(ap+0.1),k); w.rotation.y=th; scene.add(w); });
+    // toll board beside the road
+    const bx=186, bz=17.2, by=hAt(bx,bz);
+    scene.add(box(0.5,8,0.5,COL.woodDark,bx-2.4,by+4,bz,k)); scene.add(box(0.5,8,0.5,COL.woodDark,bx+2.4,by+4,bz,k));
+    scene.add(box(5.8,3.8,0.25,0xe9e2cf,bx,by+6.4,bz,k));
+    const tp=textPlane(textTexture([["TOLL GATE",44,40],["~",0,74],["~",0,104],["~",0,134],["~",0,164],["~",0,194]],256,224,"#e9e2cf","#2a241c"),5.6,3.6);
+    tp.position.set(bx,by+6.4,bz-0.14); tp.rotation.y=Math.PI; tag(tp,k); scene.add(tp);
+    // gateposts and the pike
+    [16.6,-16.6].forEach(z=>scene.add(edges(box(1.2,5.2,1.2,0xe9e2cf,GX,hAt(GX,z)+2.6,z,k))));
+    gatePivot=new THREE.Group(); gatePivot.position.set(GX,hAt(GX,16.6)+4.1,16.6);
+    const pole=cyl(0.3,0.22,33,0xe9e2cf,0,0,-16.5,k,null,8); pole.rotation.x=Math.PI/2; gatePivot.add(pole);
+    gatePivot.add(cyl(0.32,0.32,2.2,0x8a2b20,0,0,-31.6,k,null,8)); gatePivot.children[1].rotation.x=Math.PI/2;
+    gatePivot.add(box(1.2,1.2,2.4,0x4f3d2b,0,0,1.6,k));
+    scene.add(gatePivot);
+  })();
+
+  /* ---- tavern, barn, wagon yard ---- */
+  let parked;
+  (function(){
+    const k="tavern", tx=-150, tz=-55, W=44, D=26, H=22;
+    const y0=Math.min(hAt(tx-W/2,tz-D/2),hAt(tx+W/2,tz-D/2),hAt(tx-W/2,tz+D/2),hAt(tx+W/2,tz+D/2))-0.4;
+    const wall=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),mat(0xffffff,{map:brickTexture(6,3)})); wall.position.set(tx,y0+H/2,tz); tag(wall,k); edges(wall); scene.add(wall);
+    const roof=new THREE.Mesh(prism(D+1.8,9,W+1.8),mat(0x4a3b30)); roof.rotation.y=Math.PI/2; roof.position.set(tx,y0+H,tz); tag(roof,k); scene.add(roof);
+    [-1,1].forEach(s=>scene.add(box(2.6,7,2.6,0x6e3426,tx+s*(W/2-2.5),y0+H+5,tz,k)));
+    const fz=tz+D/2+0.1;
+    [-18,-11,-4,4,11,18].forEach(dx=>{ scene.add(box(2.6,4,0.3,0x2a241c,tx+dx,y0+15,fz,k)); if(Math.abs(dx)>4) scene.add(box(2.6,4,0.3,0x2a241c,tx+dx,y0+5.5,fz,k)); });
+    scene.add(box(3.4,7,0.3,0x3a2c1f,tx,y0+3.5,fz,k));
+    scene.add(boxAt(tx-W/2+1,tx+W/2-1,y0,y0+0.9,fz,fz+8,COL.wood,k));
+    scene.add(boxAt(tx-W/2,tx+W/2,y0+10,y0+10.5,fz-0.2,fz+9,0x5a4a3c,k));
+    for(let dx=-W/2+2;dx<=W/2-2;dx+=7) scene.add(box(0.5,9.2,0.5,0xe9e2cf,tx+dx,y0+5.4,fz+7.8,k));
+    // hanging sign by the road
+    const sx=-176, sz=-27, sy=hAt(sx,sz);
+    scene.add(box(0.6,14,0.6,COL.woodDark,sx,sy+7,sz,k)); scene.add(box(6,0.5,0.5,COL.woodDark,sx+2.8,sy+13.4,sz,k));
+    const sb=box(5,3,0.3,0x8a2b20,sx+3.2,sy+10.8,sz,k); scene.add(sb);
+    [1,-1].forEach(f=>{ const p=textPlane(textTexture([["TAVERN",64,64]],256,128,"#8a2b20","#f0e6c8"),4.8,2.4); p.position.set(sx+3.2,sy+10.8,sz+f*0.17); if(f<0) p.rotation.y=Math.PI; tag(p,k); scene.add(p); });
+    // water trough
+    scene.add(edges(box(9,1.8,2.4,0x6b5235,-184,hAt(-184,-34)+0.9,-34,k)));
+    // barn
+    const bx=-140, bz=-110, by=hAt(bx,bz)-0.4;
+    scene.add(edges(box(40,18,28,0x7b2e24,bx,by+9,bz,k)));
+    const br=new THREE.Mesh(prism(29.5,11,41.5),mat(0x4a3b30)); br.rotation.y=Math.PI/2; br.position.set(bx,by+18,bz); tag(br,k); scene.add(br);
+    scene.add(box(10,12,0.3,0x5a2219,bx,by+6,bz+14.1,k));
+  })();
+
+  /* ---- drovers' pen with cattle and hogs ---- */
+  (function(){
+    const k="drovers", x0=-238, x1=-200, z0=-82, z1=-32;
+    const posts=[]; for(let x=x0;x<=x1;x+=6.33) posts.push([x,z0],[x,z1]); for(let z=z0+6.25;z<z1;z+=6.25) posts.push([x0,z],[x1,z]);
+    posts.forEach(([x,z])=>scene.add(box(0.5,4.2,0.5,COL.woodDark,x,hAt(x,z)+2.1,z,k)));
+    [[x0,x1,z0,z0],[x0,x1,z1,z1],[x0,x0,z0,z1],[x1,x1,z0,-50],[x1,x1,-44,z1]].forEach(([a,b,c,d])=>{ [1.6,3.2].forEach(h=>{
+      const m=boxAt(Math.min(a,b)-0.2,Math.max(a,b)+0.2,0,0.3,Math.min(c,d)-0.2,Math.max(c,d)+0.2,COL.wood,k); m.position.y=hAt((a+b)/2,(c+d)/2)+h; scene.add(m); }); });
+    const R=rng(21), cc=[0x6b4a33,0x3b2a20,0x8a6a4a,0xe6ddc8,0x5a3d28,0x7a5235,0x3b2a20,0x9a7a5a,0x6b4a33];
+    cc.forEach((c,i)=>{ const g=cow(c,k); const x=x0+5+R()*(x1-x0-10), z=z0+5+R()*(z1-z0-10); g.position.set(x,hAt(x,z),z); g.rotation.y=R()*Math.PI*2; scene.add(g); });
+    for(let i=0;i<5;i++){ const g=hog(k); const x=x0+5+R()*(x1-x0-10), z=-46+R()*12; g.position.set(x,hAt(x,z),z); g.rotation.y=R()*Math.PI*2; scene.add(g); }
+    const dr=person(0x5a4a2e,k); dr.position.set(x1+2.5,hAt(x1+2.5,-47),-47); dr.rotation.y=Math.PI; scene.add(dr);
+    const staff=box(0.15,5.5,0.15,COL.wood,x1+1.6,hAt(x1+2.5,-47)+2.8,-46.4,k); staff.rotation.z=0.15; scene.add(staff);
+    const dog=new THREE.Group(); dog.add(box(2,0.9,0.7,0x3a2c1f,0,1.2,0,k)); dog.add(box(0.8,0.7,0.6,0x3a2c1f,1.2,1.7,0,k));
+    [[0.7,0.25],[0.7,-0.25],[-0.7,0.25],[-0.7,-0.25]].forEach(([x,z])=>dog.add(box(0.22,0.8,0.22,0x3a2c1f,x,0.4,z,k)));
+    dog.position.set(x1+4,hAt(x1+4,-42),-42); dog.rotation.y=0.6; scene.add(dog);
+  })();
+
+  /* ---- worm fences and trees ---- */
+  (function(){
+    const runs=[[-247,-118,58],[88,247,-66]], M=[]; const d=new THREE.Object3D();
+    runs.forEach(([xa,xb,z])=>{ const n=Math.floor((xb-xa)/10);
+      for(let i=0;i<n;i++){ const ax=xa+i*10, bx=ax+10, az=z+(i%2?1.6:-1.6), bz=z+(i%2?-1.6:1.6), len=Math.hypot(bx-ax,bz-az), ang=Math.atan2(-(bz-az),bx-ax), y=hAt((ax+bx)/2,(az+bz)/2);
+        [0.7,1.5,2.3,3.1].forEach(h=>{ d.position.set((ax+bx)/2,y+h,(az+bz)/2); d.rotation.set(0,ang,0); d.scale.set(len/10+0.08,1,1); d.updateMatrix(); M.push(d.matrix.clone()); }); } });
+    const im=new THREE.InstancedMesh(new THREE.BoxGeometry(10,0.28,0.32),mat(0x6b5440),M.length); M.forEach((m,i)=>im.setMatrixAt(i,m)); im.raycast=()=>{}; scene.add(im);
+
+    const R=rng(11), T=[];
+    const avoid=(x,z)=>{ const d=nearest(x,z).d, au=Math.abs(uOf(x,z));
+      return d<34 || au<14 || Math.hypot(x,z+20)<62 || (x<-98&&x>-247&&z<-18&&z>-128) || (x>168&&x<232&&z>14&&z<62) || (x<-112&&z>54) || (x>82&&z<-60); };
+    let tries=0; while(T.length<150 && tries<6000){ tries++; const x=X0+6+R()*(X1-X0-12), z=Z0+6+R()*(Z1-Z0-12);
+      if(avoid(x,z)) continue; const au=Math.abs(uOf(x,z)); if(au>40 && R()<0.55) continue; T.push([x,z,0.8+R()*0.55,R()]); }
+    const tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.7,1.0,9,6),mat(0x4b3a29),T.length);
+    const cr=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(7,1),mat(0xffffff),T.length);
+    const greens=[new THREE.Color(0x56723f),new THREE.Color(0x4a6638),new THREE.Color(0x6a7f44),new THREE.Color(0x5d7a3e)];
+    T.forEach(([x,z,s,r],i)=>{ const y=hAt(x,z); d.rotation.set(0,r*6,0); d.scale.set(s,s,s); d.position.set(x,y+4.5*s,z); d.updateMatrix(); tr.setMatrixAt(i,d.matrix);
+      d.scale.set(s,s*0.85,s); d.position.set(x,y+13*s,z); d.updateMatrix(); cr.setMatrixAt(i,d.matrix); if(cr.setColorAt) cr.setColorAt(i,greens[Math.floor(r*4)]); });
+    tr.raycast=()=>{}; cr.raycast=()=>{}; scene.add(tr); scene.add(cr);
+  })();
+
+  /* ---- vehicles ---- */
+  function conestoga(k){
+    const g=new THREE.Group(), wheels=[], red=0x9a2e22, iron=0x2a2118;
+    const yb=x=>3.1+0.45*(x/8)*(x/8), yt=x=>5.4+1.3*(x/8.6)*(x/8.6);
+    const sh=new THREE.Shape(); sh.moveTo(-7.6,yb(-7.6));
+    for(let i=1;i<=8;i++){ const x=-7.6+i*1.9; sh.lineTo(x,yb(x)); }
+    for(let i=0;i<=8;i++){ const x=8.6-i*2.15; sh.lineTo(x,yt(x)); }
+    sh.lineTo(-7.6,yb(-7.6));
+    const bg=new THREE.ExtrudeGeometry(sh,{depth:3.8,bevelEnabled:false}); bg.translate(0,0,-1.9);
+    const bed=new THREE.Mesh(bg,mat(0x3a5a8c)); tag(bed,k); edges(bed,30); g.add(bed);
+    g.add(box(17.6,0.3,4.0,red,0,yt(0)-0.05,0,k));
+    // canvas bonnet on hoops, flared at both ends
+    const NT=16, NA=12, pos=[], idx=[];
+    for(let i=0;i<=NT;i++){ const t=i/NT, xb=(t-0.5)*15.4;
+      for(let j=0;j<=NA;j++){ const a=j/NA*Math.PI, s=Math.sin(a); pos.push(xb+(t-0.5)*2*1.7*s, yt(xb)+0.1+3.9*s, 2.15*Math.cos(a)); } }
+    for(let i=0;i<NT;i++) for(let j=0;j<NA;j++){ const a=i*(NA+1)+j, b=a+1, c=a+NA+1, d=c+1; idx.push(a,c,b, b,c,d); }
+    const bgeo=new THREE.BufferGeometry(); bgeo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); bgeo.setIndex(idx); bgeo.computeVertexNormals();
+    const bon=new THREE.Mesh(bgeo,mat(0xede6d3,{side:THREE.DoubleSide})); tag(bon,k); g.add(bon);
+    // running gear
+    g.add(box(0.5,0.5,5.9,red,-5.4,2.45,0,k)); g.add(box(0.5,0.5,5.9,red,5.4,1.95,0,k));
+    g.add(box(11.5,0.35,0.35,red,0,2.3,0,k)); g.add(box(7,0.3,0.3,red,10.4,2.0,0,k));
+    g.add(box(0.8,0.9,3.4,red,-9.2,4.3,0,k));
+    [[-5.4,2.45],[5.4,1.95]].forEach(([x,r])=>[-2.8,2.8].forEach(z=>{ const w=wheel(r,0.6,iron,red,k); w.position.set(x,r,z); g.add(w); wheels.push({m:w,r}); }));
+    return {g,wheels};
+  }
+  function stagecoach(k){
+    const g=new THREE.Group(), wheels=[], body=0x7a2620, yel=0xc9a227, dark=0x2a2118;
+    g.add(edges(box(6.6,3.4,4.3,body,0,5.25,0,k)));
+    g.add(box(5.4,0.9,4.0,body,0,3.4,0,k));
+    g.add(box(6.9,0.3,4.6,dark,0,7.1,0,k));
+    g.add(box(2.2,1.1,2.6,0x5a4030,-1.2,7.8,0.2,k)); g.add(box(1.6,0.9,1.8,0x3a2c1f,1.0,7.7,-0.4,k));
+    [-1,1].forEach(sd=>{ const z=sd*2.17;
+      [-2.1,2.1].forEach(x=>g.add(box(1.5,1.3,0.08,0x1e1a16,x,5.9,z,k)));
+      g.add(box(1.6,2.8,0.08,yel,0,5.1,z,k)); g.add(box(1.2,2.4,0.1,body,0,5.1,z+sd*0.02,k)); g.add(box(0.9,0.9,0.12,0x1e1a16,0,5.9,z+sd*0.03,k));
+      g.add(box(6.6,0.18,0.1,yel,0,6.85,z,k)); });
+    g.add(box(1.0,1.8,3.8,dark,3.75,5.6,0,k)); g.add(box(1.6,0.35,4.0,dark,3.9,6.55,0,k)); g.add(box(1.2,0.2,4.0,dark,4.9,5.0,0,k));
+    g.add(box(1.4,2.3,3.9,dark,-3.95,4.9,0,k));
+    const drv=person(0x2f3a2a,k,true); drv.position.set(3.9,6.7,0.9); g.add(drv);
+    const whip=box(0.1,5,0.1,dark,4.6,9.9,1.3,k); whip.rotation.z=-0.5; g.add(whip);
+    g.add(box(0.45,0.45,5.6,yel,-2.9,2.55,0,k)); g.add(box(0.45,0.45,5.6,yel,2.9,1.95,0,k)); g.add(box(6.2,0.3,0.3,yel,0,2.4,0,k)); g.add(box(6,0.3,0.3,yel,7.6,2.0,0,k));
+    [-1.6,1.6].forEach(z=>g.add(box(6.2,0.25,0.25,0x3a2c1f,0,3.05,z,k)));
+    [[-2.9,2.55],[2.9,1.95]].forEach(([x,r])=>[-2.6,2.6].forEach(z=>{ const w=wheel(r,0.32,dark,yel,k); w.position.set(x,r,z); g.add(w); wheels.push({m:w,r}); }));
+    return {g,wheels};
+  }
+  const wagon=conestoga("wagon"); scene.add(wagon.g);
+  const wHorses=[0x4a3424,0x2e241c,0x5c3f2a,0x3b2b1f,0x4f3a29,0x2a211a].map(c=>{ const h=horse(c,"wagon"); scene.add(h.g); return h; });
+  (function(){ const r=person(0x3d4a5c,"wagon",true); r.position.set(-0.6,5.1,0); wHorses[0].g.add(r);
+    wHorses.forEach(h=>{ [-0.5,0,0.5].forEach(z=>h.g.add(box(0.28,0.28,0.28,COL.gold,1.85,6.05,z,"wagon",{metalness:0.6,roughness:0.4}))); }); })();
+  const coach=stagecoach("stage"); scene.add(coach.g);
+  const sHorses=[0x8a7a6a,0x5c3f2a,0x8a7a6a,0x5c3f2a].map(c=>{ const h=horse(c,"stage"); scene.add(h.g); return h; });
+  parked=conestoga("wagon"); parked.g.position.set(-189,hAt(-189,-56),-56); parked.g.rotation.y=Math.PI/2; scene.add(parked.g);
+
+  const V={ws:sAtX(95), wd:1, wm:false, ss:sAtX(-150), sd:-1, sm:false, gate:0};
+  const LANE=5.6;
+  function place(o,s,dir,off){
+    const p=at(s), hx=p.tx*dir, hz=p.tz*dir, x=p.x-hz*off, z=p.z+hx*off;
+    o.position.set(x,0.35+0.95*bfOf(x,z)+0.18,z); o.rotation.y=Math.atan2(-hz,hx); o.visible=(x>X0+3&&x<X1-3);
+  }
+  function placeTeam(veh,horses,s,dir,ahead,moving,now,fast){
+    place(veh.g,s,dir,LANE);
+    veh.wheels.forEach(w=>{ w.m.rotation.z=-(s*dir)/w.r; });
+    horses.forEach((h,i)=>{ const pi=Math.floor(i/2), side=(i%2?1:-1); place(h.g,s+dir*ahead[pi],dir,LANE+side*1.35);
+      const sp=fast?95:170;
+      h.legs.forEach((l,j)=>{ l.rotation.z = moving&&!prefersReduced ? 0.5*Math.sin(now/sp+(j%2?Math.PI:0)+(j>1?Math.PI/2:0)+i) : 0; }); });
+  }
+
+  /* ---- guided trips ---- */
+  function mv(text,who,dir,x0,x1,dur,also){ const s0=sAtX(x0), s1=sAtX(x1);
+    return step(text,dur,t=>{ V[who+"s"]=s0+(s1-s0)*sm(t); V[who+"m"]=t>0&&t<1; if(also) also(t); },()=>{ V[who+"d"]=dir; V[who+"s"]=s0; }); }
+  function gateTo(text,to,dur){ let from=0; return step(text,dur||2600,t=>{ V.gate=from+(to-from)*sm(t); },()=>{ from=V.gate; }); }
+  function closeGateIfOpen(st){ if(V.gate>0.01) st.push(gateTo("The keeper closes the gate.",0,1500)); }
+  const runs={
+    west(){ const st=[]; closeGateIfOpen(st);
+      st.push(mv("A stagecoach heads west from Wheeling with nine passengers squeezed inside. Four horses pull it at 6 to 10 miles an hour, the fastest way to travel on land.","s",-1,262,222,6500));
+      st.push(step("The driver pulls up at the tollgate and pays the tollkeeper. The money pays for repairs to the road.",2800,()=>{}));
+      st.push(gateTo("The keeper swings the pike, the long pole across the road, out of the way. That is where the word turnpike comes from.",1));
+      st.push(mv("The coach rolls west on the broken-stone road. The surface is rounded in the middle so rain runs off into the ditches.","s",-1,222,58,8500,t=>{ if(t>0.3) V.gate=1-sm((t-0.3)/0.3); }));
+      st.push(mv("The road bends into an S so the stone bridge can cross the creek straight on. That keeps the bridge as short as possible.","s",-1,58,-60,7000));
+      st.push(mv("The coach stops at a tavern. Stage companies kept fresh horses waiting every 12 to 15 miles, so a team was changed about every two hours.","s",-1,-60,-150,6000));
+      st.push(step("Done. Passengers often rode 12 to 14 hours a day, stopping only for meals and fresh horses.",0,()=>{}));
+      return st; },
+    east(){ const st=[]; closeGateIfOpen(st);
+      st.push(mv("A Conestoga wagon heads east with about 6,000 pounds of freight. On the left is a stone mile marker: 196 miles to Cumberland, Maryland, where the road began.","w",1,-262,-196,6500));
+      st.push(mv("Six draft horses pull the wagon past a tavern. Wagoners and drovers stopped at taverns like this one for supper, a place by the fire, and a yard for their horses.","w",1,-196,-48,9500));
+      st.push(mv("The wagon crosses the S-bridge. Heavy wagons like this one are why the road needed strong stone bridges.","w",1,-48,66,8000));
+      st.push(mv("Most roads of the time were mud for much of the year. The National Road’s layers of broken stone kept freight moving in wet weather.","w",1,66,176,8000));
+      st.push(gateTo("At the tollgate, this wagon pays nothing. Ohio let wagons with wheels more than 6 inches wide pass free, because wide wheels did less damage to the road.",1));
+      st.push(mv("On toward Wheeling, about 65 more miles, and then over the mountains toward Baltimore.","w",1,176,262,7000,t=>{ if(t>0.55) V.gate=1-sm((t-0.55)/0.3); }));
+      st.push(step("Done. Wagons like this carried farm goods east and brought factory goods west.",0,()=>{}));
+      return st; }
+  };
+
+  /* ---- markers, clicks ---- */
+  const v3=(x,y,z)=>new THREE.Vector3(x,y,z);
+  const ANCHOR={
+    road:()=>{ const p=at(sAtX(-98)); return v3(p.x,2.5,p.z); },
+    sbridge:()=>v3(0,6,0), marker:()=>v3(-205,hAt(-205,-17.2)+6,-17.2), tollgate:()=>v3(196,22,34), tavern:()=>v3(-150,36,-55),
+    drovers:()=>v3(-219,9,-57),
+    wagon:()=>wagon.g.visible ? v3(wagon.g.position.x,13,wagon.g.position.z) : v3(-189,13,-56),
+    stage:()=>coach.g.visible ? v3(coach.g.position.x,11,coach.g.position.z) : null
+  };
+  function regionAt(p){
+    if(p.y<-5.5 && Math.abs(uOf(p.x,p.z))<18) return "sbridge";
+    if(nearest(p.x,p.z).d<15.5) return "road";
+    if(p.x>-205&&p.x<-105&&p.z>-125&&p.z<-22) return "tavern";
+    if(p.x>-240&&p.x<-198&&p.z>-84&&p.z<-30) return "drovers";
+    if(p.x>178&&p.x<214&&p.z>20&&p.z<48) return "tollgate";
+    return null;
+  }
+  function update(now){
+    placeTeam(wagon,wHorses,V.ws,V.wd,[10.6,15.8,21],V.wm,now,false);
+    placeTeam(coach,sHorses,V.ss,V.sd,[8.4,13.6],V.sm,now,true);
+    gatePivot.rotation.y=-Math.PI/2*V.gate;
+  }
+  update(0);
+  return {home:{target:v3(0,0,4),dir:v3(0.2,0.62,0.76).normalize(),A1:228,A2:282,B:186},
+          anchorKeys:Object.keys(ANCHOR), anchor:k=>ANCHOR[k]?ANCHOR[k]():null, regionAt, update, runs,
+          BIG:{road:1,sbridge:1,tavern:1,tollgate:1,drovers:1}, minD:14, maxD:1100};
+}
+
+/* shared ground builder: heightfield block with soil sides; returns a height lookup */
+function makeTerrain(o){
+  const {X0,X1,Z0,Z1,DX,BOT,G,color}=o, NX=Math.round((X1-X0)/DX), NZ=Math.round((Z1-Z0)/DX), H=new Float32Array((NX+1)*(NZ+1));
+  const nv=(NX+1)*(NZ+1), pos=new Float32Array(nv*3), idx=[];
+  for(let j=0;j<=NZ;j++) for(let i=0;i<=NX;i++){ const k=j*(NX+1)+i, x=X0+i*DX, z=Z0+j*DX, y=G(x,z); H[k]=y; pos[k*3]=x; pos[k*3+1]=y; pos[k*3+2]=z; }
+  for(let j=0;j<NZ;j++) for(let i=0;i<NX;i++){ const a=j*(NX+1)+i, b=a+1, c=a+NX+1, d=c+1; idx.push(a,c,b, b,c,d); }
+  const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals();
+  const nrm=g.getAttribute("normal"), col=new Float32Array(nv*3), c=new THREE.Color();
+  for(let k=0;k<nv;k++){ color(pos[k*3],pos[k*3+1],pos[k*3+2],nrm.getY(k),c); col[k*3]=c.r; col[k*3+1]=c.g; col[k*3+2]=c.b; }
+  g.setAttribute("color",new THREE.BufferAttribute(col,3));
+  const m=new THREE.Mesh(g,mat(0xffffff,{vertexColors:true,roughness:1})); m.userData.region=true; PK.push(m); SC.add(m);
+  function hAt(x,z){ const fi=Math.max(0,Math.min(NX-1e-4,(x-X0)/DX)), fj=Math.max(0,Math.min(NZ-1e-4,(z-Z0)/DX));
+    const i=Math.floor(fi), j=Math.floor(fj), u=fi-i, v=fj-j, k=j*(NX+1)+i;
+    return (H[k]*(1-u)+H[k+1]*u)*(1-v)+(H[k+NX+1]*(1-u)+H[k+NX+2]*u)*v; }
+  const sp=[],sc=[], top=new THREE.Color(0x4a3826), deep=new THREE.Color(0x8b6b46);
+  function strip(P,a0,a1,hf){ for(let a=a0;a<a1;a+=2){ const b=Math.min(a+2,a1), t0=hf(a), t1=hf(b), m2=Math.min(t0,t1)-1.5;
+    [[BOT,BOT,m2,m2,deep],[m2,m2,t0,t1,top]].forEach(([ya,yb,yc,yd,cc])=>{ [P(a,ya),P(b,yb),P(b,yd),P(a,ya),P(b,yd),P(a,yc)].forEach(v=>{sp.push(...v); sc.push(cc.r,cc.g,cc.b);}); }); } }
+  strip((a,y)=>[X0,y,a],Z0,Z1,a=>hAt(X0,a)); strip((a,y)=>[X1,y,a],Z0,Z1,a=>hAt(X1,a));
+  strip((a,y)=>[a,y,Z0],X0,X1,a=>hAt(a,Z0)); strip((a,y)=>[a,y,Z1],X0,X1,a=>hAt(a,Z1));
+  const sg=new THREE.BufferGeometry(); sg.setAttribute("position",new THREE.Float32BufferAttribute(sp,3)); sg.setAttribute("color",new THREE.Float32BufferAttribute(sc,3)); sg.computeVertexNormals();
+  SC.add(new THREE.Mesh(sg,mat(0xffffff,{vertexColors:true,side:THREE.DoubleSide,roughness:1})));
+  return hAt;
+}
+function scatterTrees(hAt,o){
+  const R=rng(o.seed||11), T=[], d=new THREE.Object3D(); let tries=0;
+  while(T.length<o.count && tries<o.count*60){ tries++; const x=o.X0+6+R()*(o.X1-o.X0-12), z=o.Z0+6+R()*(o.Z1-o.Z0-12); if(o.avoid(x,z,hAt(x,z),R)) continue; T.push([x,z,0.75+R()*0.6,R()]); }
+  const tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.7,1.0,9,6),mat(0x4b3a29),T.length);
+  const cr=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(7,1),mat(0xffffff),T.length);
+  const greens=[new THREE.Color(0x56723f),new THREE.Color(0x4a6638),new THREE.Color(0x6a7f44),new THREE.Color(0x5d7a3e)];
+  T.forEach(([x,z,s,r],i)=>{ const y=hAt(x,z); d.rotation.set(0,r*6,0); d.scale.set(s,s,s); d.position.set(x,y+4.5*s,z); d.updateMatrix(); tr.setMatrixAt(i,d.matrix);
+    d.scale.set(s,s*0.85,s); d.position.set(x,y+13*s,z); d.updateMatrix(); cr.setMatrixAt(i,d.matrix); if(cr.setColorAt) cr.setColorAt(i,greens[Math.floor(r*4)]); });
+  tr.raycast=()=>{}; cr.raycast=()=>{}; SC.add(tr); SC.add(cr);
+}
+
+/* ---------------------- Stop 2: Robert Fulton's Clermont ---------------------- */
+STATIONS.clermont={
+  n:2, title:"Robert Fulton’s Clermont", sub:"The Hudson River, New York, 1807",
+  aria:"3D model of Robert Fulton's steamboat on the Hudson River, with a sailing sloop and the Livingston house at Clermont",
+  intro:["In August 1807, Robert Fulton’s steamboat made its first trip up the Hudson River, from New York City to Albany, about 150 miles. It proved that a boat could travel upstream on a schedule without waiting for the wind."],
+  note:"North, upriver toward Albany, is on the right. The river flows the other way, south toward New York City and the ocean.",
+  runs:[["up","Steam up the Hudson with Fulton"]],
+  runNote:"Watch the paddlewheels, the smoke, and the sailing sloop. Each step is explained as it happens.",
+  groups:[["boat","The steamboat"],["river","On the river"],["story","The story"]],
+  INFO:{
+    clermont:{group:"boat",title:"Fulton’s steamboat",body:[
+      "Fulton’s boat was long and narrow, about 150 feet long, and built of wood. It had two masts for sails, but its real power came from a steam engine in the middle of the hull.",
+      "Fulton registered it as the North River Steamboat. (New Yorkers called the Hudson the North River.) The name Clermont first appeared in a book about Fulton written in 1817, two years after he died, and it stuck.",
+      "Some people who doubted it would work called it “Fulton’s Folly.” After its first trip, it began carrying paying passengers between New York and Albany on a regular schedule in September 1807."],
+      fact:"Your notes call it the first commercially successful (money-making) steamboat. Other inventors had built steamboats before, but Fulton’s was the first to carry passengers on a schedule and make a profit."},
+    engine:{group:"boat",title:"The steam engine",body:[
+      "A fire under a boiler heated water until it turned to steam. The steam pushed a piston back and forth inside a cylinder, and cranks and gears turned that motion into the turning of the paddlewheels.",
+      "The engine was built in England by Boulton and Watt, the company of James Watt, whose improved steam engine helped start the Industrial Revolution. Fulton designed how it would fit and work in the boat.",
+      "Steamboats burned huge amounts of wood. Crews stopped often to load more, and people living along the rivers made money cutting and selling it."],
+      fact:"The tall smokestack carried smoke and sparks from the fire up and away from the deck."},
+    wheels:{group:"boat",title:"Paddlewheels",body:[
+      "On each side of the boat was a paddlewheel about 15 feet across. As the engine turned the wheels, the paddles pushed water backward, and the boat moved forward.",
+      "Because the engine moved the boat, not the wind, it could go upstream against the current and straight into the wind.",
+      "Later steamboats on the Ohio and Mississippi Rivers often used one big wheel at the stern, the back of the boat, instead."],
+      fact:"In his report on the first trip, Fulton wrote that the wind was against him the whole way, going and coming back."},
+    sloop:{group:"river",title:"Hudson River sloop",body:[
+      "Before steamboats, most people and freight on the Hudson traveled by sloop, a sailing boat with one tall mast and a huge sail.",
+      "Sloops depended on the wind and the tide. When the wind blew from the wrong direction, a sloop had to zigzag back and forth across the river, which sailors call tacking, or drop anchor and wait.",
+      "A trip from New York to Albany by sloop took at least four days on average, and sometimes a full week."],
+      fact:"Fulton’s steamboat made the same trip in 32 hours of travel."},
+    current:{group:"river",title:"Going upstream",body:[
+      "Rivers flow downhill to the sea. Going downstream is easy, because the current carries the boat along. Going upstream means fighting the current the whole way.",
+      "On the Hudson, the tides also push the water back and forth twice a day, so sloop captains waited for a good tide as well as a good wind.",
+      "On western rivers like the Ohio and the Mississippi, the current is much stronger. Before steamboats, crews moved boats upstream by pushing with long poles or pulling with ropes from the shore. A trip up the Mississippi and Ohio could take three or four months."],
+      fact:"Your notes: steamboats could travel upstream against river currents. That made two-way trade on America’s rivers possible."},
+    landing:{group:"river",title:"Clermont, the Livingston home",body:[
+      "On its first trip, the steamboat stopped overnight at Clermont, the home of Robert R. Livingston, on the east bank of the Hudson about 110 miles north of New York City.",
+      "Livingston was Fulton’s business partner and paid for much of the work. He was also a Founding Father. As the American minister to France, he helped negotiate the Louisiana Purchase in 1803. While they were in Paris, he and Fulton tested a small steamboat on the Seine River.",
+      "The New York legislature gave Livingston the sole right to run steamboats on New York’s waters, and he shared it with Fulton."],
+      fact:"Today the house is part of Clermont State Historic Site, in Germantown, New York."},
+    fulton:{group:"story",title:"Robert Fulton",body:[
+      "Robert Fulton was born in 1765 in Lancaster County, Pennsylvania, the same county where Conestoga wagons were first built. He started out as a painter of portraits.",
+      "He went to Europe to study art but became fascinated by engineering. He wrote about canals and even designed a submarine, the Nautilus, for France.",
+      "After the success of his steamboat, Fulton’s company built more, including the first steamboat on the Ohio and Mississippi Rivers. He died in 1815."]},
+    letter:{group:"story",title:"Fulton’s report",body:[
+      "A few days after the first trip, Fulton sent a short report to the American Citizen, a New York City newspaper. (Livingston was called “the Chancellor” because he had been New York’s highest judge.)"],
+      quote:{text:"I left New York on Monday at one o’clock and arrived at Clermont, the seat of Chancellor Livingston, at one o’clock on Tuesday: time, twenty-four hours; distance, one hundred and ten miles. …\nThe sum is one hundred and fifty miles in thirty-two hours, equal to near five miles an hour. …\nThroughout my whole way, both going and returning, the wind was ahead. No advantage could be derived from my sails. The whole has therefore been performed by the power of the steam-engine.",
+             cite:"Robert Fulton, letter published in the American Citizen, New York, August 1807"},
+      hippLabel:"Reading Fulton’s report with HIPP:",
+      hipp:[["Historical context","Many people doubted a steamboat could work. Fulton and Livingston were about to start carrying paying passengers and needed people to trust the boat."],
+            ["Intended audience","Readers of a New York City newspaper: possible passengers, investors, and doubters."],
+            ["Purpose","To prove, with exact times and distances, that the steamboat worked even with the wind against it."],
+            ["Point of view","The inventor and part owner of the boat, who would profit if people believed in it."]],
+      after:["Think about it: Fulton gives times and distances instead of describing how he felt. Why would numbers convince his readers?"]},
+    monopoly:{group:"story",title:"Who could run steamboats?",body:[
+      "New York’s sole-right law meant that anyone else who wanted to run a steamboat in New York waters needed permission from Livingston and Fulton’s company.",
+      "In 1824, in the case Gibbons v. Ogden, the U.S. Supreme Court ruled that Congress, not a single state, controls trade and travel between states. That broke the monopoly on routes between New York and New Jersey and opened the river to competition.",
+      "With competition, steamboats multiplied and fares fell. In 1819 there were 9 steamboats on the Hudson. By 1840 there were more than 100."]},
+    ohio:{group:"story",title:"Steamboats come to Ohio",body:[
+      "In 1811, Fulton and Livingston’s company built a steamboat called the New Orleans in Pittsburgh. It steamed down the Ohio River, past Marietta and Cincinnati, and on down the Mississippi to the city of New Orleans.",
+      "Soon steamboats were carrying people and goods both ways on the Ohio and Mississippi. Ohio farmers could ship crops down to New Orleans and get factory goods back upriver.",
+      "River towns boomed. Cincinnati grew into one of the biggest cities in the West, building steamboats and packing pork to ship downriver."]},
+    about:{group:null,title:"About this model",body:[
+      "The steamboat is built from a 3D-print model of Fulton’s boat. Its paddlewheels are redrawn so they can turn.",
+      "The sailing sloop, the dock, and the house are reconstructions that stand in for the kinds of things Fulton passed. The house stands in for the Livingston home at Clermont, which still sits on its hill above the river.",
+      "The river is drawn much narrower than the real Hudson, which is close to a mile wide in many places, and the trip is shortened to a few hundred feet."],
+      after:["Think about it: steamboats made travel faster and cheaper, but they also took business from sloop captains and their crews. Who gained from the steamboat, and who lost?"]}
+  },
+  ORDER:["clermont","engine","wheels","sloop","current","landing","fulton","letter","monopoly","ohio"],
+  build:buildClermont
+};
+
+function buildClermont(){
+  const scene=SC;
+  const X0=-260, X1=260, Z0=-150, Z1=150, BOT=-26, ZW=-96, ZE=64, BED=-14;
+  const HX=40, HZ=114;                               // the Livingston house
+  function G(x,z){
+    const n=Math.sin(x*0.021+0.4)*Math.cos(z*0.03)+0.5*Math.sin(x*0.055+z*0.04);
+    if(z>=ZE){ const t=sm((z-ZE)/28); let y=-1.6+13.6*t+n*1.4*t; if(x>HX-34&&x<HX+34&&z>HZ-22&&z<HZ+22) y=Math.min(y,12.2); return y; }
+    if(z>ZE-14) return BED+(-1.6-BED)*sm((z-(ZE-14))/14);
+    if(z<=ZW){ const t=ZW-z; return -1.6+44*sm(t/42)+(6*Math.sin(x*0.018+1.3)+3*Math.sin(x*0.05))*sm(t/30)+n; }
+    if(z<ZW+14) return BED+(-1.6-BED)*sm(((ZW+14)-z)/14);
+    return BED+0.6*Math.sin(x*0.04)*Math.cos(z*0.05);
+  }
+  const GRASS=new THREE.Color(0x7b8f53), GRASS2=new THREE.Color(0x6a8048), SAND=new THREE.Color(0x9c8a66), BED_C=new THREE.Color(0x3f4a40), ROCK=new THREE.Color(0x7d7462), PATH=new THREE.Color(0xa08a63);
+  const hAt=makeTerrain({X0,X1,Z0,Z1,DX:2,BOT,G,color:(x,y,z,ny,c)=>{
+    c.copy(GRASS).lerp(GRASS2,0.5+0.5*Math.sin(x*0.05+z*0.04)*Math.cos(z*0.07));
+    if(y<1.4) c.copy(SAND); if(y<-3) c.copy(BED_C);
+    if(z<ZW) c.lerp(ROCK,Math.min(1,Math.max(0,(0.86-ny)/0.35))*0.85);
+    if(Math.abs(x-HX)<5 && z>ZE+2 && z<HZ-12) c.lerp(PATH,0.8);
+  }});
+
+  /* water and the current */
+  (function(){ const m=new THREE.Mesh(new THREE.PlaneGeometry(X1-X0,(ZE+10)-(ZW-10)),mat(0x4d6d77,{roughness:0.45,transparent:true,opacity:0.92}));
+    m.rotation.x=-Math.PI/2; m.position.set(0,0,((ZE+10)+(ZW-10))/2); tag(m,"current"); scene.add(m); })();
+  const STREAKS=[], R=rng(31);
+  const stGeo=new THREE.PlaneGeometry(9,0.45); stGeo.rotateX(-Math.PI/2);
+  const streak=new THREE.InstancedMesh(stGeo,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.35,depthWrite:false}),80);
+  for(let i=0;i<80;i++) STREAKS.push([X0+10+R()*(X1-X0-20), ZW+16+R()*(ZE-ZW-32), 0.6+R()*0.6]);
+  streak.raycast=()=>{}; scene.add(streak);
+  const sd=new THREE.Object3D();
+  function drawStreaks(){ STREAKS.forEach(([x,z,s],i)=>{ sd.position.set(x,0.12,z); sd.scale.set(s,1,1); sd.updateMatrix(); streak.setMatrixAt(i,sd.matrix); }); streak.instanceMatrix.needsUpdate=true; }
+  drawStreaks();
+  (function(){ const s=new THREE.Shape(); s.moveTo(0,0); s.lineTo(9,6); s.lineTo(9,2); s.lineTo(26,2); s.lineTo(26,-2); s.lineTo(9,-2); s.lineTo(9,-6); s.lineTo(0,0);
+    [[-200,-66],[150,-70]].forEach(([x,z])=>{ const g=new THREE.ShapeGeometry(s); g.rotateX(-Math.PI/2);
+      const m=new THREE.Mesh(g,mat(0xffffff,{transparent:true,opacity:0.55,depthWrite:false})); m.position.set(x,0.2,z); tag(m,"current"); scene.add(m); }); })();
+
+  /* the steamboat, built from the 3D-print model */
+  const BOAT=new THREE.Group(); scene.add(BOAT);
+  const BL=146, WL=-4.6;
+  let wheelInfo=null, stackTop=30, stackX=0;
+  (function(){
+    const M=window.CLERMONT_MODEL;
+    if(!M){ // simple stand-in if the model file is missing
+      BOAT.add(edges(box(146,8,16,0x5a4030,0,1,0,"clermont"))); BOAT.add(box(110,3,12,0x9a7a56,-6,6.5,0,"clermont"));
+      BOAT.add(cyl(1.4,1.6,24,0x2a2420,0,17,0,"engine")); stackTop=29; wheelInfo={x:22,y:3,r:7.5,z:11,w:4}; return; }
+    const dec=s=>{ const b=atob(s), u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u.buffer; };
+    const q=new Uint16Array(dec(M.pos)), ix=new Uint16Array(dec(M.idx)), nv=q.length/3;
+    const S=BL/(M.sc[1]*65535), cy=M.lo[1]+M.sc[1]*65535/2;
+    const pos=new Float32Array(nv*3), col=new Float32Array(nv*3), c=new THREE.Color(), O=new Float32Array(nv*3);
+    for(let i=0;i<nv;i++){ const X=M.lo[0]+q[i*3]*M.sc[0], Y=M.lo[1]+q[i*3+1]*M.sc[1], Z=M.lo[2]+q[i*3+2]*M.sc[2];
+      O[i*3]=X; O[i*3+1]=Y; O[i*3+2]=Z;
+      pos[i*3]=-(Y-cy)*S; pos[i*3+1]=(Z-WL)*S; pos[i*3+2]=-X*S;
+      const mast=Math.abs(X)<0.7&&Z>1.2;
+      c.setHex(mast?0x5a4030 : Z<-2.05?0x3e2c20 : 0x9a7a56); col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b; }
+    const isStack=i=>Math.abs(O[i*3])<1.3&&O[i*3+1]>9.3&&O[i*3+1]<13.8&&O[i*3+2]>-0.4;
+    const isWheel=i=>Math.abs(O[i*3])>4.4;
+    const hull=[], stack=[], wv=[];
+    for(let t=0;t<ix.length;t+=3){ const a=ix[t],b=ix[t+1],d=ix[t+2];
+      if(isWheel(a)&&isWheel(b)&&isWheel(d)){ wv.push(a,b,d); continue; }
+      if(isStack(a)&&isStack(b)&&isStack(d)){ stack.push(a,b,d); continue; }
+      hull.push(a,b,d); }
+    const base=new THREE.BufferGeometry(); base.setAttribute("position",new THREE.BufferAttribute(pos,3)); base.setAttribute("color",new THREE.BufferAttribute(col,3));
+    const hg=base.clone(); hg.setIndex(hull); hg.computeVertexNormals();
+    const hm=new THREE.Mesh(hg,mat(0xffffff,{vertexColors:true,flatShading:true,roughness:0.85})); tag(hm,"clermont"); edges(hm,40); BOAT.add(hm);
+    if(stack.length){ const sg=base.clone(); sg.setIndex(stack); sg.computeVertexNormals();
+      const sm2=new THREE.Mesh(sg,mat(0x2a2420,{flatShading:true,roughness:0.7})); tag(sm2,"engine"); BOAT.add(sm2);
+      stack.forEach(i=>{ stackTop=Math.max(stackTop,pos[i*3+1]); }); stackX=-(11.6-cy)*S; }
+    if(wv.length){ let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z1=0,zi=1e9;
+      wv.forEach(i=>{ x0=Math.min(x0,pos[i*3]); x1=Math.max(x1,pos[i*3]); y0=Math.min(y0,pos[i*3+1]); y1=Math.max(y1,pos[i*3+1]); z1=Math.max(z1,Math.abs(pos[i*3+2])); zi=Math.min(zi,Math.abs(pos[i*3+2])); });
+      const r=Math.min((x1-x0),(y1-y0))/2; wheelInfo={x:(x0+x1)/2,y:Math.max(r-2.5,(y0+y1)/2),r,z:(z1+zi)/2,w:Math.max(2.5,z1-zi)}; }
+  })();
+  // paddlewheels that turn
+  const WHEELS=[];
+  if(wheelInfo){ const W=wheelInfo;
+    [-1,1].forEach(s=>{ const g=new THREE.Group(); g.position.set(W.x,W.y,s*W.z);
+      [-1,1].forEach(e=>{ const rim=new THREE.Mesh(new THREE.TorusGeometry(W.r-0.4,0.35,6,24),mat(0x5a3a28)); rim.position.z=e*W.w*0.45; tag(rim,"wheels"); g.add(rim); });
+      for(let i=0;i<10;i++){ const a=i/10*Math.PI*2; const p=box(2.4,0.35,W.w,0x6b4a33,Math.cos(a)*(W.r-1.3),Math.sin(a)*(W.r-1.3),0,"wheels"); p.rotation.z=a+Math.PI/2; g.add(p);
+        const sp=box(0.3,W.r-0.6,0.3,0x5a3a28,-Math.sin(a)*(W.r-0.6)/2,Math.cos(a)*(W.r-0.6)/2,0,"wheels"); sp.rotation.z=a; g.add(sp); }
+      const ax=cyl(0.5,0.5,W.w+1.2,0x2a2420,0,0,0,"wheels"); ax.rotation.x=Math.PI/2; g.add(ax);
+      BOAT.add(g); WHEELS.push(g); });
+  }
+  // foam at the wheels, wake behind, smoke from the stack
+  const foamMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false});
+  const FOAM=[]; if(wheelInfo) [-1,1].forEach(s=>{ const f=new THREE.Mesh(new THREE.CircleGeometry(5,20),foamMat); f.rotation.x=-Math.PI/2; f.position.set(wheelInfo.x-2,0.15,s*(wheelInfo.z+0.5)); f.raycast=()=>{}; BOAT.add(f); FOAM.push(f); });
+  const wakeMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+  [-1,1].forEach(s=>{ const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute([-70,0.12,s*6, -70,0.12,s*8.5, -190,0.12,s*40, -70,0.12,s*6, -190,0.12,s*40, -190,0.12,s*34],3));
+    const m=new THREE.Mesh(g,wakeMat); m.raycast=()=>{}; BOAT.add(m); });
+  const PUFFS=[], puffGeo=new THREE.SphereGeometry(1,8,6);
+  for(let i=0;i<16;i++){ const m=new THREE.Mesh(puffGeo,new THREE.MeshStandardMaterial({color:0x8d8781,roughness:1,transparent:true,opacity:0,depthWrite:false})); m.raycast=()=>{}; m.visible=false; scene.add(m); PUFFS.push({m,age:99}); }
+  let lastPuff=0;
+
+  /* a Hudson River sloop, tacking into the wind */
+  const SLOOP=new THREE.Group(), SAIL=new THREE.Group();
+  (function(){
+    const k="sloop";
+    const s=new THREE.Shape(); s.moveTo(-30,-8); s.lineTo(14,-9); s.quadraticCurveTo(28,-6,33,0); s.quadraticCurveTo(28,6,14,9); s.lineTo(-30,8); s.lineTo(-30,-8);
+    const hg=new THREE.ExtrudeGeometry(s,{depth:7,bevelEnabled:false,curveSegments:8}); hg.rotateX(-Math.PI/2); hg.translate(0,-3,0);
+    const hull=new THREE.Mesh(hg,mat(0x2f3b33)); tag(hull,k); edges(hull,30); SLOOP.add(hull);
+    const dg=new THREE.ShapeGeometry(s); dg.rotateX(-Math.PI/2); const deck=new THREE.Mesh(dg,mat(0x9a7a56,{side:THREE.DoubleSide})); deck.position.y=4.05; tag(deck,k); SLOOP.add(deck);
+    SLOOP.add(box(62,0.5,0.4,0xb8a27a,-1,3.2,-8.6,k)); SLOOP.add(box(62,0.5,0.4,0xb8a27a,-1,3.2,8.6,k));
+    SLOOP.add(box(16,0.6,0.6,COL.wood,40,5.2,0,k));
+    SLOOP.add(cyl(0.6,0.85,70,0x6b5440,8,39,0,k));
+    SLOOP.add(box(9,4,7,0x7a5f40,-20,6,0,k));
+    SAIL.position.set(8,0,0); SLOOP.add(SAIL);
+    const sailMat=mat(0xeee6cf,{side:THREE.DoubleSide,roughness:1});
+    const main=new THREE.BufferGeometry(); main.setAttribute("position",new THREE.Float32BufferAttribute([0,8,0, -42,8,0, -36,64,0, 0,8,0, -36,64,0, 0,60,0],3)); main.computeVertexNormals();
+    const mm=new THREE.Mesh(main,sailMat); tag(mm,k); SAIL.add(mm);
+    SAIL.add(box(43,0.5,0.5,COL.woodDark,-21,7.8,0,k));
+    const gaff=box(37,0.4,0.4,COL.woodDark,-18,62,0,k); gaff.rotation.z=-0.11; SAIL.add(gaff);
+    const jib=new THREE.BufferGeometry(); jib.setAttribute("position",new THREE.Float32BufferAttribute([47,6,0, 8,62,0, 16,8,0],3)); jib.computeVertexNormals();
+    const jm=new THREE.Mesh(jib,sailMat); tag(jm,k); SLOOP.add(jm);
+    const crew=person(0x3d4a5c,k); crew.position.set(-24,4,2); SLOOP.add(crew);
+    SLOOP.scale.setScalar(0.85); SLOOP.position.set(-22,0,-62); scene.add(SLOOP);
+  })();
+
+  /* the dock and the Livingston house */
+  (function(){
+    const k="landing", dy=3.2;
+    scene.add(boxAt(HX-5,HX+5,dy-0.6,dy,ZE-4,ZE+12,COL.wood,k));
+    scene.add(boxAt(HX-32,HX+38,dy-0.6,dy,ZE-12,ZE-4,COL.wood,k));
+    for(let x=HX-30;x<=HX+36;x+=8) [ZE-11.5,ZE-4.5].forEach(z=>scene.add(cyl(0.55,0.55,14,COL.woodDark,x,dy-7,z,k,null,6)));
+    for(let z=ZE-2;z<=ZE+10;z+=6) [HX-4.5,HX+4.5].forEach(x=>scene.add(cyl(0.55,0.55,14,COL.woodDark,x,dy-7,z,k,null,6)));
+    const logs=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.55,0.55,6,6),mat(0x7a5a3a),24), o=new THREE.Object3D();
+    for(let i=0;i<24;i++){ const row=Math.floor(i/6), col=i%6; o.position.set(HX+16+col*1.15+(row%2)*0.55,dy+0.6+row*1.0,ZE-8); o.rotation.set(Math.PI/2,0,0); o.updateMatrix(); logs.setMatrixAt(i,o.matrix); }
+    tag(logs,k); scene.add(logs);
+    [[HX-14,ZE-8,0.2],[HX-9,ZE-7,-0.3],[HX+2,ZE+4,0.1]].forEach(([x,z,r])=>{ const p=person([0x5a3d2a,0x2f3a2a,0x6b2a22][Math.abs(Math.round(x))%3],k); p.position.set(x,dy,z); p.rotation.y=Math.PI/2+r; scene.add(p); });
+    const W=56, D=30, H=26, y0=Math.min(hAt(HX-W/2,HZ-D/2),hAt(HX+W/2,HZ-D/2),hAt(HX-W/2,HZ+D/2),hAt(HX+W/2,HZ+D/2))-0.4;
+    scene.add(edges(box(W,H,D,0xe6dccb,HX,y0+H/2,HZ,k)));
+    const rg=new THREE.ConeGeometry(1,12,4); rg.rotateY(Math.PI/4); const roof=new THREE.Mesh(rg,mat(0x4a4a4a)); roof.scale.set((W+2)/Math.SQRT2,1,(D+2)/Math.SQRT2); roof.position.set(HX,y0+H+6,HZ); tag(roof,k); scene.add(roof);
+    [-1,1].forEach(s=>scene.add(box(2.6,8,2.6,0x8a4632,HX+s*14,y0+H+8,HZ,k)));
+    const fz=HZ-D/2-0.1;
+    [-21,-13,-5,5,13,21].forEach(dx=>{ scene.add(box(2.6,4.4,0.3,0x2a241c,HX+dx,y0+18,fz,k)); scene.add(box(2.6,4.4,0.3,0x2a241c,HX+dx,y0+7,fz,k)); });
+    scene.add(box(4,8,0.3,0x3a2c1f,HX,y0+4,fz,k)); scene.add(box(16,0.6,7,0xe9e2cf,HX,y0+9.5,fz-3.4,k));
+  })();
+
+  scatterTrees(hAt,{X0,X1,Z0,Z1,count:170,seed:41,avoid:(x,z,y,R)=> y<2.5 || (x>HX-44&&x<HX+44&&z>ZE&&z<HZ+30) || (z>ZE&&z<ZE+20) || (z>ZW-10&&z<ZE+6) || (z<ZW-60&&R()<0.25)});
+
+  /* motion */
+  const V={bx:-40, moving:false, tack:0};
+  const pathZ=x=>-18+58*sm((x+60)/100);
+  function placeBoat(now){
+    const x=V.bx, z=pathZ(x), dz=(pathZ(x+1)-pathZ(x-1))/2;
+    BOAT.position.set(x,0.25*Math.sin(now/700),z); BOAT.rotation.y=Math.atan2(-dz,1); BOAT.rotation.x=0.012*Math.sin(now/900);
+  }
+  let last=0, spin=0;
+  function update(now){
+    const dt=Math.min(0.1,(now-(last||now))/1000); last=now;
+    placeBoat(now);
+    const go=V.moving&&!prefersReduced;
+    if(go) spin+=dt*1.6; WHEELS.forEach(w=>{ w.rotation.z=-spin; });
+    foamMat.opacity=go?0.45+0.15*Math.sin(now/120):0; wakeMat.opacity=go?0.22:0;
+    // current
+    if(!prefersReduced){ STREAKS.forEach(s=>{ s[0]-=dt*7*s[2]; if(s[0]<X0+10) s[0]=X1-10; }); drawStreaks(); }
+    // smoke
+    const every=go?0.28:1.1;
+    if(!prefersReduced && now/1000-lastPuff>every){ lastPuff=now/1000; const p=PUFFS.find(q=>q.age>3.6); if(p){ p.age=0; p.m.visible=true; p.m.position.set(stackX,stackTop+1,0).applyMatrix4(BOAT.matrixWorld); } }
+    PUFFS.forEach(p=>{ if(p.age>3.6){ p.m.visible=false; return; } p.age+=dt; p.m.position.y+=dt*6; p.m.position.x-=dt*(go?14:4); const s=2+p.age*2.2; p.m.scale.set(s,s,s); p.m.material.opacity=Math.max(0,0.55*(1-p.age/3.6)); });
+    // the sloop tacks back and forth
+    const tk=Math.sin(now/5200);
+    V.tack=tk; SLOOP.rotation.y=0.55*Math.tanh(tk*4)+0.15; SAIL.rotation.y=-0.45*Math.tanh(tk*4); SLOOP.rotation.x=0.06*Math.tanh(tk*4); SLOOP.position.y=0.2*Math.sin(now/800);
+  }
+  /* guided trip */
+  function mvB(text,x0,x1,dur){ return step(text,dur,t=>{ V.bx=x0+(x1-x0)*sm(t); V.moving=t>0&&t<1; },()=>{ V.bx=x0; }); }
+  const runs={ up(){ return [
+    mvB("August 17, 1807. Fulton’s steamboat leaves New York City and heads north, up the Hudson River toward Albany.",-170,-120,7000),
+    mvB("The river flows south, toward the ocean, and Fulton wrote that the wind blew against him the whole way. With the wind against it, the sailing sloop has to zigzag across the river.",-120,-82,7500),
+    mvB("The steamboat does not need the wind. A wood fire boils water, the steam drives the engine, and the engine turns the two paddlewheels.",-82,-36,7000),
+    mvB("The steamboat pulls past the sloop. Fulton wrote that he passed many sloops and schooners struggling against the wind.",-36,4,6500),
+    mvB("After 24 hours and 110 miles, the boat stops for the night at Clermont, the home of Fulton’s partner, Robert Livingston.",4,40,8000),
+    step("Done. Fulton reached Albany the next afternoon: 150 miles in 32 hours of travel, about 5 miles an hour. A sloop usually needed at least four days.",0,()=>{})
+  ]; } };
+
+  const v3=(x,y,z)=>new THREE.Vector3(x,y,z), tmp=new THREE.Vector3();
+  const ANCHOR={
+    clermont:()=>v3(40,12,0).applyMatrix4(BOAT.matrixWorld),
+    engine:()=>tmp.set(stackX,stackTop+3,0).applyMatrix4(BOAT.matrixWorld).clone(),
+    wheels:()=>wheelInfo?v3(wheelInfo.x,wheelInfo.y+wheelInfo.r+2,wheelInfo.z).applyMatrix4(BOAT.matrixWorld):null,
+    sloop:()=>v3(-10,40,0).applyMatrix4(SLOOP.matrixWorld),
+    current:()=>v3(-187,1,-66),
+    landing:()=>v3(HX,hAt(HX,HZ)+40,HZ)
+  };
+  function regionAt(p){ if(p.z>ZW&&p.z<ZE&&p.y<1) return "current"; if(p.x>HX-50&&p.x<HX+50&&p.z>ZE-14&&p.z<HZ+30) return "landing"; return null; }
+  update(0); BOAT.updateMatrixWorld(); SLOOP.updateMatrixWorld();
+  return {home:{target:v3(0,0,-4),dir:v3(0.16,0.6,0.78).normalize(),A1:232,A2:288,B:190},
+          anchorKeys:Object.keys(ANCHOR), anchor:k=>ANCHOR[k]?ANCHOR[k]():null, regionAt, update, runs,
+          BIG:{current:1,landing:1,clermont:1}, minD:14, maxD:1100};
+}
+
+/* ---------------------- Stop 3: Lock 29 on the Ohio & Erie Canal (from the Lock 29 tour) ---------------------- */
+STATIONS.canal={
+  n:3, title:"Lock 29 at Peninsula", sub:"The Ohio & Erie Canal in the Cuyahoga Valley, mid-1800s",
+  aria:"3D model of Lock 29 and the Peninsula aqueduct on the Ohio and Erie Canal",
+  intro:["For about 80 years, canal boats climbed and dropped through this stone lock in Peninsula, Ohio, then crossed the Cuyahoga River on a wooden aqueduct. The lock is still there, along the Towpath Trail in Cuyahoga Valley National Park.",
+         "From Cleveland, canal freight could cross Lake Erie to Buffalo and ride the Erie Canal all the way to New York City."],
+  note:"North is toward Cleveland and Lake Erie, downhill. South is toward Akron, uphill. A lock is how a boat climbed that hill.",
+  runs:[["up","Raise a boat (southbound, toward Akron)"],["down","Lower a boat (northbound, toward Cleveland)"]],
+  runNote:"Watch the gates, the wickets, and the water level. Each step is explained as it happens.",
+  groups:[["lock","The lock"],["canal","Along the canal"],["pen","Peninsula"],["connect","Connecting to the Erie Canal"],["era","The canal era"]],
+  INFO:{
+    lock:{group:"lock",title:"How a lock works",body:[
+      "A canal has to be nearly level, or its water would all run downhill. But the land between Lake Erie and the Ohio River is not level. Locks solved the problem by moving boats up and down the hill in steps.",
+      "A lock is a stone chamber with watertight gates at each end. To raise a boat, the crew shuts the gates behind it and lets in water from the higher canal. As the lock fills, the boat floats up. To lower a boat, they let the water out into the lower canal. There are no pumps or engines, only gravity.",
+      "Most locks on the Ohio & Erie Canal raised or lowered boats about 8 to 10 feet. Between Akron and Cleveland, 44 locks stepped boats down almost 400 feet.",
+      "Try it: use the buttons in the side panel to raise or lower a boat."],
+      fact:"A lock 90 feet long and 15 feet wide, filled 9 feet deeper, holds about 90,000 gallons. Every time a boat went through, that much water flowed downhill toward Lake Erie."},
+    gates:{group:"lock",title:"Gates and wickets",body:[
+      "Each end of the lock has a pair of wooden gates that meet in a V pointing toward the higher water. The weight of the water presses the two gates together and seals them. That is why the gates cannot be opened until the water on both sides is level.",
+      "The long timbers on top are balance beams. Pushing a beam swings its gate open or shut. Small doors low in the gates, called wickets or sluice gates, let water in or out slowly to fill or empty the lock.",
+      "Lock tenders, who often lived right beside their locks, worked the gates for passing boats, day or night, and boat crews pitched in."]},
+    stone:{group:"lock",title:"Sandstone walls",body:[
+      "The lock walls are huge blocks of Berea sandstone, quarried just south of the village at what is now Deep Lock Quarry Metro Park. Each block weighed two to four tons and was lifted into place with ropes and pulleys. The walls were about five feet thick at the bottom.",
+      "Lock 29 was rebuilt in 1880. In the canal repairs of the early 1900s, many locks were faced with concrete, but this one was not, so its sandstone is still exposed. Today you can walk down inside the lock and touch the walls.",
+      "Peninsula’s quarries kept working after the canal was finished, shipping stone out by canal boat. Ferdinand Schumacher of Akron, whose oat mills later became part of Quaker Oats, used Berea sandstone for millstones."]},
+    builders:{group:"lock",title:"Canal builders",body:[
+      "Work began in 1825. Laborers dug the canal by hand with picks, shovels, and wheelbarrows, from sunup to sundown, while oxen dragged away stumps and stones. More than 2,000 men were at work by September 1825.",
+      "Many were Irish and German immigrants; others were local farmers who needed cash. They earned about 30 cents a day, plus meals, a place to sleep, and a daily ration of whiskey.",
+      "Swampy ground bred mosquitoes, and malaria, which the workers called “canal fever,” killed many of them. People later said an Irishman was buried for every mile of canal. No one can prove the saying, but it shows how dangerous the work was."],
+      fact:"The whole canal cost about $4.2 million, a little under $14,000 a mile."},
+    canal:{group:"canal",title:"The Ohio & Erie Canal",body:[
+      "The State of Ohio built the canal from 1825 to 1832. It ran 308 miles, from Cleveland on Lake Erie to Portsmouth on the Ohio River. It was about 40 feet wide at the water line and only 4 feet deep.",
+      "Before the canal, a farmer in the middle of Ohio had few good ways to get crops to market, because roads were mud for much of the year. Now a boat could carry his wheat or flour north to Lake Erie and on to the East, or south to the Ohio River and New Orleans.",
+      "Along the way were 146 lift locks, 14 aqueducts, and 14 dams. Locks north of Akron were numbered starting there, so Lock 29 is the 29th lock on the way down to Cleveland."]},
+    boat:{group:"canal",title:"Canal boat",body:[
+      "Canal boats were built to fit the locks: about 80 feet long and 14 feet wide, with only inches to spare. Many were built right here, in Peninsula’s boatyards.",
+      "Freight boats, called line boats, carried wheat, flour, coal, lumber, stone, pork, cheese, and whiskey north, and brought back coffee, tea, sugar, and china from the East. A family or a small crew often lived aboard, in a cramped cabin at the back of the boat.",
+      "Passenger boats, called packets, were pulled by horses at up to 4 miles an hour. By 1832, travelers were promised a trip from Cleveland to Cincinnati in about 80 hours, a journey that had taken weeks."],
+      fact:"Freight boats averaged about 3 miles an hour, about the speed of a person walking."},
+    towpath:{group:"canal",title:"Towpath and mules",body:[
+      "Canal boats had no engines. Mules or horses walked along the towpath beside the canal, pulling the boat on a long towline. Mules were a favorite for freight boats because they were strong, steady, and sure-footed.",
+      "The driver who walked with them was often a boy. James A. Garfield, who grew up near Cleveland and later became the 20th president, ran off at 16 to work on canal boats running between Cleveland and Pittsburgh. Boats on that route came up this valley toward Akron, so his boat likely passed through this very lock. In about six weeks he fell overboard 14 times, caught a fever, and went home, and then went back to school.",
+      "Today the old towpath is the Towpath Trail, used by hikers and bikers all the way through Cuyahoga Valley National Park."]},
+    aqueduct:{group:"canal",title:"The aqueduct",body:[
+      "Right past the lock, a wooden aqueduct carried the canal over the Cuyahoga River: a long trough full of water, set on stone piers, with a walkway alongside for the mules.",
+      "It was a trouble spot. Curves at both ends of the lock and the narrow aqueduct made a bottleneck for boats. The wooden trough leaked, which made it hard to keep the water level right in summer. In winter, freezing water pushed out its sides and hung curtains of icicles underneath; one historian called it “a frozen waterfall.”",
+      "The aqueduct is gone, but its sandstone foundations can still be seen beside the river. The aqueduct in this model is a reconstruction."]},
+    river:{group:"canal",title:"The Cuyahoga River",body:[
+      "Between Akron and Cleveland, the canal follows the Cuyahoga River valley. The river and its branches fed the canal its water, but the river was also a threat. Locks and aqueducts built this close to it could be wrecked by a flood.",
+      "In March 1913, a huge flood swept across Ohio. Reservoirs spilled into the canal, destroying aqueducts, washing out banks, and wrecking locks. In Akron, Lock 1 was blown up with dynamite to let the floodwater through. The state decided the canal was not worth rebuilding."]},
+    mill:{group:"pen",title:"Gristmill and dam",body:[
+      "Across the river stood a gristmill, built in 1832, the year the canal was finished. A dam across the Cuyahoga held back water to turn the mill’s waterwheel, which turned heavy millstones that ground farmers’ grain into flour.",
+      "The canal made the mill pay. Flour could go straight onto a boat bound for Cleveland and markets beyond.",
+      "In 1885 Charles Thomas and Chandler Moody bought the mill, and in 1902 they replaced it with a much larger one, Peninsula Mills. It burned on December 26, 1931. Only its sandstone foundation remains, across the river from Lock 29."]},
+    village:{group:"pen",title:"Village of Peninsula",body:[
+      "Hermon Bronson founded Peninsula in 1824 and offered free land to help bring the canal through. When the canal opened in 1827, the village boomed.",
+      "Peninsula became a shipping center, with warehouses, mills, stone quarries, and boatyards where canal boats were built. Boatmen and travelers kept 14 bars and five hotels in business.",
+      "The Valley Railway arrived in 1880. Today the village sits in the middle of Cuyahoga Valley National Park, and many of its 1800s buildings still stand."],
+      fact:"The buildings in this model stand in for the kinds of buildings that lined the canal. They are not copies of real ones."},
+    erie:{group:"connect",title:"The Erie Canal",body:[
+      "Ohio’s canals were inspired by the Erie Canal in New York, finished in 1825. It ran 363 miles, with 83 locks, from Albany on the Hudson River to Buffalo on Lake Erie.",
+      "Your notes: the Erie Canal connected the Great Lakes directly to New York City. It ended the frontier’s isolation and was the first fast, efficient route across the Appalachian Mountains.",
+      "Before the canal, shipping a ton of goods from Buffalo to New York City cost about $100 and took more than two weeks. By canal it took about six days and cost about $10 a ton at first, and rates kept falling as more boats competed."],
+      fact:"People who thought it would fail called it “Clinton’s Ditch,” after New York’s governor, DeWitt Clinton, who pushed for it. When it opened, Clinton poured a keg of Lake Erie water into the Atlantic Ocean, a ceremony called the Wedding of the Waters."},
+    network:{group:"connect",title:"Ohio joins the network",body:[
+      "On July 4, 1825, Ohio broke ground for the Ohio & Erie Canal at Licking Summit, near Newark. DeWitt Clinton came from New York to help turn the first shovel of earth. Work on the National Road in Ohio began the very same day, at St. Clairsville.",
+      "Once both canals were open, a barrel of flour loaded at Peninsula could go north to Cleveland, across Lake Erie to Buffalo, along the Erie Canal to Albany, and down the Hudson to New York City, perhaps on a steamboat like Fulton’s. Or it could go south to the Ohio River and down the Mississippi to New Orleans.",
+      "A second canal, the Miami & Erie, was planned to link Cincinnati with Toledo. Together, Ohio’s canals tied the state’s farms to markets in the East and the South."],
+      fact:"Your notes call this economic integration: the new transportation network tied the different regions of the country together."},
+    opening:{group:"era",title:"Opening day, 1827",body:[
+      "The first part of the canal to open ran from Akron to Cleveland, right down this valley. On July 3, 1827, the boat State of Ohio left Akron, passed through Peninsula, and stopped for the night at Boston, the next village north. It reached Cleveland the next day, the Fourth of July, to cannon salutes and celebrations.",
+      "Ohio’s governor, Allen Trimble, later reported to the legislature on the opening:"],
+      quote:{text:"The boats were cheered by thousands assembled from the adjacent country at different points",cite:"Governor Allen Trimble, annual message to the Ohio General Assembly, 1827 (as quoted in the Cleveland Plain Dealer, 1943)"},
+      hippLabel:"Reading the governor’s report with HIPP:",
+      hipp:[["Historical context","Only the stretch from Akron to Cleveland was open. Most of the canal was still being dug, and the state had borrowed millions of dollars to pay for it."],
+            ["Intended audience","Members of the Ohio legislature, who would vote on more money to keep building."],
+            ["Purpose","To show that the canal was already a success and worth what it cost."],
+            ["Point of view","The governor of the state that was building the canal, and a supporter of it."]],
+      after:["Think about it: why might a governor describe the opening this way? What other source would you want to check his report against?"]},
+    impact:{group:"era",title:"What the canal changed",body:[
+      "Before the canal, Cleveland merchants shipped about 1,000 barrels of flour to Buffalo. Six years after it opened, 250,000 barrels of flour moved through Cleveland.",
+      "Land along the canal rose in value, by as much as 360 percent in the first ten years. Towns like Akron, Massillon, and Peninsula grew up around locks, basins, and mills, and Cleveland grew from a village into a busy port. By 1850, Ohio had the third-largest population of any state.",
+      "News from New York, which had taken about 30 days to reach Ohio, now arrived in about 10."]},
+    decline:{group:"era",title:"The end of the canal era",body:[
+      "The canal earned its most money in the early 1850s. As railroads spread across Ohio, they took most of the canal’s freight business, and by the 1860s the canal mainly supplied water to mills, factories, and towns.",
+      "In 1880 the Valley Railway was built through the Cuyahoga Valley, right past Peninsula. The flood of 1913 finished off the canal.",
+      "In 1974 Congress set aside the valley as a national park area, with the old towpath as its spine. It became Cuyahoga Valley National Park in 2000."]},
+    about:{group:null,title:"About this model",body:[
+      "This model shows Lock 29 and the Peninsula aqueduct as they might have looked in the canal’s busiest years, the mid-1800s. The lock follows the canal’s standard plan, a chamber 90 feet long and 15 feet wide with sandstone walls, and the surviving lock in Peninsula. The aqueduct, mill, and village buildings are reconstructions: the aqueduct and mill are gone, and the buildings stand in for the kinds that were here.",
+      "Distances are shortened, and the real curves at each end of the lock are straightened. The lift is shown as 9 feet, within the usual 8 to 10 feet for the canal’s locks.",
+      "Visit: Lock 29 is at the Lock 29 Trailhead on Mill Street in Peninsula, in Cuyahoga Valley National Park. You can walk down inside the lock, and the foundations of the aqueduct and the mill are close by."],
+      after:["Think about it: the people who dug this canal were poorly paid, and many died doing it. How should a community remember the people whose work built it?"]}
+  },
+  ORDER:["lock","gates","stone","builders","canal","boat","towpath","aqueduct","river","mill","village","erie","network","opening","impact","decline"],
+  build:buildCanal
+};
+
+function buildCanal(){
+  const scene=SC;
+  const X0=-150, X1=150, Z0=-280, Z1=250, BOT=-24;            // feet; north = +z, toward Cleveland
+  const LIFT=9, LOW=0, HIGH=LIFT;
+  const WALL_TOP=12.4, Z_UP=-44, Z_LO=44, Z_WALL0=-80, Z_WALL1=46;
+  const AQ0=-130, AQ1=-80, TOWX=17;
+  const COL={wood:0x7a6146, woodDark:0x4f3d2b, ink:0x221a12, gold:0xc9a227, water:0x52706b};
+  function G(x,z){
+    let base = z>=45 ? 3 : z<=-45 ? 12 : 12-9*sm((z+45)/90);
+    base += 0.25*Math.sin(x*0.07+0.4)*Math.cos(z*0.05)+0.15*Math.sin(x*0.19+z*0.11);
+    base += Math.max(0,Math.abs(x)-85)*(x<0?0.32:0.22);
+    const dz=Math.abs(z+105);
+    const emb = Math.abs(x)<26 && dz>=22;
+    if(!emb){
+      if(dz<24) base=-16+0.3*Math.sin(x*0.1);
+      else if(dz<46) base=-16+(base+16)*sm((dz-24)/22);
+    }
+    if(x>-118&&x<-102&&z>-146&&z<-134) return -13;
+    if(x>-142&&x<-102&&z>-142&&z<-136) return Math.min(base,-11);
+    if(Math.abs(x)<12.5 && z>=Z_WALL0 && z<=Z_WALL1) return Math.min(base,-6);
+    let hw=null, bot=null;
+    if(z>Z_WALL1){ hw=7.5+5.5*sm((z-Z_WALL1)/25); bot=LOW-4; }
+    else if(z<AQ0+2){ hw=7.5+5.5*sm((AQ0+2-z)/30); bot=HIGH-4; }
+    if(hw!==null){ const ax=Math.abs(x); if(ax<hw) return bot; if(ax<hw+7) return Math.min(base, bot+(base-bot)*((ax-hw)/7)); }
+    return base;
+  }
+  function regionAt(p){
+    const x=p.x,z=p.z;
+    if(p.y<-8 && z>-145 && z<-65) return "river";
+    if(Math.abs(x-TOWX)<3.5 && z>-Z1 && z<Z1) return "towpath";
+    if(Math.abs(x)<20 && (z>Z_WALL1 || z<AQ0)) return "canal";
+    if(x<-85 && z<-120 && z>-185) return "mill";
+    if(x>25 && z<-160) return "village";
+    return null;
+  }
+  const GRASS=new THREE.Color(0x7b8f53), GRASS2=new THREE.Color(0x6a8048), DIRT=new THREE.Color(0xa08a63), MUD=new THREE.Color(0x5b4a37), BANK=new THREE.Color(0x6e5c43);
+  const hAt=makeTerrain({X0,X1,Z0,Z1,DX:1,BOT,G,color:(x,y,z,ny,c)=>{
+    c.copy(GRASS).lerp(GRASS2,0.5+0.5*Math.sin(x*0.05+z*0.04)*Math.cos(z*0.07));
+    if(Math.abs(x-TOWX)<3.2) c.copy(DIRT);
+    if(z<-160 && x>26 && Math.abs(z+238)<5) c.copy(DIRT);
+    if(Math.abs(x)<20&&(z>Z_WALL1||z<AQ0) && y<(z>0?LOW:HIGH)+0.5) c.copy(MUD);
+    if(y<-9) c.copy(MUD);
+    c.lerp(BANK,Math.min(1,Math.max(0,(0.88-ny)/0.5))*0.7);
+  }});
+
+  /* water */
+  const waterMat=op=>mat(COL.water,{roughness:0.6,transparent:true,opacity:op||0.92});
+  function waterPlane(x0,x1,z0,z1,y,key){ const m=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0),waterMat()); m.rotation.x=-Math.PI/2; m.position.set((x0+x1)/2,y,(z0+z1)/2); tag(m,key); scene.add(m); return m; }
+  waterPlane(-20,20,Z_WALL1,Z1,LOW,"canal");
+  waterPlane(-20,20,Z0,AQ0+4,HIGH,"canal");
+  waterPlane(-7.5,7.5,AQ0,Z_UP,HIGH,"aqueduct");
+  const chamberWater=waterPlane(-7.5,7.5,Z_UP,Z_WALL1,LOW,"lock");
+  waterPlane(-138,X1,-142,-68,-12,"river");
+  waterPlane(X0,-138,-142,-68,-9.5,"river");
+
+  /* lock walls, floor, breast wall */
+  const wallMat=mat(0xffffff,{map:stoneTexture((Z_WALL1-Z_WALL0)/16,(WALL_TOP+5)/8)}), capMat=mat(0xa4916d);
+  [-1,1].forEach(s=>{
+    const w=new THREE.Mesh(new THREE.BoxGeometry(5,WALL_TOP+5,Z_WALL1-Z_WALL0),wallMat); w.position.set(s*10,(WALL_TOP-5)/2,(Z_WALL0+Z_WALL1)/2); tag(w,"stone"); scene.add(w);
+    const cp=new THREE.Mesh(new THREE.BoxGeometry(5.6,0.6,Z_WALL1-Z_WALL0+0.6),capMat); cp.position.set(s*10,WALL_TOP+0.3,(Z_WALL0+Z_WALL1)/2); tag(cp,"stone"); scene.add(cp);
+  });
+  scene.add(boxAt(-7.5,7.5,LOW-4.6,LOW-4,Z_UP,Z_WALL1,0x6b5a44,"lock"));
+  scene.add(boxAt(-7.5,7.5,HIGH-4.6,HIGH-4,Z_WALL0,Z_UP,0x6b5a44,"lock"));
+  (function(){ const b=new THREE.Mesh(new THREE.BoxGeometry(15,HIGH-LOW,2),wallMat); b.position.set(0,(LOW-4+HIGH-4)/2,Z_UP+1); tag(b,"lock"); scene.add(b); })();
+
+  /* gates */
+  const DIR_C=s=>Math.atan2(3,-s*7.5), DIR_O=Math.PI/2, LEAF=Math.hypot(7.5,3)+0.25;
+  function makeGate(s,zh,bot,key){
+    const pivot=new THREE.Group(); pivot.position.set(s*7.5,0,zh);
+    const H=WALL_TOP-bot;
+    const leaf=new THREE.Mesh(new THREE.BoxGeometry(LEAF,H,1),mat(COL.woodDark)); leaf.position.set(LEAF/2,bot+H/2,0); tag(leaf,key); edges(leaf); pivot.add(leaf);
+    for(let y=bot+2;y<WALL_TOP-0.5;y+=2.5) pivot.add(box(LEAF,0.35,1.15,0x3a2c1f,LEAF/2,y,0,key));
+    pivot.add(box(14,0.9,0.9,COL.wood,-6.6,WALL_TOP+0.9,0,key));
+    const wick=box(2.2,1.6,0.3,0x2d241a,LEAF*0.55,bot+1.6,0.7,key); pivot.add(wick);
+    pivot.add(box(0.18,H-1.5,0.18,0x222222,LEAF*0.55,bot+H/2+0.8,0.75,key,{metalness:0.5}));
+    pivot.rotation.y=DIR_C(s); scene.add(pivot);
+    return {set(open,wk){ pivot.rotation.y=DIR_C(s)+(DIR_O-DIR_C(s))*open; wick.position.y=bot+1.6+1.8*wk; }};
+  }
+  const lowerGates=[makeGate(-1,Z_LO,LOW-4,"gates"),makeGate(1,Z_LO,LOW-4,"gates")];
+  const upperGates=[makeGate(-1,Z_UP,HIGH-4,"gates"),makeGate(1,Z_UP,HIGH-4,"gates")];
+  const foamMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false});
+  const foam=[]; [-3.5,3.5].forEach(()=>{ const f=new THREE.Mesh(new THREE.CircleGeometry(2.2,20),foamMat); f.rotation.x=-Math.PI/2; f.raycast=()=>{}; foam.push(f); scene.add(f); });
+
+  /* aqueduct */
+  (function(){
+    const k="aqueduct";
+    scene.add(boxAt(-8.4,8.4,HIGH-4.8,HIGH-4,AQ0,AQ1,COL.wood,k));
+    [-1,1].forEach(s=>{
+      scene.add(edges(boxAt(s>0?7.5:-8.4,s>0?8.4:-7.5,HIGH-4.8,WALL_TOP-0.4,AQ0,AQ1,0x806a4e,k)));
+      for(let z=AQ0+2;z<AQ1;z+=5) scene.add(box(0.6,8.6,0.6,COL.woodDark,s*8.7,HIGH-0.6,z,k));
+    });
+    scene.add(boxAt(8.4,22,HIGH+1.9,HIGH+2.5,AQ0,AQ1,0x8a7353,k));
+    for(let z=AQ0+1;z<AQ1;z+=6) scene.add(box(0.35,3,0.35,COL.woodDark,21.7,HIGH+4,z,k));
+    scene.add(boxAt(21.5,21.9,HIGH+5.2,HIGH+5.5,AQ0,AQ1,COL.wood,k));
+    [-1,1].forEach(s=>{ for(let z=AQ0+3;z<AQ1;z+=6) scene.add(box(0.5,6.4,0.5,COL.woodDark,s>0?15:-6,HIGH-0.9,z,k)); });
+    const st=mat(0xffffff,{map:stoneTexture(1.8,2.6)});
+    [-115,-95].forEach(z=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(32,20.6,5),st); p.position.set(6.5,-16+10.3,z); tag(p,k); scene.add(p); });
+    [[AQ1-6,AQ1+6],[AQ0-6,AQ0+6]].forEach(([z0,z1])=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(36,21.4,z1-z0),st); p.position.set(5,-16+10.7,(z0+z1)/2); tag(p,k); scene.add(p); });
+    [-6,0,6,12,18].forEach(x=>scene.add(boxAt(x-0.5,x+0.5,HIGH-6,HIGH-4.8,AQ0,AQ1,COL.woodDark,k)));
+  })();
+
+  /* stone pile and tools */
+  (function(){
+    const k="builders", y=hAt(-30,4), st=mat(0xffffff,{map:stoneTexture(0.5,0.6)});
+    [[-31,0,0],[-27,0,1.5],[-29,2.2,0.8],[-34,0,4.5],[-26,0,-4]].forEach(([x,dy,dz])=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(5,2.2,3),st); b.position.set(x,y+1.1+dy,4+dz); b.rotation.y=(x%3)*0.2; tag(b,k); edges(b); scene.add(b); });
+    const wb=new THREE.Group(); wb.add(box(2.4,1,2.2,0x6b5235,0,1.3,0,k)); const wh=cyl(0.6,0.6,0.3,0x333333,0,0.6,-1.6,k); wh.rotation.z=Math.PI/2; wb.add(wh);
+    [-0.8,0.8].forEach(x=>wb.add(box(0.2,0.2,3.4,COL.wood,x,1.2,1.8,k)));
+    wb.position.set(-37,hAt(-37,-3),-3); wb.rotation.y=0.6; scene.add(wb);
+    const pick=box(0.2,0.2,4,COL.wood,-23,y+0.3,10,k); pick.rotation.y=1.1; scene.add(pick);
+    const sh=box(0.2,0.2,4.5,COL.wood,-24,y+0.3,12.5,k); sh.rotation.y=0.3; scene.add(sh);
+  })();
+
+  /* mill, dam, waterwheel */
+  const mwheel=new THREE.Group();
+  (function(){
+    const k="mill", st=mat(0xffffff,{map:stoneTexture(2,3)});
+    const f=new THREE.Mesh(new THREE.BoxGeometry(32,26,22),st); f.position.set(-110,-12+13,-157); tag(f,k); scene.add(f);
+    scene.add(edges(boxAt(-126,-94,14,36,-168,-146,0x8f8a7c,k)));
+    const roof=new THREE.Mesh(prism(33,12,23),mat(0x5a4a3c)); roof.position.set(-110,36,-157); tag(roof,k); scene.add(roof);
+    for(let fl=0;fl<2;fl++) for(let x=-122;x<-96;x+=6) scene.add(box(2,2.6,0.3,0x2a241c,x,20+fl*8,-145.8,k));
+    scene.add(box(3,5,0.3,0x2a241c,-110,16.5,-168.2,k));
+    mwheel.position.set(-110,-5,-142);
+    const rimM=mat(COL.woodDark);
+    [-2.2,2.2].forEach(dz=>{ const r=new THREE.Mesh(new THREE.TorusGeometry(7.5,0.35,6,32),rimM); r.position.z=dz; tag(r,k); mwheel.add(r); });
+    for(let i=0;i<16;i++){ const a=i/16*Math.PI*2; const p=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.3,4.6),mat(COL.wood)); p.position.set(Math.cos(a)*7.4,Math.sin(a)*7.4,0); p.rotation.z=a; tag(p,k); mwheel.add(p);
+      if(i%2===0){ const sp=new THREE.Mesh(new THREE.BoxGeometry(14.6,0.35,0.35),rimM); sp.rotation.z=a; tag(sp,k); mwheel.add(sp); } }
+    const ax=cyl(0.6,0.6,8,0x2a2a2a,0,0,0,k); ax.rotation.x=Math.PI/2; mwheel.add(ax);
+    scene.add(mwheel);
+    scene.add(boxAt(-142,-116,-11,-10.4,-141,-137,COL.woodDark,k));
+    [-141,-137].forEach(z=>scene.add(boxAt(-142,-116,-11,-8.4,z-0.25,z+0.25,COL.wood,k)));
+    const rw=new THREE.Mesh(new THREE.PlaneGeometry(26,3.5),waterMat()); rw.rotation.x=-Math.PI/2; rw.position.set(-129,-9.3,-139); tag(rw,k); scene.add(rw);
+    scene.add(edges(boxAt(-140,-136,-16,-9.2,-131,-79,0x6e5a40,k)));
+    const spg=new THREE.PlaneGeometry(6,52); spg.rotateX(-Math.PI/2); spg.rotateZ(-0.5);
+    const sp=new THREE.Mesh(spg,new THREE.MeshStandardMaterial({color:0xcfdcd6,transparent:true,opacity:0.6,roughness:0.5}));
+    sp.position.set(-133.3,-10.8,-105); tag(sp,k); scene.add(sp);
+  })();
+
+  /* village */
+  (function(){
+    const k="village";
+    function bldg(x,z,w,d,h,col,roof){
+      const y=Math.min(hAt(x-w/2,z-d/2),hAt(x+w/2,z-d/2),hAt(x-w/2,z+d/2),hAt(x+w/2,z+d/2))-0.5;
+      const g=new THREE.Group(); g.position.set(x,y,z);
+      g.add(edges(box(w,h,d,col,0,h/2,0,k)));
+      const r=new THREE.Mesh(prism(w+1.2,w*0.38,d+1.2),mat(roof)); r.position.y=h; tag(r,k); g.add(r);
+      for(let xx=-w/2+3;xx<w/2-1;xx+=5) for(let yy=3;yy<h-2;yy+=7) g.add(box(1.8,2.6,0.2,0x2a241c,xx,yy+1,d/2+0.05,k));
+      scene.add(g); return g;
+    }
+    bldg(42,-195,24,40,18,0x8b7d68,0x4d4036);
+    bldg(82,-212,30,22,22,0xe6dfcc,0x5a4a3c);
+    const porch=boxAt(67,97,0,0.6,-200,-196,COL.wood,k); porch.position.y+=hAt(82,-198)+9; scene.add(porch);
+    bldg(80,-262,20,26,15,0x8c4a36,0x40352c);
+    bldg(122,-200,18,22,14,0xe9e3d2,0x4a3e34);
+    const ch=bldg(124,-252,20,34,18,0xf0ebde,0x4a4a4a);
+    ch.add(box(8,12,8,0xf0ebde,0,24,17,k)); const spire=new THREE.Mesh(new THREE.ConeGeometry(5.6,14,4),mat(0x4a4a4a)); spire.position.set(0,37,17); spire.rotation.y=Math.PI/4; tag(spire,k); ch.add(spire);
+    const cx=25, cz=-185, cy=hAt(cx,cz);
+    scene.add(box(0.8,16,0.8,COL.woodDark,cx,cy+8,cz,k)); scene.add(box(12,0.6,0.6,COL.wood,cx-5,cy+15.5,cz,k));
+    for(let i=0;i<6;i++) scene.add(cyl(1,1,2.6,0x8a6a44,26+(i%3)*2.2,cy+1.3,-195+Math.floor(i/3)*2.2,k));
+  })();
+
+  /* trees */
+  (function(){
+    const R=rng(11), T=[], avoid=(x,z)=> (Math.abs(x)<34) || (x>20&&z<-170&&x<140) || (x<-85&&z<-125&&z>-185) || (Math.abs(z+105)<30) || (x<-40&&x>-60&&z>-5&&z<20);
+    let n=0; while(n<90){ const x=X0+6+R()*(X1-X0-12), z=Z0+6+R()*(Z1-Z0-12); if(avoid(x,z)) continue; T.push([x,z,0.8+R()*0.6]); n++; }
+    const tr=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.7,0.9,8,6),mat(0x4b3a29),T.length);
+    const cr=new THREE.InstancedMesh(new THREE.ConeGeometry(6,16,7),mat(0x4f6b3b),T.length);
+    const d=new THREE.Object3D();
+    T.forEach(([x,z,s],i)=>{ const y=hAt(x,z); d.position.set(x,y+4*s,z); d.scale.set(s,s,s); d.updateMatrix(); tr.setMatrixAt(i,d.matrix); d.position.set(x,y+14*s,z); d.updateMatrix(); cr.setMatrixAt(i,d.matrix); });
+    tr.raycast=()=>{}; cr.raycast=()=>{}; scene.add(tr); scene.add(cr);
+  })();
+
+  /* canal boat */
+  const boat=new THREE.Group(); let boatPost;
+  (function(){
+    const k="boat";
+    const s=new THREE.Shape();
+    s.moveTo(-7,37); s.lineTo(-7,-30); s.quadraticCurveTo(-7,-40,0,-40); s.quadraticCurveTo(7,-40,7,-30); s.lineTo(7,37); s.quadraticCurveTo(7,40,4,40); s.lineTo(-4,40); s.quadraticCurveTo(-7,40,-7,37);
+    const g=new THREE.ExtrudeGeometry(s,{depth:6,bevelEnabled:false,curveSegments:10}); g.rotateX(Math.PI/2); g.translate(0,6,0);
+    const hull=new THREE.Mesh(g,mat(0x3b2a1e)); tag(hull,k); edges(hull,30); boat.add(hull);
+    [-1,1].forEach(sd=>{ boat.add(box(0.12,0.6,64,0x8a2b20,sd*7.02,5.0,4,k)); boat.add(box(0.12,0.45,64,0xe8e0c8,sd*7.02,5.6,4,k)); });
+    boat.add(box(13.2,0.15,76,0x7a5f40,0,6.05,0,k));
+    boat.add(edges(box(12,4.4,15,0xe9e2cf,0,8.25,29,k)));
+    boat.add(box(12.8,0.4,15.8,0x7a2e22,0,10.65,29,k));
+    [-6.05,6.05].forEach(x=>{ [25,30].forEach(z=>boat.add(box(0.1,1.2,1.6,0x2a241c,x,8.8,z,k))); });
+    boat.add(box(3,3.4,0.1,0x4a3a2a,0,7.9,21.45,k));
+    [-22,-8,6].forEach(z=>boat.add(edges(box(11.6,1.2,10,0x5b4632,0,6.7,z,k))));
+    [[-3,-33],[0,-34],[3,-33]].forEach(([x,z])=>boat.add(cyl(0.9,0.9,2.6,0x8a6a44,x,7.4,z,k)));
+    boatPost=cyl(0.3,0.3,3,0x3a2c1f,4.5,7.5,-28,k); boat.add(boatPost);
+    boat.add(box(0.4,5,5,0x3a2c1f,0,3.5,42.5,k));
+    boat.add(box(0.3,0.3,8,COL.wood,0,11.3,38,k));
+    scene.add(boat);
+  })();
+
+  /* mules and towline */
+  function makeMule(){
+    const k="towpath", g=new THREE.Group(), c=0x5e4a3a, legs=[];
+    g.add(box(1.7,1.9,4.4,c,0,3.5,0,k));
+    [[-0.55,1.6],[0.55,1.6],[-0.55,-1.6],[0.55,-1.6]].forEach(([x,z])=>{ const p=new THREE.Group(); p.position.set(x,2.7,z); p.add(box(0.38,2.6,0.38,0x4a3a2e,0,-1.3,0,k)); g.add(p); legs.push(p); });
+    const neck=box(0.9,1.9,1.0,c,0,4.7,-2.3,k); neck.rotation.x=-0.6; g.add(neck);
+    const head=box(0.75,0.85,2.0,c,0,5.3,-3.4,k); head.rotation.x=0.45; g.add(head);
+    [-0.25,0.25].forEach(x=>{ const e=box(0.15,0.9,0.22,c,x,6.0,-2.75,k); e.rotation.x=-0.2; g.add(e); });
+    const tail=box(0.15,1.5,0.15,0x3a2e24,0,3.2,2.35,k); tail.rotation.x=0.3; g.add(tail);
+    g.add(box(1.95,0.5,0.55,0x2b2118,0,4.35,-1.95,k));
+    scene.add(g); return {g,legs};
+  }
+  const mules=[makeMule(),makeMule()];
+  const lineGeo=new THREE.BufferGeometry(); lineGeo.setAttribute("position",new THREE.Float32BufferAttribute(new Array(6).fill(0),3));
+  const towline=new THREE.Line(lineGeo,new THREE.LineBasicMaterial({color:0x2b2118})); towline.raycast=()=>{}; scene.add(towline);
+
+  /* lock state and the boat's trip */
+  const S={yc:LOW, lo:0, up:0, wkU:0, wkL:0, zb:110, dir:-1, walking:false};
+  const levelAt=z=> z>Z_WALL1 ? LOW : z<Z_UP ? HIGH : S.yc;
+  const muleY=z=> (z>AQ0&&z<AQ1) ? HIGH+2.5 : hAt(TOWX,z);
+  const _v=new THREE.Vector3();
+  function update(now){
+    chamberWater.position.y=S.yc;
+    lowerGates.forEach(g=>g.set(S.lo,S.wkL)); upperGates.forEach(g=>g.set(S.up,S.wkU));
+    const pour=Math.max(S.wkU,S.wkL);
+    foamMat.opacity=pour*(0.55+0.2*Math.sin(now/120));
+    foam.forEach((f,i)=>{ if(S.wkU>S.wkL) f.position.set(i?3.5:-3.5,S.yc+0.08,Z_UP+4); else f.position.set(i?3.5:-3.5,LOW+0.08,Z_LO+8); f.scale.setScalar(0.8+0.3*Math.sin(now/90+i)); });
+    boat.position.set(0,levelAt(S.zb)-3,S.zb); boat.rotation.y=S.dir<0?0:Math.PI;
+    const lead=S.zb+S.dir*85;
+    mules.forEach((m,i)=>{ const z=lead-S.dir*7.5*i; m.g.position.set(TOWX,muleY(z),z); m.g.rotation.y=S.dir<0?0:Math.PI;
+      m.legs.forEach((l,j)=>{ l.rotation.x = S.walking&&!prefersReduced ? 0.45*Math.sin(now/170+(j%2?Math.PI:0)+(j>1?Math.PI/2:0)) : 0; }); });
+    const m2=mules[1].g.position; boatPost.getWorldPosition(_v);
+    const a=lineGeo.getAttribute("position"); a.setXYZ(0,m2.x,m2.y+4.3,m2.z+S.dir*1.9); a.setXYZ(1,_v.x,_v.y+1.2,_v.z); a.needsUpdate=true;
+    if(!prefersReduced) mwheel.rotation.z=-now/2600;
+  }
+  function closeAll(){ const lo0=S.lo, up0=S.up; return step("Getting the lock ready: both pairs of gates are shut.",1500,t=>{ S.lo=lo0*(1-t); S.up=up0*(1-t); }); }
+  const pulse=t=> t<0.12 ? t/0.12 : t>0.88 ? (1-t)/0.12 : 1;
+  const fill=text=>step(text,7000,t=>{ S.wkU=pulse(t); S.yc=LOW+(HIGH-LOW)*sm(t); });
+  const drain=text=>step(text,7000,t=>{ S.wkL=pulse(t); S.yc=HIGH-(HIGH-LOW)*sm(t); });
+  const move=(text,z0,z1,dur)=>step(text,dur,t=>{ S.zb=z0+(z1-z0)*sm(t); S.walking=t>0&&t<1; },()=>{ S.zb=z0; });
+  function gate(text,which,to){ let from; return step(text,3000,t=>{ S[which]=from+(to-from)*sm(t); },()=>{ from=S[which]; }); }
+  const runs={
+    up(){ const st=[]; if(S.lo>0.01||S.up>0.01) st.push(closeAll());
+      st.push(step("A southbound boat from Cleveland waits below the lock.",1500,()=>{},()=>{ S.dir=-1; S.zb=110; }));
+      if(S.yc>LOW+0.01) st.push(drain("The lock is full, so it has to be emptied first. The wickets in the lower gates open, and water drains out into the lower canal."));
+      st.push(gate("The water in the lock is level with the lower canal, so the lower gates can swing open.","lo",1));
+      st.push(move("The mules tow the boat into the lock. With only about six inches to spare on each side, the steersman has to line it up carefully.",110,0,8000));
+      st.push(gate("The lower gates close behind the boat.","lo",0));
+      st.push(fill("The wickets in the upper gates open. Water from the higher canal pours in, and the boat rises about 9 feet."));
+      st.push(gate("The lock is now level with the upper canal, so the upper gates can open.","up",1));
+      st.push(move("The mules pull the boat out of the lock and across the aqueduct over the Cuyahoga River, on toward Akron.",0,-180,11000));
+      st.push(step("Done. The boat climbed 9 feet with no engine and no pump, only gravity and the water of the canal.",0,()=>{}));
+      return st; },
+    down(){ const st=[]; if(S.lo>0.01||S.up>0.01) st.push(closeAll());
+      st.push(step("A northbound boat from Akron comes across the aqueduct.",1500,()=>{},()=>{ S.dir=1; S.zb=-180; }));
+      if(S.yc<HIGH-0.01) st.push(fill("The lock is empty, so it has to be filled first. The wickets in the upper gates open, and water pours in until the lock is level with the upper canal."));
+      st.push(gate("Now the upper gates can swing open.","up",1));
+      st.push(move("The mules tow the boat off the aqueduct and into the lock.",-180,0,10000));
+      st.push(gate("The upper gates close behind the boat.","up",0));
+      st.push(drain("The wickets in the lower gates open. Water drains out into the lower canal, and the boat sinks about 9 feet."));
+      st.push(gate("The lock is now level with the lower canal, so the lower gates can open.","lo",1));
+      st.push(move("The mules pull the boat out, north toward Cleveland and Lake Erie.",0,150,9000));
+      st.push(step("Done. Lowering this one boat sent about 90,000 gallons of water downhill toward Lake Erie.",0,()=>{}));
+      return st; }
+  };
+  const v3=(x,y,z)=>new THREE.Vector3(x,y,z);
+  const ANCHOR={
+    lock:()=>v3(-10,WALL_TOP+1.2,0), gates:()=>v3(0,WALL_TOP+1.5,Z_LO), stone:()=>v3(-12.8,9,32), builders:()=>v3(-30,hAt(-30,4)+5,4),
+    canal:()=>v3(0,LOW+1,150), boat:()=>v3(0,levelAt(S.zb)+9,S.zb), towpath:()=>{ const p=mules[0].g.position; return v3(p.x,p.y+7,p.z); },
+    aqueduct:()=>v3(15,HIGH+3,-105), river:()=>v3(-55,-11,-105), mill:()=>v3(-110,44,-157), village:()=>v3(82,hAt(82,-212)+26,-212)
+  };
+  update(0);
+  return {home:{target:v3(-5,0,-45),dir:v3(0.78,0.62,0.62).normalize(),A1:120,A2:150,B:95},
+          anchorKeys:Object.keys(ANCHOR), anchor:k=>ANCHOR[k]?ANCHOR[k]():null, regionAt, update, runs,
+          BIG:{canal:1,river:1,village:1,mill:1,stone:1,lock:1,aqueduct:1}, minD:12, maxD:700};
+}
+
+/* ---------------------- Stop 4: Railroad and telegraph, 1850s ---------------------- */
+const MORSE={A:".-",B:"-...",C:"-.-.",D:"-..",E:".",F:"..-.",G:"--.",H:"....",I:"..",J:".---",K:"-.-",L:".-..",M:"--",N:"-.",O:"---",P:".--.",Q:"--.-",R:".-.",S:"...",T:"-",U:"..-",V:"...-",W:".--",X:"-..-",Y:"-.--",Z:"--..",
+  "0":"-----","1":".----","2":"..---","3":"...--","4":"....-","5":".....","6":"-....","7":"--...","8":"---..","9":"----."};
+let audioCtx=null;
+STATIONS.rail={
+  n:4, title:"Railroad and telegraph", sub:"A small station on the line, 1850s",
+  aria:"3D model of an 1850s railroad station with a single track, a passing siding, trains, a telegraph line, and a canal beside the tracks",
+  intro:["By the 1850s, railroads were spreading across the country, and telegraph wires ran beside the tracks. Together they carried goods, people, and news faster than anything before them.",
+         "This station is on a single-track line like the Baltimore & Ohio, the railroad that reached Wheeling in 1853."],
+  note:"East, toward Baltimore, is on the right. West, toward Cumberland and Wheeling, is on the left. The canal beside the tracks shows what the railroad was replacing.",
+  runs:[["meet","Meet at the siding (with telegraph orders)"],["race","Race the Tom Thumb (1830 flashback)"]],
+  runNote:"Watch the trains, the switch, and the signals racing along the telegraph wire. Each step is explained as it happens.",
+  groups:[["rail","The railroad"],["tele","The telegraph"],["story","The story"]],
+  extra(panel){
+    panel.appendChild(el("h3","Send a telegraph message"));
+    const f=el("form",null,"tg"); f.id="tgForm";
+    const lab=el("label","Type up to 16 letters or numbers, then send them down the wire in Morse code.","tglabel"); lab.htmlFor="tgText";
+    const row=el("div",null,"tgrow"), inp=el("input"); inp.id="tgText"; inp.type="text"; inp.maxLength=16; inp.autocomplete="off"; inp.placeholder="Your name";
+    const b=el("button","Send"); b.type="submit"; row.appendChild(inp); row.appendChild(b);
+    const sl=el("label",null,"tgsound"), sc=el("input"); sc.type="checkbox"; sc.id="tgSound"; sl.appendChild(sc); sl.appendChild(document.createTextNode(" Play the sound"));
+    const out=el("p",null,"morse"); out.id="tgOut"; out.setAttribute("aria-live","polite");
+    f.appendChild(lab); f.appendChild(row); f.appendChild(sl); f.appendChild(out);
+    f.addEventListener("submit",e=>{ e.preventDefault(); if(!cur||!cur.api.send){ out.textContent="The 3D model needs to load before you can send."; return; } out.textContent=cur.api.send(inp.value,sc.checked); });
+    panel.appendChild(f);
+  },
+  INFO:{
+    loco:{group:"rail",title:"Steam locomotive",body:[
+      "This is an American-type locomotive, the most common kind in the 1850s. Four small wheels in front guide it around curves, and four big driving wheels push it along.",
+      "Inside, a fire heated water in the boiler. Steam pushed pistons in the cylinders, and rods turned the big driving wheels. It is the same idea as Fulton’s steamboat, put on rails.",
+      "The cowcatcher in front pushed animals and debris off the track. The bell and the headlight warned people that a train was coming."],
+      fact:"Most American locomotives of this time burned wood. The big funnel-shaped smokestack caught sparks from the fire so they would not set fields and barns on fire."},
+    track:{group:"rail",title:"Rails and ties",body:[
+      "The train rides on iron rails spiked to wooden crossties, set on a bed of crushed stone called ballast. The ballast holds the ties in place and lets rain drain away.",
+      "Iron wheels rolling on iron rails meet very little friction, so a locomotive could pull far more weight than a team of horses on a road.",
+      "A railroad did not freeze in winter or run dry in summer the way a canal could. Your notes: railroads were fast land transportation that worked all year."]},
+    siding:{group:"rail",title:"Single track and sidings",body:[
+      "Track was expensive to build, so most railroads of the 1850s had only one track. Trains going in opposite directions could pass each other only at sidings, short side tracks at stations.",
+      "If one train ran late, the other might wait at a siding for a long time, with no way to know where the late train was. A mistake could mean a head-on crash.",
+      "The telegraph helped solve this problem. Try the trip “Meet at the siding.”"]},
+    freight:{group:"rail",title:"Freight cars",body:[
+      "Freight trains carried coal, grain, flour, livestock, lumber, and factory goods. One train could haul as much as dozens of wagons.",
+      "The Baltimore & Ohio carried huge amounts of coal from the mountains of western Maryland to Baltimore."],
+      fact:"Your notes: the new transportation network tied the country together. Western grain and meat went east, and factory goods went west."},
+    coaches:{group:"rail",title:"Passenger cars",body:[
+      "Passengers rode in long wooden cars with rows of seats and a stove for heat. Riders complained about the smoke, cinders, and sparks that blew in through the open windows.",
+      "Still, trains cut travel time to a fraction of what it had been. A trip that took days by stagecoach now took hours."]},
+    water:{group:"rail",title:"Water and wood",body:[
+      "A steam locomotive used up water and fuel fast. Stations kept a water tank on legs, with a spout that swung over the tender to refill it.",
+      "Workers stacked cut wood beside the track for fuel. Railroads used enormous amounts of wood, for fuel and for crossties."]},
+    wire:{group:"tele",title:"Telegraph line",body:[
+      "Wires strung on poles beside the track carried electric signals from station to station almost instantly.",
+      "Telegraph lines and railroads grew up together. Railroads gave telegraph companies a clear path for their poles, and railroads used the telegraph to run their trains.",
+      "The first long telegraph line, from Washington to Baltimore in 1844, was built along the Baltimore & Ohio Railroad."]},
+    depot:{group:"tele",title:"The station’s telegraph office",body:[
+      "Inside the station, a telegraph operator sat at a desk, often in a bay window so he could see up and down the track.",
+      "He tapped messages on a key and heard incoming messages as clicks from a sounder. Good operators could read the clicks by ear without writing down the dots and dashes.",
+      "Besides orders for the trains, the operator sent and received telegrams for people in town and news for the newspapers."]},
+    morse:{group:"tele",title:"Morse code",body:[
+      "Your notes: Samuel Morse’s telegraph (1837) sent electrical signals instantly along wires over huge distances, and Alfred Vail designed Morse Code, which turned those signals into letters of the alphabet.",
+      "Each letter is a pattern of short signals (dots) and long signals (dashes). E, the most common letter in English, is a single dot.",
+      "Try it: type your name in the side panel and send it down the wire."],
+      fact:"This page uses International Morse Code, the version used today. The American code of the 1850s was a little different for some letters."},
+    tomthumb:{group:"story",title:"Peter Cooper’s Tom Thumb",body:[
+      "In 1830 Peter Cooper built a small steam locomotive for the brand-new Baltimore & Ohio Railroad. Your notes: Peter Cooper built the first railroad locomotive in the U.S. (The British built the world’s first train.)",
+      "The Tom Thumb was tiny, with an upright boiler, and on its first trip it reached about 10 to 14 miles an hour. The railroad’s first cars had been pulled by horses.",
+      "A famous story says the Tom Thumb raced a horse-drawn car in August 1830. The engine pulled ahead until a belt slipped off its blower, and the horse won. No record from 1830 describes the race, so historians are not sure it happened just this way."],
+      fact:"Try the trip “Race the Tom Thumb.” A full-size copy of the Tom Thumb is at the B&O Railroad Museum in Baltimore."},
+    bando:{group:"story",title:"The Baltimore & Ohio",body:[
+      "Baltimore’s merchants were worried. The Erie Canal was pulling Western trade to New York City. In 1827 they started the Baltimore & Ohio, one of the first railroads in the country, to reach the Ohio River first.",
+      "On July 4, 1828, Charles Carroll of Carrollton, the last living signer of the Declaration of Independence, turned the first shovel of dirt.",
+      "The B&O crossed the Appalachian Mountains and reached the Ohio River at Wheeling on January 1, 1853, the same place the National Road had reached in 1818."]},
+    race:{group:"story",title:"Railroad vs. canal",body:[
+      "On the very same day the B&O began, July 4, 1828, President John Quincy Adams broke ground for the Chesapeake & Ohio Canal, which was headed west along the Potomac River toward the same goal.",
+      "The railroad reached Cumberland, Maryland, eight years before the canal did. The canal never got any farther, while the railroad kept going to the Ohio River.",
+      "A canal boat like the one beside these tracks moved at about the speed of a person walking. Your notes: railroads quickly replaced canals. In Ohio, the Valley Railway was built right past Lock 29 at Peninsula in 1880."]},
+    telegraph:{group:"story",title:"“What hath God wrought”",body:[
+      "In 1843, Congress paid $30,000 for Samuel Morse to build a test line from Washington to Baltimore. On May 24, 1844, Morse sat in the U.S. Capitol and tapped out the first official message to his partner, Alfred Vail, at the railroad depot in Baltimore. Vail sent the same message right back."],
+      quote:{text:"What hath God wrought",cite:"First official message on Morse’s telegraph line, May 24, 1844. The words come from the Bible, Numbers 23:23."},
+      hippLabel:"Reading the first message with HIPP:",
+      hipp:[["Historical context","Many people, including members of Congress, doubted the telegraph would work. Congress had paid for the test line and was waiting to see results."],
+            ["Intended audience","Members of Congress and the public, who were watching to see if the line worked."],
+            ["Purpose","To prove the telegraph could send words between two cities instantly, with a message fit for the occasion."],
+            ["Point of view","Annie Ellsworth, the young daughter of the U.S. Commissioner of Patents, chose the words from the Bible for Morse, a devout Christian who saw his invention as a gift from God."]],
+      after:["A few weeks earlier, news of Henry Clay’s nomination for president reached Washington by telegraph about an hour before the train carrying the same news arrived.",
+             "Think about it: your notes say the telegraph let information travel at the speed of light instead of the speed of a horse. What changes when news can travel faster than people?"]},
+    network:{group:"story",title:"A nation tied together",body:[
+      "In 1850 the United States had about 9,000 miles of railroad. By 1860 it had more than 30,000.",
+      "Your notes: the new transportation network tied the country together. Southern farms supplied New England textile mills, while Northern food crops fed Southern plantations.",
+      "Most of the new track was built in the North, a difference that would matter a great deal in the Civil War."],
+      fact:"In 1861, telegraph wires reached all the way to California, connecting the country coast to coast."},
+    about:{group:null,title:"About this model",body:[
+      "This model shows a small station on a single-track railroad in the 1850s. The locomotive is the American type, the most common kind of the decade. The station, cars, and canal stand in for the kinds of things along a line like the Baltimore & Ohio. They are not copies of one real place.",
+      "The Tom Thumb is a simplified reconstruction based on the full-size copy at the B&O Railroad Museum. Distances are shortened, and the trains move faster than they really would.",
+      "Visit: the B&O Railroad Museum in Baltimore, at the railroad’s old Mount Clare shops, shows the Tom Thumb copy and many early locomotives."],
+      after:["Think about it: railroads helped farmers, factory owners, and travelers. Who might have lost out when a railroad came through, and why?"]}
+  },
+  ORDER:["loco","track","siding","freight","coaches","water","wire","depot","morse","tomthumb","bando","race","telegraph","network"],
+  build:buildRail
+};
+
+function buildRail(){
+  const scene=SC;
+  const X0=-260, X1=260, Z0=-150, Z1=150, BOT=-22, RAIL=1.85, GA=2.35, ZC=62;   // east = +x, north = -z
+  const zSid=x=> (x>-170&&x<170) ? 14*Math.min(sm((x+170)/40),sm((170-x)/40)) : 0;
+  const zMain=()=>0;
+  function G(x,z){
+    let y=(0.8*Math.sin(x*0.02+0.3)*Math.cos(z*0.025)+0.4*Math.sin(x*0.05+z*0.03))*sm((Math.abs(z)-30)/40);
+    if(z<-62) y+=16*sm((-62-z)/70)+3*Math.sin(x*0.03)*sm((-62-z)/40);
+    const dc=Math.abs(z-ZC); if(dc<13) y=Math.min(y,-4.5+4.5*sm((dc-9)/4));
+    if(z>76&&z<82) y=Math.max(y,0.4);
+    const bal=Math.min(Math.abs(z),(x>-176&&x<176)?Math.abs(z-zSid(x)):99);
+    if(bal<6) y=1.0; else if(bal<9) y=Math.max(y,1.0-(bal-6)*0.34);
+    return y;
+  }
+  const GRASS=new THREE.Color(0x7b8f53), GRASS2=new THREE.Color(0x6a8048), BALLAST=new THREE.Color(0x8a8478), DIRT=new THREE.Color(0xa08a63), MUD=new THREE.Color(0x5b4a37), WHEAT=new THREE.Color(0xa08b4b), WHEAT2=new THREE.Color(0x88763d), BANK=new THREE.Color(0x6e5c43);
+  const hAt=makeTerrain({X0,X1,Z0,Z1,DX:2,BOT,G,color:(x,y,z,ny,c)=>{
+    c.copy(GRASS).lerp(GRASS2,0.5+0.5*Math.sin(x*0.05+z*0.04)*Math.cos(z*0.07));
+    if(z>92 && x<150) c.copy(WHEAT).lerp(WHEAT2,0.5+0.5*Math.sin(x*1.1));
+    const bal=Math.min(Math.abs(z),(x>-176&&x<176)?Math.abs(z-zSid(x)):99); if(bal<7) c.copy(BALLAST);
+    if(z>75&&z<83) c.copy(DIRT); if(Math.abs(z-ZC)<11) c.copy(MUD);
+    if(x>-30&&x<90&&z>-36&&z<-4) c.lerp(DIRT,0.6);
+    c.lerp(BANK,Math.min(1,Math.max(0,(0.88-ny)/0.5))*0.6);
+  }});
+
+  /* canal beside the tracks */
+  (function(){ const m=new THREE.Mesh(new THREE.PlaneGeometry(X1-X0,26),mat(0x52706b,{roughness:0.6,transparent:true,opacity:0.92})); m.rotation.x=-Math.PI/2; m.position.set(0,-1.2,ZC); tag(m,"race"); scene.add(m); })();
+
+  /* track: ties, rails */
+  (function(){
+    const k="track", M=[], o=new THREE.Object3D();
+    for(let x=X0+1;x<X1;x+=2.2){ o.position.set(x,1.15,0); o.rotation.set(0,0,0); o.updateMatrix(); M.push(o.matrix.clone()); }
+    for(let x=-174;x<174;x+=2.2){ const z=zSid(x); if(z<1.5) continue; const dz=(zSid(x+1)-zSid(x-1))/2; o.position.set(x,1.15,z); o.rotation.set(0,Math.atan2(-dz,1),0); o.updateMatrix(); M.push(o.matrix.clone()); }
+    const ties=new THREE.InstancedMesh(new THREE.BoxGeometry(0.8,0.45,8.5),mat(0x5a4636),M.length); M.forEach((m,i)=>ties.setMatrixAt(i,m)); tag(ties,k); scene.add(ties);
+    const railMat=mat(0x6e6a66,{metalness:0.6,roughness:0.5});
+    [-GA,GA].forEach(z=>{ const r=new THREE.Mesh(new THREE.BoxGeometry(X1-X0,0.45,0.3),railMat); r.position.set(0,RAIL-0.22,z); tag(r,k); scene.add(r); });
+    const R=[];
+    for(let x=-172;x<172;x+=4){ const za=zSid(x), zb=zSid(x+4); if(Math.max(za,zb)<0.5) continue;
+      [-GA,GA].forEach(off=>{ const ang=Math.atan2(zb-za,4), len=Math.hypot(4,zb-za); o.position.set(x+2-Math.sin(ang)*off,RAIL-0.22,(za+zb)/2+Math.cos(ang)*off); o.rotation.set(0,-ang,0); o.scale.set(len+0.1,1,1); o.updateMatrix(); R.push(o.matrix.clone()); o.scale.set(1,1,1); }); }
+    const sr=new THREE.InstancedMesh(new THREE.BoxGeometry(1,0.45,0.3),railMat,R.length); R.forEach((m,i)=>sr.setMatrixAt(i,m)); tag(sr,"siding"); scene.add(sr);
+    [-150,150].forEach(x=>{ const st=box(0.5,4,0.5,0x2a2420,x,hAt(x,-7)+2,-7,"siding"); scene.add(st); scene.add(box(1.6,0.6,0.3,0x8a2b20,x,hAt(x,-7)+4,-7,"siding")); });
+  })();
+
+  /* telegraph poles and wires */
+  const WY=20.3, WZ=-37.4, POLES=[]; for(let x=X0+10;x<X1;x+=40) POLES.push(x);
+  const wireY=x=>{ const i=Math.max(0,Math.min(POLES.length-2,Math.floor((x-POLES[0])/40))), t=(x-POLES[i])/40; return WY-1.0*Math.sin(Math.PI*Math.max(0,Math.min(1,t))); };
+  (function(){
+    const k="wire", pts=[];
+    POLES.forEach(x=>{ const y=hAt(x,-40); scene.add(cyl(0.45,0.6,22,0x5a4636,x,y+11,-40,k,null,7)); scene.add(box(0.5,0.5,7,0x5a4636,x,y+20,-40,k));
+      [-2.6,2.6].forEach(dz=>scene.add(cyl(0.22,0.22,0.6,0x2e6b5a,x,y+20.5,-40+dz,k,null,6))); });
+    [-42.6,-37.4].forEach(z=>{ for(let i=0;i<POLES.length-1;i++) for(let s=0;s<10;s++){ const xa=POLES[i]+s*4, xb=xa+4; pts.push(xa,wireY(xa)+hAt(POLES[i],-40)*0,z, xb,wireY(xb),z); } });
+    pts.push(30,WY,WZ, 30,15.5,-31.5);
+    const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pts,3));
+    const lines=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0x2a2420})); lines.raycast=()=>{}; scene.add(lines);
+  })();
+  const PULSES=[], pulseGeo=new THREE.BoxGeometry(1,0.7,0.7), pulseMat=new THREE.MeshBasicMaterial({color:0xffd75e});
+  for(let i=0;i<70;i++){ const m=new THREE.Mesh(pulseGeo,pulseMat); m.visible=false; m.raycast=()=>{}; scene.add(m); PULSES.push(m); }
+  let SENDS=[];
+
+  /* station, water tank, woodpile, houses */
+  (function(){
+    const k="depot", x=30, z0=-12, z1=-31, W=44, H=13, y0=1.8;
+    scene.add(boxAt(x-46,x+46,0,y0,-11,-5.2,0x8a7353,k));
+    const wall=new THREE.Mesh(new THREE.BoxGeometry(W,H,z0-z1),mat(0xc8a85a)); wall.position.set(x,y0+H/2,(z0+z1)/2); tag(wall,k); edges(wall); scene.add(wall);
+    const roof=new THREE.Mesh(prism((z0-z1)+9,7,W+6),mat(0x5a3d2a)); roof.rotation.y=Math.PI/2; roof.position.set(x,y0+H,(z0+z1)/2); tag(roof,k); scene.add(roof);
+    scene.add(edges(box(9,9,3,0xc8a85a,x,y0+5.5,z0+1.5,k)));
+    [-3,0,3].forEach(dx=>scene.add(box(2,4,0.2,0x2a241c,x+dx,y0+6,z0+3.05,k)));
+    [-16,-9,9,16].forEach(dx=>scene.add(box(2.6,4.4,0.2,0x2a241c,x+dx,y0+6,z0+0.05,k)));
+    scene.add(box(3.4,8,0.2,0x4a3020,x-2+-6,y0+4,z0+0.05,k));
+    const sign=textPlane(textTexture([["B. & O. R. R.",54,64]],400,128,"#2b2118","#f0e6c8"),14,4.4); sign.position.set(x,y0+H+2.6,z0+4.6); tag(sign,k); scene.add(sign);
+    scene.add(box(14.4,4.8,0.4,0x2b2118,x,y0+H+2.6,z0+4.35,k));
+    scene.add(box(1.4,4,1.4,0x6e3426,x+12,y0+H+7,(z0+z1)/2,k));
+    // water tank
+    const tx=-70, tz=-17, ty=hAt(tx,tz), kw="water";
+    [[-5,-5],[5,-5],[-5,5],[5,5]].forEach(([a,b])=>scene.add(box(0.9,14,0.9,0x5a4636,tx+a,ty+7,tz+b,kw)));
+    scene.add(edges(cyl(8,8,10,0x7a5a3a,tx,ty+19,tz,kw,null,16)));
+    const tr=new THREE.Mesh(new THREE.ConeGeometry(8.6,4,16),mat(0x4a3b30)); tr.position.set(tx,ty+26,tz); tag(tr,kw); scene.add(tr);
+    const sp=box(1.2,1.2,11,0x3a2c1f,tx,ty+16,tz+9,kw); sp.rotation.x=0.35; scene.add(sp);
+    const L=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5,0.5,4,6),mat(0x7a5a3a),60), o=new THREE.Object3D();
+    for(let i=0;i<60;i++){ const row=Math.floor(i/15), c=i%15; o.position.set(-116+c*1.05+(row%2)*0.5,hAt(-108,-16)+0.5+row*0.95,-16); o.rotation.set(Math.PI/2,0,0); o.updateMatrix(); L.setMatrixAt(i,o.matrix); }
+    tag(L,kw); scene.add(L);
+    [[-200,-96,0xe6ddc8],[-150,-112,0x8c4a36],[170,-100,0xe9e3d2]].forEach(([hx,hz,c])=>{ const y=hAt(hx,hz)-0.5; scene.add(edges(box(20,13,16,c,hx,y+6.5,hz,null)));
+      const r=new THREE.Mesh(prism(17,6,21),mat(0x4a3e34)); r.rotation.y=Math.PI/2; r.position.set(hx,y+13,hz); scene.add(r); });
+  })();
+
+  scatterTrees(hAt,{X0,X1,Z0,Z1,count:120,seed:57,avoid:(x,z,y,R)=> Math.abs(z)<28 || (z>40&&z<90) || (x>-130&&x<90&&z<-4&&z>-50) || Math.abs(z+40)<7 || (z>90&&x<150) ||
+     [[-200,-96],[-150,-112],[170,-100]].some(([a,b])=>Math.hypot(x-a,z-b)<20) || (z>-70&&R()<0.4)});
+
+  /* rolling stock, built facing +x and centered */
+  function centered(inner,x0,x1){ const g=new THREE.Group(); inner.position.x=-(x0+x1)/2; g.add(inner); scene.add(g); return g; }
+  function truckWheels(g,xs,r,k,list,col){ xs.forEach(x=>[-GA,GA].forEach(z=>{ const w=wheel(r,0.45,0x2a2118,col||0x2a2118,k); w.position.set(x,r,z); g.add(w); list.push({m:w,r}); })); }
+  function loco(k,boilerC,cabC){
+    const g=new THREE.Group(), wheels=[], rods=[];
+    g.add(box(26,0.8,3.4,0x2a2420,3,3.2,0,k));
+    const b=cyl(2.3,2.3,15,boilerC,3.5,7.0,0,k,{metalness:0.3,roughness:0.6},16); b.rotation.z=Math.PI/2; g.add(b); edges(b,40);
+    [-2,2,6,9.5].forEach(x=>{ const r=cyl(2.36,2.36,0.35,0xc9a227,x,7.0,0,k,{metalness:0.7,roughness:0.35},16); r.rotation.z=Math.PI/2; g.add(r); });
+    const sbx=cyl(2.4,2.4,3,0x1e1a16,12.4,7.0,0,k,null,16); sbx.rotation.z=Math.PI/2; g.add(sbx);
+    g.add(cyl(0.8,0.8,3,0x1e1a16,12.8,10.6,0,k)); g.add(cyl(2.2,0.8,3,0x1e1a16,12.8,13.4,0,k,null,14)); const stackTop=cyl(2.2,2.2,0.6,0x1e1a16,12.8,15.2,0,k,null,14); g.add(stackTop);
+    g.add(edges(box(2.2,2.2,2.2,0x8a2b20,14.6,10.2,0,k))); g.add(box(0.1,1.4,1.4,0xffe9a8,15.75,10.2,0,k,{emissive:0x000000}));
+    g.add(cyl(1.1,1.3,2.2,0xc9a227,6.5,10.0,0,k,{metalness:0.7,roughness:0.35})); g.add(cyl(1.0,1.2,1.8,boilerC,1.5,9.8,0,k)); g.add(cyl(0.6,0.6,0.5,0xc9a227,1.5,10.9,0,k,{metalness:0.7}));
+    g.add(cyl(0.55,0.75,0.9,0xc9a227,9.6,9.8,0,k,{metalness:0.7}));
+    g.add(edges(box(6.2,6.6,7.6,cabC,-6.3,8.5,0,k))); g.add(box(7.2,0.45,8.6,0x3a2c1f,-6.3,12.05,0,k));
+    [-1,1].forEach(s=>{ g.add(box(2.2,2.2,0.1,0x1e1a16,-6.3,9.6,s*3.82,k)); const c=cyl(0.95,0.95,3.4,0x2a2420,10.6,3.4,s*3.05,k,null,12); c.rotation.z=Math.PI/2; g.add(c); });
+    const pil=new THREE.Shape(); pil.moveTo(0,-2.4); pil.lineTo(3.4,0); pil.lineTo(0,2.4); pil.lineTo(0,-2.4);
+    const pg=new THREE.ExtrudeGeometry(pil,{depth:2.4,bevelEnabled:false}); pg.rotateX(-Math.PI/2); const pm=new THREE.Mesh(pg,mat(0x8a2b20)); pm.position.set(15.2,0.4,0); tag(pm,k); g.add(pm);
+    truckWheels(g,[10.2,13.6],1.35,k,wheels,0x2a2118);
+    [-1.2,-7.0].forEach(x=>[-GA,GA].forEach(z=>{ const w=wheel(2.75,0.45,0x2a2118,0x9a2e22,k); w.position.set(x,2.75,z); g.add(w); wheels.push({m:w,r:2.75}); }));
+    [-1,1].forEach(s=>{ const rod=box(6.3,0.3,0.22,0x8a8a8a,-4.1,2.75,s*2.85,k,{metalness:0.7,roughness:0.4}); g.add(rod); rods.push({m:rod,x:-4.1,y:2.75,cr:1.0,ph:s>0?0:Math.PI/2}); });
+    return {g,wheels,rods,len:28.6,x0:-9.6,x1:19,stack:stackTop};
+  }
+  function tender(k){ const g=new THREE.Group(), wheels=[];
+    g.add(box(15,0.7,7.6,0x2a2420,0,3.1,0,k)); g.add(edges(box(15,5,8,0x2f4a3a,0,6,0,k)));
+    for(let i=0;i<8;i++) g.add(box(2,1,2.4,0x7a5a3a,-6+i*1.7,9,(i%2?1.4:-1.4),k));
+    truckWheels(g,[-5.6,-2.6,2.6,5.6],1.35,k,wheels); return {g,wheels,len:15,x0:-7.5,x1:7.5}; }
+  function coach(k){ const g=new THREE.Group(), wheels=[];
+    g.add(edges(box(44,7.6,9.4,0xc29a45,0,7.2,0,k))); g.add(box(45,0.5,10.2,0x3a2c1f,0,11.2,0,k));
+    g.add(box(38,1.4,5,0xc29a45,0,12.1,0,k)); g.add(box(39,0.4,5.8,0x3a2c1f,0,13,0,k));
+    for(let x=-19.5;x<=19.5;x+=3) [-1,1].forEach(s=>g.add(box(1.6,2.2,0.1,0x2a241c,x,8.4,s*4.72,k)));
+    [-1,1].forEach(s=>g.add(box(1.4,0.4,9,0x3a2c1f,s*22.6,3.3,0,k)));
+    truckWheels(g,[-18.5,-15.5,15.5,18.5],1.35,k,wheels); return {g,wheels,len:46,x0:-23,x1:23}; }
+  function boxcar(k){ const g=new THREE.Group(), wheels=[];
+    g.add(edges(box(28,8,9,0x7a3324,0,7.4,0,k))); g.add(box(28.8,0.5,9.6,0x3a2c1f,0,11.6,0,k));
+    [-1,1].forEach(s=>g.add(box(5,6.8,0.12,0x5e271c,0,7.2,s*4.52,k)));
+    truckWheels(g,[-11,-8.4,8.4,11],1.35,k,wheels); return {g,wheels,len:28,x0:-14,x1:14}; }
+  function coalcar(k){ const g=new THREE.Group(), wheels=[];
+    g.add(edges(box(18,4.4,8.4,0x3a3430,0,5.6,0,k)));
+    const heap=new THREE.Mesh(new THREE.ConeGeometry(4.4,2.6,8),mat(0x1a1816,{roughness:1})); heap.scale.set(1.9,1,0.9); heap.position.set(0,8.9,0); tag(heap,k); g.add(heap);
+    truckWheels(g,[-6.4,-3.8,3.8,6.4],1.35,k,wheels); return {g,wheels,len:18,x0:-9,x1:9}; }
+  function tomThumb(k){ const g=new THREE.Group(), wheels=[];
+    g.add(box(12,0.8,5,0x6b5236,0,2.6,0,k)); g.add(edges(cyl(1.4,1.4,6.4,0x3a3430,1.8,6.2,0,k,null,14)));
+    g.add(cyl(0.45,0.45,7,0x1e1a16,1.8,12.6,0,k)); const st=cyl(0.7,0.45,1,0x1e1a16,1.8,16.4,0,k); g.add(st);
+    g.add(box(3,2.4,4,0x7a5a3a,-4,4.2,0,k));
+    const cp=person(0x2f3a2a,k); cp.position.set(-2,3,1.4); g.add(cp);
+    truckWheels(g,[-3.4,3.4],1.3,k,wheels,0x6b5236); return {g,wheels,len:12,x0:-6,x1:6,stack:st}; }
+  function openCar(k){ const g=new THREE.Group(), wheels=[];
+    g.add(box(12,0.8,5.4,0x6b5236,0,2.6,0,k)); g.add(box(12,2,0.3,0x8a6a44,0,4,2.6,k)); g.add(box(12,2,0.3,0x8a6a44,0,4,-2.6,k));
+    [-3.5,0,3.5].forEach(x=>{ g.add(box(0.6,1.2,4.6,0x5a4030,x,3.6,0,k)); const p=person([0x3d4a5c,0x5a2a2a,0x2f3a2a][Math.abs(x)%3|0],k,true); p.position.set(x,4.2,0); p.scale.setScalar(0.9); g.add(p); });
+    truckWheels(g,[-3.6,3.6],1.3,k,wheels,0x6b5236); return {g,wheels,len:12,x0:-6,x1:6}; }
+  function horseCar(k){ const g=new THREE.Group(), wheels=[];
+    g.add(edges(box(10,6,6,0x2f4a6a,0,6,0,k))); g.add(box(10.6,0.4,6.6,0x2a2420,0,9.2,0,k)); g.add(box(1.8,2.2,0.1,0x1e1a16,0,7,3.05,k));
+    const d=person(0x5a4a2e,k,true); d.position.set(5.6,8.6,0); g.add(d);
+    truckWheels(g,[-3,3],1.3,k,wheels,0x6b5236); return {g,wheels,len:11,x0:-5.5,x1:5.5}; }
+  const mk=f=>{ const p=f; p.outer=centered(p.g,p.x0,p.x1); return p; };
+  const PASS={parts:[mk(loco("loco",0x2f5a4a,0x7a2a20)),mk(tender("loco")),mk(coach("coaches")),mk(coach("coaches")),mk(coach("coaches"))],track:"main",xf:-30,dir:-1,moving:false,vis:true};
+  const FRT ={parts:[mk(loco("freight",0x2a3f5a,0x5a3d2a)),mk(tender("freight")),mk(coalcar("freight")),mk(coalcar("freight")),mk(boxcar("freight")),mk(boxcar("freight")),mk(coalcar("freight"))],track:"siding",xf:150,dir:1,moving:false,vis:true};
+  const TT  ={parts:[mk(tomThumb("tomthumb")),mk(openCar("tomthumb"))],track:"main",xf:-120,dir:1,moving:false,vis:false};
+  const HC  ={parts:[mk(horseCar("tomthumb"))],track:"siding",xf:-120,dir:1,moving:false,vis:false};
+  const RACEHORSE=horse(0x8a7a6a,"tomthumb"); scene.add(RACEHORSE.g);
+  const TRAINS=[PASS,FRT,TT,HC];
+  function placeTrain(T,now){
+    const zf=T.track==="siding"?zSid:zMain; let off=0, front=null;
+    T.parts.forEach((p,i)=>{
+      const xc=T.xf-T.dir*(off+p.len/2); off+=p.len+1.4;
+      const z=zf(xc), dz=(zf(xc+1)-zf(xc-1))/2, hx=T.dir, hz=dz*T.dir, l=Math.hypot(hx,hz);
+      p.outer.position.set(xc,RAIL,z); p.outer.rotation.y=Math.atan2(-hz/l,hx/l);
+      p.outer.visible=T.vis && xc-p.len/2>X0+1 && xc+p.len/2<X1-1;
+      const dist=T.xf*T.dir;
+      p.wheels.forEach(w=>{ w.m.rotation.z=-dist/w.r; });
+      (p.rods||[]).forEach(r=>{ const th=-dist/2.75+r.ph; r.m.position.set(r.x+r.cr*Math.cos(th),r.y+r.cr*Math.sin(th),r.m.position.z); });
+      if(i===0) front=p;
+    });
+    return front;
+  }
+
+  /* canal boat and mules (they never stop) */
+  const CB=new THREE.Group();
+  (function(){ const k="race";
+    const s=new THREE.Shape(); s.moveTo(-7,37); s.lineTo(-7,-30); s.quadraticCurveTo(-7,-40,0,-40); s.quadraticCurveTo(7,-40,7,-30); s.lineTo(7,37); s.lineTo(-7,37);
+    const g=new THREE.ExtrudeGeometry(s,{depth:6,bevelEnabled:false,curveSegments:8}); g.rotateX(Math.PI/2); g.rotateY(-Math.PI/2); g.translate(0,4.5,0);
+    const hull=new THREE.Mesh(g,mat(0x3b2a1e)); tag(hull,k); edges(hull,30); CB.add(hull);
+    CB.add(box(76,0.15,13.2,0x7a5f40,0,4.55,0,k)); CB.add(edges(box(15,4.4,12,0xe9e2cf,-29,6.75,0,k))); CB.add(box(15.8,0.4,12.8,0x7a2e22,-29,9.15,0,k));
+    [-22,-8,6].forEach(x=>CB.add(box(10,1.2,11.6,0x5b4632,x,5.2,0,k)));
+    scene.add(CB); })();
+  const MULES=[0,1].map(()=>{ const h=horse(0x5e4a3a,"race"); h.g.scale.setScalar(0.85); scene.add(h.g); return h; });
+  const towGeo=new THREE.BufferGeometry(); towGeo.setAttribute("position",new THREE.Float32BufferAttribute([0,0,0,0,0,0],3));
+  const tow=new THREE.Line(towGeo,new THREE.LineBasicMaterial({color:0x2b2118})); tow.raycast=()=>{}; scene.add(tow);
+  let cbx=-120;
+
+  /* smoke */
+  const PUFFS=[], puffGeo=new THREE.SphereGeometry(1,8,6);
+  for(let i=0;i<20;i++){ const m=new THREE.Mesh(puffGeo,new THREE.MeshStandardMaterial({color:0x8d8781,roughness:1,transparent:true,opacity:0,depthWrite:false})); m.raycast=()=>{}; m.visible=false; scene.add(m); PUFFS.push({m,age:99}); }
+  const lastPuff=new Map(), _w=new THREE.Vector3();
+
+  /* telegraph sending */
+  function codeOf(text){ return text.toUpperCase().replace(/[^A-Z0-9 ]/g,"").replace(/\s+/g," ").trim().slice(0,16); }
+  function transmit(text,x0,dir,xEnd,sound){
+    const U=0.09, V=150, t0=performance.now()/1000+0.15, pulses=[]; let t=t0;
+    [...text].forEach((ch,ci)=>{ if(ch===" "){ t+=4*U; return; } const c=MORSE[ch]; if(!c) return;
+      [...c].forEach((sym,si)=>{ const d=(sym==="."?1:3)*U; pulses.push([t,d]); t+=d+U; }); t+=2*U; });
+    SENDS.push({x0,dir,xEnd,V,pulses,done:t+Math.abs(xEnd-x0)/V+0.5});
+    if(sound){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); const now=audioCtx.currentTime, off=now-t0+0.05;
+      pulses.forEach(([s,d])=>{ const o=audioCtx.createOscillator(), gn=audioCtx.createGain(); o.frequency.value=640; gn.gain.setValueAtTime(0,s+off); gn.gain.linearRampToValueAtTime(0.18,s+off+0.006); gn.gain.setValueAtTime(0.18,s+off+d-0.006); gn.gain.linearRampToValueAtTime(0,s+off+d);
+        o.connect(gn); gn.connect(audioCtx.destination); o.start(s+off); o.stop(s+off+d+0.02); }); }catch(e){} }
+    return t-t0;
+  }
+  function send(raw,sound){
+    const text=codeOf(raw||""); if(!text) return "Type a message first, using letters or numbers.";
+    transmit(text,30,-1,X0+8,sound);
+    return text.split(" ").map(w=>[...w].map(ch=>ch+" "+MORSE[ch].replace(/\./g,"·").replace(/-/g,"−")).join("   ")).join("   /   ");
+  }
+  function drawPulses(nowS){
+    let n=0; SENDS=SENDS.filter(s=>nowS<s.done);
+    SENDS.forEach(s=>{ s.pulses.forEach(([st,d])=>{ if(n>=PULSES.length) return;
+      let lead=s.x0+s.dir*s.V*(nowS-st), trail=s.x0+s.dir*s.V*(nowS-st-d);
+      if(nowS<st) return; if(s.dir<0){ trail=Math.min(trail,s.x0); lead=Math.max(lead,s.xEnd); if(trail<=s.xEnd) return; } else { trail=Math.max(trail,s.x0); lead=Math.min(lead,s.xEnd); if(trail>=s.xEnd) return; }
+      const m=PULSES[n++], mid=(lead+trail)/2, len=Math.abs(lead-trail); if(len<0.3){ n--; return; }
+      m.visible=true; m.position.set(mid,wireY(mid)+0.1,WZ); m.scale.set(len,1,1); }); });
+    for(;n<PULSES.length;n++) PULSES[n].visible=false;
+  }
+
+  /* motion */
+  const V={flash:false};
+  function update(now){
+    const nowS=now/1000, dt=Math.min(0.1,nowS-(update.last||nowS)); update.last=nowS;
+    PASS.vis=!V.flash; FRT.vis=!V.flash; TT.vis=V.flash; HC.vis=V.flash;
+    TRAINS.forEach(T=>{ const f=placeTrain(T,now);
+      if(f.stack && f.outer.visible){ const every=T.moving?0.22:1.6, lp=lastPuff.get(T)||0;
+        if(!prefersReduced && nowS-lp>every){ lastPuff.set(T,nowS); const p=PUFFS.find(q=>q.age>3); if(p){ f.stack.getWorldPosition(_w); p.age=0; p.m.visible=true; p.m.position.copy(_w).add(new THREE.Vector3(0,1,0)); p.drift=T.moving?-T.dir*18:-2; } } } });
+    // the horse pulling the horse car
+    const hx=HC.xf+HC.dir*7.5, hz=zSid(hx); RACEHORSE.g.position.set(hx,RAIL-0.4,hz); RACEHORSE.g.rotation.y=Math.atan2(-(zSid(hx+1)-zSid(hx-1))/2,1); RACEHORSE.g.visible=HC.vis&&hx>X0+5&&hx<X1-5;
+    RACEHORSE.legs.forEach((l,j)=>{ l.rotation.z=HC.moving&&!prefersReduced?0.6*Math.sin(now/90+(j%2?Math.PI:0)+(j>1?Math.PI/2:0)):0; });
+    PUFFS.forEach(p=>{ if(p.age>3){ p.m.visible=false; return; } p.age+=dt; p.m.position.y+=dt*6; p.m.position.x+=dt*(p.drift||0); const s=1.6+p.age*2.2; p.m.scale.set(s,s,s); p.m.material.opacity=Math.max(0,0.5*(1-p.age/3)); });
+    // canal boat plods along at walking speed
+    if(!prefersReduced){ cbx+=dt*4.4; if(cbx>X1-50) cbx=X0+50; }
+    CB.position.set(cbx,-1.2-0.2,ZC); CB.rotation.y=0;
+    MULES.forEach((m,i)=>{ const x=cbx+62+i*6.5; m.g.position.set(x,hAt(x,79),79); m.g.rotation.y=0; m.g.visible=x<X1-4;
+      m.legs.forEach((l,j)=>{ l.rotation.z=prefersReduced?0:0.45*Math.sin(now/170+(j%2?Math.PI:0)+(j>1?Math.PI/2:0)); }); });
+    const a=towGeo.getAttribute("position"); a.setXYZ(0,cbx+62-2,hAt(cbx+60,79)+4.5,79); a.setXYZ(1,cbx+30,3.5,ZC+2); a.needsUpdate=true;
+    drawPulses(nowS);
+  }
+
+  /* guided trips */
+  function mvT(text,T,x0,x1,dur,also){ return step(text,dur,t=>{ T.xf=x0+(x1-x0)*sm(t); T.moving=t>0&&t<1; if(also) also(t); },()=>{ T.xf=x0; }); }
+  function mv2(text,A,a0,a1,B,b0,b1,dur,ease){ const f=ease||sm; return step(text,dur,t=>{ A.xf=a0+(a1-a0)*f(t); B.xf=b0+(b1-b0)*f(t); A.moving=B.moving=t>0&&t<1; },()=>{ A.xf=a0; B.xf=b0; }); }
+  const lin=t=>t;
+  const runs={
+    meet(){ return [
+      step("An eastbound freight train hauling coal comes down the line toward Baltimore. Somewhere ahead, a westbound passenger train is coming the other way on the same single track.",6000,t=>{ FRT.xf=-300+180*sm(t); FRT.moving=t<1; },()=>{ V.flash=false; FRT.dir=1; FRT.track="siding"; FRT.xf=-300; PASS.dir=-1; PASS.xf=460; PASS.moving=false; }),
+      mvT("Trains going opposite ways can pass only at a siding. The freight switches onto the siding at this station and stops to wait.",FRT,-120,120,8000),
+      step("The station’s telegraph operator taps out a message to the next station down the line: the freight is in the siding, and the main track is clear.",4500,()=>{},()=>{ transmit("CLEAR",30,1,X1-8,false); }),
+      step("A reply races back along the wire. Messages like this, called train orders, let a railroad run more trains on one track safely. The first train order sent by telegraph went out on the Erie Railroad in 1851.",4800,()=>{},()=>{ transmit("OK",X1-8,-1,30,false); }),
+      mvT("The westbound passenger train speeds through on the main track, toward Cumberland and Wheeling.",PASS,460,-420,7500),
+      mvT("With the main track clear, the freight pulls out of the siding and heads east toward Baltimore.",FRT,120,470,8000),
+      step("Done. Your notes: railroads were fast land transportation that worked all year. The telegraph helped them run safely and on time.",0,()=>{})
+    ]; },
+    race(){ return [
+      step("Flashback to August 1830. The Baltimore & Ohio is brand new, and horses pull its cars. Peter Cooper has built a little steam engine, the Tom Thumb, to show what steam can do.",5000,()=>{},()=>{ V.flash=true; TT.xf=-110; HC.xf=-118; TT.moving=HC.moving=false; }),
+      mv2("According to a famous story, the Tom Thumb raced a horse-drawn car on the parallel track. The race is on, and the little engine pulls ahead.",TT,-110,30,HC,-118,-30,6500,lin),
+      mv2("Then a belt that ran the engine’s blower slipped off. Without the blower fanning the fire, the engine lost steam and slowed down. The horse pulls ahead.",TT,30,52,HC,-30,72,6500,lin),
+      mv2("The horse won the race. But the Tom Thumb had shown that steam could do the job, and the B&O soon switched to steam locomotives.",TT,52,70,HC,72,118,5000),
+      step("Your notes: Peter Cooper built the first railroad locomotive in the U.S. in 1830. Now, back to the 1850s.",3500,t=>{ if(t>=1) V.flash=false; }),
+      step("Done. By 1860, the United States had more than 30,000 miles of railroad.",0,()=>{ V.flash=false; })
+    ]; }
+  };
+
+  const v3=(x,y,z)=>new THREE.Vector3(x,y,z), tmp=new THREE.Vector3();
+  const onTrain=(T,i,dy)=>{ const p=T.parts[i]; return p.outer.visible ? p.outer.getWorldPosition(tmp).clone().add(v3(0,dy,0)) : null; };
+  const ANCHOR={
+    loco:()=>onTrain(PASS,0,19)||onTrain(FRT,0,19), coaches:()=>onTrain(PASS,3,15), freight:()=>onTrain(FRT,4,14),
+    track:()=>v3(-215,3,0), siding:()=>v3(0,3,14), water:()=>v3(-70,hAt(-70,-17)+30,-17), wire:()=>v3(-130,wireY(-130)+3,-40),
+    depot:()=>v3(30,26,-21), race:()=>v3(cbx,10,ZC), tomthumb:()=>V.flash?onTrain(TT,0,20):null
+  };
+  function regionAt(p){ if(Math.abs(p.z-ZC)<13&&p.y<0) return "race"; if(Math.abs(p.z)<6) return "track"; if(p.x>-176&&p.x<176&&Math.abs(p.z-zSid(p.x))<6) return "siding"; if(p.x>-30&&p.x<90&&p.z<-4&&p.z>-36) return "depot"; return null; }
+  update(0);
+  return {home:{target:v3(0,0,8),dir:v3(0.12,0.62,0.78).normalize(),A1:240,A2:296,B:196},
+          anchorKeys:Object.keys(ANCHOR), anchor:k=>ANCHOR[k]?ANCHOR[k]():null, regionAt, update, runs, send,
+          BIG:{track:1,siding:1,depot:1,race:1,water:1,wire:1}, minD:12, maxD:1100};
+}
+
+/* =====================================================================
+   Station engine: one 3D scene at a time
+   ===================================================================== */
+let E=null, cur=null;
+function step(text,dur,fn,init){ return {text,dur,fn,init}; }
+function fail(msg){ let d=stage.querySelector(".fallback"); if(!d){ d=el("div",null,"fallback"); stage.appendChild(d); } d.textContent=msg; d.hidden=false; }
+function clearFail(){ const d=stage.querySelector(".fallback"); if(d) d.hidden=true; }
+
+function makeEngine(){
+  let renderer;
+  try{ renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); }catch(e){ return null; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setClearColor(0x000000,0);
+  stage.insertBefore(renderer.domElement,stage.firstChild);
+  const camera=new THREE.PerspectiveCamera(38,1,1,5000);
+  const controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08; controls.maxPolarAngle=Math.PI*0.49;
+  controls.addEventListener("start",()=>{ if(cur) cur.userMoved=true; });
+  const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+  function visibleChain(o){ while(o){ if(!o.visible) return false; o=o.parent; } return true; }
+  function pick(ev){
+    if(!cur) return null;
+    const r=renderer.domElement.getBoundingClientRect();
+    ndc.set(((ev.clientX-r.left)/r.width)*2-1,-((ev.clientY-r.top)/r.height)*2+1);
+    ray.setFromCamera(ndc,camera);
+    const hits=ray.intersectObjects(cur.pickables.filter(visibleChain),false);
+    if(!hits.length) return null;
+    return hits[0].object.userData.region ? cur.api.regionAt(hits[0].point) : hits[0].object.userData.key;
+  }
+  let down=null;
+  renderer.domElement.addEventListener("pointerdown",e=>{ down={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener("pointerup",e=>{ if(!down||!cur) return; const mv=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null; if(mv>6) return; selectPart(pick(e),false); });
+  renderer.domElement.addEventListener("pointermove",e=>{
+    if(e.pointerType!=="mouse"||!cur) return;
+    const k=pick(e);
+    if(k!==cur.hovered){ if(cur.hovered&&cur.hovered!==cur.selected) setGlow(cur.hovered,0); cur.hovered=k; if(k&&k!==cur.selected) setGlow(k,cur.api.BIG[k]?0.1:0.2); renderer.domElement.style.cursor=k?"pointer":"grab"; }
+  });
+  renderer.domElement.addEventListener("pointerleave",()=>{ if(cur&&cur.hovered&&cur.hovered!==cur.selected) setGlow(cur.hovered,0); if(cur) cur.hovered=null; });
+  return {renderer,camera,controls};
+}
+
+function disposeScene(scene){
+  const seen=new Set();
+  scene.traverse(o=>{
+    if(o.geometry && !seen.has(o.geometry)){ seen.add(o.geometry); o.geometry.dispose(); }
+    const ms=o.material ? (Array.isArray(o.material)?o.material:[o.material]) : [];
+    ms.forEach(m=>{ if(seen.has(m)) return; seen.add(m); if(m.map) m.map.dispose(); m.dispose(); });
+  });
+}
+
+function closeStation(){
+  if(!cur) return;
+  cancelAnimationFrame(cur.raf);
+  disposeScene(cur.scene);
+  if(E){ E.renderer.renderLists.dispose(); E.renderer.domElement.hidden=true; }
+  pinsEl.innerHTML=""; pinsEl.classList.remove("off");
+  cur=null;
+}
+
+function openMap(sel){
+  closeStation(); clearFail();
+  mapEl.removeAttribute("hidden"); stage.classList.add("mapmode"); hubPanel.hidden=false; stPanel.hidden=true;
+  capEl.hidden=true; card.hidden=true;
+  hintEl.textContent="Tap a numbered stop to learn about it.";
+  stage.setAttribute("aria-label","Route map of the Transportation Revolution");
+  selectStop(sel||null);
+  panel.scrollTop=0;
+}
+
+function openStation(key){
+  closeStation(); clearFail();
+  const def=STATIONS[key];
+  mapEl.setAttribute("hidden",""); stage.classList.remove("mapmode"); hubPanel.hidden=true; stPanel.hidden=false; card.hidden=true; capEl.hidden=true;
+  stage.setAttribute("aria-label",def.aria);
+  hintEl.textContent="Drag to turn the model. Scroll or pinch to zoom. Tap any part to learn about it.";
+  renderStationPanel(key,def);
+  panel.scrollTop=0;
+  if(!HAS3D){ fail("The 3D model could not load. Try reloading the page. The descriptions in the side panel still work."); return; }
+  if(!E) E=makeEngine();
+  if(!E){ fail("Your browser could not start 3D graphics (WebGL). Try a different browser or device. The descriptions in the side panel still work."); return; }
+  const scene=new THREE.Scene();
+  SC=scene; PK=[]; BK={}; INK=new THREE.LineBasicMaterial({color:COL.ink,transparent:true,opacity:0.4});
+  scene.add(new THREE.HemisphereLight(0xfffbe8,0x4a3f2a,0.8));
+  const sun=new THREE.DirectionalLight(0xffffff,0.75); sun.position.set(80,140,60); scene.add(sun);
+  const fl=new THREE.DirectionalLight(0xffffff,0.25); fl.position.set(-90,50,-80); scene.add(fl);
+  const api=def.build();
+  cur={key,def,scene,api,pickables:PK,byKey:BK,selected:null,hovered:null,seq:null,tween:null,userMoved:false,raf:0};
+  E.controls.minDistance=api.minD; E.controls.maxDistance=api.maxD;
+  E.renderer.domElement.hidden=false;
+  makePins();
+  resize(); goHome(true);
+  cur.raf=requestAnimationFrame(loop);
+}
+
+function route(){
+  const k=(location.hash||"").replace(/^#/,"");
+  const st=stopByKey(k);
+  if(st && st.ready && STATIONS[k]) openStation(k);
+  else openMap(st?k:null);
+}
+window.addEventListener("hashchange",route);
+
+/* ---- station side panel ---- */
+function renderStationPanel(key,def){
+  stPanel.innerHTML="";
+  const back=el("button","← Route map","back"); back.type="button"; back.addEventListener("click",()=>{ location.hash="map"; });
+  stPanel.appendChild(back);
+  stPanel.appendChild(el("p",`Stop ${def.n} of ${STOPS.length}`,"stopn"));
+  stPanel.appendChild(el("h1",def.title));
+  stPanel.appendChild(el("p",def.sub,"sub"));
+  def.intro.forEach(t=>stPanel.appendChild(el("p",t)));
+  const note=el("div",null,"note"); note.appendChild(el("p",def.note)); stPanel.appendChild(note);
+  if(def.runs&&def.runs.length){
+    stPanel.appendChild(el("h3","Take a trip"));
+    const run=el("div",null,"run");
+    def.runs.forEach(([id,label])=>{ const b=el("button",label); b.type="button"; b.dataset.run=id; b.addEventListener("click",()=>startRun(id)); run.appendChild(b); });
+    run.appendChild(el("p",def.runNote,"small")); stPanel.appendChild(run);
+  }
+  if(def.extra) def.extra(stPanel);
+  stPanel.appendChild(el("h3","View"));
+  const tg=el("div",null,"toggles"), lab=el("label"), cb=el("input"); cb.type="checkbox"; cb.id="tPins"; cb.checked=true;
+  cb.addEventListener("change",()=>pinsEl.classList.toggle("off",!cb.checked));
+  lab.appendChild(cb); lab.appendChild(document.createTextNode(" Show markers")); tg.appendChild(lab); stPanel.appendChild(tg);
+  const rs=el("button","Reset view","reset"); rs.type="button"; rs.addEventListener("click",()=>goHome(false)); stPanel.appendChild(rs);
+  def.groups.forEach(([g,label])=>{
+    stPanel.appendChild(el("h3",label));
+    const ul=el("ul",null,"parts");
+    def.ORDER.filter(k=>def.INFO[k].group===g).forEach(k=>{ const li=el("li"), b=el("button",def.INFO[k].title); b.type="button"; b.dataset.key=k; b.addEventListener("click",()=>selectPart(k,true)); li.appendChild(b); ul.appendChild(li); });
+    stPanel.appendChild(ul);
+  });
+  const ab=el("button",null,"about-btn"); ab.type="button";
+  ab.appendChild(el("strong","About this model")); ab.appendChild(el("span","What is real, what is reconstructed, and where to see it today"));
+  ab.addEventListener("click",()=>selectPart("about",false)); stPanel.appendChild(ab);
+  const nx=STOPS.find(s=>s.n===def.n+1);
+  if(nx){ const p=el("p",null,"nextstop"); p.appendChild(document.createTextNode(`Next stop: ${nx.name}. `));
+    if(nx.ready){ const b=el("button","Go there"); b.type="button"; b.addEventListener("click",()=>{ location.hash=nx.key; }); p.appendChild(b); }
+    else p.appendChild(document.createTextNode("Coming soon."));
+    stPanel.appendChild(p); }
+}
+function setRunButtons(dis){ stPanel.querySelectorAll(".run button").forEach(b=>{ b.disabled=dis; }); }
+
+/* ---- guided trips ---- */
+function startRun(id){
+  if(!cur||cur.seq) return;
+  cur.seq={steps:cur.api.runs[id](),i:-1,t0:0};
+  setRunButtons(true);
+  nextStep(performance.now());
+}
+function nextStep(now){
+  const q=cur.seq; q.i++;
+  const s=q.steps[q.i];
+  if(!s){ cur.seq=null; setRunButtons(false); return; }
+  if(s.init) s.init();
+  q.t0=now;
+  capN.textContent = s.dur===0 ? "" : `Step ${q.i+1} of ${q.steps.length-1}`;
+  capT.textContent=s.text; capEl.hidden=false;
+  if(s.dur===0){ s.fn(1); cur.seq=null; setRunButtons(false); }
+  else if(prefersReduced) s.fn(1);
+}
+function tickSeq(now){
+  const q=cur.seq; if(!q) return;
+  const s=q.steps[q.i]; if(!s) return;
+  const el2=now-q.t0;
+  if(prefersReduced){ if(el2>=1400){ s.fn(1); nextStep(now); } return; }
+  const t=Math.min(1,el2/s.dur);
+  s.fn(t);
+  if(t>=1) nextStep(now);
+}
+
+/* ---- markers ---- */
+function makePins(){
+  pinsEl.innerHTML=""; cur.pins={};
+  const cb=$("tPins"); pinsEl.classList.toggle("off",!!cb&&!cb.checked);
+  cur.api.anchorKeys.forEach(k=>{
+    const info=cur.def.INFO[k]; if(!info) return;
+    const b=document.createElement("button"); b.type="button"; b.className="pin";
+    b.innerHTML='<span class="dot"></span><span class="lbl"></span>'; b.querySelector(".lbl").textContent=info.title;
+    b.setAttribute("aria-label",info.title); b.addEventListener("click",e=>{ e.stopPropagation(); selectPart(k,true); });
+    pinsEl.appendChild(b); cur.pins[k]=b;
+  });
+}
+const _pv=HAS3D?new THREE.Vector3():null;
+function updatePins(){
+  const w=stage.clientWidth, h=stage.clientHeight, o=window.innerWidth<=860?6.5:9;
+  Object.entries(cur.pins).forEach(([k,b])=>{
+    const a=cur.api.anchor(k);
+    if(!a){ b.style.display="none"; return; }
+    _pv.copy(a).project(E.camera);
+    if(_pv.z>1){ b.style.display="none"; return; }
+    b.style.display="";
+    b.style.transform=`translate(${(_pv.x*0.5+0.5)*w-o}px,${(-_pv.y*0.5+0.5)*h-o}px)`;
+  });
+}
+
+/* ---- info cards ---- */
+function renderCard(d){
+  cardBody.innerHTML="";
+  cardBody.appendChild(el("h2",d.title));
+  d.body.forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.quote){ const q=el("blockquote"); q.appendChild(el("span",d.quote.text)); q.appendChild(el("cite",d.quote.cite)); cardBody.appendChild(q); }
+  if(d.hipp){ cardBody.appendChild(el("p",d.hippLabel||"Reading the source with HIPP:")); const dl=el("dl"); d.hipp.forEach(([a,b])=>{ dl.appendChild(el("dt",a)); dl.appendChild(el("dd",b)); }); cardBody.appendChild(dl); }
+  (d.after||[]).forEach(t=>cardBody.appendChild(el("p",t)));
+  if(d.fact) cardBody.appendChild(el("p",d.fact,"fact"));
+  card.scrollTop=0;
+}
+const GOLD=HAS3D?new THREE.Color(COL.gold):null, BLACK=HAS3D?new THREE.Color(0x000000):null;
+function setGlow(k,amt){ if(!cur) return; (cur.byKey[k]||[]).forEach(o=>{ if(o.material&&o.material.emissive){ o.material.emissive.copy(amt?GOLD:BLACK); o.material.emissiveIntensity=amt||0; } }); }
+function selectPart(k,fly){
+  if(!cur){ // no 3D: still show the card
+    stPanel.querySelectorAll(".parts button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+    const def=STATIONS[(location.hash||"").replace(/^#/,"")]; if(k&&def){ renderCard(def.INFO[k]); card.hidden=false; } else card.hidden=true;
+    return;
+  }
+  if(cur.selected) setGlow(cur.selected,0);
+  cur.selected=k;
+  stPanel.querySelectorAll(".parts button").forEach(b=>b.setAttribute("aria-current",b.dataset.key===k?"true":"false"));
+  Object.entries(cur.pins).forEach(([pk,b])=>b.classList.toggle("on",pk===k));
+  if(!k){ card.hidden=true; return; }
+  if(k!=="about") setGlow(k,cur.api.BIG[k]?0.22:0.45);
+  renderCard(cur.def.INFO[k]); card.hidden=false;
+  if(fly) cur.userMoved=true;
+  if(window.innerWidth<=860){ const r=stage.getBoundingClientRect(); if(r.bottom<80||r.top<-r.height*0.4) stage.scrollIntoView({behavior:prefersReduced?"auto":"smooth",block:"start"}); }
+  const a=cur.api.anchor(k);
+  if(fly && a){
+    const to=a.clone(), from=E.controls.target.clone(), offset=E.camera.position.clone().sub(from);
+    { const len=Math.max(80,Math.min(offset.length(),190)); const hz=new THREE.Vector3(offset.x,0,offset.z); if(hz.lengthSq()<1e-6) hz.set(0.7,0,0.7);
+      const e2=Math.max(0.5,Math.min(1.2,Math.asin(Math.max(-1,Math.min(1,offset.y/offset.length())))));
+      hz.setLength(Math.cos(e2)*len); offset.set(hz.x,Math.sin(e2)*len,hz.z); }
+    if(window.innerWidth<=860){ const up=new THREE.Vector3(0,1,0).applyQuaternion(E.camera.quaternion); to.addScaledVector(up,-0.5*offset.length()*Math.tan(THREE.MathUtils.degToRad(E.camera.fov/2))); }
+    if(prefersReduced){ E.controls.target.copy(to); E.camera.position.copy(to.clone().add(offset)); }
+    else cur.tween={t0:performance.now(),dur:650,from,to,camFrom:E.camera.position.clone(),camTo:to.clone().add(offset)};
+  }
+}
+$("closeCard").addEventListener("click",()=>{ if(!stPanel.hidden) selectPart(null); else selectStop(null); });
+
+/* ---- camera ---- */
+function homePos(){
+  const h=cur.api.home, w=stage.clientWidth||1000, ht=stage.clientHeight||700, asp=w/ht, t=Math.tan(THREE.MathUtils.degToRad(E.camera.fov/2));
+  const d=Math.max((asp<0.9?h.A1:h.A2)/(t*asp), h.B/t);
+  return h.target.clone().addScaledVector(h.dir,d);
+}
+function goHome(now){
+  if(!cur) return;
+  const pos=homePos(), tgt=cur.api.home.target.clone();
+  if(now||prefersReduced){ E.camera.position.copy(pos); E.controls.target.copy(tgt); E.controls.update(); }
+  else cur.tween={t0:performance.now(),dur:700,from:E.controls.target.clone(),to:tgt,camFrom:E.camera.position.clone(),camTo:pos};
+  if(!now) cur.userMoved=false;
+}
+function resize(){
+  if(!E||!cur) return;
+  const w=stage.clientWidth, h=stage.clientHeight; if(!w||!h) return;
+  E.renderer.setSize(w,h,false); E.camera.aspect=w/h; E.camera.updateProjectionMatrix();
+  if(!cur.userMoved){ E.camera.position.copy(homePos()); E.controls.target.copy(cur.api.home.target); }
+}
+new ResizeObserver(resize).observe(stage);
+
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function loop(now){
+  if(!cur) return;
+  tickSeq(now);
+  cur.api.update(now);
+  const tw=cur.tween;
+  if(tw){ const t=Math.min((now-tw.t0)/tw.dur,1), e=ease(t); E.controls.target.lerpVectors(tw.from,tw.to,e); E.camera.position.lerpVectors(tw.camFrom,tw.camTo,e); if(t>=1) cur.tween=null; }
+  E.controls.update();
+  E.renderer.render(cur.scene,E.camera);
+  updatePins();
+  cur.raf=requestAnimationFrame(loop);
+}
+
+route();
+window.__tour={openStation,openMap,get cur(){return cur;},startRun,selectPart};
+})();
+</script>
+</body>
+</html>
