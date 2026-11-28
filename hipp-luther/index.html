@@ -65,6 +65,9 @@ p{margin:0}
 .term{display:inline;appearance:none;border:0;background:none;padding:0;font:inherit;color:inherit;border-bottom:2px dotted var(--hipp);cursor:help}
 .term:focus-visible{outline:2px solid var(--hipp)}
 .cite{font-size:.82rem;color:var(--muted)}
+.adapt{font-family:var(--f-body);font-size:.92rem;line-height:1.5;background:color-mix(in srgb,var(--hipp) 12%,transparent);border-left:3px solid var(--hipp);border-radius:4px;padding:10px 12px}
+.def{grid-column:2;margin:2px 0 2px;font-family:var(--f-body);font-size:.92rem;line-height:1.45;background:var(--panel);color:var(--ink);border:1px solid var(--hipp);border-radius:8px;padding:8px 12px}
+.def b{color:var(--hipp)}
 .gloss{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--hipp);border-radius:10px;padding:12px 14px;min-height:64px}
 .gloss b{font-family:var(--f-display)}
 
@@ -138,13 +141,13 @@ textarea:focus,input:focus{outline:2px solid var(--hipp);outline-offset:1px}
       <div class="doccol">
         <article class="doc" aria-label="Excerpts from the Ninety-five Theses">
           <div class="head">
-            <span class="big">Disputation on the Power and Efficacy of Indulgences</span>
-            <span class="sm">commonly called the Ninety-five Theses · Wittenberg, 1517</span>
+            <span class="big">The Ninety-five Theses</span>
+            <span class="sm">Martin Luther · Wittenberg, 1517 · adapted excerpts</span>
           </div>
+          <p class="adapt"><b>A note before you read:</b> Luther wrote this in Latin about 500 years ago, and even the English translations are hard to read today. These excerpts have been rewritten in everyday English so you can focus on HIPP. The ideas are Luther's; only the wording has been made easier. Historians call this an <i>adapted</i> source.</p>
           <div id="theses" style="display:grid;gap:14px"></div>
-          <p class="cite">Martin Luther, 1517. Written in Latin. English translation from <i>Works of Martin Luther</i>, vol. 1 (Philadelphia: A. J. Holman, 1915). Excerpts; 8 of the original 95 shown. Words with a dotted underline have definitions: tap them.</p>
+          <p class="cite">Martin Luther, 1517. Originally written in Latin. Adapted from the English translation in <i>Works of Martin Luther</i>, vol. 1 (Philadelphia: A. J. Holman, 1915). 8 of the original 95 theses shown. Tap a word with a dotted underline to see what it means.</p>
         </article>
-        <div class="gloss" id="gloss" aria-live="polite"><b>Tap a dotted word</b> to see what it means.</div>
       </div>
 
       <div class="bench">
@@ -185,27 +188,20 @@ textarea:focus,input:focus{outline:2px solid var(--hipp);outline-offset:1px}
 
 <script>
 const TERMS={
-  truth:["Disputation","A formal debate between scholars. Luther was inviting other scholars to argue about his points."],
-  theology:["Sacred Theology","The study of God and religious teaching. Luther taught it at the University of Wittenberg."],
-  poen:["Poenitentiam agite","Latin for \"Repent\" or \"Do penance.\" Luther quotes Jesus's words from the Latin Bible."],
-  repent:["Repentance","Being truly sorry for sin and turning away from it."],
-  indulg:["Indulgences / pardons","Church documents that people could buy. Preachers said they reduced the punishment for sins after death."],
+  indulg:["Indulgence","A church document that people could buy. Preachers said it lowered the punishment for sins after death."],
   purg:["Purgatory","In Catholic teaching, a place where souls are punished and made clean before entering heaven."],
-  remission:["Remission","Canceling or forgiving a debt or punishment."],
-  exactions:["Exactions","Demands for money."],
-  peters:["St. Peter's church","St. Peter's Basilica in Rome. The pope was raising money to rebuild it, partly by selling indulgences."],
-  sheep:["His sheep","The pope's followers. Church leaders often called ordinary believers a flock of sheep."]
+  peters:["St. Peter's church","St. Peter's Basilica in Rome. The pope was raising money to rebuild it, partly by selling indulgences."]
 };
 const T=(k,txt)=>`<button class="term" data-term="${k}">${txt}</button>`;
 const THESES=[
-  {id:"Opening",n:"¶",txt:`Out of love for the truth and the desire to bring it to light, the following propositions will be discussed at Wittenberg, under the presidency of the Reverend Father Martin Luther, Master of Arts and of ${T("theology","Sacred Theology")}, and Lecturer in Ordinary on the same at that place. Wherefore he requests that those who are unable to be present and debate orally with us, may do so by letter.`},
-  {id:"Thesis 1",n:"1",txt:`Our Lord and Master Jesus Christ, when He said ${T("poen","<i>Poenitentiam agite</i>")}, willed that the whole life of believers should be ${T("repent","repentance")}.`},
-  {id:"Thesis 21",n:"21",txt:`Therefore those preachers of ${T("indulg","indulgences")} are in error, who say that by the pope's indulgences a man is freed from every penalty, and saved;`},
-  {id:"Thesis 27",n:"27",txt:`They preach man who say that so soon as the penny jingles into the money-box, the soul flies out [of ${T("purg","purgatory")}].`},
-  {id:"Thesis 36",n:"36",txt:`Every truly repentant Christian has a right to full ${T("remission","remission")} of penalty and guilt, even without letters of ${T("indulg","pardon")}.`},
-  {id:"Thesis 43",n:"43",txt:`Christians are to be taught that he who gives to the poor or lends to the needy does a better work than buying ${T("indulg","pardons")};`},
-  {id:"Thesis 50",n:"50",txt:`Christians are to be taught that if the pope knew the ${T("exactions","exactions")} of the pardon-preachers, he would rather that ${T("peters","St. Peter's church")} should go to ashes, than that it should be built up with the skin, flesh and bones of ${T("sheep","his sheep")}.`},
-  {id:"Thesis 86",n:"86",txt:`Again: "Why does not the pope, whose wealth is to-day greater than the riches of the richest, build just this one church of St. Peter with his own money, rather than with the money of poor believers?"`}
+  {id:"Opening",n:"¶",txt:`Because we love the truth and want to bring it to light, the following points will be debated at Wittenberg, led by Father Martin Luther, a teacher of religion at the university there. Anyone who can't come and argue in person may send their arguments by letter.`},
+  {id:"Thesis 1",n:"1",txt:`When Jesus said "Repent," he meant that believers should spend their whole lives being truly sorry for their sins and turning away from them.`},
+  {id:"Thesis 21",n:"21",txt:`Preachers who sell ${T("indulg","indulgences")} are wrong when they say that the pope's indulgences free a person from all punishment and save them.`},
+  {id:"Thesis 27",n:"27",txt:`Some preachers say that as soon as a coin clinks into the money box, a soul flies out of ${T("purg","purgatory")}. That is a human idea, not God's teaching.`},
+  {id:"Thesis 36",n:"36",txt:`A Christian who is truly sorry for their sins is completely forgiven, even without buying an indulgence.`},
+  {id:"Thesis 43",n:"43",txt:`Christians should be taught that giving to the poor or lending to people in need is a better deed than buying indulgences.`},
+  {id:"Thesis 50",n:"50",txt:`Christians should be taught that if the pope knew how much money the indulgence sellers were squeezing out of people, he would rather see ${T("peters","St. Peter's church")} burn to the ground than have it built from the skin, flesh, and bones of his followers.`},
+  {id:"Thesis 86",n:"86",txt:`People ask: "The pope is richer than the richest man alive. Why doesn't he build St. Peter's church with his own money instead of with the money of poor believers?"`}
 ];
 
 const STEPS={
@@ -249,9 +245,12 @@ function renderDoc(){
   const picked=store.ev[cur]||[];
   document.getElementById("theses").innerHTML=THESES.map(t=>{
     const on=picked.includes(t.id);
-    return `<div class="th${on?" picked":""}"><span class="num" aria-hidden="true">${t.n}</span><p class="txt"><span class="sr" style="position:absolute;left:-9999px">${t.id}: </span>${t.txt}</p>
+    return `<div class="th${on?" picked":""}"><span class="num" aria-hidden="true">${t.n}</span><p class="txt"><span class="sr" style="position:absolute;left:-9999px">${t.id}: </span>${t.txt}</p><p class="def" hidden></p>
       <button class="use" data-id="${t.id}" aria-pressed="${on}">${on?"✓ Evidence for "+NAMES[cur].split(" - ")[1]:"Use as evidence"}</button></div>`}).join("");
-  document.querySelectorAll(".term").forEach(b=>b.addEventListener("click",()=>{const d=TERMS[b.dataset.term];document.getElementById("gloss").innerHTML=`<b>${d[0]}:</b> ${d[1]}`}));
+  document.querySelectorAll(".term").forEach(b=>{b.setAttribute("aria-expanded","false");b.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();
+    const box=b.closest(".th").querySelector(".def"),d=TERMS[b.dataset.term],same=!box.hidden&&box.dataset.term===b.dataset.term;
+    document.querySelectorAll(".def").forEach(x=>{x.hidden=true;x.dataset.term=""});document.querySelectorAll(".term").forEach(x=>x.setAttribute("aria-expanded","false"));
+    if(!same){box.innerHTML=`<b>${d[0]}:</b> ${d[1]}`;box.dataset.term=b.dataset.term;box.hidden=false;b.setAttribute("aria-expanded","true")}})});
   document.querySelectorAll(".use").forEach(b=>b.addEventListener("click",()=>{
     const a=store.ev[cur]=store.ev[cur]||[];const i=a.indexOf(b.dataset.id);i>=0?a.splice(i,1):a.push(b.dataset.id);
     a.sort((x,y)=>THESES.findIndex(t=>t.id===x)-THESES.findIndex(t=>t.id===y));save();renderDoc();updateMeta();build()}));
