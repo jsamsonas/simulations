@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIPP the Sun Stone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a carved-stone "specimen" on the left you can touch, a HIPP workbench on the right; stacks on phones. */
+:root{
+  --bg:#eef0ef; --panel:#ffffff; --ink:#1f2523; --muted:#5b6662; --line:#d3d8d5;
+  --stone:#8d948f; --stone-dk:#5f6762; --stone-lt:#b9bfbb;
+  --hipp:#c06a1f; --hipp-soft:#f7e6d4;
+  --jade:#16806e; --jade-soft:#d9efe9;
+  --ochre:#b8860b; --red:#a8362a;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151918; --panel:#1e2422; --ink:#e7ebe9; --muted:#a2ada8; --line:#333c39;
+  --stone:#7b837e; --stone-dk:#4d5551; --stone-lt:#9aa29d;
+  --hipp:#e99047; --hipp-soft:#3a2a1b; --jade:#4cc3ab; --jade-soft:#17322d;
+  --ochre:#e0b24a; --red:#e07466; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151918; --panel:#1e2422; --ink:#e7ebe9; --muted:#a2ada8; --line:#333c39;
+  --stone:#7b837e; --stone-dk:#4d5551; --stone-lt:#9aa29d;
+  --hipp:#e99047; --hipp-soft:#3a2a1b; --jade:#4cc3ab; --jade-soft:#17322d;
+  --ochre:#e0b24a; --red:#e07466; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+.home{font-size:.9rem;color:var(--muted);text-decoration:none}
+.home:hover{color:var(--hipp)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:800}
+h2{font-size:1.5rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.lede{max-width:66ch;color:var(--muted);margin-top:10px}
+.tiles{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.tile{font-family:var(--f-display);font-weight:800;width:46px;height:46px;border-radius:8px;display:grid;place-items:center;background:var(--hipp);color:#fff;font-size:1.4rem}
+.steps{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.steps span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.9rem}
+.steps b{color:var(--hipp)}
+
+/* three ways */
+.ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.way{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:6px;align-content:start}
+.way .k{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--jade);font-weight:700}
+.way a{color:var(--jade);font-weight:700}
+@media (max-width:760px){.ways{grid-template-columns:1fr}}
+
+/* main grid */
+.main{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.specimen{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:12px}
+@media (max-width:900px){.specimen{position:static}}
+.stonebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+svg.stone{width:100%;height:auto;display:block;max-width:520px;margin:0 auto}
+.spot{cursor:pointer;outline:none}
+.spot .hit{fill:transparent;stroke:transparent;stroke-width:3}
+.spot:hover .hit,.spot:focus-visible .hit{stroke:var(--ochre);fill:color-mix(in srgb,var(--ochre) 18%,transparent)}
+.spot.on .hit{stroke:var(--hipp);stroke-width:4;fill:color-mix(in srgb,var(--hipp) 22%,transparent)}
+.cap{font-size:.85rem;color:var(--muted);text-align:center;margin-top:6px}
+.info{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--hipp);border-radius:10px;padding:14px 16px;display:grid;gap:6px;min-height:120px}
+.info .hist{color:var(--muted);font-size:.95rem}
+.info .hist b{color:var(--ink)}
+
+/* HIPP bench */
+.bench{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);padding:12px 6px 10px;cursor:pointer;display:grid;justify-items:center;gap:2px;font-family:var(--f-body);border-bottom:3px solid transparent}
+.tab .L{font-family:var(--f-display);font-weight:800;font-size:1.5rem;color:var(--hipp)}
+.tab .n{font-size:.78rem;line-height:1.2;text-align:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--hipp);background:var(--hipp-soft)}
+.tab:focus-visible{outline:2px solid var(--hipp);outline-offset:-2px}
+.tab .done{font-size:.7rem;color:var(--jade);font-weight:700;min-height:1em}
+.pane{padding:20px;display:grid;gap:16px}
+.q{font-family:var(--f-display);font-size:1.3rem;font-weight:600}
+.think{background:var(--bg);border-radius:10px;padding:14px 16px;display:grid;gap:10px}
+.think .who{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--hipp)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;border:1px solid var(--jade);background:var(--jade-soft);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:.88rem;cursor:pointer}
+.chip:hover,.chip:focus-visible{background:var(--jade);color:#fff;outline:none}
+.move{border:1px dashed var(--hipp);border-radius:10px;padding:12px 14px;font-size:.95rem}
+.move b{color:var(--hipp)}
+.turn{display:grid;gap:8px}
+.turn label{font-weight:700}
+textarea,input[type=text]{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--hipp);outline-offset:1px}
+.nav{display:flex;justify-content:space-between;gap:10px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--hipp);border-color:var(--hipp);color:#fff}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btn[disabled]{opacity:.4;cursor:default}
+
+/* bridge */
+.bridge{display:grid;gap:14px}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line);font-size:.95rem}
+thead th{font-family:var(--f-display);font-size:1rem;background:var(--bg)}
+td.L{font-family:var(--f-display);font-weight:800;color:var(--hipp);font-size:1.2rem;width:56px}
+tr:last-child td{border-bottom:0}
+
+/* submit */
+.submit{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:14px}
+.row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+.out{min-height:160px;font-size:.9rem}
+.status{font-size:.9rem;color:var(--jade);font-weight:700;min-height:1.2em}
+.teacher{font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.pane{animation:in .25s ease}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../">← All simulations</a>
+    <div class="eyebrow">Early American History · Unit 1 · HIPP model</div>
+    <h1>HIPP the Sun Stone</h1>
+    <p class="lede">Historians don't take a source at face value. Today you'll watch how a historian uses HIPP on a carved stone from Tenochtitlan, then try each step yourself. Next time, you'll use the same four questions on a written document.</p>
+    <div class="tiles" aria-hidden="true"><span class="tile">H</span><span class="tile">I</span><span class="tile">P</span><span class="tile">P</span></div>
+    <div class="steps"><span><b>1</b> Look at the stone three ways</span><span><b>2</b> Work through H‑I‑P‑P</span><span><b>3</b> Compare it to a document</span><span><b>4</b> Copy your answers into Canvas</span></div>
+  </header>
+
+  <section aria-labelledby="ways-h" style="display:grid;gap:12px">
+    <h2 id="ways-h">1 · Look at it three ways</h2>
+    <div class="ways">
+      <div class="way"><span class="k">The diagram</span><h3>Tap the parts of the stone</h3><p>The drawing below is a simplified map of the carving. Tap any part to learn what it shows and why a historian cares.</p></div>
+      <div class="way"><span class="k">Mr. Sam's 3D print</span><h3>Hold the model</h3><p>The real stone is about <b>12 feet across</b> and weighs about <b>24 tons</b>. Feel how deep the carving goes. Notice what a flat picture hides.</p></div>
+      <div class="way"><span class="k">The video</span><h3>Watch it up close</h3><p><a href="https://drive.google.com/file/d/15bKBBCkWzeVLEiAApL3d_KlWxvQat6e3/view?usp=sharing" target="_blank" rel="noopener">Video: Aztec Sun Stone ↗</a></p></div>
+    </div>
+    <div class="turn" style="max-width:760px">
+      <label for="a-look">Your turn: What did the 3D print or the video show you that the drawing couldn't?</label>
+      <textarea id="a-look" data-key="look" placeholder="Example: When I held the print I could tell that..."></textarea>
+    </div>
+  </section>
+
+  <section aria-labelledby="hipp-h" style="display:grid;gap:12px">
+    <h2 id="hipp-h">2 · Work through HIPP</h2>
+    <div class="main">
+      <div class="specimen">
+        <div class="stonebox">
+          <svg class="stone" viewBox="0 0 400 400" role="img" aria-labelledby="svgt">
+            <title id="svgt">Simplified diagram of the Aztec Sun Stone with tappable parts</title>
+            <defs>
+              <radialGradient id="g" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="var(--stone-lt)"/><stop offset="1" stop-color="var(--stone)"/></radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="196" fill="url(#g)" stroke="var(--stone-dk)" stroke-width="3"/>
+            <!-- serpents ring -->
+            <g class="spot" data-id="serpents" tabindex="0" role="button" aria-label="Fire serpents">
+              <path class="hit" d="M200 4 a196 196 0 1 1 -0.1 0 Z M200 34 a166 166 0 1 0 0.1 0 Z" fill-rule="evenodd"/>
+              <circle cx="200" cy="200" r="181" fill="none" stroke="var(--stone-dk)" stroke-width="2" stroke-dasharray="10 6"/>
+              <circle cx="200" cy="200" r="168" fill="none" stroke="var(--stone-dk)" stroke-width="2"/>
+              <circle cx="178" cy="372" r="13" fill="var(--stone-dk)"/><circle cx="222" cy="372" r="13" fill="var(--stone-dk)"/>
+              <circle cx="178" cy="370" r="5" fill="var(--stone-lt)"/><circle cx="222" cy="370" r="5" fill="var(--stone-lt)"/>
+            </g>
+            <!-- 13 reed glyph -->
+            <g class="spot" data-id="reed" tabindex="0" role="button" aria-label="Date glyph 13 Reed">
+              <rect class="hit" x="178" y="6" width="44" height="34" rx="4"/>
+              <rect x="184" y="10" width="32" height="26" rx="3" fill="var(--stone-lt)" stroke="var(--stone-dk)" stroke-width="2"/>
+              <line x1="200" y1="13" x2="200" y2="33" stroke="var(--stone-dk)" stroke-width="3"/>
+              <line x1="193" y1="18" x2="207" y2="18" stroke="var(--stone-dk)" stroke-width="2"/>
+            </g>
+            <!-- rays -->
+            <g class="spot" data-id="rays" tabindex="0" role="button" aria-label="Sun rays">
+              <path class="hit" d="M200 32 a168 168 0 1 1 -0.1 0 Z M200 58 a142 142 0 1 0 0.1 0 Z" fill-rule="evenodd"/>
+              <g fill="var(--stone-dk)">
+                <polygon points="200,36 190,60 210,60"/><polygon points="200,364 190,340 210,340"/>
+                <polygon points="36,200 60,190 60,210"/><polygon points="364,200 340,190 340,210"/>
+                <polygon points="84,84 109,96 96,109" /><polygon points="316,84 291,96 304,109"/>
+                <polygon points="84,316 109,304 96,291"/><polygon points="316,316 291,304 304,291"/>
+              </g>
+            </g>
+            <!-- day signs ring -->
+            <g class="spot" data-id="days" tabindex="0" role="button" aria-label="Ring of 20 day signs">
+              <path class="hit" d="M200 60 a140 140 0 1 1 -0.1 0 Z M200 92 a108 108 0 1 0 0.1 0 Z" fill-rule="evenodd"/>
+              <circle cx="200" cy="200" r="139" fill="none" stroke="var(--stone-dk)" stroke-width="2"/>
+              <circle cx="200" cy="200" r="109" fill="none" stroke="var(--stone-dk)" stroke-width="2"/>
+              <g id="daysegs"></g>
+            </g>
+            <!-- four suns / ollin -->
+            <g class="spot" data-id="suns" tabindex="0" role="button" aria-label="Four earlier suns">
+              <path class="hit" d="M200 94 a106 106 0 1 1 -0.1 0 Z M200 156 a44 44 0 1 0 0.1 0 Z" fill-rule="evenodd"/>
+              <g fill="var(--stone-lt)" stroke="var(--stone-dk)" stroke-width="2">
+                <rect x="124" y="124" width="46" height="46" rx="4" transform="rotate(0 147 147)"/>
+                <rect x="230" y="124" width="46" height="46" rx="4"/>
+                <rect x="124" y="230" width="46" height="46" rx="4"/>
+                <rect x="230" y="230" width="46" height="46" rx="4"/>
+              </g>
+              <g fill="var(--stone-dk)">
+                <circle cx="140" cy="140" r="4"/><circle cx="154" cy="140" r="4"/><circle cx="140" cy="154" r="4"/><circle cx="154" cy="154" r="4"/>
+                <circle cx="246" cy="140" r="4"/><circle cx="260" cy="140" r="4"/><circle cx="246" cy="154" r="4"/><circle cx="260" cy="154" r="4"/>
+                <circle cx="140" cy="246" r="4"/><circle cx="154" cy="246" r="4"/><circle cx="140" cy="260" r="4"/><circle cx="154" cy="260" r="4"/>
+                <circle cx="246" cy="246" r="4"/><circle cx="260" cy="246" r="4"/><circle cx="246" cy="260" r="4"/><circle cx="260" cy="260" r="4"/>
+              </g>
+            </g>
+            <!-- Moctezuma glyph -->
+            <g class="spot" data-id="ruler" tabindex="0" role="button" aria-label="Ruler's name glyph">
+              <rect class="hit" x="184" y="112" width="32" height="34" rx="4"/>
+              <rect x="190" y="118" width="20" height="22" rx="3" fill="var(--stone-lt)" stroke="var(--stone-dk)" stroke-width="2"/>
+              <path d="M193 124 h14 M196 130 h8" stroke="var(--stone-dk)" stroke-width="2"/>
+            </g>
+            <!-- center face -->
+            <g class="spot" data-id="face" tabindex="0" role="button" aria-label="Central face">
+              <circle class="hit" cx="200" cy="200" r="44"/>
+              <circle cx="200" cy="200" r="38" fill="var(--stone-lt)" stroke="var(--stone-dk)" stroke-width="2.5"/>
+              <ellipse cx="186" cy="192" rx="6" ry="4" fill="var(--stone-dk)"/><ellipse cx="214" cy="192" rx="6" ry="4" fill="var(--stone-dk)"/>
+              <path d="M194 214 L200 234 L206 214 Z" fill="var(--stone-dk)"/>
+              <path d="M188 210 q12 6 24 0" stroke="var(--stone-dk)" stroke-width="2" fill="none"/>
+            </g>
+            <!-- hands -->
+            <g class="spot" data-id="hands" tabindex="0" role="button" aria-label="Clawed hands holding hearts">
+              <rect class="hit" x="108" y="182" width="40" height="36" rx="6"/>
+              <rect class="hit" x="252" y="182" width="40" height="36" rx="6"/>
+              <g fill="var(--stone-dk)">
+                <path d="M146 192 l-22 -6 l4 8 l-10 0 l6 7 l-8 4 l30 3 Z"/>
+                <path d="M254 192 l22 -6 l-4 8 l10 0 l-6 7 l8 4 l-30 3 Z"/>
+              </g>
+              <circle cx="126" cy="210" r="6" fill="var(--red)"/><circle cx="274" cy="210" r="6" fill="var(--red)"/>
+            </g>
+          </svg>
+          <p class="cap">Simplified diagram, not to scale. Original: basalt, about 12 ft across, Museo Nacional de Antropología, Mexico City.</p>
+        </div>
+        <div class="info" id="info" aria-live="polite">
+          <h3 id="info-t">Tap a part of the stone</h3>
+          <p id="info-w">Each part is a clue. The green buttons in the HIPP steps will light up the clue they're talking about.</p>
+          <p class="hist" id="info-h"></p>
+        </div>
+      </div>
+
+      <div class="bench">
+        <div class="tabs" role="tablist" aria-label="HIPP steps">
+          <button class="tab" role="tab" id="t-H" aria-controls="pane" aria-selected="true" data-step="H"><span class="L">H</span><span class="n">Historical Context</span><span class="done" id="d-H"></span></button>
+          <button class="tab" role="tab" id="t-I" aria-controls="pane" aria-selected="false" data-step="I"><span class="L">I</span><span class="n">Intended Audience</span><span class="done" id="d-I"></span></button>
+          <button class="tab" role="tab" id="t-P1" aria-controls="pane" aria-selected="false" data-step="P1"><span class="L">P</span><span class="n">Purpose</span><span class="done" id="d-P1"></span></button>
+          <button class="tab" role="tab" id="t-P2" aria-controls="pane" aria-selected="false" data-step="P2"><span class="L">P</span><span class="n">Point of View</span><span class="done" id="d-P2"></span></button>
+        </div>
+        <div class="pane" id="pane" role="tabpanel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bridge" aria-labelledby="bridge-h">
+    <h2 id="bridge-h">3 · Same four questions, any source</h2>
+    <p class="lede" style="margin:0">Remember the conquistador's letter from the HIPP video? HIPP works the same way on a letter as on a stone. Only the clues change.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>The Sun Stone (an object)</th><th>The conquistador's letter, 1519 (a document)</th></tr></thead>
+        <tbody>
+          <tr><td class="L">H</td><td>Carved in Tenochtitlan in the early 1500s, when the Mexica empire was at its height.</td><td>Written in 1519 during a bloody conquest, not the peaceful surrender it claims.</td></tr>
+          <tr><td class="L">I</td><td>Mexica nobles, priests, crowds at ceremonies, visitors from conquered peoples, and the gods.</td><td>The King of Spain, who paid for the expedition and expected a return.</td></tr>
+          <tr><td class="L">P</td><td>To honor the sun and show that the empire and its ruler kept the world running.</td><td>To convince the king the expedition was worth it and would bring future wealth.</td></tr>
+          <tr><td class="L">P</td><td>The view of the Mexica ruler and priests. Conquered peoples and captives aren't heard.</td><td>The view of a conquistador seeking personal glory. The people he conquered aren't heard.</td></tr>
+          <tr><td></td><td><b>Clues come from:</b> images, size, material, where it stood</td><td><b>Clues come from:</b> words, who signed it, who it's addressed to, word choice</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="turn" style="max-width:760px">
+      <label for="a-bridge">Your turn: Next you'll HIPP a written document. Which HIPP step will be <i>easier</i> with words to read, and which will be <i>harder</i>? Explain.</label>
+      <textarea id="a-bridge" data-key="bridge"></textarea>
+    </div>
+  </section>
+
+  <section class="submit" aria-labelledby="sub-h">
+    <h2 id="sub-h">4 · Turn it in</h2>
+    <div class="row">
+      <div class="turn"><label for="a-name">Your name</label><input type="text" id="a-name" data-key="name" autocomplete="name"></div>
+      <div class="turn"><label for="a-per">Class period</label><input type="text" id="a-per" data-key="period" inputmode="numeric"></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn primary" id="copy">Copy my answers</button>
+      <span class="status" id="status"></span>
+    </div>
+    <p class="teacher">Then open the Canvas assignment and paste (Ctrl+V, or ⌘+V on a Mac) into the text box. Your answers are also saved in this browser in case you close the page.</p>
+    <label for="out" class="teacher">Your answers, ready to paste:</label>
+    <textarea id="out" class="out" readonly></textarea>
+  </section>
+</div>
+
+<script>
+const SPOTS={
+  face:{t:"The central face",w:"A face with a stone knife for a tongue sits in the very center. Most scholars identify it as Tonatiuh, the sun god; some argue it is the earth deity Tlaltecuhtli.",h:"<b>Why a historian cares:</b> whatever sits at the center is what the makers thought mattered most. Here, that is the sun."},
+  hands:{t:"Clawed hands holding hearts",w:"On each side of the face, a clawed hand grips a human heart.",h:"<b>Why a historian cares:</b> this connects the sun to sacrifice. The Mexica believed the sun needed nourishment to keep moving."},
+  suns:{t:"The four earlier suns",w:"Four boxes around the face stand for four earlier worlds, or 'suns,' that the Mexica believed had already been destroyed by jaguars, wind, fiery rain, and flood. Together the boxes form the sign 'Four Movement,' the date the current Fifth Sun was expected to end.",h:"<b>Why a historian cares:</b> it shows a worldview where the world had ended before and could end again."},
+  ruler:{t:"A ruler's name glyph",w:"A small glyph near the top of the center is read by many scholars as the name of Moctezuma II, who ruled from 1502 to 1520.",h:"<b>Why a historian cares:</b> it helps date the stone and ties the ruler's name to the sun at the center of the universe."},
+  days:{t:"The ring of 20 day signs",w:"This ring holds the 20 named days of the Mexica ritual calendar, such as Crocodile, Wind, House, and Flower.",h:"<b>Why a historian cares:</b> it's why people call it the 'Aztec Calendar,' though it was not used to tell the date the way you use a calendar."},
+  rays:{t:"The sun's rays",w:"Pointed rays shoot outward from the center, like light spreading from the sun.",h:"<b>Why a historian cares:</b> the whole design is built around the sun, which supports the claim that the stone is about the sun, not about telling time."},
+  serpents:{t:"Two fire serpents",w:"Two fire serpents (xiuhcoatl) wrap around the outer edge. Their heads meet at the bottom, with faces emerging from their open jaws.",h:"<b>Why a historian cares:</b> fire serpents were weapons of the gods. They frame the stone with power and war."},
+  reed:{t:"The date '13 Reed'",w:"At the very top, between the serpents' tails, is the date 13 Reed, the year the Mexica believed the Fifth Sun was born.",h:"<b>Why a historian cares:</b> it's a reminder that the makers measured time in their own system, not ours."}
+};
+
+const STEPS={
+  H:{q:"When and where was this made, and what was going on?",
+    think:["First I place it on a timeline. The stone was carved in Tenochtitlan, the Mexica (Aztec) capital where Mexico City is today. Most scholars date it to about 1502–1520. That is only a few years before the conquistadors arrive in 1519.",
+      "Then I ask what was happening. The Mexica empire was at its height. It collected tribute from conquered peoples and fought wars to take captives for sacrifice. The state religion taught that the sun needed sacrifice to keep moving across the sky.",
+      "One more twist: this stone has a second history. After the conquest, Spanish authorities had it buried. It was dug up in 1790 when workers repaved Mexico City's main square. That tells me the Spanish saw it as dangerous, not as art."],
+    chips:["ruler","hands"],
+    move:"<b>The move:</b> Put the source on a timeline, then ask what was happening in that place at that moment.",
+    turn:"In your own words: Why does it matter that the stone was carved only a few years before the Spanish arrived?"},
+  I:{q:"Who was meant to see it?",
+    think:["A stone this big (12 feet, 24 tons) was not made to be passed around or read quietly. It was made to be seen in public.",
+      "Most people in Tenochtitlan didn't read writing the way we do. So the stone speaks in pictures that a crowd could understand: a sun, hearts, serpents.",
+      "My best answer: Mexica nobles and priests during ceremonies, crowds in the sacred precinct, and visitors from the peoples the empire had conquered. The Mexica would also have said the gods themselves were an audience."],
+    chips:["face","serpents"],
+    move:"<b>The move:</b> Use the source's size, material, and where it was kept to figure out who saw it.",
+    turn:"In your own words: How would the stone's message change for a Mexica noble compared to a visitor from a conquered people?"},
+  P1:{q:"Why was it made?",
+    think:["I look at what sits at the center: the sun. Then I look at what the sun is holding: human hearts. So one purpose is religious: to honor the sun and show that it needed sacrifice.",
+      "But the ruler's name is carved right next to the sun. That tells me a second purpose is political: to show that the ruler and his empire kept the sun, and the whole world, running.",
+      "Historians still debate exactly how the stone was used. It may have been an altar or a ceremonial surface. They agree it was not a calendar for checking the date. Historians admit what they don't know."],
+    chips:["face","hands","ruler","rays"],
+    move:"<b>The move:</b> Ask \"why would someone spend this much effort making this?\" Look for more than one reason.",
+    turn:"In your own words: Which clue on the stone best supports the idea that it had a political purpose? Explain."},
+  P2:{q:"Whose view of the world does it show, and whose is missing?",
+    think:["The stone shows the view of the Mexica ruler and priests. In their view the world had already ended four times, it could end again, and Tenochtitlan stood at the center of the universe.",
+      "Now I ask who is missing. We don't hear from the conquered peoples who paid tribute, the captives who were sacrificed, or ordinary farmers. Their view of the empire might be very different.",
+      "That doesn't make the stone useless. It makes it great evidence of what Mexica leaders believed, and weak evidence of what everyone else thought."],
+    chips:["suns","reed","days"],
+    move:"<b>The move:</b> Name whose view the source shows. Then name whose view is missing.",
+    turn:"In your own words: Name one group whose point of view is missing from the stone. What might they have said about it?"}
+};
+const ORDER=["H","I","P1","P2"];
+const NAMES={H:"H - Historical Context",I:"I - Intended Audience",P1:"P - Purpose",P2:"P - Point of View"};
+
+let store={};
+try{store=JSON.parse(localStorage.getItem("hipp-sunstone")||"{}")||{}}catch(e){store={}}
+function save(){try{localStorage.setItem("hipp-sunstone",JSON.stringify(store))}catch(e){}}
+
+// day sign segments
+(function(){const g=document.getElementById("daysegs");let s="";for(let i=0;i<20;i++){const a=(i/20)*Math.PI*2;const x1=200+109*Math.sin(a),y1=200-109*Math.cos(a),x2=200+139*Math.sin(a),y2=200-139*Math.cos(a);s+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--stone-dk)" stroke-width="2"/>`;const am=a+Math.PI/20;s+=`<rect x="${(200+124*Math.sin(am)-5).toFixed(1)}" y="${(200-124*Math.cos(am)-5).toFixed(1)}" width="10" height="10" rx="2" fill="var(--stone-dk)" opacity=".55"/>`}g.innerHTML=s})();
+
+function showSpot(id){
+  document.querySelectorAll(".spot").forEach(s=>s.classList.toggle("on",s.dataset.id===id));
+  const d=SPOTS[id];if(!d)return;
+  document.getElementById("info-t").textContent=d.t;
+  document.getElementById("info-w").textContent=d.w;
+  document.getElementById("info-h").innerHTML=d.h;
+}
+document.querySelectorAll(".spot").forEach(s=>{
+  s.addEventListener("click",()=>showSpot(s.dataset.id));
+  s.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showSpot(s.dataset.id)}});
+});
+
+let cur="H";
+function render(){
+  const st=STEPS[cur],i=ORDER.indexOf(cur);
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.step===cur?"true":"false"));
+  document.getElementById("pane").setAttribute("aria-labelledby","t-"+cur);
+  document.getElementById("pane").innerHTML=`
+    <p class="q">${st.q}</p>
+    <div class="think"><span class="who">Mr. Sam's thinking</span>${st.think.map(p=>`<p>${p}</p>`).join("")}</div>
+    <div><p class="eyebrow" style="margin-bottom:6px">Evidence on the stone (tap to see it)</p>
+      <div class="chips">${st.chips.map(c=>`<button class="chip" data-spot="${c}">${SPOTS[c].t}</button>`).join("")}</div></div>
+    <div class="move">${st.move}</div>
+    <div class="turn"><label for="a-${cur}">Your turn: ${st.turn.replace("In your own words: ","")}</label>
+      <textarea id="a-${cur}" data-key="${cur}"></textarea></div>
+    <div class="nav"><button class="btn" id="prev" ${i===0?"disabled":""}>← Back</button>
+      <button class="btn primary" id="next">${i===3?"On to step 3 ↓":"Next: "+NAMES[ORDER[i+1]].split(" - ")[1]+" →"}</button></div>`;
+  document.querySelectorAll("#pane .chip").forEach(c=>c.addEventListener("click",()=>{showSpot(c.dataset.spot);if(window.innerWidth<=900)document.querySelector(".stonebox").scrollIntoView({behavior:"smooth",block:"start"})}));
+  bindField(document.getElementById("a-"+cur));
+  document.getElementById("prev").onclick=()=>{cur=ORDER[i-1];render()};
+  document.getElementById("next").onclick=()=>{if(i<3){cur=ORDER[i+1];render();document.querySelector(".bench").scrollIntoView({behavior:"smooth",block:"start"})}else document.getElementById("bridge-h").scrollIntoView({behavior:"smooth"})};
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{cur=t.dataset.step;render()}));
+
+function marks(){ORDER.forEach(k=>{document.getElementById("d-"+k).textContent=(store[k]||"").trim()?"✓ answered":""})}
+function bindField(el){
+  if(!el)return;el.value=store[el.dataset.key]||"";
+  el.addEventListener("input",()=>{store[el.dataset.key]=el.value;save();marks();build()});
+}
+document.querySelectorAll("[data-key]").forEach(bindField);
+
+function build(){
+  const L=[];
+  L.push("HIPP the Sun Stone");
+  L.push("Name: "+(store.name||"")+"    Period: "+(store.period||""));
+  L.push("");
+  L.push("LOOKING THREE WAYS: What the 3D print or video showed me");
+  L.push((store.look||"").trim()||"(no answer yet)");
+  ORDER.forEach(k=>{L.push("");L.push(NAMES[k].toUpperCase());L.push("Q: "+STEPS[k].turn.replace("In your own words: ",""));L.push((store[k]||"").trim()||"(no answer yet)")});
+  L.push("");L.push("OBJECT VS. DOCUMENT: Easier and harder HIPP steps");L.push((store.bridge||"").trim()||"(no answer yet)");
+  const t=L.join("\n");document.getElementById("out").value=t;return t;
+}
+document.getElementById("copy").addEventListener("click",()=>{
+  const t=build(),st=document.getElementById("status");
+  const missing=["look",...ORDER,"bridge","name"].filter(k=>!(store[k]||"").trim()).length;
+  const done=()=>{st.textContent=missing?`Copied. Heads up: ${missing} answer${missing>1?"s are":" is"} still blank.`:"Copied! Now paste it into Canvas."};
+  const fallback=()=>{const o=document.getElementById("out");o.focus();o.select();st.textContent="Your answers are selected below. Press Ctrl+C (⌘+C on a Mac) to copy."};
+  try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
+});
+
+render();marks();build();
+</script>
+</body>
+</html>
