@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIPP Luther's Theses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+/* Layout: the printed broadsheet on the left, the HIPP workbench on the right (same bench as the Sun Stone page); stacks on phones. */
+:root{
+  --bg:#eef0ef; --panel:#ffffff; --ink:#1f2523; --muted:#5b6662; --line:#d3d8d5;
+  --paper:#f4efe3; --paper-ink:#2b2118; --paper-line:#d8cdb6;
+  --hipp:#c06a1f; --hipp-soft:#f7e6d4;
+  --jade:#16806e; --jade-soft:#d9efe9;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-print:"IM Fell English",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151918; --panel:#1e2422; --ink:#e7ebe9; --muted:#a2ada8; --line:#333c39;
+  --paper:#2a261f; --paper-ink:#ece3d2; --paper-line:#4a4234;
+  --hipp:#e99047; --hipp-soft:#3a2a1b; --jade:#4cc3ab; --jade-soft:#17322d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151918; --panel:#1e2422; --ink:#e7ebe9; --muted:#a2ada8; --line:#333c39;
+  --paper:#2a261f; --paper-ink:#ece3d2; --paper-line:#4a4234;
+  --hipp:#e99047; --hipp-soft:#3a2a1b; --jade:#4cc3ab; --jade-soft:#17322d; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+.home{font-size:.9rem;color:var(--muted);text-decoration:none}
+.home:hover{color:var(--hipp)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,4.5vw,3rem);font-weight:800}
+h2{font-size:1.5rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.lede{max-width:66ch;color:var(--muted);margin-top:10px}
+.tiles{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.tile{font-family:var(--f-display);font-weight:800;width:46px;height:46px;border-radius:8px;display:grid;place-items:center;background:var(--hipp);color:#fff;font-size:1.4rem}
+.steps{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.steps span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.9rem}
+.steps b{color:var(--hipp)}
+.how{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:8px;max-width:820px}
+.how ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.how a{color:var(--jade);font-weight:700}
+
+.main{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.doccol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:12px;max-height:calc(100vh - 24px);overflow:auto;padding-bottom:4px}
+@media (max-width:900px){.doccol{position:static;max-height:none;overflow:visible}}
+.doc{background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-line);border-radius:4px;padding:22px 20px;display:grid;gap:14px;box-shadow:0 1px 0 var(--paper-line),0 6px 18px rgba(0,0,0,.06)}
+.doc .head{font-family:var(--f-print);text-align:center;display:grid;gap:4px;border-bottom:1px solid var(--paper-line);padding-bottom:12px}
+.doc .head .big{font-size:1.5rem;line-height:1.2}
+.doc .head .sm{font-style:italic;font-size:.95rem}
+.th{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:4px 10px;align-items:start}
+.th .num{font-family:var(--f-print);font-size:1.25rem;text-align:right;line-height:1.4}
+.th .txt{font-family:var(--f-print);font-size:1.12rem;line-height:1.5}
+.th .use{grid-column:2;justify-self:start;appearance:none;border:1px solid var(--jade);background:transparent;color:var(--jade);font:inherit;font-family:var(--f-body);font-size:.8rem;font-weight:700;border-radius:999px;padding:2px 10px;cursor:pointer}
+.th .use[aria-pressed="true"]{background:var(--jade);color:#fff}
+.th.picked .txt{background:color-mix(in srgb,var(--jade) 16%,transparent);border-radius:4px;box-shadow:0 0 0 4px color-mix(in srgb,var(--jade) 16%,transparent)}
+.term{display:inline;appearance:none;border:0;background:none;padding:0;font:inherit;color:inherit;border-bottom:2px dotted var(--hipp);cursor:help}
+.term:focus-visible{outline:2px solid var(--hipp)}
+.cite{font-size:.82rem;color:var(--muted)}
+.gloss{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--hipp);border-radius:10px;padding:12px 14px;min-height:64px}
+.gloss b{font-family:var(--f-display)}
+
+.bench{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);padding:12px 6px 10px;cursor:pointer;display:grid;justify-items:center;gap:2px;font-family:var(--f-body);border-bottom:3px solid transparent}
+.tab .L{font-family:var(--f-display);font-weight:800;font-size:1.5rem;color:var(--hipp)}
+.tab .n{font-size:.78rem;line-height:1.2;text-align:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--hipp);background:var(--hipp-soft)}
+.tab:focus-visible{outline:2px solid var(--hipp);outline-offset:-2px}
+.tab .done{font-size:.7rem;color:var(--jade);font-weight:700;min-height:1em}
+.pane{padding:20px;display:grid;gap:16px}
+.q{font-family:var(--f-display);font-size:1.3rem;font-weight:600}
+.helps{display:flex;gap:8px;flex-wrap:wrap}
+.hint{background:var(--bg);border-radius:10px;padding:10px 14px;font-size:.95rem}
+.hint b{color:var(--hipp)}
+.turn{display:grid;gap:8px}
+.turn label{font-weight:700}
+textarea,input[type=text]{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{min-height:120px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--hipp);outline-offset:1px}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.88rem;color:var(--muted)}
+.evid b{color:var(--jade)}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}
+.btn.small{padding:6px 12px;font-size:.9rem}
+.btn.primary{background:var(--hipp);border-color:var(--hipp);color:#fff}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btn[disabled]{opacity:.45;cursor:default}
+.model{border:1px solid var(--hipp);border-radius:10px;overflow:hidden}
+.model .mh{background:var(--hipp-soft);padding:8px 14px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--hipp)}
+.model .mb{padding:12px 14px;display:grid;gap:10px}
+.checks{display:grid;gap:6px;font-size:.95rem}
+.checks label{display:flex;gap:8px;align-items:flex-start;font-weight:400}
+.checks input{margin-top:.3em;accent-color:var(--jade)}
+.nav{display:flex;justify-content:space-between;gap:10px}
+
+.wrapup{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:14px}
+.row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+.out{min-height:160px;font-size:.9rem}
+.status{font-size:.9rem;color:var(--jade);font-weight:700;min-height:1.2em}
+.note{font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.pane{animation:in .25s ease}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="home" href="../">← All simulations</a>
+    <div class="eyebrow">Early American History · Unit 1 · HIPP practice: guided</div>
+    <h1>HIPP Luther's Theses</h1>
+    <p class="lede">With the Sun Stone, you watched a historian work. Now it's your turn, with help nearby. This source is a document: a list of arguments a German monk wrote in 1517 that helped start the Protestant Reformation.</p>
+    <div class="tiles" aria-hidden="true"><span class="tile">H</span><span class="tile">I</span><span class="tile">P</span><span class="tile">P</span></div>
+    <div class="steps"><span><b>1</b> Read the excerpts</span><span><b>2</b> Answer each HIPP step</span><span><b>3</b> Compare with the Sun Stone</span><span><b>4</b> Copy your answers into Canvas</span></div>
+  </header>
+
+  <section class="how" aria-labelledby="how-h">
+    <h3 id="how-h">How each HIPP step works</h3>
+    <ol>
+      <li>Read the question and write your answer. Use a hint or a sentence starter only if you're stuck.</li>
+      <li>Tap <b>Use as evidence</b> under the thesis that backs up your answer.</li>
+      <li>After you write at least 15 words, tap <b>Check my thinking</b> to compare your answer with Mr. Sam's. Then revise if you want.</li>
+    </ol>
+    <p class="note">Need background first? <a href="https://drive.google.com/file/d/1qq603Vc8snBqDX5Xxn47gZGam50yqt97/view?usp=sharing" target="_blank" rel="noopener">Video: Luther and the Protestant Reformation ↗</a></p>
+  </section>
+
+  <section aria-labelledby="work-h" style="display:grid;gap:12px">
+    <h2 id="work-h">Read and HIPP the source</h2>
+    <div class="main">
+      <div class="doccol">
+        <article class="doc" aria-label="Excerpts from the Ninety-five Theses">
+          <div class="head">
+            <span class="big">Disputation on the Power and Efficacy of Indulgences</span>
+            <span class="sm">commonly called the Ninety-five Theses · Wittenberg, 1517</span>
+          </div>
+          <div id="theses" style="display:grid;gap:14px"></div>
+          <p class="cite">Martin Luther, 1517. Written in Latin. English translation from <i>Works of Martin Luther</i>, vol. 1 (Philadelphia: A. J. Holman, 1915). Excerpts; 8 of the original 95 shown. Words with a dotted underline have definitions: tap them.</p>
+        </article>
+        <div class="gloss" id="gloss" aria-live="polite"><b>Tap a dotted word</b> to see what it means.</div>
+      </div>
+
+      <div class="bench">
+        <div class="tabs" role="tablist" aria-label="HIPP steps">
+          <button class="tab" role="tab" id="t-H" aria-controls="pane" aria-selected="true" data-step="H"><span class="L">H</span><span class="n">Historical Context</span><span class="done" id="d-H"></span></button>
+          <button class="tab" role="tab" id="t-I" aria-controls="pane" aria-selected="false" data-step="I"><span class="L">I</span><span class="n">Intended Audience</span><span class="done" id="d-I"></span></button>
+          <button class="tab" role="tab" id="t-P1" aria-controls="pane" aria-selected="false" data-step="P1"><span class="L">P</span><span class="n">Purpose</span><span class="done" id="d-P1"></span></button>
+          <button class="tab" role="tab" id="t-P2" aria-controls="pane" aria-selected="false" data-step="P2"><span class="L">P</span><span class="n">Point of View</span><span class="done" id="d-P2"></span></button>
+        </div>
+        <div class="pane" id="pane" role="tabpanel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrapup" aria-labelledby="sum-h">
+    <h2 id="sum-h">Stone vs. document</h2>
+    <div class="turn" style="max-width:760px">
+      <label for="a-compare">After the Sun Stone, you predicted which HIPP step would be easier with a written document. Were you right? Which step was easier with Luther's words, and which was harder? Explain.</label>
+      <textarea id="a-compare" data-key="compare"></textarea>
+    </div>
+  </section>
+
+  <section class="wrapup" aria-labelledby="sub-h">
+    <h2 id="sub-h">Turn it in</h2>
+    <div class="row">
+      <div class="turn"><label for="a-name">Your name</label><input type="text" id="a-name" data-key="name" autocomplete="name"></div>
+      <div class="turn"><label for="a-per">Class period</label><input type="text" id="a-per" data-key="period" inputmode="numeric"></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn primary" id="copy">Copy my answers</button>
+      <span class="status" id="status"></span>
+    </div>
+    <p class="note">Then open the Canvas assignment and paste (Ctrl+V, or ⌘+V on a Mac) into the text box. Your answers are also saved in this browser in case you close the page.</p>
+    <label for="out" class="note">Your answers, ready to paste:</label>
+    <textarea id="out" class="out" readonly></textarea>
+  </section>
+</div>
+
+<script>
+const TERMS={
+  truth:["Disputation","A formal debate between scholars. Luther was inviting other scholars to argue about his points."],
+  theology:["Sacred Theology","The study of God and religious teaching. Luther taught it at the University of Wittenberg."],
+  poen:["Poenitentiam agite","Latin for \"Repent\" or \"Do penance.\" Luther quotes Jesus's words from the Latin Bible."],
+  repent:["Repentance","Being truly sorry for sin and turning away from it."],
+  indulg:["Indulgences / pardons","Church documents that people could buy. Preachers said they reduced the punishment for sins after death."],
+  purg:["Purgatory","In Catholic teaching, a place where souls are punished and made clean before entering heaven."],
+  remission:["Remission","Canceling or forgiving a debt or punishment."],
+  exactions:["Exactions","Demands for money."],
+  peters:["St. Peter's church","St. Peter's Basilica in Rome. The pope was raising money to rebuild it, partly by selling indulgences."],
+  sheep:["His sheep","The pope's followers. Church leaders often called ordinary believers a flock of sheep."]
+};
+const T=(k,txt)=>`<button class="term" data-term="${k}">${txt}</button>`;
+const THESES=[
+  {id:"Opening",n:"¶",txt:`Out of love for the truth and the desire to bring it to light, the following propositions will be discussed at Wittenberg, under the presidency of the Reverend Father Martin Luther, Master of Arts and of ${T("theology","Sacred Theology")}, and Lecturer in Ordinary on the same at that place. Wherefore he requests that those who are unable to be present and debate orally with us, may do so by letter.`},
+  {id:"Thesis 1",n:"1",txt:`Our Lord and Master Jesus Christ, when He said ${T("poen","<i>Poenitentiam agite</i>")}, willed that the whole life of believers should be ${T("repent","repentance")}.`},
+  {id:"Thesis 21",n:"21",txt:`Therefore those preachers of ${T("indulg","indulgences")} are in error, who say that by the pope's indulgences a man is freed from every penalty, and saved;`},
+  {id:"Thesis 27",n:"27",txt:`They preach man who say that so soon as the penny jingles into the money-box, the soul flies out [of ${T("purg","purgatory")}].`},
+  {id:"Thesis 36",n:"36",txt:`Every truly repentant Christian has a right to full ${T("remission","remission")} of penalty and guilt, even without letters of ${T("indulg","pardon")}.`},
+  {id:"Thesis 43",n:"43",txt:`Christians are to be taught that he who gives to the poor or lends to the needy does a better work than buying ${T("indulg","pardons")};`},
+  {id:"Thesis 50",n:"50",txt:`Christians are to be taught that if the pope knew the ${T("exactions","exactions")} of the pardon-preachers, he would rather that ${T("peters","St. Peter's church")} should go to ashes, than that it should be built up with the skin, flesh and bones of ${T("sheep","his sheep")}.`},
+  {id:"Thesis 86",n:"86",txt:`Again: "Why does not the pope, whose wealth is to-day greater than the riches of the richest, build just this one church of St. Peter with his own money, rather than with the money of poor believers?"`}
+];
+
+const STEPS={
+  H:{q:"When and where was this written, and what was going on?",
+    hints:["Start with the source line under the document. When was it written? Where?","Theses 21 and 27 are complaints about something being sold. What was it, and why would a church sell it?"],
+    starter:"Luther wrote this in ____ in ____. At the time, the Church was ",
+    model:"Luther wrote the Ninety-five Theses in 1517 in Wittenberg, a town in Saxony, part of the Holy Roman Empire in what is now Germany. The Church was selling indulgences to raise money to rebuild St. Peter's Basilica in Rome, and a preacher named Johann Tetzel was selling them near Wittenberg. The printing press was also new enough that ideas could spread fast.",
+    ev:["Thesis 27","Thesis 86"],
+    checks:["I gave a date and a place.","I explained what was being sold (indulgences).","I said why the Church was raising money."]},
+  I:{q:"Who was meant to read it?",
+    hints:["What language did Luther write in? In 1517, who could read that language?","Read the opening paragraph. What kind of event is he inviting people to?","Bonus: printers soon translated the theses into German. How would that change who read them?"],
+    starter:"Luther first wrote for ____ because ____. But later, ",
+    model:"Luther wrote in Latin, the language of priests and scholars, and invited people to a formal debate. So his first audience was other scholars and church leaders. He also sent a copy to the Archbishop of Mainz, a church leader who profited from indulgence sales. Within a few weeks, printers had translated the theses into German, and ordinary Germans were reading them. The audience grew far beyond what Luther planned.",
+    ev:["Opening"],
+    checks:["I named a first audience (scholars, priests, or church leaders).","I used a clue, like the Latin language or the invitation to debate.","I noticed the audience grew once the theses were printed in German."]},
+  P1:{q:"Why did Luther write it?",
+    hints:["Is Luther trying to leave the Church or fix it? Read Thesis 50 closely.","What does Luther say is better than buying pardons? Look at Thesis 43."],
+    starter:"Luther wrote this to ____. I know this because Thesis ___ says ",
+    model:"Luther wanted to start a debate and stop what he saw as abuses in the selling of indulgences. He argued that true repentance matters to God, not buying a pardon (Theses 1 and 36), and that helping the poor is better than buying pardons (Thesis 43). In 1517 he was trying to fix the Church, not leave it.",
+    ev:["Thesis 1","Thesis 36","Thesis 43"],
+    checks:["I stated a purpose in my own words.","I backed it up with a specific thesis.","I said whether Luther wanted to fix the Church or leave it."]},
+  P2:{q:"Whose view of the world does it show, and whose is missing?",
+    hints:["Who was Luther? What was his job, and what did he believe mattered most to God?","Thesis 86 asks a question about money. Whose money, and where was it going?","Who would disagree with Luther? Their voice isn't in this document."],
+    starter:"Luther sees things as a ____. He believes ____. A view that's missing is ",
+    model:"Luther was a Catholic monk and a professor of theology who believed that God forgives true repentance, not money. As a German, he was also angry that poor Germans' money was going to Rome (Thesis 86). Notice that in Thesis 50 he still respects the pope and blames the preachers instead. Missing are the views of Tetzel and the pope, who saw indulgences as proper church teaching, and of the ordinary people who bought them.",
+    ev:["Thesis 50","Thesis 86"],
+    checks:["I described who Luther was.","I named something he believed.","I named a missing point of view."]}
+};
+const ORDER=["H","I","P1","P2"];
+const NAMES={H:"H - Historical Context",I:"I - Intended Audience",P1:"P - Purpose",P2:"P - Point of View"};
+const MINW=15;
+
+let store={};
+try{store=JSON.parse(localStorage.getItem("hipp-luther")||"{}")||{}}catch(e){store={}}
+store.ev=store.ev||{};store.hints=store.hints||{};store.seen=store.seen||{};store.ck=store.ck||{};
+function save(){try{localStorage.setItem("hipp-luther",JSON.stringify(store))}catch(e){}}
+const words=s=>(s||"").trim().split(/\s+/).filter(Boolean).length;
+
+let cur="H";
+function renderDoc(){
+  const picked=store.ev[cur]||[];
+  document.getElementById("theses").innerHTML=THESES.map(t=>{
+    const on=picked.includes(t.id);
+    return `<div class="th${on?" picked":""}"><span class="num" aria-hidden="true">${t.n}</span><p class="txt"><span class="sr" style="position:absolute;left:-9999px">${t.id}: </span>${t.txt}</p>
+      <button class="use" data-id="${t.id}" aria-pressed="${on}">${on?"✓ Evidence for "+NAMES[cur].split(" - ")[1]:"Use as evidence"}</button></div>`}).join("");
+  document.querySelectorAll(".term").forEach(b=>b.addEventListener("click",()=>{const d=TERMS[b.dataset.term];document.getElementById("gloss").innerHTML=`<b>${d[0]}:</b> ${d[1]}`}));
+  document.querySelectorAll(".use").forEach(b=>b.addEventListener("click",()=>{
+    const a=store.ev[cur]=store.ev[cur]||[];const i=a.indexOf(b.dataset.id);i>=0?a.splice(i,1):a.push(b.dataset.id);
+    a.sort((x,y)=>THESES.findIndex(t=>t.id===x)-THESES.findIndex(t=>t.id===y));save();renderDoc();updateMeta();build()}));
+}
+function updateMeta(){
+  const e=document.getElementById("evid");if(!e)return;const a=store.ev[cur]||[];
+  e.innerHTML=a.length?`Evidence: <b>${a.join(", ")}</b>`:"Evidence: none yet. Tap <b>Use as evidence</b> on the document.";
+  const n=words(store[cur]);const w=document.getElementById("wc");w.textContent=`${n} word${n===1?"":"s"}`;
+  const c=document.getElementById("check");if(c)c.disabled=n<MINW&&!store.seen[cur];
+  if(c&&!store.seen[cur])c.title=n<MINW?`Write at least ${MINW} words first`:"";
+}
+function render(){
+  const st=STEPS[cur],i=ORDER.indexOf(cur),hn=store.hints[cur]||0,seen=!!store.seen[cur];
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.step===cur?"true":"false"));
+  const p=document.getElementById("pane");p.setAttribute("aria-labelledby","t-"+cur);
+  p.innerHTML=`
+    <p class="q">${st.q}</p>
+    <div class="helps">
+      <button class="btn small" id="hintbtn" ${hn>=st.hints.length?"disabled":""}>${hn>=st.hints.length?"No more hints":"Show a hint ("+(st.hints.length-hn)+" left)"}</button>
+      <button class="btn small" id="startbtn">Use a sentence starter</button>
+    </div>
+    ${st.hints.slice(0,hn).map((h,k)=>`<p class="hint"><b>Hint ${k+1}:</b> ${h}</p>`).join("")}
+    <div class="turn"><label for="a-${cur}">Your answer</label>
+      <textarea id="a-${cur}" data-key="${cur}"></textarea>
+      <div class="meta"><span class="evid" id="evid"></span><span id="wc"></span></div></div>
+    <div><button class="btn primary" id="check">${seen?"Hide Mr. Sam's answer":"Check my thinking"}</button></div>
+    <div id="modelbox" ${seen?"":"hidden"}>
+      <div class="model"><div class="mh">Mr. Sam's answer</div><div class="mb">
+        <p>${st.model}</p>
+        <p class="note">Evidence Mr. Sam used: ${st.ev.join(", ")}</p>
+        <div class="checks"><p class="eyebrow">Check your answer. Did you...</p>
+          ${st.checks.map((c,k)=>`<label><input type="checkbox" id="ck-${cur}-${k}" data-ck="${k}" ${(store.ck[cur]||[]).includes(k)?"checked":""}> ${c}</label>`).join("")}</div>
+        <p class="note">Missing something? Revise your answer above. Use your own words; don't copy Mr. Sam's.</p>
+      </div></div></div>
+    <div class="nav"><button class="btn" id="prev" ${i===0?"disabled":""}>← Back</button>
+      <button class="btn" id="next">${i===3?"Finish ↓":"Next: "+NAMES[ORDER[i+1]].split(" - ")[1]+" →"}</button></div>`;
+  const ta=document.getElementById("a-"+cur);ta.value=store[cur]||"";
+  ta.addEventListener("input",()=>{store[cur]=ta.value;save();updateMeta();marks();build()});
+  document.getElementById("hintbtn").onclick=()=>{store.hints[cur]=hn+1;save();render();build()};
+  document.getElementById("startbtn").onclick=()=>{if(!ta.value.startsWith(st.starter.slice(0,12))){ta.value=st.starter+(ta.value?"\n"+ta.value:"");store[cur]=ta.value;save();updateMeta();build()}ta.focus();ta.setSelectionRange(ta.value.indexOf("____"),ta.value.indexOf("____")+4)};
+  document.getElementById("check").onclick=()=>{if(seen){store.seen[cur]=false}else{store.seen[cur]=true}save();render();build();if(store.seen[cur])document.getElementById("modelbox").scrollIntoView({behavior:"smooth",block:"nearest"})};
+  p.querySelectorAll("[data-ck]").forEach(c=>c.addEventListener("change",()=>{const a=store.ck[cur]=store.ck[cur]||[];const k=+c.dataset.ck;c.checked?a.includes(k)||a.push(k):a.splice(a.indexOf(k),1);save();build()}));
+  document.getElementById("prev").onclick=()=>{cur=ORDER[i-1];render()};
+  document.getElementById("next").onclick=()=>{if(i<3){cur=ORDER[i+1];render();document.querySelector(".bench").scrollIntoView({behavior:"smooth",block:"start"})}else document.getElementById("sum-h").scrollIntoView({behavior:"smooth"})};
+  renderDoc();updateMeta();
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{cur=t.dataset.step;render()}));
+function marks(){ORDER.forEach(k=>{document.getElementById("d-"+k).textContent=words(store[k])>=MINW?"✓ answered":""})}
+document.querySelectorAll("[data-key]").forEach(el=>{el.value=store[el.dataset.key]||"";el.addEventListener("input",()=>{store[el.dataset.key]=el.value;save();build()})});
+
+function build(){
+  const L=["HIPP Luther's Ninety-five Theses (guided)","Name: "+(store.name||"")+"    Period: "+(store.period||"")];
+  ORDER.forEach(k=>{
+    L.push("");L.push(NAMES[k].toUpperCase());L.push("Q: "+STEPS[k].q);
+    L.push((store[k]||"").trim()||"(no answer yet)");
+    L.push("Evidence: "+((store.ev[k]||[]).join(", ")||"none"));
+    const ck=(store.ck[k]||[]).length;
+    L.push("Hints used: "+(store.hints[k]||0)+" · Checked against model: "+(store.seen[k]?"yes ("+ck+" of "+STEPS[k].checks.length+" boxes checked)":"no"));
+  });
+  L.push("");L.push("STONE VS. DOCUMENT");L.push((store.compare||"").trim()||"(no answer yet)");
+  const t=L.join("\n");document.getElementById("out").value=t;return t;
+}
+document.getElementById("copy").addEventListener("click",()=>{
+  const t=build(),st=document.getElementById("status");
+  const missing=[...ORDER,"compare","name"].filter(k=>!(store[k]||"").trim()).length;
+  const done=()=>{st.textContent=missing?`Copied. Heads up: ${missing} answer${missing>1?"s are":" is"} still blank.`:"Copied! Now paste it into Canvas."};
+  const fallback=()=>{const o=document.getElementById("out");o.focus();o.select();st.textContent="Your answers are selected below. Press Ctrl+C (⌘+C on a Mac) to copy."};
+  try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
+});
+render();marks();build();
+</script>
+</body>
+</html>
